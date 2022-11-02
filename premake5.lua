@@ -20,6 +20,7 @@ workspace "ReddyGame"
 
 group "Dependencies"
 	include "premake"
+   include "ReddyEngine/SDL2-Premake"
 group ""
 include "ReddyEngine"
 include "ReddyGame"
@@ -27,3 +28,4 @@ include "ReddyGame"
 -- Dependencies
 
 IncludeDir = {}
+IncludeDir["SDL2"] = "%{wks.location}/ReddyEngine/SDL2-Premake/include"
