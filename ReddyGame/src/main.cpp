@@ -1,6 +1,10 @@
-#include <ReddyEngine.cpp>
+#include "Game.h"
 
-int main()
+#include <Engine/ReddyEngine.h>
+
+int main(int argc, char** argv)
 {
-	
+    auto pGame = std::make_shared<Game>();
+    Engine::Run(pGame, argc, argv);
+    return 0;	
 }
