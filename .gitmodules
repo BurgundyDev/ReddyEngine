@@ -10,3 +10,6 @@
 [submodule "ReddyEngine/glm"]
 	path = ReddyEngine/glm
 	url = https://github.com/BurgundyDev/glm/
+[submodule "ReddyEngine/jsoncpp"]
+	path = ReddyEngine/jsoncpp
+	url = https://github.com/BurgundyDev/jsoncpp
