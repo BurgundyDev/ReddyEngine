@@ -28,7 +28,9 @@ project "ReddyGame"
       "%{IncludeDir.stb}",
       "%{IncludeDir.SDL2}",
       "%{IncludeDir.glm}",
-      "%{IncludeDir.imgui}"
+      "%{IncludeDir.imgui}",
+      "%{IncludeDir.jsoncpp}",
+      "%{IncludeDir.lib_json}"
 	}
 
    links
