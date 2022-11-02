@@ -7,8 +7,8 @@ namespace Engine
     public:
         virtual ~IGame() {}
 
-        virtual void Update(float deltatime) = 0;
-        virtual void FixedUpdate(float deltatime) = 0;
-        virtual void Draw() = 0;
+        virtual void update(float deltatime) = 0;
+        virtual void fixedUpdate(float deltatime) = 0;
+        virtual void draw() = 0;
     };
 }

@@ -16,6 +16,7 @@ workspace "ReddyGame"
    architecture "x86_64"
 
    filter "system:Windows"
+      defines { "WIN32" }
       systemversion "latest"
 
 group "Dependencies"

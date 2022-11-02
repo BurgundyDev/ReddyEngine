@@ -8,7 +8,7 @@ public:
     Game() {}
     ~Game() {}
 
-    void Update(float deltatime) override {}
-    void FixedUpdate(float deltatime) override {}
-    void Draw() override {}
+    void update(float deltatime) override;
+    void fixedUpdate(float deltatime) override;
+    void draw() override;
 };
