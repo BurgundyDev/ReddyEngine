@@ -35,7 +35,6 @@ project "ReddyEngine"
 	{
       "ImGui",
       "SDL2",
-      "glm",
       "jsoncpp",
 		"opengl32.lib"
 	}
