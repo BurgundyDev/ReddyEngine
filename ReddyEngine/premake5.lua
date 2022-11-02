@@ -25,6 +25,7 @@ project "ReddyEngine"
 		"include",
       "%{IncludeDir.stb}",
       "%{IncludeDir.SDL2}",
+      "%{IncludeDir.glm}",
       "%{IncludeDir.imgui}"
 	}
 
@@ -32,6 +33,7 @@ project "ReddyEngine"
 	{
       "ImGui",
       "SDL2",
+      "glm",
 		"opengl32.lib"
 	}
 

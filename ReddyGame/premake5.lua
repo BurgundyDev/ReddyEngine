@@ -27,6 +27,7 @@ project "ReddyGame"
       "%{wks.location}/ReddyEngine/include",
       "%{IncludeDir.stb}",
       "%{IncludeDir.SDL2}",
+      "%{IncludeDir.glm}",
       "%{IncludeDir.imgui}"
 	}
 

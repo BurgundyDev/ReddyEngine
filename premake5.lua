@@ -33,3 +33,4 @@ IncludeDir = {}
 IncludeDir["SDL2"] = "%{wks.location}/ReddyEngine/SDL2-Premake/include"
 IncludeDir["imgui"] = "%{wks.location}/ReddyEngine/imgui"
 IncludeDir["stb"] = "%{wks.location}/ReddyEngine/stb-premake"
+IncludeDir["glm"] = "%{wks.location}/ReddyEngine/glm"
