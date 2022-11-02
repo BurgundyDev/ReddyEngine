@@ -1,0 +1,1 @@
+Source art: PSD files, animation files, etc.
