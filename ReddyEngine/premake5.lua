@@ -30,6 +30,8 @@ project "ReddyEngine"
 
    links
 	{
+      "ImGui",
+      "SDL2",
 		"opengl32.lib"
 	}
 
