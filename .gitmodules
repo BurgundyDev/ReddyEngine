@@ -1,3 +1,6 @@
 [submodule "ReddyEngine/SDL2-Premake"]
 	path = ReddyEngine/SDL2-Premake
 	url = https://github.com/BurgundyDev/SDL2-Premake/
+[submodule "ReddyEngine/imgui"]
+	path = ReddyEngine/imgui
+	url = https://github.com/BurgundyDev/imgui/
