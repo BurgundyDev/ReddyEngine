@@ -4,3 +4,6 @@
 [submodule "ReddyEngine/imgui"]
 	path = ReddyEngine/imgui
 	url = https://github.com/BurgundyDev/imgui/
+[submodule "ReddyEngine/stb-premake"]
+	path = ReddyEngine/stb-premake
+	url = https://github.com/BurgundyDev/stb-premake/

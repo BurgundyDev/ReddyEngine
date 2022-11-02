@@ -24,7 +24,10 @@ project "ReddyGame"
 		"src",
 		"include",
       "%{wks.location}/ReddyEngine/src",
-      "%{wks.location}/ReddyEngine/include"
+      "%{wks.location}/ReddyEngine/include",
+      "%{IncludeDir.stb}",
+      "%{IncludeDir.SDL2}",
+      "%{IncludeDir.imgui}"
 	}
 
    links

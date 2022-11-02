@@ -22,7 +22,10 @@ project "ReddyEngine"
    includedirs
 	{
 		"src",
-		"include"
+		"include",
+      "%{IncludeDir.stb}",
+      "%{IncludeDir.SDL2}",
+      "%{IncludeDir.imgui}"
 	}
 
    links
