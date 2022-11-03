@@ -20,7 +20,6 @@ workspace "ReddyGame"
       systemversion "latest"
 
 group "Dependencies"
-	include "premake"
    include "ReddyEngine/SDL2-Premake"
    include "ReddyEngine/imgui"
    include "ReddyEngine/stb-premake"
@@ -31,6 +30,7 @@ group "Dependencies"
 group ""
 include "ReddyEngine"
 include "ReddyGame"
+include "premake"
 
 -- Dependencies
 

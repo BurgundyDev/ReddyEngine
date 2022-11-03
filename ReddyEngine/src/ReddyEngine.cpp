@@ -20,8 +20,10 @@ namespace Engine
             return;
         }
 
-        // while(true)
-        //   pGame->Update(...)
-        //   pGame->Draw()
+		/*
+        while (true)
+			pGame->Update(...);
+		    pGame->Draw()
+        */
     }
 }
