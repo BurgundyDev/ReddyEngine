@@ -16,7 +16,11 @@ project "ReddyEngine"
 	  	"include/**.h",
 	  	"include/**.hpp",
 	  	"include/**.c",
-	  	"include/**.cpp"
+	  	"include/**.cpp",
+        
+        -- ImGui backends
+        "imgui/backends/imgui_impl_sdl.cpp",
+        "imgui/backends/imgui_impl_opengl3.cpp"
    	}
 
    includedirs

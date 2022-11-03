@@ -12,6 +12,7 @@ namespace Engine
     namespace Config
     {
         glm::ivec2 resolution = { 1280, 720 };
+        bool vsync = true;
 
         Json::Value configJsonAtLaunch;
 
@@ -21,6 +22,7 @@ namespace Engine
 
             Json::Value json;
             json["resolution"] = Utils::serializeInt2(&resolution.x);
+            json["vsync"] = Utils::serializeBool(vsync);
 
             if (json == configJsonAtLaunch)
             {
@@ -41,6 +43,7 @@ namespace Engine
             if (Utils::loadJson(json, filename))
             {
                 Utils::deserializeInt2(&resolution.x, json, &resolution.x);
+                vsync = Utils::deserializeBool(json, vsync);
             }
 
             configJsonAtLaunch = json;

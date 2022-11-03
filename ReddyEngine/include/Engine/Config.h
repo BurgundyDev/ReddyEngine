@@ -8,6 +8,7 @@ namespace Engine
     namespace Config
     {
         extern glm::ivec2 resolution;
+        extern bool vsync;
 
         void load();
         void save();

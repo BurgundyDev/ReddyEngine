@@ -10,3 +10,6 @@ bin-int/
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
+
+# Imgui generates this file. This is user/local config
+imgui.ini
