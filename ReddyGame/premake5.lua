@@ -39,6 +39,8 @@ project "ReddyGame"
 		"ReddyEngine"
 	}
 
+   debugdir "%{wks.location}/"
+
    filter "configurations:Debug"
       defines { "DEBUG" }
       runtime "Release"
