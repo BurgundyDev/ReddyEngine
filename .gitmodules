@@ -13,3 +13,6 @@
 [submodule "ReddyEngine/jsoncpp"]
 	path = ReddyEngine/jsoncpp
 	url = https://github.com/BurgundyDev/jsoncpp
+[submodule "ReddyEngine/tinyxml2"]
+	path = ReddyEngine/tinyxml2
+	url = https://github.com/BurgundyDev/tinyxml2
