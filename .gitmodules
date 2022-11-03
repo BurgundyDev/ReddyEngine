@@ -16,3 +16,6 @@
 [submodule "ReddyEngine/tinyxml2"]
 	path = ReddyEngine/tinyxml2
 	url = https://github.com/BurgundyDev/tinyxml2
+[submodule "ReddyEngine/box2d"]
+	path = ReddyEngine/box2d
+	url = https://github.com/BurgundyDev/box2d
