@@ -17,7 +17,6 @@ namespace Engine
         // Don't use CORE_ERROR etc. before spdlog initialization 
         Log::Init();
 
-        CORE_INFO("Initializing Engine.");
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO) != 0)
         {
             CORE_ERROR("Error: {} \n", SDL_GetError());
@@ -25,12 +24,10 @@ namespace Engine
             return;
         }
 
-        CORE_INFO("Starting the game loop.");
 		/*
         while (true)
 			pGame->Update(...);
 		    pGame->Draw()
         */
-        CORE_INFO("Closing Engine.");
     }
 }
