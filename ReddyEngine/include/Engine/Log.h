@@ -5,7 +5,6 @@
 #endif
 
 #include <spdlog/spdlog.h>
-#include <spdlog/logger.h>
 
 namespace Engine
 {
