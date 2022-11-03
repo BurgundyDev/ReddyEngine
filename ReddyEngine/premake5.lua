@@ -28,7 +28,8 @@ project "ReddyEngine"
       "%{IncludeDir.glm}",
       "%{IncludeDir.imgui}",
       "%{IncludeDir.jsoncpp}",
-      "%{IncludeDir.lib_json}"
+      "%{IncludeDir.lib_json}",
+      "%{IncludeDir.tinyxml2}"
 	}
 
    links
@@ -36,6 +37,7 @@ project "ReddyEngine"
       "ImGui",
       "SDL2",
       "jsoncpp",
+      "tinyxml2",
 		"opengl32.lib"
 	}
 
