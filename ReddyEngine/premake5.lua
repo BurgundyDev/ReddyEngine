@@ -29,7 +29,9 @@ project "ReddyEngine"
       "%{IncludeDir.imgui}",
       "%{IncludeDir.jsoncpp}",
       "%{IncludeDir.lib_json}",
-      "%{IncludeDir.tinyxml2}"
+      "%{IncludeDir.tinyxml2}",
+      "%{IncludeDir.box2d}",
+      "%{IncludeDir.box2d_source}"
 	}
 
    links
@@ -38,6 +40,7 @@ project "ReddyEngine"
       "SDL2",
       "jsoncpp",
       "tinyxml2",
+      "box2d",
 		"opengl32.lib"
 	}
 
