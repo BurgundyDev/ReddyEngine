@@ -42,8 +42,8 @@ namespace Engine
             Json::Value json;
             if (Utils::loadJson(json, filename))
             {
-                Utils::deserializeInt2(&resolution.x, json, &resolution.x);
-                vsync = Utils::deserializeBool(json, vsync);
+                Utils::deserializeInt2(&resolution.x, json["resolution"], &resolution.x);
+                vsync = Utils::deserializeBool(json["vsync"], vsync);
             }
 
             configJsonAtLaunch = json;
