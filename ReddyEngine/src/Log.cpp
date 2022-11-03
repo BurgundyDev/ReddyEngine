@@ -19,11 +19,9 @@ namespace Engine
 		}
 		catch (spdlog::spdlog_ex& ex)
 		{
-#if defined(DEBUG)
 			std::cout << "Log initialization failed: " << ex.what() << std::endl;
 			assert(false);
 			return;
-#endif
 		}
 	}
 }
