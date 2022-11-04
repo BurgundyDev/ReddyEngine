@@ -29,7 +29,8 @@ namespace Engine
         // Initialize SDL
         {
             auto success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO) == 0;
-            CORE_FATAL(success, "Error: {} \n", SDL_GetError());
+            SDL_GLContext gl_context = SDL_GL_CreateContext(NULL);
+            CORE_FATAL(success, "Error: %s", SDL_GetError());
         }
 
       
