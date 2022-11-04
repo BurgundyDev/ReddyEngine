@@ -138,6 +138,7 @@ namespace Engine
                                     break;
                             }
                         }
+                        break;
                     }
 
                 case SDL_KEYDOWN:
