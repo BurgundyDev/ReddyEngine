@@ -16,7 +16,7 @@ workspace "ReddyGame"
    architecture "x86_64"
 
    filter "system:Windows"
-      defines { "WIN32" }
+      defines { "WIN32", "_CRT_SECURE_NO_WARNINGS" }
       systemversion "latest"
       startproject "ReddyGame"
       characterset ("MBCS")
