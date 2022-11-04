@@ -125,7 +125,8 @@ namespace Engine
 
             // Update game
             auto now = SDL_GetPerformanceCounter();
-            auto deltaTime = (float)((now - lastTime)*1000 / (double)SDL_GetPerformanceFrequency());
+            auto deltaTime = (float)((now - lastTime) / (double)SDL_GetPerformanceFrequency());
+            if (deltaTime > 1.0f / 10.0f) deltaTime = 1.0f / 10.0f;
             lastTime = now;
             pGame->update(deltaTime);
 
