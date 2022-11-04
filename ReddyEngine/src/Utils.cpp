@@ -202,7 +202,6 @@ namespace Engine
 
 		std::string concatenateChars(const char* fmt, ...)
 		{
-
 			char buffer[MAX_CONCATENATE_CHARS_LENGTH];
 			va_list arg_ptr;
 

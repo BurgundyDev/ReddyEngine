@@ -18,21 +18,5 @@ namespace Engine
 		{
 			return ShowErrorMessageBox(errMsg, "Fatal Error");
 		}
-
-		/*const std::string GetLastErrorMessage()
-		{
-			assert()
-				wchar_t errorMsg[ERROR_MSG_LENGTH];
-
-			FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM |
-				FORMAT_MESSAGE_IGNORE_INSERTS,
-				NULL,
-				GetLastError(),
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-				(LPTSTR)errorMsg,
-				0, NULL);
-
-			return Utils::wideToUtf8(errorMsg);
-		}*/
 	}
 }
