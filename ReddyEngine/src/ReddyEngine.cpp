@@ -15,6 +15,7 @@ namespace Engine
 {
     static SpriteBatchRef g_pSpriteBatch;
     static int g_fixedUpdateFPS = 60;
+    static bool g_done = false;
 
 
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv)
@@ -98,10 +99,9 @@ namespace Engine
         pGame->loadContent();
 
         // Main loop
-        bool done = false;
         Uint64 lastTime = SDL_GetPerformanceCounter();
         float fixedUpdateProgress = 0.0f;
-        while (!done)
+        while (!g_done)
         {
             // Poll and handle events (inputs, pWindow resize, etc.)
             // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
@@ -114,11 +114,11 @@ namespace Engine
                 ImGui_ImplSDL2_ProcessEvent(&event);
                 if (event.type == SDL_QUIT || (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(pWindow)))
                 {
-                    done = true;
+                    g_done = true;
                     break;
                 }
             }
-            if (done) break;
+            if (g_done) break;
 
             // Start the Dear ImGui frame
             ImGui_ImplOpenGL3_NewFrame();
@@ -187,7 +187,7 @@ namespace Engine
         return g_pSpriteBatch;
     }
 
-    glm::ivec2 getResolution()
+    glm::vec2 getResolution()
     {
         const auto& io = ImGui::GetIO();
         return { io.DisplaySize.x, io.DisplaySize.y };
@@ -196,5 +196,10 @@ namespace Engine
     void setFixedUpdateFPS(int fps)
     {
         g_fixedUpdateFPS = fps;
+    }
+
+    void quit()
+    {
+        g_done = true;
     }
 }

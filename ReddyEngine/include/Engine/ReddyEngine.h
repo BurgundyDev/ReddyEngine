@@ -15,9 +15,8 @@ namespace Engine
 
 
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv);
-
     const SpriteBatchRef& getSpriteBatch();
-    glm::ivec2 getResolution();
-
+    glm::vec2 getResolution();
     void setFixedUpdateFPS(int fps = 60);
+    void quit();
 }

@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "MainMenuState.h"
 
 #include <Engine/ReddyEngine.h>
 #include <Engine/SpriteBatch.h>
@@ -7,34 +8,87 @@
 #include <imgui.h>
 
 
-static float rotation = 0.0f;
-static Engine::TextureRef pTexture;
+GameRef g_pGame;
 
 
 void Game::loadContent()
 {
-    pTexture = Engine::Texture::createFromFile("assets/textures/5960_NotLikeThis.png");
+    changeState(std::make_shared<MainMenuState>());
 }
 
 
-void Game::update(float deltatime)
+void Game::changeState(const GameStateRef& newState)
 {
-    rotation += 90.0f * deltatime;
+    GameStateRef prevState = nullptr;
+    while (m_pGameStates.size() > 1)
+    {
+        prevState = m_pGameStates.back();
+        m_pGameStates.pop_back();
+        prevState->leave(newState);
+    }
+
+    m_pGameStates.push_back(newState);
+    newState->enter(prevState);
 }
 
 
-void Game::fixedUpdate(float deltatime)
+void Game::pushState(const GameStateRef& newState)
 {
+    GameStateRef prevState = nullptr;
+    if (!m_pGameStates.empty())
+    {
+        prevState = m_pGameStates.back();
+        prevState->leave(newState);
+    }
+
+    m_pGameStates.push_back(newState);
+    newState->enter(prevState);
+}
+
+
+void Game::popState()
+{
+    GameStateRef newState = nullptr;
+    GameStateRef prevState = nullptr;
+
+    if (m_pGameStates.size() > 2) newState = m_pGameStates[m_pGameStates.size() - 2];
+    if (m_pGameStates.size() > 1) prevState = m_pGameStates[m_pGameStates.size() - 1];
+
+    m_pGameStates.pop_back();
+
+    if (prevState) prevState->leave(newState);
+    if (newState) newState->enter(prevState);
+}
+
+
+void Game::update(float deltaTime)
+{
+    if (!m_pGameStates.empty()) m_pGameStates.back()->update(deltaTime);
+}
+
+
+void Game::fixedUpdate(float deltaTime)
+{
+    if (!m_pGameStates.empty()) m_pGameStates.back()->fixedUpdate(deltaTime);
 }
 
 
 void Game::draw()
 {
-    auto sb = Engine::getSpriteBatch();
-    auto res = Engine::getResolution();
+    if (m_pGameStates.empty()) return;
 
-    sb->begin();
-    sb->drawRect(nullptr, {0, 0, 100, 100}, {1, 0, 0, 1});
-    sb->draw(pTexture, glm::vec2((float)res.x, (float)res.y) * 0.5f, glm::vec4(1, 1, 1, 1), rotation);
-    sb->end();
+    // Find index where all parents are see-through
+    int index = (int)m_pGameStates.size() - 1;
+    for (auto rit = m_pGameStates.rbegin(); rit != m_pGameStates.rend(); ++rit)
+    {
+        const auto& pGameState = *rit;
+        if (!pGameState->isSeeThrough()) break;
+        --index;
+    }
+
+    for (int i = index, len = (int)m_pGameStates.size(); i < len; ++i)
+    {
+        const auto& pGameState = m_pGameStates[i];
+        pGameState->draw();
+    }
 }
