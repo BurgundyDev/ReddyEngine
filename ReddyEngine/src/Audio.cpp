@@ -101,12 +101,16 @@ namespace Engine
     
     void Audio::addStream(const AudioStreamRef& pStream)
     {
+        if (!m_audioEnabled) return;
+
         std::lock_guard<std::mutex> locker(m_streamsMutex);
         m_streams.push_back(pStream);
     }
 
     void Audio::addFireAndForgetStream(const AudioStreamRef& pStream)
     {
+        if (!m_audioEnabled) return;
+
         std::lock_guard<std::mutex> locker(m_streamsMutex);
         m_fireAndForgetStreams.push_back(pStream);
         m_streams.push_back(pStream);
@@ -114,6 +118,8 @@ namespace Engine
 
     void Audio::removeStream(const AudioStreamRef& pStream)
     {
+        if (!m_audioEnabled) return;
+
         auto pStreamRaw = pStream.get();
         std::lock_guard<std::mutex> locker(m_streamsMutex);
         for (auto it = m_streams.begin(); it != m_streams.end(); ++it)
