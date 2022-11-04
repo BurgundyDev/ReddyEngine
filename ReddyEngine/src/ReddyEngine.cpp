@@ -1,6 +1,7 @@
 #include "Engine/ReddyEngine.h"
 #include "Engine/Config.h"
 #include "Engine/Log.h"
+#include "Engine/SpriteBatch.h"
 
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -12,6 +13,9 @@
 
 namespace Engine
 {
+    static SpriteBatchRef g_pSpriteBatch;
+
+
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv)
     {
         // Don't use CORE_ERROR etc. before spdlog initialization 
@@ -27,8 +31,8 @@ namespace Engine
             assert(false);
             return;
         }
-        
-        // Decide GL+GLSL versions
+
+      
 #if defined(__APPLE__)
         // GL 3.2 Core + GLSL 150
         const char* glsl_version = "#version 150";
@@ -45,7 +49,7 @@ namespace Engine
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #endif
 
-        // Create pWindow with graphics context
+        // Create window with graphics context
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
@@ -86,6 +90,12 @@ namespace Engine
         //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
         //IM_ASSERT(font != NULL);
 
+        // Initialize Engine's systems
+        g_pSpriteBatch = std::make_shared<SpriteBatch>();
+
+        // Once everything is setup, the game can load stuff
+        pGame->loadContent();
+
         // Main loop
         bool done = false;
         Uint64 lastTime = SDL_GetPerformanceCounter();
@@ -122,10 +132,11 @@ namespace Engine
             // Generate imgui final render data
             ImGui::Render();
 
-            // Rendering
+            // Prepare rendering
             glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
             glClearColor(0, 0, 0, 1);
             glClear(GL_COLOR_BUFFER_BIT);
+            g_pSpriteBatch->beginFrame();
 
             // Draw game
             pGame->draw();
@@ -139,5 +150,28 @@ namespace Engine
 
         // Save configs (It will only save if changes have been made)
         Config::save();
+
+        // Cleanup
+        g_pSpriteBatch.reset();
+
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplSDL2_Shutdown();
+        ImGui::DestroyContext();
+
+        SDL_GL_DeleteContext(gl_context);
+        SDL_DestroyWindow(pWindow);
+        SDL_Quit();
+    }
+
+
+    const SpriteBatchRef& getSpriteBatch()
+    {
+        return g_pSpriteBatch;
+    }
+
+    glm::ivec2 getResolution()
+    {
+        const auto& io = ImGui::GetIO();
+        return { io.DisplaySize.x, io.DisplaySize.y };
     }
 }
