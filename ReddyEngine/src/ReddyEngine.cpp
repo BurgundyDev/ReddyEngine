@@ -1,4 +1,5 @@
 #include "Engine/ReddyEngine.h"
+#include "Engine/Audio.h"
 #include "Engine/Config.h"
 #include "Engine/Input.h"
 #include "Engine/Log.h"
@@ -16,6 +17,7 @@ namespace Engine
 {
     static SpriteBatchRef g_pSpriteBatch;
     static InputRef g_pInput;
+    static AudioRef g_pAudio;
 
     static int g_fixedUpdateFPS = 60;
     static bool g_done = false;
@@ -96,6 +98,7 @@ namespace Engine
 
         // Initialize Engine's systems
         g_pInput = std::make_shared<Input>();
+        g_pAudio = std::make_shared<Audio>();
         g_pSpriteBatch = std::make_shared<SpriteBatch>();
 
         // Once everything is setup, the game can load stuff
@@ -227,6 +230,7 @@ namespace Engine
 
         // Cleanup
         g_pSpriteBatch.reset();
+        g_pAudio.reset();
         g_pInput.reset();
 
         ImGui_ImplOpenGL3_Shutdown();
@@ -247,6 +251,11 @@ namespace Engine
     const InputRef& getInput()
     {
         return g_pInput;
+    }
+
+    const AudioRef& getAudio()
+    {
+        return g_pAudio;
     }
 
     glm::vec2 getResolution()

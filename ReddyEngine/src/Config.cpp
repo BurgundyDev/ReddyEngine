@@ -13,8 +13,12 @@ namespace Engine
     {
         glm::ivec2 resolution = { 1280, 720 };
         bool vsync = true;
+        float masterVolume = 1.0f;
+        float sfxVolume = 1.0f;
+        float musicVolume = 1.0f;
 
         Json::Value configJsonAtLaunch;
+
 
         void save()
         {
@@ -23,6 +27,9 @@ namespace Engine
             Json::Value json;
             json["resolution"] = Utils::serializeInt2(&resolution.x);
             json["vsync"] = Utils::serializeBool(vsync);
+            json["masterVolume"] = Utils::serializeFloat(masterVolume);
+            json["sfxVolume"] = Utils::serializeFloat(sfxVolume);
+            json["musicVolume"] = Utils::serializeFloat(musicVolume);
 
             if (json == configJsonAtLaunch)
             {
@@ -44,6 +51,9 @@ namespace Engine
             {
                 Utils::deserializeInt2(&resolution.x, json["resolution"], &resolution.x);
                 vsync = Utils::deserializeBool(json["vsync"], vsync);
+                masterVolume = Utils::deserializeBool(json["masterVolume"], masterVolume);
+                sfxVolume = Utils::deserializeBool(json["sfxVolume"], sfxVolume);
+                musicVolume = Utils::deserializeBool(json["musicVolume"], musicVolume);
             }
 
             configJsonAtLaunch = json;

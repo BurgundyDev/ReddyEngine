@@ -12,13 +12,15 @@ namespace Engine
     // Forward declarations
     class SpriteBatch;
     using SpriteBatchRef = std::shared_ptr<SpriteBatch>;
-
     class Input;
     using InputRef = std::shared_ptr<Input>;
+    class Audio;
+    using AudioRef = std::shared_ptr<Audio>;
 
 
     const SpriteBatchRef& getSpriteBatch();
     const InputRef& getInput();
+    const AudioRef& getAudio();
 
 
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv);
