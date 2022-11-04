@@ -1,12 +1,14 @@
 #pragma once
 
-#include <windows.h>
+#include <string>
 
 namespace Engine
 {
 	namespace Platform
 	{
-		int ErrorMessageBox(LPCTSTR  title, LPCTSTR  text);
-		int FatalErrorMessageBox();
+		int ShowErrorMessageBox(const std::string& title, const std::string& text);
+		int ShowFatalErrorMessageBox(const std::string& errorMsg);
+
+		/*const std::string GetLastErrorMessage();*/
 	}
 }

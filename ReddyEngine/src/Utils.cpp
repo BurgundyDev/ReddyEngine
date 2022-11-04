@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <fstream>
 
+#define MAX_CONCATENATE_CHARS_LENGTH 1024
 
 namespace Engine
 {
@@ -198,6 +199,19 @@ namespace Engine
             return "./";
 #endif
         }
+
+		std::string concatenateChars(const char* fmt, ...)
+		{
+
+			char buffer[MAX_CONCATENATE_CHARS_LENGTH];
+			va_list arg_ptr;
+
+			va_start(arg_ptr, fmt);
+			vsprintf(buffer, fmt, arg_ptr);
+			va_end(arg_ptr);
+
+			return std::string(buffer);
+		}
         
         std::string getPath(const std::string& filename)
         {
@@ -274,8 +288,8 @@ namespace Engine
             }
             return std::move(ss.str());
         }
-        
-        bool loadJson(Json::Value &out, const std::string& filename)
+
+		bool loadJson(Json::Value& out, const std::string& filename)
         {
             std::ifstream file(filename);
             if (!file.is_open())

@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <stdarg.h>
 
 namespace Engine
 {
@@ -34,6 +35,8 @@ namespace Engine
         std::string getSavePath(const std::string& appName); // On Windows, this returns the Roaming App Data path. On other platforms, it returns local directory "./"
         std::string makeRelativePath(const std::string& path, const std::string& relativeTo);
         
+        std::string concatenateChars(const char* fmt, ...);
+
         // Config
         bool loadJson(Json::Value &out, const std::string& filename);
         bool saveJson(const Json::Value &json, const std::string& filename);
