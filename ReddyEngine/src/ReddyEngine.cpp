@@ -14,6 +14,7 @@
 namespace Engine
 {
     static SpriteBatchRef g_pSpriteBatch;
+    static int g_fixedUpdateFPS = 60;
 
 
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv)
@@ -99,6 +100,7 @@ namespace Engine
         // Main loop
         bool done = false;
         Uint64 lastTime = SDL_GetPerformanceCounter();
+        float fixedUpdateProgress = 0.0f;
         while (!done)
         {
             // Poll and handle events (inputs, pWindow resize, etc.)
@@ -128,6 +130,21 @@ namespace Engine
             auto deltaTime = (float)((now - lastTime) / (double)SDL_GetPerformanceFrequency());
             if (deltaTime > 1.0f / 10.0f) deltaTime = 1.0f / 10.0f;
             lastTime = now;
+
+            int fixedUpdated = 0;
+            fixedUpdateProgress += deltaTime;
+            while (fixedUpdateProgress > 0.0f)
+            {
+                pGame->fixedUpdate(1.0f / (float)g_fixedUpdateFPS);
+                fixedUpdateProgress -= 1.0f / (float)g_fixedUpdateFPS;
+                ++fixedUpdated;
+                if (fixedUpdated > 3)
+                {
+                    // Things got too slow, start slowing down.
+                    fixedUpdateProgress = 0.0f;
+                    break;
+                }
+            }
             pGame->update(deltaTime);
 
             // Generate imgui final render data
@@ -174,5 +191,10 @@ namespace Engine
     {
         const auto& io = ImGui::GetIO();
         return { io.DisplaySize.x, io.DisplaySize.y };
+    }
+
+    void setFixedUpdateFPS(int fps)
+    {
+        g_fixedUpdateFPS = fps;
     }
 }

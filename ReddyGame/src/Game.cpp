@@ -20,8 +20,6 @@ void Game::loadContent()
 void Game::update(float deltatime)
 {
     rotation += 90.0f * deltatime;
-
-    //ImGui::ShowDemoWindow();
 }
 
 

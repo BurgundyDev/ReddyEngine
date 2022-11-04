@@ -18,4 +18,6 @@ namespace Engine
 
     const SpriteBatchRef& getSpriteBatch();
     glm::ivec2 getResolution();
+
+    void setFixedUpdateFPS(int fps = 60);
 }
