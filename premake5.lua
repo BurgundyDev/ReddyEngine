@@ -18,6 +18,7 @@ workspace "ReddyGame"
    filter "system:Windows"
       defines { "WIN32" }
       systemversion "latest"
+      characterset ("MBCS")
 
 group "Dependencies"
    include "ReddyEngine/SDL2-Premake"

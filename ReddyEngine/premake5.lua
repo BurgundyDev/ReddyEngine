@@ -17,10 +17,10 @@ project "ReddyEngine"
 	  	"include/**.hpp",
 	  	"include/**.c",
 	  	"include/**.cpp",
-        
-        -- ImGui backends
-        "imgui/backends/imgui_impl_sdl.cpp",
-        "imgui/backends/imgui_impl_opengl3.cpp"
+
+		-- ImGui backends
+		"imgui/backends/imgui_impl_sdl.cpp",
+		"imgui/backends/imgui_impl_opengl3.cpp"
    	}
 
    includedirs
@@ -47,6 +47,9 @@ project "ReddyEngine"
 	  	"box2d",
 		"opengl32.lib"
 	}
+
+	filter "system:Windows"
+		characterset ("MBCS")
 
    filter "configurations:Debug"
 	  defines { "DEBUG" }

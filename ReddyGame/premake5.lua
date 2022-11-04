@@ -41,6 +41,9 @@ project "ReddyGame"
 
    debugdir "%{wks.location}/"
 
+   filter "system:Windows"
+      characterset ("MBCS")
+
    filter "configurations:Debug"
       defines { "DEBUG" }
       runtime "Release"
