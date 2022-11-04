@@ -41,5 +41,3 @@ namespace Engine
 #define CLIENT_FATAL(expression, ...)	if(!expression) { SPDLOG_LOGGER_CRITICAL(Engine::Log::GetClientLogger(), __VA_ARGS__);								\
 											Engine::Platform::ShowFatalErrorMessageBox(Engine::Utils::concatenateChars(__VA_ARGS__));						\
 											__debugbreak();  }
-
-//_CRT_WIDE(#expression), _CRT_WIDE(__FILE__), (unsigned)(__LINE__)
