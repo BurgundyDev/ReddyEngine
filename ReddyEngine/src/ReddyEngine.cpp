@@ -22,16 +22,14 @@ namespace Engine
     {
         // Don't use CORE_ERROR etc. before spdlog initialization 
         Log::Init();
-
+        
         // Load configs
         Config::load();
 
         // Initialize SDL
-        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO) != 0)
         {
-            CORE_FATAL("Error: {} \n", SDL_GetError());
-            assert(false);
-            return;
+            auto success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO) == 0;
+            CORE_FATAL(success, "Error: {} \n", SDL_GetError());
         }
 
       
