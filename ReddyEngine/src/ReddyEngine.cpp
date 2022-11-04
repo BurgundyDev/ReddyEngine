@@ -1,6 +1,7 @@
 #include "Engine/ReddyEngine.h"
 #include "Engine/Config.h"
 #include "Engine/Log.h"
+#include "Engine/SpriteBatch.h"
 
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -12,6 +13,11 @@
 
 namespace Engine
 {
+    static SpriteBatchRef g_pSpriteBatch;
+    static int g_fixedUpdateFPS = 60;
+    static bool g_done = false;
+
+
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv)
     {
         // Don't use CORE_ERROR etc. before spdlog initialization 
@@ -25,8 +31,8 @@ namespace Engine
             auto success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO) == 0;
             CORE_FATAL(success, "Error: {} \n", SDL_GetError());
         }
-        
-        // Decide GL+GLSL versions
+
+      
 #if defined(__APPLE__)
         // GL 3.2 Core + GLSL 150
         const char* glsl_version = "#version 150";
@@ -43,7 +49,7 @@ namespace Engine
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #endif
 
-        // Create pWindow with graphics context
+        // Create window with graphics context
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
@@ -84,10 +90,16 @@ namespace Engine
         //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
         //IM_ASSERT(font != NULL);
 
+        // Initialize Engine's systems
+        g_pSpriteBatch = std::make_shared<SpriteBatch>();
+
+        // Once everything is setup, the game can load stuff
+        pGame->loadContent();
+
         // Main loop
-        bool done = false;
         Uint64 lastTime = SDL_GetPerformanceCounter();
-        while (!done)
+        float fixedUpdateProgress = 0.0f;
+        while (!g_done)
         {
             // Poll and handle events (inputs, pWindow resize, etc.)
             // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
@@ -100,11 +112,11 @@ namespace Engine
                 ImGui_ImplSDL2_ProcessEvent(&event);
                 if (event.type == SDL_QUIT || (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(pWindow)))
                 {
-                    done = true;
+                    g_done = true;
                     break;
                 }
             }
-            if (done) break;
+            if (g_done) break;
 
             // Start the Dear ImGui frame
             ImGui_ImplOpenGL3_NewFrame();
@@ -113,17 +125,34 @@ namespace Engine
 
             // Update game
             auto now = SDL_GetPerformanceCounter();
-            auto deltaTime = (float)((now - lastTime)*1000 / (double)SDL_GetPerformanceFrequency());
+            auto deltaTime = (float)((now - lastTime) / (double)SDL_GetPerformanceFrequency());
+            if (deltaTime > 1.0f / 10.0f) deltaTime = 1.0f / 10.0f;
             lastTime = now;
+
+            int fixedUpdated = 0;
+            fixedUpdateProgress += deltaTime;
+            while (fixedUpdateProgress > 0.0f)
+            {
+                pGame->fixedUpdate(1.0f / (float)g_fixedUpdateFPS);
+                fixedUpdateProgress -= 1.0f / (float)g_fixedUpdateFPS;
+                ++fixedUpdated;
+                if (fixedUpdated > 3)
+                {
+                    // Things got too slow, start slowing down.
+                    fixedUpdateProgress = 0.0f;
+                    break;
+                }
+            }
             pGame->update(deltaTime);
 
             // Generate imgui final render data
             ImGui::Render();
 
-            // Rendering
+            // Prepare rendering
             glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
             glClearColor(0, 0, 0, 1);
             glClear(GL_COLOR_BUFFER_BIT);
+            g_pSpriteBatch->beginFrame();
 
             // Draw game
             pGame->draw();
@@ -137,5 +166,38 @@ namespace Engine
 
         // Save configs (It will only save if changes have been made)
         Config::save();
+
+        // Cleanup
+        g_pSpriteBatch.reset();
+
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplSDL2_Shutdown();
+        ImGui::DestroyContext();
+
+        SDL_GL_DeleteContext(gl_context);
+        SDL_DestroyWindow(pWindow);
+        SDL_Quit();
+    }
+
+
+    const SpriteBatchRef& getSpriteBatch()
+    {
+        return g_pSpriteBatch;
+    }
+
+    glm::vec2 getResolution()
+    {
+        const auto& io = ImGui::GetIO();
+        return { io.DisplaySize.x, io.DisplaySize.y };
+    }
+
+    void setFixedUpdateFPS(int fps)
+    {
+        g_fixedUpdateFPS = fps;
+    }
+
+    void quit()
+    {
+        g_done = true;
     }
 }

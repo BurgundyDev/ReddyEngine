@@ -34,7 +34,148 @@ namespace Engine
             return std::move(ret);
         }
 #endif
+        
+        std::vector<std::string> splitString(const std::string& in_string, char in_delimiter, bool in_removeEmptyElements)
+        {
+            std::vector<std::string> elems;
+            unsigned int start = 0;
+            unsigned int end = 0;
+            for (; end < in_string.length(); ++end)
+            {
+                if (in_string[end] == in_delimiter)
+                {
+                    if (end - start || !in_removeEmptyElements)
+                    {
+                        elems.push_back(in_string.substr(start, end - start));
+                    }
+                    start = end + 1;
+                }
+            }
+            if (!in_removeEmptyElements && start == in_string.length())
+            {
+                elems.push_back("");
+            }
+            if (start < in_string.length())
+            {
+                if (end - start || !in_removeEmptyElements)
+                {
+                    elems.push_back(in_string.substr(start, end - start));
+                }
+            }
+            return elems;
+        }
 
+        std::vector<std::string> splitString(const std::string& in_string, const std::string& in_delimiters)
+        {
+            std::vector<std::string> elems;
+            unsigned int start = 0;
+            unsigned int end = 0;
+            for (; end < in_string.length(); ++end)
+            {
+                for (auto c : in_delimiters)
+                {
+                    if (in_string[end] == c)
+                    {
+                        if (end - start)
+                        {
+                            elems.push_back(in_string.substr(start, end - start));
+                        }
+                        start = end + 1;
+                    }
+                }
+            }
+            if (start == in_string.length())
+            {
+                elems.push_back("");
+            }
+            if (start < in_string.length())
+            {
+                if (end - start)
+                {
+                    elems.push_back(in_string.substr(start, end - start));
+                }
+            }
+            return elems;
+        }
+
+        std::string removeChars(const std::string& str, const std::string& charsToRemove)
+        {
+            auto ret = str;
+            for (decltype(charsToRemove.size()) i = 0; i < charsToRemove.size(); ++i)
+            {
+                ret.erase(remove(ret.begin(), ret.end(), charsToRemove[i]), ret.end());
+            }
+            return ret;
+        }
+
+        std::string toUpper(const std::string& str)
+        {
+            auto ret = str;
+            std::transform(ret.begin(), ret.end(), ret.begin(), ::toupper);
+            return ret;
+        }
+
+        std::string toLower(const std::string& str)
+        {
+            auto ret = str;
+            std::transform(ret.begin(), ret.end(), ret.begin(), ::tolower);
+            return ret;
+        }
+
+        std::string trim(const std::string& str)
+        {
+            auto s = str.find_first_not_of(" \t\n\r");
+            if (s == std::string::npos)
+            {
+                return "";
+            }
+            std::string ret;
+            if (s > 0)
+            {
+                ret = str.substr(s);
+            }
+            else
+            {
+                ret = str;
+            }
+            s = ret.find_last_not_of(" \t\n\r");
+            return ret.substr(0, s + 1);
+        }
+
+        size_t utf8Length(const std::string& str)
+        {
+            int len = 0;
+            auto s = str.data();
+            while (*s) len += (*s++ & 0xc0) != 0x80;
+            return len;
+        }
+
+        size_t utf8Pos(const std::string& str, size_t pos)
+        {
+            auto s = str.data();
+            while (*s && pos)
+            {
+                if (*s & 0x80)
+                {
+                    if ((*s & 0xE0) == 0xC0)
+                    {
+                        ++s;
+                    }
+                    else if ((*s & 0xF0) == 0xE0)
+                    {
+                        s += 2;
+                    }
+                    else
+                    {
+                        s += 3;
+                    }
+                }
+                --pos;
+                ++s;
+            }
+
+            return s - str.data();
+        }
 
         std::string getSavePath(const std::string& appName)
         {
@@ -57,7 +198,82 @@ namespace Engine
             return "./";
 #endif
         }
+        
+        std::string getPath(const std::string& filename)
+        {
+            return filename.substr(0, filename.find_last_of("\\/"));
+        }
 
+        std::string getFilename(const std::string& path)
+        {
+            auto pos = path.find_last_of("\\/");
+            if (pos == std::string::npos) return path;
+            return path.substr(pos + 1);
+        }
+
+        std::string getPathWithoutExtension(const std::string& path)
+        {
+            auto pos = path.find_last_of('.');
+            if (pos == std::string::npos) return path;
+            return path.substr(0, pos);
+        }
+
+        std::string getFilenameWithoutExtension(const std::string& path)
+        {
+            auto filename = getFilename(path);
+            auto pos = filename.find_last_of('.');
+            if (pos == std::string::npos) return filename;
+            return filename.substr(0, pos);
+        }
+
+        std::string getExtension(const std::string& filename)
+        {
+            auto pos = filename.find_last_of('.');
+            if (pos == std::string::npos) return "";
+            return toUpper(filename.substr(pos + 1));
+        }
+
+        std::string getParentFolderName(const std::string& filename)
+        {
+            auto path = getPath(filename);
+            if (path.empty()) return "";
+            return path.substr(0, path.find_last_of("\\/"));
+        }
+
+        std::string makeRelativePath(const std::string& in_path, const std::string& in_relativeTo)
+        {
+            auto path = in_path;
+            if (path.size() >= 2 && path[0] == '.' && (path[1] == '\\' || path[1] == '/'))
+                path = path.substr(2);
+            std::replace(path.begin(), path.end(), '\\', '/');
+            auto pathSplit = splitString(path, '/');
+
+            auto relativeTo = in_relativeTo;
+            std::replace(relativeTo.begin(), relativeTo.end(), '\\', '/');
+            auto relativeSplit = splitString(relativeTo, '/');
+
+            while (pathSplit.size() && relativeSplit.size() && pathSplit.front() == relativeSplit.front())
+            {
+                pathSplit.erase(pathSplit.begin());
+                relativeSplit.erase(relativeSplit.begin());
+            }
+
+            std::stringstream ss;
+            bool bFirst = true;
+            for (auto& folder : relativeSplit)
+            {
+                if (!bFirst) ss << "/";
+                bFirst = false;
+                ss << "..";
+            }
+            for (auto& folder : pathSplit)
+            {
+                if (!bFirst) ss << "/";
+                bFirst = false;
+                ss << folder;
+            }
+            return std::move(ss.str());
+        }
         
         bool loadJson(Json::Value &out, const std::string& filename)
         {

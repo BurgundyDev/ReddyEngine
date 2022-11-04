@@ -18,6 +18,7 @@ workspace "ReddyGame"
    filter "system:Windows"
       defines { "WIN32" }
       systemversion "latest"
+      startproject "ReddyGame"
       characterset ("MBCS")
 
 group "Dependencies"

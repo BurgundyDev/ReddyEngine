@@ -4,17 +4,37 @@
 #include <glm/vec2.hpp>
 
 #include <string>
+#include <vector>
 
 namespace Engine
 {
     namespace Utils
     {
+        // Strings stuff
 #if defined(WIN32)
         std::wstring utf8ToWide(const std::string& utf8);
         std::string wideToUtf8(const std::wstring& wide);
 #endif
-        std::string getSavePath(const std::string& appName);
+        std::vector<std::string> splitString(const std::string& in_string, char in_delimiter, bool in_removeEmptyElements = true);
+        std::vector<std::string> splitString(const std::string& in_string, const std::string& in_delimiters);
+        std::string removeChars(const std::string& str, const std::string& charsToRemove);
+        std::string toUpper(const std::string& str);
+        std::string toLower(const std::string& str);
+        std::string trim(const std::string& str);
+        size_t utf8Length(const std::string& str);
+        size_t utf8Pos(const std::string& str, size_t pos);
+
+        // Path stuff
+        std::string getPath(const std::string& filename);
+        std::string getPathWithoutExtension(const std::string& filename);
+        std::string getFilename(const std::string& path);
+        std::string getFilenameWithoutExtension(const std::string& path);
+        std::string getExtension(const std::string& filename);
+        std::string getParentFolderName(const std::string& filename);
+        std::string getSavePath(const std::string& appName); // On Windows, this returns the Roaming App Data path. On other platforms, it returns local directory "./"
+        std::string makeRelativePath(const std::string& path, const std::string& relativeTo);
         
+        // Config
         bool loadJson(Json::Value &out, const std::string& filename);
         bool saveJson(const Json::Value &json, const std::string& filename);
 
