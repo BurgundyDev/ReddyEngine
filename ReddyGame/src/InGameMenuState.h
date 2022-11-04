@@ -3,8 +3,10 @@
 #include "GameState.h"
 
 
-class InGameState final : public GameState
+class InGameMenuState final : public GameState
 {
 public:
+    InGameMenuState();
+
     void update(float dt) override;
 };

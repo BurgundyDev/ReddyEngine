@@ -1,5 +1,6 @@
 #include "Engine/ReddyEngine.h"
 #include "Engine/Config.h"
+#include "Engine/Input.h"
 #include "Engine/Log.h"
 #include "Engine/SpriteBatch.h"
 
@@ -14,6 +15,8 @@
 namespace Engine
 {
     static SpriteBatchRef g_pSpriteBatch;
+    static InputRef g_pInput;
+
     static int g_fixedUpdateFPS = 60;
     static bool g_done = false;
 
@@ -92,6 +95,7 @@ namespace Engine
         //IM_ASSERT(font != NULL);
 
         // Initialize Engine's systems
+        g_pInput = std::make_shared<Input>();
         g_pSpriteBatch = std::make_shared<SpriteBatch>();
 
         // Once everything is setup, the game can load stuff
@@ -102,6 +106,11 @@ namespace Engine
         float fixedUpdateProgress = 0.0f;
         while (!g_done)
         {
+            Sint32 mouseMotionX = 0;
+            Sint32 mouseMotionY = 0;
+
+            g_pInput->preUpdate();
+
             // Poll and handle events (inputs, pWindow resize, etc.)
             // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
             // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
@@ -111,25 +120,70 @@ namespace Engine
             while (SDL_PollEvent(&event))
             {
                 ImGui_ImplSDL2_ProcessEvent(&event);
-                if (event.type == SDL_QUIT || (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(pWindow)))
+
+                switch (event.type)
                 {
-                    g_done = true;
+                    case SDL_QUIT:
+                        g_done = true;
+                        break;
+
+                    case SDL_WINDOWEVENT:
+                    {
+                        if (event.window.windowID == SDL_GetWindowID(pWindow))
+                        {
+                            switch (event.window.event)
+                            { // Holy indentations!
+                                case SDL_WINDOWEVENT_CLOSE:
+                                    g_done = true;
+                                    break;
+                            }
+                        }
+                    }
+
+                case SDL_KEYDOWN:
+                    if (!event.key.repeat && !io.WantCaptureKeyboard)
+                        g_pInput->onKeyDown(event.key.keysym.scancode);
+                    break;
+
+                case SDL_KEYUP:
+                    if (!io.WantCaptureKeyboard)
+                        g_pInput->onKeyUp(event.key.keysym.scancode);
+                    break;
+
+                case SDL_MOUSEBUTTONDOWN:
+                    if (!io.WantCaptureMouse)
+                        g_pInput->onButtonDown(event.button.button);
+                    break;
+
+                case SDL_MOUSEBUTTONUP:
+                    if (!io.WantCaptureMouse)
+                        g_pInput->onButtonUp(event.button.button);
+                    break;
+
+                case SDL_MOUSEMOTION:
+                    mouseMotionX += event.motion.xrel;
+                    mouseMotionY += event.motion.yrel;
                     break;
                 }
             }
             if (g_done) break;
+
+            // Update inputs
+            g_pInput->setMouseMotion({mouseMotionX, mouseMotionY});
+            g_pInput->update();
 
             // Start the Dear ImGui frame
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplSDL2_NewFrame();
             ImGui::NewFrame();
 
-            // Update game
+            // Calculate elapsed time since last frame
             auto now = SDL_GetPerformanceCounter();
             auto deltaTime = (float)((now - lastTime) / (double)SDL_GetPerformanceFrequency());
             if (deltaTime > 1.0f / 10.0f) deltaTime = 1.0f / 10.0f;
             lastTime = now;
 
+            // Fixed update shenanigans
             int fixedUpdated = 0;
             fixedUpdateProgress += deltaTime;
             while (fixedUpdateProgress > 0.0f)
@@ -144,6 +198,8 @@ namespace Engine
                     break;
                 }
             }
+
+            // Update
             pGame->update(deltaTime);
 
             // Generate imgui final render data
@@ -170,6 +226,7 @@ namespace Engine
 
         // Cleanup
         g_pSpriteBatch.reset();
+        g_pInput.reset();
 
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplSDL2_Shutdown();
@@ -184,6 +241,11 @@ namespace Engine
     const SpriteBatchRef& getSpriteBatch()
     {
         return g_pSpriteBatch;
+    }
+
+    const InputRef& getInput()
+    {
+        return g_pInput;
     }
 
     glm::vec2 getResolution()

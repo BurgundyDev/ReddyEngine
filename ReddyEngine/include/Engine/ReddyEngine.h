@@ -9,13 +9,19 @@
 
 namespace Engine
 {
-    // Forward declaration
+    // Forward declarations
     class SpriteBatch;
     using SpriteBatchRef = std::shared_ptr<SpriteBatch>;
 
+    class Input;
+    using InputRef = std::shared_ptr<Input>;
+
+
+    const SpriteBatchRef& getSpriteBatch();
+    const InputRef& getInput();
+
 
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv);
-    const SpriteBatchRef& getSpriteBatch();
     glm::vec2 getResolution();
     void setFixedUpdateFPS(int fps = 60);
     void quit();
