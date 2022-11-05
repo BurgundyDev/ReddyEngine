@@ -12,14 +12,10 @@
 
 GameRef g_pGame;
 
-ResourceManagerRef pResourceManager;
-
 
 void Game::loadContent()
 {
     changeState(std::make_shared<MainMenuState>());
-
-    pResourceManager = std::make_shared<Engine::ResourceManager>();
 }
 
 void Game::changeState(const GameStateRef& newState)

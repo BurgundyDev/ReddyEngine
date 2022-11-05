@@ -32,6 +32,3 @@ private:
 
 using GameRef = std::shared_ptr<Game>;
 extern GameRef g_pGame;
-
-using ResourceManagerRef = std::shared_ptr<Engine::ResourceManager>;
-extern ResourceManagerRef pResourceManager;

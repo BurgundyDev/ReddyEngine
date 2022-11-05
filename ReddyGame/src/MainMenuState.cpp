@@ -8,7 +8,7 @@
 
 #include <imgui.h>
 
-ResourceManagerRef g_pResourceManager;
+Engine::ResourceManagerRef g_pResourceManager;
 
 MainMenuState::MainMenuState()
 {

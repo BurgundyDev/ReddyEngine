@@ -6,11 +6,14 @@
 #include "Engine/Log.h"
 #include "Engine/Texture.h"
 
+#define RM_USE_FILENAME_ONLY
+
 namespace Engine
 {
 		SoundRef ResourceManager::getSound(const std::string& name)
 		{
-			const std::string& filename = Utils::findFile(name, "assets", true, true);
+#ifdef RM_USE_FILENAME_ONLY
+			std::string& filename = Utils::findFile(name, "assets", true, true);
 
 			if(filename.empty())
 			{
@@ -20,13 +23,17 @@ namespace Engine
 			}
 
 			const SoundRef& sound = Sound::createFromFile(filename);
+#else
+			const SoundRef& sound = Sound::createFromFile(name);
+#endif
 
 			return sound;
 		}
 
 		MusicRef ResourceManager::getMusic(const std::string& name)
 		{
-			const std::string& filename = Utils::findFile(name, "assets", true, true);
+#ifdef RM_USE_FILENAME_ONLY
+			std::string& filename = Utils::findFile(name, "assets", true, true);
 
 			if (filename.empty())
 			{
@@ -36,13 +43,16 @@ namespace Engine
 			}
 
 			const MusicRef& music = Music::createFromFile(filename);
-
+#else
+			const MusicRef& music = Music::createFromFile(name);
+#endif
 			return music;
 		}
 
 		TextureRef ResourceManager::getTexture(const std::string& name)
 		{
-			const std::string& filename = Utils::findFile(name, "assets", true, true);
+#ifdef RM_USE_FILENAME_ONLY
+			std::string& filename = Utils::findFile(name, "assets", true, true);
 
 			if (filename.empty())
 			{
@@ -52,7 +62,10 @@ namespace Engine
 			}
 
 			const TextureRef& texture = Texture::createFromFile(filename);
+#else
+			const TextureRef& texture = Texture::createFromFile(name);
 
+#endif
 			return texture;
 		}
 }

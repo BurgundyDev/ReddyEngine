@@ -261,6 +261,11 @@ namespace Engine
         return g_pAudio;
     }
 
+    const ResourceManagerRef& getResourceManager()
+    {
+        return g_pResourceManager;
+    }
+
     glm::vec2 getResolution()
     {
         const auto& io = ImGui::GetIO();

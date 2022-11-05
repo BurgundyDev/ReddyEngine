@@ -23,6 +23,7 @@ namespace Engine
     const SpriteBatchRef& getSpriteBatch();
     const InputRef& getInput();
     const AudioRef& getAudio();
+    const ResourceManagerRef& getResourceManager();
 
 
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv);
