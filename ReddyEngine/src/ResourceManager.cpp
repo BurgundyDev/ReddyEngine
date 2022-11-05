@@ -1,14 +1,13 @@
 #include "Engine/Utils.h"
 #include "Engine/Sound.h"
 #include "Engine/Music.h"
+#include "Engine/ResourceManager.h"
+
 #include "Engine/Texture.h"
 
 namespace Engine
 {
-	class ResourceManager
-	{
-	public:
-		SoundRef getSound(const std::string& name)
+		SoundRef ResourceManager::getSound(const std::string& name)
 		{
 			const std::string& filename = Utils::findFile(name, "assets", true, true);
 
@@ -17,7 +16,7 @@ namespace Engine
 			return sound;
 		}
 
-		MusicRef getMusic(const std::string& name)
+		MusicRef ResourceManager::getMusic(const std::string& name)
 		{
 			const std::string& filename = Utils::findFile(name, "assets", true, true);
 
@@ -26,7 +25,7 @@ namespace Engine
 			return music;
 		}
 
-		TextureRef getTexture(const std::string& name)
+		TextureRef ResourceManager::getTexture(const std::string& name)
 		{
 			const std::string& filename = Utils::findFile(name, "assets", true, true);
 
@@ -34,5 +33,4 @@ namespace Engine
 
 			return texture;
 		}
-	};
 }
