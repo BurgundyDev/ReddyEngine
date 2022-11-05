@@ -4,6 +4,7 @@
 #include "Engine/Input.h"
 #include "Engine/Log.h"
 #include "Engine/SpriteBatch.h"
+#include "Engine/ResourceManager.h"
 
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl3.h>

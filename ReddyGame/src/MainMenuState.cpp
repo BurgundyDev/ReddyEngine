@@ -3,6 +3,7 @@
 #include "PickProfileState.h"
 
 #include <Engine/ReddyEngine.h>
+#include <Engine/ResourceManager.h>
 #include <Engine/Music.h>
 #include <Engine/Sound.h>
 
@@ -11,7 +12,8 @@
 
 MainMenuState::MainMenuState()
 {
-    m_pQuickSound = Engine::Sound::createFromFile("assets/sounds/test_quick_sound.wav");
+    // m_pQuickSound = Engine::Sound::createFromFile("assets/sounds/test_quick_sound.wav");
+    m_pQuickSound = pResourceManager->getSound("test_quick_sound.wav");
 
     // For a sound where we need to keep instance because it loops and we want to control it's volume/panning over its lifetime.
     m_pSound = Engine::Sound::createFromFile("assets/sounds/test_sound.wav");

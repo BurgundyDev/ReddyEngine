@@ -1,10 +1,10 @@
 #pragma once
 
 #include <Engine/IGame.h>
+#include "Engine/ResourceManager.h"
 
 #include <memory>
 #include <vector>
-
 
 class GameState;
 using GameStateRef = std::shared_ptr<GameState>;
@@ -32,3 +32,6 @@ private:
 
 using GameRef = std::shared_ptr<Game>;
 extern GameRef g_pGame;
+
+using ResourceManagerRef = std::shared_ptr<Engine::ResourceManager>;
+extern ResourceManagerRef pResourceManager;
