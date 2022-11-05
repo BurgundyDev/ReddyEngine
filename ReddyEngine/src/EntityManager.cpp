@@ -36,7 +36,7 @@ namespace Engine
 
 		{
 			auto parent = entity->parent;
-			std::remove(parent->children.begin(), parent->children.end(), entity);
+			parent->children.erase(std::remove(parent->children.begin(), parent->children.end(), entity));
 		}
   
 		entity.reset();

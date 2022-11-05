@@ -19,7 +19,6 @@ namespace Engine
 
 	Entity::~Entity()
 	{
-
 	}
 
 	template<typename T>
