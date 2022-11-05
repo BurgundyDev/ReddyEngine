@@ -2,9 +2,11 @@
 #include "Game.h"
 #include "PickProfileState.h"
 
-#include <Engine/ReddyEngine.h>
+#include <Engine/Font.h>
 #include <Engine/Music.h>
+#include <Engine/ReddyEngine.h>
 #include <Engine/Sound.h>
+#include <Engine/SpriteBatch.h>
 
 #include <imgui.h>
 
@@ -21,6 +23,8 @@ MainMenuState::MainMenuState()
 
     // m_pMusic = Engine::Music::createFromFile("assets/musics/test_music.ogg");
     m_pMusic = g_pResourceManager->getMusic("test_music.ogg");
+
+    m_pFont = Engine::Font::createFromFile("assets/fonts/test_font.otf", 36);
 }
 
 MainMenuState::~MainMenuState()
@@ -59,4 +63,13 @@ void MainMenuState::update(float dt)
     }
 
     ImGui::End();
+}
+
+void MainMenuState::draw()
+{
+    auto sb = Engine::getSpriteBatch().get();
+
+    sb->begin();
+    if (m_pFont) m_pFont->draw("The quick brown fox jumps over the lazy dog.", {0, 0});
+    sb->end();
 }

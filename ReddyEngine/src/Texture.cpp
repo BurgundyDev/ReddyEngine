@@ -1,5 +1,5 @@
-#include "Engine/Log.h"
 #include "Engine/Texture.h"
+#include "Engine/Log.h"
 #include "Engine/Utils.h"
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -53,11 +53,57 @@ namespace Engine
         return pRet;
     }
 
+    // In OpenGL this doesn't change much, but we plan ahead in case we go DX where it will matter.
+    TextureRef Texture::createDynamic(const glm::ivec2& size, TextureFormat format)
+    {
+        auto pRet = std::shared_ptr<Texture>(new Texture());
+        pRet->m_format = format;
+        
+        GLuint handle;
+        glGenTextures(1, &handle);
+        glBindTexture(GL_TEXTURE_2D, handle);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        pRet->m_isDynamic = true;
+        pRet->m_size = size;
+        pRet->m_handle = handle;
+        
+        return pRet;
+    }
+
     Texture::Texture() {}
     
     void Texture::bind(int slot)
     {
         // Ignore slot for now until we have more complex shaders
         glBindTexture(GL_TEXTURE_2D, m_handle);
+    }
+
+    void Texture::setData(const uint8_t* pData)
+    {
+        CORE_FATAL(m_isDynamic, "Attempt to set data on a static texture. Use ::createDynamic()");
+
+        glBindTexture(GL_TEXTURE_2D, m_handle);
+
+        GLint internalFormat = GL_RGBA;
+        GLenum format = GL_RGBA;
+
+        switch (m_format)
+        {
+            case TextureFormat::R8G8B8A8:
+                internalFormat = GL_RGBA;
+                format = GL_RGBA;
+                break;
+            case TextureFormat::R8:
+                internalFormat = GL_LUMINANCE;
+                format = GL_RED;
+                break;
+        }
+
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_size.x, m_size.y, 0, format, GL_UNSIGNED_BYTE, pData);
     }
 }

@@ -14,6 +14,9 @@ namespace Engine
 
     class Music;
     using MusicRef = std::shared_ptr<Music>;
+
+    class Font;
+    using FontRef = std::shared_ptr<Font>;
 }
 
 
@@ -24,6 +27,7 @@ public:
     ~MainMenuState();
 
     void update(float dt) override;
+    void draw() override;
 
 private:
     Engine::SoundRef m_pQuickSound;
@@ -35,4 +39,6 @@ private:
     float m_pitch = 1.0f;
 
     Engine::MusicRef m_pMusic;
+
+    Engine::FontRef m_pFont;
 };
