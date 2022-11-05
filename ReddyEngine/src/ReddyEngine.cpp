@@ -19,6 +19,7 @@ namespace Engine
     static SpriteBatchRef g_pSpriteBatch;
     static InputRef g_pInput;
     static AudioRef g_pAudio;
+    static ResourceManagerRef g_pResourceManager;
 
     static int g_fixedUpdateFPS = 60;
     static bool g_done = false;
@@ -101,6 +102,7 @@ namespace Engine
         g_pInput = std::make_shared<Input>();
         g_pAudio = std::make_shared<Audio>();
         g_pSpriteBatch = std::make_shared<SpriteBatch>();
+        g_pResourceManager = std::make_shared<ResourceManager>();
 
         // Once everything is setup, the game can load stuff
         pGame->loadContent();

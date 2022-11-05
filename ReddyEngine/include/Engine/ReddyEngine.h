@@ -16,6 +16,8 @@ namespace Engine
     using InputRef = std::shared_ptr<Input>;
     class Audio;
     using AudioRef = std::shared_ptr<Audio>;
+    class ResourceManager;
+    using ResourceManagerRef = std::shared_ptr<ResourceManager>;
 
 
     const SpriteBatchRef& getSpriteBatch();

@@ -3,24 +3,24 @@
 #include "PickProfileState.h"
 
 #include <Engine/ReddyEngine.h>
-#include <Engine/ResourceManager.h>
 #include <Engine/Music.h>
 #include <Engine/Sound.h>
 
 #include <imgui.h>
 
+ResourceManagerRef g_pResourceManager;
 
 MainMenuState::MainMenuState()
 {
-    m_pQuickSound = pResourceManager->getSound("test_quick_sound.wav");
+    m_pQuickSound = g_pResourceManager->getSound("test_quick_sound.wav");
 
     // For a sound where we need to keep instance because it loops and we want to control it's volume/panning over its lifetime.
-    m_pSound = pResourceManager->getSound("test_sound.wav");
+    m_pSound = g_pResourceManager->getSound("test_sound.wav");
     m_pSoundInstance = std::make_shared<Engine::SoundInstance>(m_pSound);
     m_pSoundInstance->setLoop(true);
 
     // m_pMusic = Engine::Music::createFromFile("assets/musics/test_music.ogg");
-    m_pMusic = pResourceManager->getMusic("test_music.ogg");
+    m_pMusic = g_pResourceManager->getMusic("test_music.ogg");
 }
 
 MainMenuState::~MainMenuState()
