@@ -2,6 +2,7 @@
 #include "EditorState.h"
 #include "Game.h"
 #include "PickProfileState.h"
+#include "EntityTestState.h"
 
 #include <Engine/Font.h>
 #include <Engine/Music.h>
@@ -40,7 +41,8 @@ void MainMenuState::update(float dt)
     if (ImGui::Begin("Main Menu", 0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
     {
         ImGui::Text("Using ImGui temporarly, we don't have UIs yet.");
-        if (ImGui::Button("Play")) g_pGame->changeState(std::make_shared<PickProfileState>());
+		if (ImGui::Button("Play")) g_pGame->changeState(std::make_shared<PickProfileState>());
+		if (ImGui::Button("EntityTest")) g_pGame->changeState(std::make_shared<EntityTestState>());
         if (ImGui::Button("Quit")) Engine::quit();
 
         ImGui::Separator();
