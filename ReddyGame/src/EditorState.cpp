@@ -7,11 +7,46 @@
 #include <Engine/ReddyEngine.h>
 
 #include <imgui.h>
+#include <tinyfiledialogs/tinyfiledialogs.h>
+
+
+static const char *FILE_PATTERNS[] = { "*.json" };
+
+
+static void addRecentFile(const std::string& filename)
+{
+    // Remove if already present
+    for (auto it = Engine::Config::recentEditorFiles.begin(); it != Engine::Config::recentEditorFiles.end(); ++it)
+    {
+        if (*it == filename)
+        {
+            Engine::Config::recentEditorFiles.erase(it);
+            break;
+        }
+    }
+
+    // Put in front
+    Engine::Config::recentEditorFiles.insert(Engine::Config::recentEditorFiles.begin(), filename);
+}
 
 
 EditorState::EditorState()
 {
     m_pActionManager = std::make_shared<ActionManager>();
+}
+
+void EditorState::enter(const GameStateRef& previousState)
+{
+    // Load last recently open
+    if (!Engine::Config::recentEditorFiles.empty())
+    {
+        open(Engine::Config::recentEditorFiles[0]);
+    }
+    else
+    {
+        m_filename = "untitled";
+        m_pActionManager->clear();
+    }
 }
 
 void EditorState::update(float dt)
@@ -67,34 +102,46 @@ void EditorState::update(float dt)
     }
 }
 
+
+//-----------------------------------------------------------------------
+// Actions from commands or shortcuts
+//-----------------------------------------------------------------------
+
+
 void EditorState::onNew()
 {
+    if (!askSaveUnsavedChanges()) return;
+
+    // Clear everything
+    m_dirty = false;
+    m_filename = "untitled";
+    m_pActionManager->clear();
 }
 
 void EditorState::onOpen()
 {
+    if (!askSaveUnsavedChanges()) return;
+    openAs();
 }
 
 void EditorState::onSave()
 {
+    if (!m_dirty) return; // Don't waste processing to save if nothing is changed
+    if (m_filename == "untitled") saveAs(); // Never saved before
+    else save();
 }
 
 void EditorState::onSaveAs()
 {
+    saveAs();
 }
 
 void EditorState::onQuit()
 {
+    if (!askSaveUnsavedChanges()) return;
+
     // Go back to main menu
     g_pGame->changeState(std::make_shared<MainMenuState>());
-}
-
-void EditorState::open(const std::string& filename)
-{
-}
-
-void EditorState::save(const std::string& filename)
-{
 }
 
 void EditorState::onUndo()
@@ -124,3 +171,66 @@ void EditorState::onDuplicate()
 void EditorState::onDelete()
 {
 }
+
+
+//-----------------------------------------------------------------------
+// File dialog bullshit
+//-----------------------------------------------------------------------
+
+
+void EditorState::open(const std::string& filename)
+{
+    m_filename = filename;
+    m_dirty = false;
+    m_pActionManager->clear();
+    addRecentFile(m_filename);
+}
+
+bool EditorState::openAs()
+{
+    auto filename = tinyfd_openFileDialog("Open", "./assets/scenes/", 1, FILE_PATTERNS, "json files", 0);
+    if (!filename) return false;
+    
+    open(filename);
+    return true;
+}
+
+void EditorState::save()
+{
+    m_dirty = false;
+    addRecentFile(m_filename);
+}
+
+bool EditorState::saveAs()
+{
+    auto filename = tinyfd_saveFileDialog("Save", "./assets/scenes/", 1, FILE_PATTERNS, "json files");
+    if (!filename) return false;
+
+    m_filename = filename;
+    save();
+    return true;
+}
+
+bool EditorState::askSaveUnsavedChanges()
+{
+    if (!m_dirty) return true;
+
+    auto result = tinyfd_messageBox("Unsaved Changes", "You have unsaved changes. Do you wish to save?", "yesnocancel", "warning", 0);
+    switch (result)
+    {
+        case 0: // cancel
+            return false;
+        case 2: // no
+            return true;
+        case 1: // yes
+            if (m_filename == "untitled") // Never saved, do save as
+                if (!saveAs()) return false;
+            return true;
+    }
+
+    return false;
+}
+
+
+//-----------------------------------------------------------------------
+

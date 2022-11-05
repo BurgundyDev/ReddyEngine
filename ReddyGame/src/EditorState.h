@@ -15,6 +15,7 @@ class EditorState final : public GameState
 public:
     EditorState();
 
+    void enter(const GameStateRef& previousState) override;
     void update(float dt) override;
 
 private:
@@ -33,9 +34,12 @@ private:
     void onDelete();
 
     void open(const std::string& filename);
-    void save(const std::string& filename);
+    bool openAs(); // Returns false if user cancelled
+    void save();
+    bool saveAs(); // Returns false if user cancelled
+    bool askSaveUnsavedChanges(); // Returns false if operation was cancelled
 
     ActionManagerRef m_pActionManager;
-    std::string m_filename;
-    bool m_dirty = false;
+    std::string m_filename = "untitled";
+    bool m_dirty = true;
 };
