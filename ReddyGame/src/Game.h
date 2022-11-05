@@ -1,10 +1,10 @@
 #pragma once
 
 #include <Engine/IGame.h>
+#include "Engine/ResourceManager.h"
 
 #include <memory>
 #include <vector>
-
 
 class GameState;
 using GameStateRef = std::shared_ptr<GameState>;

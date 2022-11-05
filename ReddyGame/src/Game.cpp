@@ -7,6 +7,8 @@
 
 #include <imgui.h>
 
+#include "Engine/ResourceManager.h"
+
 
 GameRef g_pGame;
 
@@ -15,7 +17,6 @@ void Game::loadContent()
 {
     changeState(std::make_shared<MainMenuState>());
 }
-
 
 void Game::changeState(const GameStateRef& newState)
 {

@@ -16,11 +16,14 @@ namespace Engine
     using InputRef = std::shared_ptr<Input>;
     class Audio;
     using AudioRef = std::shared_ptr<Audio>;
+    class ResourceManager;
+    using ResourceManagerRef = std::shared_ptr<ResourceManager>;
 
 
     const SpriteBatchRef& getSpriteBatch();
     const InputRef& getInput();
     const AudioRef& getAudio();
+    const ResourceManagerRef& getResourceManager();
 
 
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv);

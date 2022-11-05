@@ -200,17 +200,68 @@ namespace Engine
 #endif
         }
 
-		std::string concatenateChars(const char* fmt, ...)
-		{
-			char buffer[MAX_CONCATENATE_CHARS_LENGTH];
-			va_list arg_ptr;
+        std::string findFile(const std::string& filename, const std::string& lookIn, bool deepSearch, bool ignoreCase)
+        {
+            DIR* dir;
+            struct dirent* ent;
+            if ((dir = opendir(lookIn.c_str())) != NULL)
+            {
+                while ((ent = readdir(dir)) != NULL)
+                {
+                    if (!strcmp(ent->d_name, "."))
+                    {
+                        continue;
+                    }
+                    else if (!strcmp(ent->d_name, ".."))
+                    {
+                        continue;
+                    }
 
-			va_start(arg_ptr, fmt);
-			vsprintf(buffer, fmt, arg_ptr);
-			va_end(arg_ptr);
+                    if (ignoreCase)
+                    {
+                        if (stricmp(filename.c_str(), ent->d_name) == 0)
+                        {
+                            auto ret = lookIn + "/" + ent->d_name;
+                            closedir(dir);
+                            return ret;
+                        }
+                    }
+                    else
+                    {
+                        if (filename == ent->d_name)
+                        {
+                            auto ret = lookIn + "/" + ent->d_name;
+                            closedir(dir);
+                            return ret;
+                        }
+                    }
 
-			return std::string(buffer);
-		}
+                    if (ent->d_type & DT_DIR && deepSearch)
+                    {
+                        auto ret = findFile(filename, lookIn + "/" + ent->d_name, deepSearch, ignoreCase);
+                        if (!ret.empty())
+                        {
+                            closedir(dir);
+                            return ret;
+                        }
+                    }
+                }
+                closedir(dir);
+            }
+            return "";
+        }
+
+        std::string concatenateChars(const char* fmt, ...)
+        {
+            char buffer[MAX_CONCATENATE_CHARS_LENGTH];
+            va_list arg_ptr;
+
+            va_start(arg_ptr, fmt);
+            vsprintf(buffer, fmt, arg_ptr);
+            va_end(arg_ptr);
+
+            return std::string(buffer);
+        }
         
         std::string getPath(const std::string& filename)
         {
@@ -288,7 +339,7 @@ namespace Engine
             return std::move(ss.str());
         }
 
-		bool loadJson(Json::Value& out, const std::string& filename)
+        bool loadJson(Json::Value& out, const std::string& filename)
         {
             std::ifstream file(filename);
             if (!file.is_open())

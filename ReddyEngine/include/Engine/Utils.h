@@ -34,6 +34,7 @@ namespace Engine
         std::string getParentFolderName(const std::string& filename);
         std::string getSavePath(const std::string& appName); // On Windows, this returns the Roaming App Data path. On other platforms, it returns local directory "./"
         std::string makeRelativePath(const std::string& path, const std::string& relativeTo);
+        std::string findFile(const std::string& filename, const std::string& lookIn, bool deepSearch, bool ignoreCase);
         
         std::string concatenateChars(const char* fmt, ...);
 
