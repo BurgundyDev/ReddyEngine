@@ -36,10 +36,10 @@ namespace Engine
 	{
 		T* c(new T(std::forward<TArgs>(mArgs)...));
 		c->entity = this;
-		std::unique_ptr<Component> uPtr(c);
-		components->push_back(c);
+		std::unique_ptr<Component> compPtr(c);
+		components->push_back(compPtr);
 
-		c->onCreate();
+		*compPtr->onCreate();
 	}
 
 	template<typename T>
