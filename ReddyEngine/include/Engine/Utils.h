@@ -80,5 +80,11 @@ namespace Engine
         void deserializeInt4(int* out, const Json::Value &json, const int *in_default = nullptr);
         void deserializeMatrix(float* out, const Json::Value &json, const float *in_default = nullptr); // Null = identity
         std::vector<std::string> deserializeStringArray(const Json::Value &json, const std::vector<std::string> &in_default = {});
+
+
+        // Curves
+        float resamplingHermite(float y0, float y1,
+                                float y2, float y3,
+                                float mu, float tension = 0.0f, float bias = 0.0f);
     }
 }

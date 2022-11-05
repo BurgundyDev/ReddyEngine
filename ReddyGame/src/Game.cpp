@@ -20,7 +20,7 @@ void Game::loadContent()
 void Game::changeState(const GameStateRef& newState)
 {
     GameStateRef prevState = nullptr;
-    while (m_pGameStates.size() > 1)
+    while (!m_pGameStates.empty())
     {
         prevState = m_pGameStates.back();
         m_pGameStates.pop_back();

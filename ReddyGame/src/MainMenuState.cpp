@@ -3,6 +3,7 @@
 #include "PickProfileState.h"
 
 #include <Engine/ReddyEngine.h>
+#include <Engine/Music.h>
 #include <Engine/Sound.h>
 
 #include <imgui.h>
@@ -16,6 +17,8 @@ MainMenuState::MainMenuState()
     m_pSound = Engine::Sound::createFromFile("assets/sounds/test_sound.wav");
     m_pSoundInstance = std::make_shared<Engine::SoundInstance>(m_pSound);
     m_pSoundInstance->setLoop(true);
+
+    m_pMusic = Engine::Music::createFromFile("assets/musics/test_music.ogg");
 }
 
 MainMenuState::~MainMenuState()
@@ -45,6 +48,12 @@ void MainMenuState::update(float dt)
         if (ImGui::SliderFloat("Volume", &m_volume, 0.0f, 1.0f)) m_pSoundInstance->setVolume(m_volume);
         if (ImGui::SliderFloat("Balance", &m_balance, -1.0f, 1.0f)) m_pSoundInstance->setBalance(m_balance);
         if (ImGui::SliderFloat("Pitch", &m_pitch, 0.1f, 10.0f)) m_pSoundInstance->setPitch(m_pitch);
+
+        if (ImGui::Button("Play/Stop music"))
+        {
+            if (m_pMusic->isPlaying()) m_pMusic->stop();
+            else m_pMusic->play();
+        }
     }
 
     ImGui::End();
