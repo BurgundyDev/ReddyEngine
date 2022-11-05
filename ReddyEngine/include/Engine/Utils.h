@@ -87,5 +87,9 @@ namespace Engine
         float resamplingHermite(float y0, float y1,
                                 float y2, float y3,
                                 float mu, float tension = 0.0f, float bias = 0.0f);
+
+        // Clipboard
+        void setClipboard(const std::string& text);
+        std::string getClipboard();
     }
 }

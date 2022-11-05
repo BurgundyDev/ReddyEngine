@@ -16,6 +16,7 @@ namespace Engine
         float masterVolume = 1.0f;
         float sfxVolume = 1.0f;
         float musicVolume = 1.0f;
+        std::vector<std::string> recentEditorFiles;
 
         Json::Value configJsonAtLaunch;
 
@@ -30,6 +31,7 @@ namespace Engine
             json["masterVolume"] = Utils::serializeFloat(masterVolume);
             json["sfxVolume"] = Utils::serializeFloat(sfxVolume);
             json["musicVolume"] = Utils::serializeFloat(musicVolume);
+            json["recentEditorFiles"] = Utils::serializeStringArray(recentEditorFiles);
 
             if (json == configJsonAtLaunch)
             {
@@ -54,6 +56,7 @@ namespace Engine
                 masterVolume = Utils::deserializeBool(json["masterVolume"], masterVolume);
                 sfxVolume = Utils::deserializeBool(json["sfxVolume"], sfxVolume);
                 musicVolume = Utils::deserializeBool(json["musicVolume"], musicVolume);
+                recentEditorFiles = Utils::deserializeStringArray(json["recentEditorFiles"]);
             }
 
             configJsonAtLaunch = json;

@@ -1,4 +1,5 @@
 #if defined(WIN32)
+#define _CRT_NONSTDC_NO_DEPRECATE
 #include <Windows.h>
 #include <shlobj.h>
 #include <objbase.h>
@@ -10,7 +11,11 @@
 #include <algorithm>
 #include <fstream>
 
+#include <SDL.h>
+
+
 #define MAX_CONCATENATE_CHARS_LENGTH 1024
+
 
 namespace Engine
 {
@@ -741,6 +746,20 @@ namespace Engine
             a3 = -2 * mu3 + 3 * mu2;
 
             return (a0*y1 + a1*m0 + a2*m1 + a3*y2);
+        }
+
+
+        void setClipboard(const std::string& text)
+        {
+            SDL_SetClipboardText(text.c_str());
+        }
+
+        std::string getClipboard()
+        {
+            auto pClipboard = SDL_GetClipboardText();
+            std::string ret = pClipboard;
+            SDL_free(pClipboard);
+            return ret;
         }
     }
 }
