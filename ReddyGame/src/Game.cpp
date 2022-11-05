@@ -12,6 +12,8 @@
 
 GameRef g_pGame;
 
+ResourceManagerRef pResourceManager;
+
 
 void Game::loadContent()
 {
