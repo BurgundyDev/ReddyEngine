@@ -24,6 +24,7 @@ namespace Engine
         std::string trim(const std::string& str);
         size_t utf8Length(const std::string& str);
         size_t utf8Pos(const std::string& str, size_t pos);
+        std::string concatenateChars(const char* fmt, ...);
 
         // Path stuff
         std::string getPath(const std::string& filename);
@@ -36,7 +37,11 @@ namespace Engine
         std::string makeRelativePath(const std::string& path, const std::string& relativeTo);
         std::string findFile(const std::string& filename, const std::string& lookIn, bool deepSearch, bool ignoreCase);
         
-        std::string concatenateChars(const char* fmt, ...);
+        bool createFolder(const std::string& fullPath);
+        bool copyFile(const std::string& from, const std::string& to);
+        bool createTextFile(const std::string& path, const std::string& content);
+        void showInExplorer(const std::string& path);
+        void openFile(const std::string& file);
 
         // Config
         bool loadJson(Json::Value &out, const std::string& filename);

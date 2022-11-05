@@ -20,7 +20,8 @@ project "ReddyEngine"
 
 		-- ImGui backends
 		"imgui/backends/imgui_impl_sdl.cpp",
-		"imgui/backends/imgui_impl_opengl3.cpp"
+		"imgui/backends/imgui_impl_opengl3.cpp",
+		"tinyfiledialogs/tinyfiledialogs.c"
    	}
 
    includedirs

@@ -8,13 +8,22 @@
 #include "Engine/Log.h"
 #include "Engine/Utils.h"
 
+#include <tinyfiledialogs/tinyfiledialogs.h>
+
 #include <algorithm>
 #include <fstream>
+#include <regex>
 
 #include <SDL.h>
 
 
 #define MAX_CONCATENATE_CHARS_LENGTH 1024
+
+
+static void replace(std::string& source, const std::string& reg, const std::string& substitution)
+{
+    source = std::regex_replace(source, std::regex(reg), substitution);
+}
 
 
 namespace Engine
@@ -760,6 +769,80 @@ namespace Engine
             std::string ret = pClipboard;
             SDL_free(pClipboard);
             return ret;
+        }
+
+        bool createFolder(const std::string& fullPath)
+        {
+#if defined(WIN32)
+            std::string withBackwardSlashes = fullPath;
+            replace(withBackwardSlashes, "/", "\\");
+            return system(("mkdir " + withBackwardSlashes).c_str()) == 0;
+#else
+            return system(("mkdir " + fullPath).c_str()) == 0;
+#endif
+        }
+
+        bool copyFile(const std::string& from, const std::string& to)
+        {
+#if defined(WIN32)
+            std::string withBackwardSlashes_from = from;
+            replace(withBackwardSlashes_from, "/", "\\");
+            std::string withBackwardSlashes_to = to;
+            replace(withBackwardSlashes_to, "/", "\\");
+            std::ifstream src(withBackwardSlashes_from, std::ios::binary);
+            std::ofstream dst(withBackwardSlashes_to, std::ios::binary);
+            if (!src.is_open() || !dst.is_open()) return false;
+            dst << src.rdbuf();
+            src.close();
+            dst.close();
+            return true;
+#else
+            return system(("cp " + from + " " + to).c_str()) == 0;
+#endif
+        }
+
+        bool createTextFile(const std::string& path, const std::string& content)
+        {
+#if defined(WIN32)
+            std::string withBackwardSlashes = path;
+            replace(withBackwardSlashes, "/", "\\");
+            std::ofstream dst(withBackwardSlashes, std::ios::binary);
+            if (!dst.is_open()) return false;
+            dst << content;
+            dst.close();
+            return true;
+#else
+            std::ofstream dst(path, std::ios::binary);
+            if (!dst.is_open()) return false;
+            dst << content;
+            dst.close();
+            return true;
+#endif
+        }
+
+        void showInExplorer(const std::string& path)
+        {
+#if defined(WIN32)
+            std::string pathReverseSlash = path;
+            std::replace(pathReverseSlash.begin(), pathReverseSlash.end(), '/', '\\');
+            ITEMIDLIST *pidl = ILCreateFromPath(pathReverseSlash.c_str());
+            if (pidl)
+            {
+                SHOpenFolderAndSelectItems(pidl, 0, 0, 0);
+                ILFree(pidl);
+            }
+#elif defined(__APPLE__)
+            system(("open " + path).c_str());
+#else
+            system(("xdg-open " + path).c_str());
+#endif
+        }
+
+        void openFile(const std::string& file)
+        {
+#if defined(WIN32)
+            ShellExecuteA(0, 0, file.c_str(), 0, 0 , SW_SHOW);
+#endif
         }
     }
 }
