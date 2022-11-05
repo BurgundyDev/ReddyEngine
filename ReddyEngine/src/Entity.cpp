@@ -38,6 +38,8 @@ namespace Engine
 		c->entity = this;
 		std::unique_ptr<Component> uPtr(c);
 		components->push_back(c);
+
+		c->onCreate();
 	}
 
 	template<typename T>
