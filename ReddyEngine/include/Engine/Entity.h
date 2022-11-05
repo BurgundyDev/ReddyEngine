@@ -11,9 +11,9 @@
 
 struct Transform 
 {
-	std::shared_ptr<glm::dvec2> position;
-	std::shared_ptr<double> rotation;
-	std::shared_ptr<glm::dvec2> scale;
+	glm::fvec2 position;
+	float rotation;
+	glm::fvec2 scale;
 };
 
 namespace Engine
