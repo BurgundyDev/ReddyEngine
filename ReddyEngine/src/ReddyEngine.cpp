@@ -1,10 +1,11 @@
-#include "Engine/ReddyEngine.h"
 #include "Engine/Audio.h"
+#include "Engine/ReddyEngine.h"
 #include "Engine/Config.h"
 #include "Engine/Input.h"
 #include "Engine/Log.h"
 #include "Engine/SpriteBatch.h"
 #include "Engine/ResourceManager.h"
+#include "Engine/EntityManager.h"
 
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -20,6 +21,7 @@ namespace Engine
     static InputRef g_pInput;
     static AudioRef g_pAudio;
     static ResourceManagerRef g_pResourceManager;
+    static EntityManagerRef g_pEntityManager;
 
     static int g_fixedUpdateFPS = 60;
     static bool g_done = false;
@@ -103,6 +105,8 @@ namespace Engine
         g_pAudio = std::make_shared<Audio>();
         g_pSpriteBatch = std::make_shared<SpriteBatch>();
         g_pResourceManager = std::make_shared<ResourceManager>();
+        g_pEntityManager = std::make_shared<EntityManager>();
+
 
         // Once everything is setup, the game can load stuff
         pGame->loadContent();
@@ -266,7 +270,12 @@ namespace Engine
         return g_pResourceManager;
     }
 
-    glm::vec2 getResolution()
+	const Engine::EntityManagerRef& getEntityManager()
+	{
+        return g_pEntityManager;
+	}
+
+	glm::vec2 getResolution()
     {
         const auto& io = ImGui::GetIO();
         return { io.DisplaySize.x, io.DisplaySize.y };

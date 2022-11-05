@@ -22,11 +22,14 @@ namespace Engine
     class ResourceManager;
     using ResourceManagerRef = std::shared_ptr<ResourceManager>;
 
+    class EntityManager;
+    using EntityManagerRef = std::shared_ptr<EntityManager>;
 
     const SpriteBatchRef& getSpriteBatch();
     const InputRef& getInput();
     const AudioRef& getAudio();
     const ResourceManagerRef& getResourceManager();
+    const EntityManagerRef& getEntityManager();
 
 
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv);
