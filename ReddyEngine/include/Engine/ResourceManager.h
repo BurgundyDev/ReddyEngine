@@ -3,6 +3,7 @@
 #include "Engine/Sound.h"
 #include "Engine/Music.h"
 #include "Engine/Texture.h"
+#include <unordered_map>
 
 namespace Engine
 {
@@ -12,5 +13,7 @@ namespace Engine
 		SoundRef getSound(const std::string& filename);
 		MusicRef getMusic(const std::string& name);
 		TextureRef getTexture(const std::string& name);
+	private:
+		std::unordered_map<SoundRef, Sound> loadedSounds;
 	};
 }
