@@ -18,13 +18,14 @@ namespace Engine
 		EntityManager();
 		~EntityManager();
 
+		void update(float deltaTime);
+		void fixedUpdate(float deltaTime);
+
 		EntityShared& createEntity();
 		EntityShared& createEntity(EntityShared parent);
 		void destroyEntity(EntityShared entity);
+	
 	private:
 		EntityShared root;
-
-		void update(float deltaTime);
-		void fixedUpdate(float deltaTime);
 	};
 }

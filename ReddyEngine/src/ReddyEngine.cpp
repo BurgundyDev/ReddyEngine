@@ -199,6 +199,7 @@ namespace Engine
             fixedUpdateProgress += deltaTime;
             while (fixedUpdateProgress > 0.0f)
             {
+                g_pEntityManager->fixedUpdate(1.0f / (float)g_fixedUpdateFPS);
                 pGame->fixedUpdate(1.0f / (float)g_fixedUpdateFPS);
                 fixedUpdateProgress -= 1.0f / (float)g_fixedUpdateFPS;
                 ++fixedUpdated;
@@ -211,6 +212,7 @@ namespace Engine
             }
 
             // Update
+            g_pEntityManager->update(deltaTime);
             pGame->update(deltaTime);
 
             // Generate imgui final render data
