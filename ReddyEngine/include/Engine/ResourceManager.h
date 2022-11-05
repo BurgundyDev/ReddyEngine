@@ -11,10 +11,6 @@ namespace Engine
 	class ResourceManager
 	{
 	public:
-		SoundRef& sound;
-		MusicRef& music;
-		TextureRef& texture;
-
 		SoundRef getSound(const std::string& filename);
 		MusicRef getMusic(const std::string& name);
 		TextureRef getTexture(const std::string& name);

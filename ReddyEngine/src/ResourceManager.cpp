@@ -6,12 +6,17 @@
 #include "Engine/Log.h"
 #include "Engine/Texture.h"
 
+
+#include <string>
+#include <unordered_map>
+
 #define RM_USE_FILENAME_ONLY
 
 namespace Engine
 {
 		SoundRef ResourceManager::getSound(const std::string& name)
 		{
+			SoundRef sound;
 #ifdef RM_USE_FILENAME_ONLY
 			std::string& filename = Utils::findFile(name, "assets", true, true);
 
@@ -48,6 +53,7 @@ namespace Engine
 
 		MusicRef ResourceManager::getMusic(const std::string& name)
 		{
+			MusicRef music;
 #ifdef RM_USE_FILENAME_ONLY
 			std::string& filename = Utils::findFile(name, "assets", true, true);
 
@@ -83,6 +89,7 @@ namespace Engine
 
 		TextureRef ResourceManager::getTexture(const std::string& name)
 		{
+			TextureRef texture;
 #ifdef RM_USE_FILENAME_ONLY
 			std::string& filename = Utils::findFile(name, "assets", true, true);
 
