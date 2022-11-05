@@ -36,6 +36,8 @@ namespace Engine
                   float scale = 1.0f,
                   const glm::vec2& align = {0.0f, 0.0f});
 
+        glm::vec2 measure(const std::string& text);
+
     private:
         struct Char
         {

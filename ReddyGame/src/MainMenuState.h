@@ -2,6 +2,8 @@
 
 #include "GameState.h"
 
+#include <glm/vec2.hpp>
+
 
 // Forward declarations
 namespace Engine
@@ -41,4 +43,7 @@ private:
     Engine::MusicRef m_pMusic;
 
     Engine::FontRef m_pFont;
+    float m_textRotation = 0.0f;
+    float m_textScale = 1.0f;
+    glm::vec2 m_textAlign = { 0.5f, 0.5f };
 };

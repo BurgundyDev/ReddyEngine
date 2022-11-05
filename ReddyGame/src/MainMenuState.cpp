@@ -24,7 +24,7 @@ MainMenuState::MainMenuState()
     // m_pMusic = Engine::Music::createFromFile("assets/musics/test_music.ogg");
     m_pMusic = g_pResourceManager->getMusic("test_music.ogg");
 
-    m_pFont = Engine::Font::createFromFile("assets/fonts/test_font.otf", 36);
+    m_pFont = Engine::Font::createFromFile("assets/fonts/test_font.otf", 24);
 }
 
 MainMenuState::~MainMenuState()
@@ -60,6 +60,10 @@ void MainMenuState::update(float dt)
             if (m_pMusic->isPlaying()) m_pMusic->stop();
             else m_pMusic->play();
         }
+
+        ImGui::SliderFloat("Text Rotation", &m_textRotation, -180.0f, 180.0f);
+        ImGui::SliderFloat("Text Scale", &m_textScale, -0.1f, 10.0f);
+        ImGui::SliderFloat2("Text Align", &m_textAlign.x, 0.0f, 1.0f);
     }
 
     ImGui::End();
@@ -68,8 +72,9 @@ void MainMenuState::update(float dt)
 void MainMenuState::draw()
 {
     auto sb = Engine::getSpriteBatch().get();
+    auto res = Engine::getResolution();
 
     sb->begin();
-    if (m_pFont) m_pFont->draw("The quick brown fox jumps over the lazy dog.", {0, 0});
+    if (m_pFont) m_pFont->draw("The quick brown fox jumps over the lazy dog.", {res.x * 0.5f, 100.0f}, {1, 1, 1, 1}, m_textRotation, m_textScale, m_textAlign);
     sb->end();
 }
