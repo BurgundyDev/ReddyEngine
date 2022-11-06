@@ -11,10 +11,9 @@
 
 #include <imgui.h>
 
-Engine::ResourceManagerRef g_pResourceManager;
-
 MainMenuState::MainMenuState()
 {
+    Engine::ResourceManagerRef g_pResourceManager = Engine::getResourceManager();
     m_pQuickSound = g_pResourceManager->getSound("test_quick_sound.wav");
 
     // For a sound where we need to keep instance because it loops and we want to control it's volume/panning over its lifetime.
