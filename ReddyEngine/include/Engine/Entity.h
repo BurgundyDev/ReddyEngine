@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Engine/ISerializable.h"
 #include "Engine/Component.h"
 
-#include <glm/glm.hpp>
+#include <glm/vec2.hpp>
 
 #include <string>
 #include <memory>
@@ -11,54 +10,82 @@
 
 struct Transform 
 {
-	glm::fvec2 position;
-	float rotation;
-	glm::fvec2 scale;
+	glm::vec2 position = glm::vec2(0);
+	float rotation = 0;
+	glm::vec2 scale = glm::vec2(0);
 };
 
 namespace Engine
 {
-	using EntityShared = std::shared_ptr<Entity>;
-	using ComponentShared = std::shared_ptr<Component>;
-	using TransformShared = std::shared_ptr<Transform>;
+	using EntityRef = std::shared_ptr<Entity>;
+	using ComponentRef = std::shared_ptr<Component>;
+	using TransformRef = std::shared_ptr<Transform>;
 
-	class Entity : public ISerializable
+	class Entity
 	{
+	private:
+		Transform m_transform;
+
 	public:
-		Entity(EntityShared& parent);
+		Entity(EntityRef& parent);
 		Entity();
 		~Entity();
 
-		std::shared_ptr<int> id;
+		uint64_t						id;
+		Entity*							parent;
+		std::vector<EntityRef>			children;
+		std::vector<ComponentRef>		components;
 
-		EntityShared					parent;
-		std::vector<EntityShared>		children;
-		std::vector<ComponentShared>	components;
-
-		TransformShared transform;
-			
 		void update(float deltatime);
 		void fixedUpdate(float deltatime);
 		void onCreate();
 		void onDestroy();
 		
 		template<typename T>
-		bool hasComponent() const;
+		bool hasComponent() const
+		{
+			for (auto it = components.begin(); it != components.end(); it++)
+			{
+				if (it->is_class<T>()) return true;
+			}
+		}
 
 		template<typename T, typename... TArgs>
-		T& addComponent(TArgs&&... mArgs);
+		const T& addComponent(TArgs&&... mArgs)
+		{
+			T* c(new T(std::forward<TArgs>(mArgs)...));
+			c->entity = this;
+			std::unique_ptr<Component> compPtr(c);
+			components->push_back(compPtr);
+
+			*compPtr->onCreate();
+		}
 
 		template<typename T>
-		T& getComponent() const;
+		const T& getComponent() const
+		{
+			T* c(new T(std::forward<TArgs>(mArgs)...));
+			c->entity = this;
+			std::unique_ptr<Component> uPtr(c);
+			components->push_back(c);
+		}
 
-		Json::Value serialize() override;
-		void deserialize(Json::Value json) override;
+		Transform getTransform()
+		{
+			return m_transform;
+		}
+
+		void setTransform(Transform transform)
+		{
+			m_transform = transform;
+		}
+
+		Json::Value serialize();
+		void deserialize(Json::Value json);
 		
 		friend bool operator==(const Entity& lhs, const Entity& rhs)
 		{
 			return lhs.id == rhs.id;
 		}
-	private:
-		static std::shared_ptr<int> s_id;
 	};
 }

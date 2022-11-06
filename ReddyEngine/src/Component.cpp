@@ -12,6 +12,16 @@ namespace Engine
 
 	}
 
+	void Component::onCreate()
+	{
+		isEnabled = true;
+	}
+
+	void Component::onEnable()
+	{
+		isEnabled = true;
+	}
+
 	void Component::enable()
 	{
 		isEnabled = true;
