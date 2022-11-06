@@ -17,7 +17,6 @@ namespace Engine
 {
 	SoundRef ResourceManager::getSound(const std::string& name)
 	{
-		SoundRef sound;
 #ifdef RM_USE_FILENAME_ONLY
 		std::string filename = Utils::findFile(name, "assets", true, true);
 
@@ -28,17 +27,14 @@ namespace Engine
 		return empty;
 		}
 
-		sound = getResource<Sound>(sound, filename);
+		return getResource<Sound>(filename);
 #else
-		sound = getResource<Sound>(sound, name);
+		return getResource<Sound>(name);
 #endif
-
-		return sound;
 	}
 
 	MusicRef ResourceManager::getMusic(const std::string& name)
 	{
-		MusicRef music;
 #ifdef RM_USE_FILENAME_ONLY
 		std::string filename = Utils::findFile(name, "assets", true, true);
 
@@ -49,17 +45,14 @@ namespace Engine
 		return empty;
 		}
 
-		music = getResource<Music>(music, filename);
+		return getResource<Music>(filename);
 #else
-		music = getResource<Music>(music, name);
+		return getResource<Music>(name);
 #endif
-
-	    return music;
 	}
 
 	TextureRef ResourceManager::getTexture(const std::string& name)
 	{
-		TextureRef texture;
 #ifdef RM_USE_FILENAME_ONLY
 		std::string filename = Utils::findFile(name, "assets", true, true);
 
@@ -70,11 +63,9 @@ namespace Engine
 		return empty;
 		}
 
-		texture = getResource<Texture>(texture, filename);
+		return getResource<Texture>(filename);
 #else
-		texture = getResource<Texture>(texture, name);
+		return getResource<Texture>(name);
 #endif
-
-	    return texture;
 	}
 }
