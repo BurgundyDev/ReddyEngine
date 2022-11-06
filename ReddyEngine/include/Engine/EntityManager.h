@@ -1,12 +1,13 @@
 #pragma once
 
-#include "Engine/Entity.h"
-
 #include <memory>
 #include <vector>
 
 namespace Engine
 {
+	// Forward declarations
+	class Entity;
+
 	using EntityRef = std::shared_ptr<Entity>;
 
 	class EntityManager final
@@ -18,13 +19,12 @@ namespace Engine
 		void update(float deltaTime);
 		void fixedUpdate(float deltaTime);
 
-		EntityRef& createEntity();
-		EntityRef& createEntity(Entity* parent);
-		EntityRef& createEntity(EntityRef parent);
-		void destroyEntity(EntityRef entity);
+		const EntityRef createEntity();
+		const EntityRef createEntity(const EntityRef parent);
+		void destroyEntity(const EntityRef entity);
 	
 	private:
-		Entity* m_root;
+		Entity* m_pRoot;
 		uint64_t m_id;
 	};
 }

@@ -14,5 +14,5 @@ public:
 	void spawnEntity();
 	void spawnLastEntityChild();
 private:
-	Engine::EntityRef lastEntity = NULL;
+	Engine::EntityRef lastEntity = nullptr;
 };

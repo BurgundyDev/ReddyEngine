@@ -199,8 +199,11 @@ namespace Engine
             fixedUpdateProgress += deltaTime;
             while (fixedUpdateProgress > 0.0f)
             {
-                g_pEntityManager->fixedUpdate(1.0f / (float)g_fixedUpdateFPS);
-                pGame->fixedUpdate(1.0f / (float)g_fixedUpdateFPS);
+                float fixedUpdateTime = 1.0f / (float)g_fixedUpdateFPS;
+
+                g_pEntityManager->fixedUpdate(fixedUpdateTime);
+                pGame->fixedUpdate(fixedUpdateTime);
+                
                 fixedUpdateProgress -= 1.0f / (float)g_fixedUpdateFPS;
                 ++fixedUpdated;
                 if (fixedUpdated > 3)

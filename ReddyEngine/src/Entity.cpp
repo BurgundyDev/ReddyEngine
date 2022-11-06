@@ -4,7 +4,7 @@
 
 namespace Engine
 {
-	Entity::Entity(EntityRef& parent) : parent(parent.get()), id(0)
+	Entity::Entity(EntityRef parent) : parent(parent.get()), id(0)
 	{
 
 	}
@@ -18,14 +18,24 @@ namespace Engine
 	{
 	}
 
-	void Entity::update(float deltatime)
+	void Entity::update(float deltaTime)
 	{
+		auto childs = children;
 
+		for (auto it = childs.begin(); it != childs.end(); it++)
+		{
+			(*it)->update(deltaTime);
+		}
 	}
 
-	void Entity::fixedUpdate(float deltatime)
+	void Entity::fixedUpdate(float deltaTime)
 	{
+		auto childs = children;
 
+		for (auto it = childs.begin(); it != childs.end(); it++)
+		{
+			(*it)->fixedUpdate(deltaTime);
+		}
 	}
 
 	void Entity::onCreate()
@@ -38,13 +48,13 @@ namespace Engine
 
 	}
 
-	Json::Value Entity::serialize()
+	const Json::Value Entity::serialize()
 	{
-		throw std::logic_error("The method or operation is not implemented.");
+		return Json::nullValue;
 	}
 
-	void Entity::deserialize(Json::Value json)
+	void Entity::deserialize(const Json::Value json)
 	{
-		throw std::logic_error("The method or operation is not implemented.");
+		return;
 	}
 }

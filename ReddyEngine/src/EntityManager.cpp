@@ -1,34 +1,32 @@
 #include "Engine/EntityManager.h"
+#include "Engine/Entity.h"
+
 
 #include <algorithm>
 
 namespace Engine
 {
 
-	EntityManager::EntityManager() : m_root(new Entity())
+	EntityManager::EntityManager() : m_pRoot(new Entity()), m_id(0)
 	{
 		
 	}
 
 	EntityManager::~EntityManager()
 	{
-		delete m_root;
+		delete m_pRoot;
 	}
 
-	EntityRef& EntityManager::createEntity()
+	const EntityRef EntityManager::createEntity()
 	{
-		return createEntity(m_root);
+		EntityRef root = std::make_shared<Entity>(*m_pRoot);
+		return createEntity(root);
 	}
 
-	EntityRef& EntityManager::createEntity(Entity* parent)
+	const EntityRef EntityManager::createEntity(EntityRef parent)
 	{
-		EntityRef parentRef = std::make_shared<Entity>(parent);
-		return createEntity(parentRef);
-	}
-
-	EntityRef& EntityManager::createEntity(EntityRef parent)
-	{
-		EntityRef newEntity = std::make_shared<Entity>(parent);
+		EntityRef newEntity = std::make_shared<Entity>();
+		newEntity->parent = parent.get();
 		newEntity->id = ++m_id;
 
 		parent->children.push_back(newEntity);
@@ -45,26 +43,17 @@ namespace Engine
 			auto parent = entity->parent;
 			parent->children.erase(std::remove(parent->children.begin(), parent->children.end(), entity));
 		}
-  
-		entity.reset();
 	}
 	void EntityManager::update(float deltaTime)
 	{
-		m_root->update(deltaTime);
-
-		auto childs = m_root->children;
-
-		for (auto it = childs.begin(); it != childs.end(); it++)
-		{
-			(*it)->update(deltaTime);
-		}
+		m_pRoot->update(deltaTime);
 	}
 
 	void EntityManager::fixedUpdate(float deltaTime)
 	{
-		m_root->fixedUpdate(deltaTime);
+		m_pRoot->fixedUpdate(deltaTime);
 
-		auto childs = m_root->children;
+		auto childs = m_pRoot->children;
 
 		for (auto it = childs.begin(); it != childs.end(); it++)
 		{
