@@ -21,14 +21,15 @@ namespace Engine
 		template<typename Tresouce, class Cresource>
 		std::shared_ptr<Tresouce> getResource(std::shared_ptr<Tresouce> ref, std::string name)
 		{
-			if (loadedResources.find(name) == loadedResources.end())
+			auto it = loadedResources.find(name);
+			if (it == loadedResources.end())
 			{
 				ref = Cresource::createFromFile(name);
 				loadedResources[name] = std::static_pointer_cast<Resource>(ref);
 				return ref;
 			}else
 			{
-				return std::static_pointer_cast<Tresouce>(loadedResources[name]);
+				return std::static_pointer_cast<Tresouce>(it->second);
 			}
 		}
 	};
