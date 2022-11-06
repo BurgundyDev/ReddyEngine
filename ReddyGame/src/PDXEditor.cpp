@@ -17,20 +17,30 @@ void EditorState::drawPFXUI()
         {
             m_pPfxInstance = std::make_shared<Engine::PFXInstance>(m_pPfx);
         }
+        bool changed = false;
         if (ImGui::Button("Add Emitter"))
         {
             Engine::EmitterDef emitter;
             emitter.pTexture = Engine::getResourceManager()->getTexture("textures/particle.png");
             m_pPfx->emitters.push_back(emitter);
+            changed = true;
         }
         int i = 0;
-        bool changed = false;
-        for (auto& emitter : m_pPfx->emitters)
+        for (auto it = m_pPfx->emitters.begin(); it != m_pPfx->emitters.end(); )
         {
+            auto& emitter = *it;
+
             ++i;
             if (ImGui::CollapsingHeader(("Emitter " + std::to_string(i)).c_str()))
             {
                 ImGui::Indent(10.0f);
+                
+                if (ImGui::Button(("Remove Emitter " + std::to_string(i)).c_str()))
+                {
+                    changed = true;
+                    it = m_pPfx->emitters.erase(it);
+                    continue;
+                }
 
                 {
                     const char* EMITTER_TYPE_CHOICES[] = { "burst", "continuous" };
@@ -310,6 +320,8 @@ void EditorState::drawPFXUI()
 
                 ImGui::Unindent(10.0f);
             }
+
+            ++it;
         }
 
         if (changed)

@@ -320,6 +320,8 @@ namespace Engine
     {
         if (!m_isAlive) return;
 
+        scale *= 0.01f; // We work at a more fine scale for particles
+
         auto sb = getSpriteBatch().get();
 
         Particle* pParticle = m_pParticleHead;
@@ -334,7 +336,7 @@ namespace Engine
 
             color = Utils::lerp(premultiplied, color, additive);
 
-            sb->draw(pParticle->pTexture, position + pParticle->position, color, pParticle->rotation + in_rotation, size * scale * 0.01f * pParticle->texInvSize);
+            sb->draw(pParticle->pTexture, position + pParticle->position * scale, color, pParticle->rotation + in_rotation, size * scale * pParticle->texInvSize);
 
             pParticle = pParticle->pNext;
         }

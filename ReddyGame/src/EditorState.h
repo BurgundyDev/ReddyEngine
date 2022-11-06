@@ -67,11 +67,18 @@ private:
     std::string m_filename = "untitled";
     bool m_dirty = true;
 
-    //TODO: pan around and zoom
-    glm::vec2 m_position = {2.0f, 0};
-    int m_zoom = 5; // Maps to a zoom level
-    float m_zoomf = 128.0f;
+    // Mouse stuff
+    glm::vec2 m_mouseWorldPos;
 
+    // Camera stuff
+    glm::vec2 m_mouseOnDown;
+    glm::vec2 m_positionOnDown;
+    glm::vec2 m_position = {0, 0};
+    const float ZOOM_LEVELS[8] = {256.0f, 192.0f, 128.0f, 96.0f, 64.0f, 32.0f, 16.0f, 8.0f};
+    int m_zoom = 2; // Maps to a zoom level
+    float m_zoomf = ZOOM_LEVELS[2];
+
+    // Particle editor stuff
     Json::Value m_pfxJson; // Last serialized since last modification
     Engine::PFXRef m_pPfx;
     Engine::PFXInstanceRef m_pPfxInstance;

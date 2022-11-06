@@ -171,9 +171,14 @@ namespace Engine
                         g_pInput->onButtonUp(event.button.button);
                     break;
 
+                case SDL_MOUSEWHEEL:
+                    g_pInput->setMouseWheelMotion(event.wheel.y);
+                    break;
+
                 case SDL_MOUSEMOTION:
                     mouseMotionX += event.motion.xrel;
                     mouseMotionY += event.motion.yrel;
+                    g_pInput->onMouseMove({event.motion.x, event.motion.y});
                     break;
                 }
             }

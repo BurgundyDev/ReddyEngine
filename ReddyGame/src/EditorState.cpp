@@ -68,6 +68,7 @@ void EditorState::update(float dt)
     }
 
     // Menu bar
+    bool quit = false;
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("File"))
@@ -90,7 +91,11 @@ void EditorState::update(float dt)
             if (ImGui::MenuItem("Save", "Ctrl+S")) onSave();
             if (ImGui::MenuItem("Save As", "Ctrl+Shift+S")) onSaveAs();
             ImGui::Separator();
-            if (ImGui::MenuItem("Quit", "Alt+F4")) onQuit();
+            if (ImGui::MenuItem("Quit", "Alt+F4"))
+            {
+                onQuit();
+                quit = true;
+            }
             ImGui::EndMenu();
         }
 
@@ -111,6 +116,9 @@ void EditorState::update(float dt)
         ImGui::EndMainMenuBar();
     }
 
+    if (quit) return;
+
+    // Draw UI stuff
     switch (m_editDocumentType)
     {
         case EditDocumentType::Scene:
@@ -120,6 +128,44 @@ void EditorState::update(float dt)
             drawPFXUI();
             if (m_pPfxInstance) m_pPfxInstance->update(dt);
             break;
+    }
+
+    // Camera stuff
+    {
+        auto mousePos = Engine::getInput()->getMousePos();
+        mousePos -= Engine::getResolution() * 0.5f;
+        mousePos /= m_zoomf;
+        m_mouseWorldPos = mousePos + m_position;
+
+        // Mouse pan with middle button
+        if (!ImGui::GetIO().WantCaptureMouse)
+        {
+            if (Engine::getInput()->isButtonJustDown(SDL_BUTTON_MIDDLE))
+            {
+                m_mouseOnDown = Engine::getInput()->getMousePos();
+                m_positionOnDown = m_position;
+            }
+            else if (Engine::getInput()->isButtonDown(SDL_BUTTON_MIDDLE))
+            {
+                auto diff = m_mouseOnDown - Engine::getInput()->getMousePos();
+                diff /= m_zoomf;
+                m_position = m_positionOnDown + diff;
+            }
+            else if (Engine::getInput()->getMouseWheel() > 0)
+            {
+                // Zoom In
+                m_zoom = std::max(0, m_zoom - 1);
+            }
+            else if (Engine::getInput()->getMouseWheel() < 0)
+            {
+                // Zoom out
+                m_zoom = std::min(7, m_zoom + 1);
+            }
+        }
+
+        // Update zoom
+        auto zoomTarget = ZOOM_LEVELS[m_zoom];
+        m_zoomf = Engine::Utils::lerp(m_zoomf, zoomTarget, std::min(1.0f, dt * 50.0f));
     }
 }
 
@@ -150,14 +196,15 @@ void EditorState::draw()
         case EditDocumentType::PFX:
         {
             // Draw faint cross in the middle so we know where's the center
+            auto pos = -m_position;
             sb->drawRect(nullptr, glm::vec4(
-                Engine::getResolution().x * 0.5f + (-m_position.x - 1.0f) * m_zoomf,
-                Engine::getResolution().y * 0.5f + (-m_position.y) * m_zoomf,
+                Engine::getResolution().x * 0.5f + (pos.x - 1.0f) * m_zoomf,
+                Engine::getResolution().y * 0.5f + (pos.y) * m_zoomf,
                 2.0f * m_zoomf, 1.0f),
                 glm::vec4(0.35f));
             sb->drawRect(nullptr, glm::vec4(
-                Engine::getResolution().x * 0.5f + (-m_position.x) * m_zoomf,
-                Engine::getResolution().y * 0.5f + (-m_position.y - 1.0f) * m_zoomf,
+                Engine::getResolution().x * 0.5f + (pos.x) * m_zoomf,
+                Engine::getResolution().y * 0.5f + (pos.y - 1.0f) * m_zoomf,
                 1.0f, 2.0f * m_zoomf),
                 glm::vec4(0.35f));
             if (m_pPfxInstance) m_pPfxInstance->draw(Engine::getResolution() * 0.5f - m_position * m_zoomf, 0.0f, m_zoomf);
@@ -199,7 +246,7 @@ void EditorState::onOpen()
 
 void EditorState::onSave()
 {
-    if (!m_dirty) return; // Don't waste processing to save if nothing is changed
+    //if (!m_dirty) return; // Don't waste processing to save if nothing is changed (We do)
     if (m_filename == "untitled") saveAs(); // Never saved before
     else save();
 }
@@ -283,7 +330,9 @@ void EditorState::open(const std::string& filename)
         tinyfd_messageBox("Error", ("Unknown document type: " + type).c_str(), "ok", "error", 0);
         return;
     }
-    
+
+    m_position = Engine::Utils::deserializeJsonValue<glm::vec2>(json["camera"]["position"]);
+    m_zoom = Engine::Utils::deserializeJsonValue<int>(json["camera"]["zoom"]);
     m_filename = filename;
     m_pActionManager->clear();
     m_dirty = false;
@@ -302,26 +351,31 @@ bool EditorState::openAs()
 void EditorState::save()
 {
     m_dirty = false;
+    Json::Value json;
 
     switch (m_editDocumentType)
     {
         case EditDocumentType::Scene:
         {
-            auto json = Engine::Scene::serialize();
-            json["version"] = Engine::FILES_VERSION;
+            json = Engine::Scene::serialize();
             json["type"] = "scene";
-            Engine::Utils::saveJson(json, m_filename);
             break;
         }
         case EditDocumentType::PFX:
         {
-            auto json = m_pPfx->serialize();
-            json["version"] = Engine::FILES_VERSION;
+            json = m_pPfx->serialize();
             json["type"] = "pfx";
-            Engine::Utils::saveJson(json, m_filename);
             break;
         }
     }
+
+    json["version"] = Engine::FILES_VERSION;
+    Json::Value cameraJson;
+    cameraJson["position"] = Engine::Utils::serializeJsonValue(m_position);
+    cameraJson["zoom"] = Engine::Utils::serializeJsonValue(m_zoom);
+    json["camera"] = cameraJson;
+
+    Engine::Utils::saveJson(json, m_filename);
 
     addRecentFile(m_filename);
 }
