@@ -68,4 +68,22 @@ namespace Engine
 		return getResource<Texture>(name);
 #endif
 	}
+
+	FontRef ResourceManager::getFont(const std::string& name, int height)
+	{
+#ifdef RM_USE_FILENAME_ONLY
+		std::string filename = Utils::findFile(name, "assets", true, true);
+
+		if (filename.empty())
+		{
+			CORE_ERROR("File" + name + "not found");
+			static FontRef empty;
+			return empty;
+		}
+
+		return getResource<Font>(filename, height);
+#else
+		return getResource<Font>(name, height);
+#endif
+	}
 }
