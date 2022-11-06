@@ -4,7 +4,11 @@
 #include "MainMenuState.h"
 
 #include <Engine/Config.h>
+#include <Engine/Log.h>
+#include <Engine/PFX.h>
 #include <Engine/ReddyEngine.h>
+#include <Engine/Scene.h>
+#include <Engine/Utils.h>
 
 #include <imgui.h>
 #include <tinyfiledialogs/tinyfiledialogs.h>
@@ -56,7 +60,12 @@ void EditorState::update(float dt)
     {
         if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("New", "Ctrl+N")) onNew();
+            if (ImGui::BeginMenu("New"))
+            {
+                if (ImGui::MenuItem("Scene")) onNew(EditDocumentType::Scene);
+                if (ImGui::MenuItem("PFX")) onNew(EditDocumentType::PFX);
+                ImGui::EndMenu();
+            }
             if (ImGui::MenuItem("Open", "Ctrl+O")) onOpen();
             if (ImGui::BeginMenu("Open Recent", !Engine::Config::recentEditorFiles.empty()))
             {
@@ -108,11 +117,12 @@ void EditorState::update(float dt)
 //-----------------------------------------------------------------------
 
 
-void EditorState::onNew()
+void EditorState::onNew(EditDocumentType documentType)
 {
     if (!askSaveUnsavedChanges()) return;
 
     // Clear everything
+    m_editDocumentType = documentType;
     m_dirty = false;
     m_filename = "untitled";
     m_pActionManager->clear();
@@ -180,9 +190,35 @@ void EditorState::onDelete()
 
 void EditorState::open(const std::string& filename)
 {
+    Json::Value json;
+    if (!Engine::Utils::loadJson(json, filename))
+    {
+        CORE_ERROR("Failed to load file: %s", filename.c_str());
+        tinyfd_messageBox("Error", ("Failed to load file: " + filename).c_str(), "ok", "error", 0);
+        return;
+    }
+
+    int version = Engine::Utils::deserializeInt32(json["version"], Engine::FILES_VERSION);
+    std::string type = Engine::Utils::deserializeString(json["type"], "none");
+
+    if (type == "scene")
+    {
+        Engine::Scene::deserialize(json);
+    }
+    else if (type == "pfx")
+    {
+        m_pPfx = Engine::PFX::createFromFile(filename);
+    }
+    else
+    {
+        CORE_ERROR("Unknown document type: %s", type.c_str());
+        tinyfd_messageBox("Error", ("Unknown document type: " + type).c_str(), "ok", "error", 0);
+        return;
+    }
+    
     m_filename = filename;
-    m_dirty = false;
     m_pActionManager->clear();
+    m_dirty = false;
     addRecentFile(m_filename);
 }
 

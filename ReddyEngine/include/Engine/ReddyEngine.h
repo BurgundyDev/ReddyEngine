@@ -9,6 +9,9 @@
 
 namespace Engine
 {
+    static const int FILES_VERSION = 1;
+
+
     // Forward declarations
     class SpriteBatch;
     using SpriteBatchRef = std::shared_ptr<SpriteBatch>;

@@ -1,4 +1,5 @@
 {
+    "type": "scene",
     "version": 1,
     "layers": [
         "background",
