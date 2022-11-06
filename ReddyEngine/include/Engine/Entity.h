@@ -21,13 +21,13 @@ namespace Engine
 	using ComponentRef = std::shared_ptr<Component>;
 	using TransformRef = std::shared_ptr<Transform>;
 
-	class Entity
+	class Entity final
 	{
 	private:
 		Transform m_transform;
 
 	public:
-		Entity(EntityRef& parent);
+		Entity(const EntityRef parent);
 		Entity();
 		~Entity();
 
@@ -36,8 +36,8 @@ namespace Engine
 		std::vector<EntityRef>			children;
 		std::vector<ComponentRef>		components;
 
-		void update(float deltatime);
-		void fixedUpdate(float deltatime);
+		void update(float deltaTime);
+		void fixedUpdate(float deltaTime);
 		void onCreate();
 		void onDestroy();
 		
@@ -46,42 +46,48 @@ namespace Engine
 		{
 			for (auto it = components.begin(); it != components.end(); it++)
 			{
-				if (it->is_class<T>()) return true;
+				if (dynamic_cast<T*>(it->get())) return true;
 			}
 		}
 
-		template<typename T, typename... TArgs>
-		const T& addComponent(TArgs&&... mArgs)
+		template<typename T>
+		const T& addComponent()
 		{
-			T* c(new T(std::forward<TArgs>(mArgs)...));
-			c->entity = this;
-			std::unique_ptr<Component> compPtr(c);
-			components->push_back(compPtr);
+			audo pComponent = getComponent<T>();
+			if (pComponent) return component;
 
-			*compPtr->onCreate();
+			pComponent = std::shared_ptr<T>(new T());
+			
+			pComponent->entity = this;
+			components->push_back(pComponent);
+			*pComponent->onCreate();
+
+			return pComponent;
 		}
 
 		template<typename T>
 		const T& getComponent() const
 		{
-			T* c(new T(std::forward<TArgs>(mArgs)...));
-			c->entity = this;
-			std::unique_ptr<Component> uPtr(c);
-			components->push_back(c);
+			for (auto& component : compnents)
+			{
+				if (dynamic_cast<T*>(component.get()))
+					return dynamic_cast<T>(component);
+			}
+			return nullptr;
 		}
 
-		Transform getTransform()
+		const Transform getTransform()
 		{
 			return m_transform;
 		}
 
-		void setTransform(Transform transform)
+		void setTransform(const Transform transform)
 		{
 			m_transform = transform;
 		}
 
-		Json::Value serialize();
-		void deserialize(Json::Value json);
+		const Json::Value serialize();
+		void deserialize(const Json::Value json);
 		
 		friend bool operator==(const Entity& lhs, const Entity& rhs)
 		{
