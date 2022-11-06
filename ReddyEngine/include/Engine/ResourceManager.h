@@ -23,8 +23,9 @@ namespace Engine
         std::unordered_map<std::string, ResourceRef> loadedResources;
 
         template<typename Tresouce, typename... Types>
-        std::shared_ptr<Tresouce> getResource(const std::string& name, Types... args)
+        std::shared_ptr<Tresouce> getResource(std::string name, Types... args)
         {
+            name = "assets/" + name;
             auto it = loadedResources.find(name);
             if (it == loadedResources.end())
             {

@@ -15,16 +15,16 @@ MainMenuState::MainMenuState()
 {
     Engine::ResourceManagerRef g_pResourceManager = Engine::getResourceManager();
 
-    m_pQuickSound = g_pResourceManager->getSound("assets/sounds/test_quick_sound.wav");
+    m_pQuickSound = g_pResourceManager->getSound("sounds/test_quick_sound.wav");
 
     // For a sound where we need to keep instance because it loops and we want to control it's volume/panning over its lifetime.
-    m_pSound = g_pResourceManager->getSound("assets/sounds/test_sound.wav");
+    m_pSound = g_pResourceManager->getSound("sounds/test_sound.wav");
     m_pSoundInstance = std::make_shared<Engine::SoundInstance>(m_pSound);
     m_pSoundInstance->setLoop(true);
     
-    m_pMusic = g_pResourceManager->getMusic("assets/musics/test_music.ogg");
+    m_pMusic = g_pResourceManager->getMusic("musics/test_music.ogg");
 
-    m_pFont = g_pResourceManager->getFont("assets/fonts/test_font.otf", 24);
+    m_pFont = g_pResourceManager->getFont("fonts/test_font.otf", 24);
 }
 
 MainMenuState::~MainMenuState()
