@@ -19,7 +19,7 @@ namespace Engine
 	{
 		SoundRef sound;
 #ifdef RM_USE_FILENAME_ONLY
-		std::string& filename = Utils::findFile(name, "assets", true, true);
+		std::string filename = Utils::findFile(name, "assets", true, true);
 
 		if(filename.empty())
 		{
@@ -28,9 +28,9 @@ namespace Engine
 		return empty;
 		}
 
-		sound = getResource<Sound, Sound>(sound, filename);
+		sound = getResource<Sound>(sound, filename);
 #else
-		sound = getResource<Sound, Sound>(sound, name);
+		sound = getResource<Sound>(sound, name);
 #endif
 
 		return sound;
@@ -40,7 +40,7 @@ namespace Engine
 	{
 		MusicRef music;
 #ifdef RM_USE_FILENAME_ONLY
-		std::string& filename = Utils::findFile(name, "assets", true, true);
+		std::string filename = Utils::findFile(name, "assets", true, true);
 
 		if (filename.empty())
 		{
@@ -49,9 +49,9 @@ namespace Engine
 		return empty;
 		}
 
-		music = getResource<Music, Music>(music, filename);
+		music = getResource<Music>(music, filename);
 #else
-		music = getResource<Music, Music>(music, name);
+		music = getResource<Music>(music, name);
 #endif
 
 	    return music;
@@ -61,7 +61,7 @@ namespace Engine
 	{
 		TextureRef texture;
 #ifdef RM_USE_FILENAME_ONLY
-		std::string& filename = Utils::findFile(name, "assets", true, true);
+		std::string filename = Utils::findFile(name, "assets", true, true);
 
 		if (filename.empty())
 		{
@@ -70,9 +70,9 @@ namespace Engine
 		return empty;
 		}
 
-		texture = getResource<Texture, Texture>(texture, filename);
+		texture = getResource<Texture>(texture, filename);
 #else
-		texture = getResource<Texture, Texture>(texture, name);
+		texture = getResource<Texture>(texture, name);
 #endif
 
 	    return texture;

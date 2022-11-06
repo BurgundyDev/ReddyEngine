@@ -18,13 +18,13 @@ namespace Engine
 	private:
 		std::unordered_map<std::string, ResourceRef> loadedResources;
 
-		template<typename Tresouce, class Cresource>
+		template<typename Tresouce>
 		std::shared_ptr<Tresouce> getResource(std::shared_ptr<Tresouce> ref, std::string name)
 		{
 			auto it = loadedResources.find(name);
 			if (it == loadedResources.end())
 			{
-				ref = Cresource::createFromFile(name);
+				ref = Tresouce::createFromFile(name);
 				loadedResources[name] = std::static_pointer_cast<Resource>(ref);
 				return ref;
 			}else
