@@ -14,8 +14,6 @@
 #include <string>
 #include <unordered_map>
 
-#define RM_USE_FILENAME_ONLY
-
 namespace Engine
 {
     SoundRef ResourceManager::getSound(const std::string& name)
