@@ -119,6 +119,19 @@ namespace Engine
                                 float y2, float y3,
                                 float mu, float tension = 0.0f, float bias = 0.0f);
 
+        bool lerp(bool from, bool to, float t);
+        int lerp(int from, int to, float t);
+        unsigned int lerp(unsigned int from, unsigned int to, float t);
+        float lerp(float from, float to, float t);
+        double lerp(double from, double to, float t);
+        std::string lerp(const std::string& from, const std::string& to, float t);
+
+        template<typename T>
+        T lerp(const T& from, const T& to, float t)
+        {
+            return from + t * (to - from);
+        }
+
         // Clipboard
         void setClipboard(const std::string& text);
         std::string getClipboard();

@@ -3,6 +3,7 @@
 #include "GameState.h"
 
 #include <json/json.h>
+#include <glm/vec2.hpp>
 
 #include <memory>
 #include <string>
@@ -65,6 +66,11 @@ private:
     ActionManagerRef m_pActionManager;
     std::string m_filename = "untitled";
     bool m_dirty = true;
+
+    //TODO: pan around and zoom
+    glm::vec2 m_position = {2.0f, 0};
+    int m_zoom = 5; // Maps to a zoom level
+    float m_zoomf = 128.0f;
 
     Json::Value m_pfxJson; // Last serialized since last modification
     Engine::PFXRef m_pPfx;

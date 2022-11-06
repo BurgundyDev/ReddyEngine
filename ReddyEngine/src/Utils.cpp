@@ -797,6 +797,52 @@ namespace Engine
             return (a0*y1 + a1*m0 + a2*m1 + a3*y2);
         }
 
+        bool lerp(bool from, bool to, float t)
+        {
+            return (t < .5f) ? from : to;
+        }
+
+        int lerp(int from, int to, float t)
+        {
+            auto result = static_cast<float>(from)+(static_cast<float>(to)-static_cast<float>(from)) * t;
+            return static_cast<int>(std::round(result));
+        }
+
+        unsigned int lerp(unsigned int from, unsigned int to, float t)
+        {
+            auto result = static_cast<float>(from)+(static_cast<float>(to)-static_cast<float>(from)) * t;
+            result = std::round(result);
+            if (result < 0.f) result = 0.f;
+            return static_cast<unsigned int>(result);
+        }
+
+        float lerp(float from, float to, float t)
+        {
+            return from + (to - from) * t;
+        }
+
+        double lerp(double from, double to, float t)
+        {
+            return from + (to - from) * static_cast<double>(t);
+        }
+
+        std::string lerp(const std::string& from, const std::string& to, float t)
+        {
+            auto fromLen = from.size();
+            auto toLen = to.size();
+            auto newLen = static_cast<float>(fromLen)+(static_cast<float>(toLen)-static_cast<float>(fromLen)) * t;
+            newLen = round(newLen);
+            if (toLen > fromLen)
+            {
+                auto ret = to.substr(0, static_cast<size_t>(newLen));
+                return std::move(ret);
+            }
+            else
+            {
+                auto ret = from.substr(0, static_cast<size_t>(newLen));
+                return std::move(ret);
+            }
+        }
 
         void setClipboard(const std::string& text)
         {

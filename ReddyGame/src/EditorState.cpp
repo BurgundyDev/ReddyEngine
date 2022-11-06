@@ -280,8 +280,21 @@ void EditorState::draw()
         case EditDocumentType::Scene:
             break;
         case EditDocumentType::PFX:
-            if (m_pPfxInstance) m_pPfxInstance->draw(Engine::getResolution() * 0.5f, 0.0f, 64.0f /*TODO zoom*/);
+        {
+            // Draw faint cross in the middle so we know where's the center
+            sb->drawRect(nullptr, glm::vec4(
+                Engine::getResolution().x * 0.5f + (-m_position.x - 1.0f) * m_zoomf,
+                Engine::getResolution().y * 0.5f + (-m_position.y) * m_zoomf,
+                2.0f * m_zoomf, 1.0f),
+                glm::vec4(0.35f));
+            sb->drawRect(nullptr, glm::vec4(
+                Engine::getResolution().x * 0.5f + (-m_position.x) * m_zoomf,
+                Engine::getResolution().y * 0.5f + (-m_position.y - 1.0f) * m_zoomf,
+                1.0f, 2.0f * m_zoomf),
+                glm::vec4(0.35f));
+            if (m_pPfxInstance) m_pPfxInstance->draw(Engine::getResolution() * 0.5f - m_position * m_zoomf, 0.0f, m_zoomf);
             break;
+        }
     }
 
     sb->end();

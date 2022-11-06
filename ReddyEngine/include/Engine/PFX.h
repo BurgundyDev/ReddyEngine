@@ -4,6 +4,7 @@
 #include <glm/vec4.hpp>
 #include <json/json.h>
 
+#include <stdlib.h>
 #include <memory>
 #include <string>
 #include <vector>
@@ -68,6 +69,20 @@ namespace Engine
             endRange[0] = Utils::deserializeJsonValue<T>(json["randomEnd"][0]);
             endRange[1] = Utils::deserializeJsonValue<T>(json["randomEnd"][1]);
         }
+
+        T genStart() const
+        {
+            if (!randomStart) return startRange[0];
+            float p = (float)(rand() % 10001) / 10000.0f;
+            return startRange[0] + (startRange[1] - startRange[0]) * p;
+        }
+
+        T genEnd() const
+        {
+            if (!randomEnd) return endRange[0];
+            float p = (float)(rand() % 10001) / 10000.0f;
+            return endRange[0] + (endRange[1] - endRange[0]) * p;
+        }
     };
 
 
@@ -99,6 +114,13 @@ namespace Engine
             range[0] = Utils::deserializeJsonValue<T>(json["range"][0]);
             range[1] = Utils::deserializeJsonValue<T>(json["range"][1]);
         }
+
+        T gen() const
+        {
+            if (!random) return range[0];
+            float p = (float)(rand() % 10001) / 10000.0f;
+            return range[0] + (range[1] - range[0]) * p;
+        }
     };
 
 
@@ -116,6 +138,7 @@ namespace Engine
         RangedPFXValue<float> size = {{0, 5}, {5, 10}, true, true};
         RangedPFXValue<float> speed = {{50, 100}, {0, 0}, true, false};
         RangedPFXSingleValue<float> duration = {{0.5f, 1.5f}, false};
+        //TODO: Rotation, Gravity
     };
 
 
@@ -153,25 +176,31 @@ namespace Engine
             bool inUse = false;
             float progress;
             float delay;
+            TextureRef pTexture;
             glm::vec2 position;
+            glm::vec2 dir;
             glm::vec4 colorStart;
             glm::vec4 colorEnd;
+            float sizeStart;
+            float sizeEnd;
             float speedStart;
             float speedEnd;
-            TextureRef pTexture;
         };
 
-        struct Emitters
+        struct Emitter
         {
-            float progress;
             const EmitterDef* pEmitterRef;
+            float progress;
+            float spawnAccum;
+            float spawnRate;
         };
 
-        void spawn(int count);
+        void spawn(int count, const Emitter& emitter);
+        Particle* createParticle();
 
         bool m_isAlive = true;
         PFXWeak m_pPFX;
-        std::vector<Emitters> m_emitters;
+        std::vector<Emitter> m_emitters;
         Particle* m_particlePool = nullptr;
         int m_nextFromPool = 0;
         int m_poolSize = 0;

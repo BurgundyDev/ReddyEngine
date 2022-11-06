@@ -5,6 +5,8 @@
 #include "Engine/Texture.h"
 #include "Engine/Utils.h"
 
+#include <glm/glm.hpp>
+
 
 namespace Engine
 {
@@ -126,6 +128,12 @@ namespace Engine
             auto pEmitter = &m_emitters[i];
             pEmitter->pEmitterRef = &pfxEmitters[i];
             pEmitter->progress = 0.0f;
+            pEmitter->spawnAccum = 0.0f;
+            pEmitter->spawnRate = pEmitter->pEmitterRef->spawnRate;
+            if (pEmitter->pEmitterRef->type == EmitterType::burst && pEmitter->pEmitterRef->burstDuration > 0.0f)
+            {
+                pEmitter->spawnRate = (float)pEmitter->pEmitterRef->burstAmount / pEmitter->pEmitterRef->burstDuration;
+            }
 
             switch (pEmitter->pEmitterRef->type)
             {
@@ -144,9 +152,10 @@ namespace Engine
         // If burst duration is 0, spawn them all right away
         for (const auto& emitter : m_emitters)
         {
-            if (emitter.pEmitterRef->type == EmitterType::burst && emitter.pEmitterRef->burstDuration == 0.0f)
+            if (emitter.pEmitterRef->type == EmitterType::burst)
             {
-                PFXInstance::spawn(emitter.pEmitterRef->burstAmount);
+                if (emitter.pEmitterRef->burstDuration == 0.0f)
+                    PFXInstance::spawn(emitter.pEmitterRef->burstAmount, emitter);
             }
         }
     }
@@ -156,10 +165,60 @@ namespace Engine
         delete[] m_particlePool;
     }
 
-    void PFXInstance::spawn(int count)
+    PFXInstance::Particle* PFXInstance::createParticle()
+    {
+        int end = m_nextFromPool;
+        Particle* pParticle = nullptr;
+
+        do
+        {
+            auto pParticle = &m_particlePool[m_nextFromPool];
+            m_nextFromPool = (m_nextFromPool + 1) % m_poolSize;
+
+            if (!pParticle->inUse)
+            {
+                if (!m_pParticleHead)
+                {
+                    m_pParticleHead = pParticle;
+                    m_pParticleHead->pNext = nullptr;
+                }
+                else
+                {
+                    pParticle->pNext = m_pParticleHead;
+                    m_pParticleHead = pParticle;
+                }
+                pParticle->inUse = true;
+                return pParticle;
+            }
+
+        } while (m_nextFromPool != end);
+
+        return nullptr;
+    }
+
+    void PFXInstance::spawn(int count, const Emitter& emitter)
     {
         for (int i = 0; i < count; ++i)
         {
+            auto pParticle = createParticle();
+            if (!pParticle) return; // Ran out from the pool. (Shouldn't happen?)
+
+            pParticle->progress = 0.0f;
+            pParticle->delay = 1.0f / emitter.pEmitterRef->duration.gen();
+            pParticle->colorStart = emitter.pEmitterRef->color.genStart();
+            pParticle->colorEnd = emitter.pEmitterRef->color.genEnd();
+            pParticle->sizeStart = emitter.pEmitterRef->size.genStart();
+            pParticle->sizeEnd = emitter.pEmitterRef->size.genEnd();
+            pParticle->speedStart = emitter.pEmitterRef->speed.genStart();
+            pParticle->speedEnd = emitter.pEmitterRef->speed.genEnd();
+            pParticle->pTexture = emitter.pEmitterRef->pTexture;
+            {
+                float angle = emitter.pEmitterRef->spread * ((float)(rand() % 10001) / 10000.0f);
+                auto radTheta = glm::radians(angle);
+                auto sinTheta = std::sin(radTheta);
+                auto cosTheta = std::cos(radTheta);
+                pParticle->dir = {-sinTheta, -cosTheta};
+            }
         }
     }
 
@@ -173,11 +232,63 @@ namespace Engine
         }
 
         // Update emitters
+        m_isAlive = false;
+        for (auto& emitter : m_emitters)
+        {
+            if (emitter.pEmitterRef->type == EmitterType::burst)
+            {
+                emitter.progress += dt;
+                if (emitter.progress >= emitter.pEmitterRef->burstDuration)
+                {
+                    continue;
+                }
+            }
+
+            m_isAlive = true;
+            emitter.spawnAccum += dt / emitter.spawnRate;
+
+            while (emitter.spawnAccum >= 1.0f)
+            {
+                spawn((int)emitter.spawnAccum, emitter);
+                emitter.spawnAccum -= (float)(int)emitter.spawnAccum;
+            }
+        }
 
         // Update particles
+        Particle* pPrevParticle = nullptr;
+        Particle* pParticle = m_pParticleHead;
+        while (pParticle)
+        {
+            pParticle->progress += pParticle->delay * dt;
+            if (pParticle->progress >= 1.0f)
+            {
+                pParticle->inUse = false;
+                if (pParticle == m_pParticleHead) m_pParticleHead = pParticle->pNext;
+                if (pPrevParticle) pPrevParticle->pNext = pParticle->pNext;
+            }
+
+            auto speed = Utils::lerp(pParticle->speedStart, pParticle->speedEnd, pParticle->progress);
+            pParticle->position += pParticle->dir * speed * dt;
+
+            pPrevParticle = pParticle;
+            pParticle = pParticle->pNext;
+        }
     }
 
     void PFXInstance::draw(const glm::vec2& position, float rotation, float scale)
     {
+        auto sb = getSpriteBatch().get();
+
+        Particle* pParticle = m_pParticleHead;
+        while (pParticle)
+        {
+            auto t = pParticle->progress;
+            auto color = Utils::lerp(pParticle->colorStart, pParticle->colorEnd, t);
+            auto size = Utils::lerp(pParticle->sizeStart, pParticle->sizeEnd, t);
+
+            sb->draw(pParticle->pTexture, position + pParticle->position, color, 0.0f /* TODO */, size);
+
+            pParticle = pParticle->pNext;
+        }
     }
 }
