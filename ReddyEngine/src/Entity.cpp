@@ -4,12 +4,12 @@
 
 namespace Engine
 {
-	Entity::Entity(EntityRef parent) : parent(parent.get()), id(0)
+	Entity::Entity(const EntityRef& parent) : parent(parent.get())
 	{
 
 	}
 
-	Entity::Entity() : id(0)
+	Entity::Entity()
 	{
 		parent = nullptr;
 	}
