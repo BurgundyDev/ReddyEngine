@@ -6,12 +6,17 @@
 #include "Engine/Log.h"
 #include "Engine/Texture.h"
 
+
+#include <string>
+#include <unordered_map>
+
 #define RM_USE_FILENAME_ONLY
 
 namespace Engine
 {
 		SoundRef ResourceManager::getSound(const std::string& name)
 		{
+			SoundRef sound;
 #ifdef RM_USE_FILENAME_ONLY
 			std::string& filename = Utils::findFile(name, "assets", true, true);
 
@@ -22,9 +27,25 @@ namespace Engine
 				return empty;
 			}
 
-			const SoundRef& sound = Sound::createFromFile(filename);
+			if(loadedSounds.find(filename) == loadedSounds.end())
+			{
+				sound = Sound::createFromFile(filename);
+				loadedSounds[filename] = sound;
+			}
+			else
+			{
+				sound = loadedSounds[filename];
+			}
 #else
-			const SoundRef& sound = Sound::createFromFile(name);
+			if (loadedSounds.find(name) == loadedSounds.end())
+			{
+				sound = Sound::createFromFile(name);
+				loadedSounds[name] = sound;
+			}
+			else
+			{
+				sound = loadedSounds[name];
+			}
 #endif
 
 			return sound;
@@ -32,6 +53,7 @@ namespace Engine
 
 		MusicRef ResourceManager::getMusic(const std::string& name)
 		{
+			MusicRef music;
 #ifdef RM_USE_FILENAME_ONLY
 			std::string& filename = Utils::findFile(name, "assets", true, true);
 
@@ -42,15 +64,32 @@ namespace Engine
 				return empty;
 			}
 
-			const MusicRef& music = Music::createFromFile(filename);
+			if (loadedMusic.find(filename) == loadedMusic.end())
+			{
+				music = Music::createFromFile(filename);
+				loadedMusic[filename] = music;
+			}
+			else
+			{
+				music = loadedMusic[filename];
+			}
 #else
-			const MusicRef& music = Music::createFromFile(name);
+			if (loadedMusic.find(name) == loadedMusic.end())
+			{
+				music = Music::createFromFile(name);
+				loadedMusic[name] = music;
+			}
+			else
+			{
+				music = loadedMusic[name];
+			}
 #endif
 			return music;
 		}
 
 		TextureRef ResourceManager::getTexture(const std::string& name)
 		{
+			TextureRef texture;
 #ifdef RM_USE_FILENAME_ONLY
 			std::string& filename = Utils::findFile(name, "assets", true, true);
 
@@ -61,10 +100,25 @@ namespace Engine
 				return empty;
 			}
 
-			const TextureRef& texture = Texture::createFromFile(filename);
+			if (loadedTextures.find(filename) == loadedTextures.end())
+			{
+				texture = Texture::createFromFile(filename);
+				loadedTextures[filename] = texture;
+			}
+			else
+			{
+				texture = loadedTextures[filename];
+			}
 #else
-			const TextureRef& texture = Texture::createFromFile(name);
-
+			if (loadedTextures.find(name) == loadedTextures.end())
+			{
+				texture = Texture::createFromFile(name);
+				loadedTextures[name] = texture;
+			}
+			else
+			{
+				texture = loadedTextures[name];
+			}
 #endif
 			return texture;
 		}
