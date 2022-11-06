@@ -72,7 +72,9 @@ namespace Engine
             emitterJson["rotation"] = emitter.rotation.serialize();
             emitterJson["rotationSpeed"] = emitter.rotationSpeed.serialize();
             emitterJson["speed"] = emitter.speed.serialize();
+            emitterJson["gravity"] = emitter.gravity.serialize();
             emitterJson["duration"] = emitter.duration.serialize();
+            emitterJson["spawnRadius"] = emitter.spawnRadius.serialize();
 
 
             emittersJson.append(emitterJson);
@@ -111,8 +113,10 @@ namespace Engine
             emitter.size.deserialize(emitterJson["size"]);
             emitter.rotation.deserialize(emitterJson["rotation"]);
             emitter.rotationSpeed.deserialize(emitterJson["rotationSpeed"]);
+            emitter.gravity.deserialize(emitterJson["gravity"]);
             emitter.speed.deserialize(emitterJson["speed"]);
             emitter.duration.deserialize(emitterJson["duration"]);
+            emitter.spawnRadius.deserialize(emitterJson["spawnRadius"]);
 
             emitters.push_back(emitter);
         }
@@ -201,6 +205,17 @@ namespace Engine
         return nullptr;
     }
 
+    //
+    //static Vector2 randCircle(const Vector2& center, float radius)
+    //{
+    //    float dist = ORandFloat(0.0f, 1.0f);
+    //    dist *= dist;
+    //    dist = 1 - dist;
+    //    dist *= radius;
+    //    float angle = ORandFloat(0.0f, O2PI);
+    //    return{center.x + cosf(angle) * dist, center.y + sinf(angle) * dist};
+    //}
+
     void PFXInstance::spawn(int count, const Emitter& emitter)
     {
         for (int i = 0; i < count; ++i)
@@ -209,7 +224,17 @@ namespace Engine
             if (!pParticle) return; // Ran out from the pool. (Shouldn't happen?)
 
             pParticle->progress = 0.0f;
-            pParticle->position = {0, 0};
+            {
+                pParticle->position = {0, 0};
+
+                auto radius = emitter.pEmitterRef->spawnRadius.gen();
+                float t = ((float)(rand() % 10001) / 10000.0f);
+                float dist = Utils::lerp(emitter.pEmitterRef->spawnRadius.range[0], emitter.pEmitterRef->spawnRadius.range[1], t);
+                float angle = ((float)(rand() % 10001) / 10000.0f) * 6.283185307179586476925286766559f;
+
+                pParticle->position.x += std::cosf(angle) * dist;
+                pParticle->position.y += std::sinf(angle) * dist;
+            }
             pParticle->delay = 1.0f / emitter.pEmitterRef->duration.gen();
             pParticle->colorStart = emitter.pEmitterRef->color.genStart();
             pParticle->colorEnd = emitter.pEmitterRef->color.genEnd(pParticle->colorStart);

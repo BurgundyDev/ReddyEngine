@@ -419,6 +419,24 @@ void EditorState::drawPFXUI()
                     ImGui::Unindent(10.0f);
                 }
 
+                // Spawn Radius
+                {
+                    ImGui::Separator();
+                    ImGui::Text("Spawn Radius");
+                    ImGui::Indent(10.0f);
+
+                    if (ImGui::Checkbox("Random##spawnradiusrandom", &emitter.spawnRadius.random)) changed = true;
+                    ImGui::DragFloat("Radius 1", &emitter.spawnRadius.range[0]);
+                    if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                    if (emitter.spawnRadius.random)
+                    {
+                        ImGui::DragFloat("Radius 2", &emitter.spawnRadius.range[1]);
+                        if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                    }
+
+                    ImGui::Unindent(10.0f);
+                }
+
                 ImGui::Unindent(10.0f);
             }
         }

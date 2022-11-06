@@ -145,7 +145,7 @@ namespace Engine
         RangedPFXValue<float> speed = {{300, 600}, {0, 0}, true, false, false};
         RangedPFXSingleValue<float> duration = {{0.5f, 1.5f}, true};
         RangedPFXValue<glm::vec2> gravity = {{{0, -100.0f}, {0, 0}}, {{0, 0}, {0, 0}}, false, false, true};
-        //TODO: Spawn shape + radius
+        RangedPFXSingleValue<float> spawnRadius = {{0.0f, 50.0f}, true};
     };
 
 
