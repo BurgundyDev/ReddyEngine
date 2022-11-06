@@ -3,6 +3,8 @@
 #include <memory>
 #include <string>
 
+#include "Resource.h"
+
 
 namespace Engine
 {
@@ -10,7 +12,7 @@ namespace Engine
     using PFXRef = std::shared_ptr<PFX>;
 
 
-    class PFX final
+    class PFX final : public Resource
     {
     public:
         static PFXRef createFromFile(const std::string& filename);
