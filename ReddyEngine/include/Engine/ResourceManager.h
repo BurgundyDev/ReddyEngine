@@ -25,12 +25,17 @@ namespace Engine
         template<typename Tresouce, typename... Types>
         std::shared_ptr<Tresouce> getResource(std::string name, Types... args)
         {
+            auto filename = name;
             name = "assets/" + name;
             auto it = loadedResources.find(name);
             if (it == loadedResources.end())
             {
                 std::shared_ptr<Tresouce> pRet = Tresouce::createFromFile(name, args...);
-                loadedResources[name] = pRet;
+                if (pRet)
+                {
+                    pRet->setFilename(filename);
+                    loadedResources[name] = pRet;
+                }
                 return pRet;
             }
             else

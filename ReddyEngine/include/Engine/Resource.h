@@ -9,7 +9,9 @@ namespace Engine
     {
     public:
         virtual ~Resource() {};
-        const std::string& getFilename() { return m_filename; };
+        const std::string& getFilename() const { return m_filename; };
+        void setFilename(const std::string& filename) { m_filename = filename; }
+
     protected:
         std::string m_filename;
     };

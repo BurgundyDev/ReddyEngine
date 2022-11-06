@@ -65,9 +65,8 @@ namespace Engine
             else
                 emitterJson["texture"] = "";
             emitterJson["spread"] = emitter.spread;
-            emitterJson["endOnlyAffectAlpha"] = emitter.endOnlyAffectAlpha;
-
             emitterJson["color"] = emitter.color.serialize();
+            emitterJson["endOnlyAffectAlpha"] = emitter.endOnlyAffectAlpha;
             emitterJson["additive"] = emitter.additive.serialize();
             emitterJson["size"] = emitter.size.serialize();
             emitterJson["speed"] = emitter.speed.serialize();
@@ -86,6 +85,8 @@ namespace Engine
     {
         int version = Utils::deserializeInt32(json["version"], FILES_VERSION);
 
+        emitters.clear();
+
         const auto& emittersJson = json["emitters"];
         for (const auto& emitterJson : emittersJson)
         {
@@ -96,18 +97,18 @@ namespace Engine
             else if (type == "continuous") emitter.type = EmitterType::continuous;
             else emitter.type = EmitterType::burst;
 
-            emitter.burstDuration = Utils::deserializeFloat(json["burstDuration"], 0.0f);
-            emitter.burstAmount = Utils::deserializeInt32(json["burstAmount"], 100);
-            emitter.spawnRate = Utils::deserializeFloat(json["spawnRate"], 20.0f);
-            emitter.pTexture = getResourceManager()->getTexture(Utils::deserializeString(json["texture"], "textures/particle.png"));
-            emitter.spread = Utils::deserializeFloat(json["spread"], 360.0f);
-            emitter.endOnlyAffectAlpha = Utils::deserializeBool(json["endOnlyAffectAlpha"], true);
+            emitter.burstDuration = Utils::deserializeFloat(emitterJson["burstDuration"], 0.0f);
+            emitter.burstAmount = Utils::deserializeInt32(emitterJson["burstAmount"], 100);
+            emitter.spawnRate = Utils::deserializeFloat(emitterJson["spawnRate"], 20.0f);
+            emitter.pTexture = getResourceManager()->getTexture(Utils::deserializeString(emitterJson["texture"], "textures/particle.png"));
+            emitter.spread = Utils::deserializeFloat(emitterJson["spread"], 360.0f);
+            emitter.endOnlyAffectAlpha = Utils::deserializeBool(emitterJson["endOnlyAffectAlpha"], true);
 
-            emitter.color.deserialize(json["color"]);
-            emitter.additive.deserialize(json["additive"]);
-            emitter.size.deserialize(json["size"]);
-            emitter.speed.deserialize(json["speed"]);
-            emitter.duration.deserialize(json["duration"]);
+            emitter.color.deserialize(emitterJson["color"]);
+            emitter.additive.deserialize(emitterJson["additive"]);
+            emitter.size.deserialize(emitterJson["size"]);
+            emitter.speed.deserialize(emitterJson["speed"]);
+            emitter.duration.deserialize(emitterJson["duration"]);
 
             emitters.push_back(emitter);
         }
@@ -204,16 +205,29 @@ namespace Engine
             if (!pParticle) return; // Ran out from the pool. (Shouldn't happen?)
 
             pParticle->progress = 0.0f;
+            pParticle->position = {0, 0};
             pParticle->delay = 1.0f / emitter.pEmitterRef->duration.gen();
             pParticle->colorStart = emitter.pEmitterRef->color.genStart();
             pParticle->colorEnd = emitter.pEmitterRef->color.genEnd();
+
+            if (emitter.pEmitterRef->endOnlyAffectAlpha)
+            {
+                pParticle->colorEnd.r = pParticle->colorStart.r;
+                pParticle->colorEnd.g = pParticle->colorStart.g;
+                pParticle->colorEnd.b = pParticle->colorStart.b;
+            }
+
+            pParticle->additiveStart = emitter.pEmitterRef->additive.genStart();
+            pParticle->additiveEnd = emitter.pEmitterRef->additive.genEnd();
             pParticle->sizeStart = emitter.pEmitterRef->size.genStart();
             pParticle->sizeEnd = emitter.pEmitterRef->size.genEnd();
             pParticle->speedStart = emitter.pEmitterRef->speed.genStart();
             pParticle->speedEnd = emitter.pEmitterRef->speed.genEnd();
             pParticle->pTexture = emitter.pEmitterRef->pTexture;
+            pParticle->texInvSize = emitter.pEmitterRef->pTexture ? 1.0f / (float)emitter.pEmitterRef->pTexture->getSize().x : 1.0f;
             {
                 float angle = emitter.pEmitterRef->spread * ((float)(rand() % 10001) / 10000.0f);
+                angle -= emitter.pEmitterRef->spread * 0.5f;
                 auto radTheta = glm::radians(angle);
                 auto sinTheta = std::sin(radTheta);
                 auto cosTheta = std::cos(radTheta);
@@ -232,7 +246,6 @@ namespace Engine
         }
 
         // Update emitters
-        m_isAlive = false;
         for (auto& emitter : m_emitters)
         {
             if (emitter.pEmitterRef->type == EmitterType::burst)
@@ -244,7 +257,6 @@ namespace Engine
                 }
             }
 
-            m_isAlive = true;
             emitter.spawnAccum += dt / emitter.spawnRate;
 
             while (emitter.spawnAccum >= 1.0f)
@@ -277,6 +289,8 @@ namespace Engine
 
     void PFXInstance::draw(const glm::vec2& position, float rotation, float scale)
     {
+        if (!m_isAlive) return;
+
         auto sb = getSpriteBatch().get();
 
         Particle* pParticle = m_pParticleHead;
@@ -285,8 +299,13 @@ namespace Engine
             auto t = pParticle->progress;
             auto color = Utils::lerp(pParticle->colorStart, pParticle->colorEnd, t);
             auto size = Utils::lerp(pParticle->sizeStart, pParticle->sizeEnd, t);
+            auto additive = Utils::lerp(pParticle->additiveStart, pParticle->additiveEnd, t);
 
-            sb->draw(pParticle->pTexture, position + pParticle->position, color, 0.0f /* TODO */, size);
+            glm::vec4 premultiplied(color.r * color.a, color.g * color.a, color.b * color.a, color.a * (1.0f - additive));
+
+            color = Utils::lerp(premultiplied, color, additive);
+
+            sb->draw(pParticle->pTexture, position + pParticle->position, color, 0.0f /* TODO */, size * scale * 0.01f * pParticle->texInvSize);
 
             pParticle = pParticle->pNext;
         }

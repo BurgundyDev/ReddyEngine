@@ -1,0 +1,49 @@
+{
+   "emitters" : [
+      {
+         "additive" : {
+            "endRange" : [ 0.0, 0.0 ],
+            "randomEnd" : false,
+            "randomStart" : false,
+            "startRange" : [ 1.0, 1.0 ]
+         },
+         "burstAmount" : 100,
+         "burstDuration" : 0.0,
+         "color" : {
+            "endRange" : [
+               [ 0.0, 0.0, 0.0, 0.0 ],
+               [ 0.0, 0.0, 0.0, 0.0 ]
+            ],
+            "randomEnd" : false,
+            "randomStart" : true,
+            "startRange" : [
+               [ 0.26470589637756348, 1.0, 0.0, 1.0 ],
+               [ 1.0, 1.0, 1.0, 1.0 ]
+            ]
+         },
+         "duration" : {
+            "random" : false,
+            "range" : [ 0.5, 1.5 ]
+         },
+         "endOnlyAffectAlpha" : true,
+         "size" : {
+            "endRange" : [ 50.0, 150.0 ],
+            "randomEnd" : true,
+            "randomStart" : true,
+            "startRange" : [ 0.0, 5.0 ]
+         },
+         "spawnRate" : 10.0,
+         "speed" : {
+            "endRange" : [ 0.0, 0.0 ],
+            "randomEnd" : false,
+            "randomStart" : true,
+            "startRange" : [ 300.0, 600.0 ]
+         },
+         "spread" : 360.0,
+         "texture" : "textures/particle.png",
+         "type" : "burst"
+      }
+   ],
+   "type" : "pfx",
+   "version" : 1
+}

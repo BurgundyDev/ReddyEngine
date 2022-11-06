@@ -66,8 +66,8 @@ namespace Engine
             startRange[0] = Utils::deserializeJsonValue<T>(json["startRange"][0]);
             startRange[1] = Utils::deserializeJsonValue<T>(json["startRange"][1]);
 
-            endRange[0] = Utils::deserializeJsonValue<T>(json["randomEnd"][0]);
-            endRange[1] = Utils::deserializeJsonValue<T>(json["randomEnd"][1]);
+            endRange[0] = Utils::deserializeJsonValue<T>(json["endRange"][0]);
+            endRange[1] = Utils::deserializeJsonValue<T>(json["endRange"][1]);
         }
 
         T genStart() const
@@ -132,13 +132,13 @@ namespace Engine
         float spawnRate = 10.0f; // For continuous
         TextureRef pTexture;
         float spread = 360.0f;
-        RangedPFXValue<glm::vec4> color = {{{0, 0, 0, 1}, {1, 1, 1, 1}}, {{0, 0, 0, 0}, {0, 0, 0, 0}}, true, false};
+        RangedPFXValue<glm::vec4> color = {{{1, .3f, 0, 1}, {1, 1, 1, 1}}, {{0, 0, 0, 0}, {0, 0, 0, 0}}, true, false};
         bool endOnlyAffectAlpha = true;
         RangedPFXValue<float> additive = {{1, 1}, {0, 0}, false, false};
-        RangedPFXValue<float> size = {{0, 5}, {5, 10}, true, true};
-        RangedPFXValue<float> speed = {{50, 100}, {0, 0}, true, false};
+        RangedPFXValue<float> size = {{0, 5}, {50, 150}, true, true};
+        RangedPFXValue<float> speed = {{300, 600}, {0, 0}, true, false};
         RangedPFXSingleValue<float> duration = {{0.5f, 1.5f}, false};
-        //TODO: Rotation, Gravity
+        //TODO: Rotation, Gravity, Spawn shape + radius
     };
 
 
@@ -177,10 +177,13 @@ namespace Engine
             float progress;
             float delay;
             TextureRef pTexture;
+            float texInvSize;
             glm::vec2 position;
             glm::vec2 dir;
             glm::vec4 colorStart;
             glm::vec4 colorEnd;
+            float additiveStart;
+            float additiveEnd;
             float sizeStart;
             float sizeEnd;
             float speedStart;
