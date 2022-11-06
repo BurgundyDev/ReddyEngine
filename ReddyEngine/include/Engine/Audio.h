@@ -8,10 +8,12 @@
 
 #include <SDL_audio.h>
 
+#include "Resource.h"
+
 
 namespace Engine
 {
-    class AudioStream
+    class AudioStream : public Resource
     {
     public:
         // Returns false when completed
@@ -23,7 +25,7 @@ namespace Engine
     using AudioStreamWeak = std::weak_ptr<AudioStream>;
 
 
-    class Audio final
+    class Audio final : public Resource
     {
     public:
         Audio();

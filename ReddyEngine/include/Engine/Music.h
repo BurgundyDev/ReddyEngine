@@ -3,6 +3,7 @@
 #pragma once
 
 #include <Engine/Audio.h>
+#include "Engine/Resource.h"
 
 #include <atomic>
 #include <memory>

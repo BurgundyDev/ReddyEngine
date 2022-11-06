@@ -3,6 +3,7 @@
 #include "Engine/Sound.h"
 #include "Engine/Music.h"
 #include "Engine/Texture.h"
+#include "Resource.h"
 #include <string>
 #include <unordered_map>
 
@@ -15,8 +16,20 @@ namespace Engine
 		MusicRef getMusic(const std::string& name);
 		TextureRef getTexture(const std::string& name);
 	private:
-		std::unordered_map<std::string, SoundRef> loadedSounds;
-		std::unordered_map<std::string, MusicRef> loadedMusic;
-		std::unordered_map<std::string, TextureRef> loadedTextures;
+		std::unordered_map<std::string, ResourceRef> loadedResources;
+
+		template<typename Tresouce, class Cresource>
+		std::shared_ptr<Tresouce> getResource(std::shared_ptr<Tresouce> ref, std::string name)
+		{
+			if (loadedResources.find(name) == loadedResources.end())
+			{
+				ref = Cresource::createFromFile(name);
+				loadedResources[name] = std::static_pointer_cast<Resource>(ref);
+				return ref;
+			}else
+			{
+				return std::static_pointer_cast<Tresouce>(loadedResources[name]);
+			}
+		}
 	};
 }

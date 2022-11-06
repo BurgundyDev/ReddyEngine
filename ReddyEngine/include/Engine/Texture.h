@@ -6,6 +6,8 @@
 #include <memory>
 #include <string>
 
+#include "Resource.h"
+
 
 namespace Engine
 {
@@ -20,7 +22,7 @@ namespace Engine
     };
 
 
-    class Texture
+    class Texture : public Resource
     {
     public:
         // Data is interleaved RGBA
