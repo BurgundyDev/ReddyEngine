@@ -25,7 +25,7 @@ MainMenuState::MainMenuState()
     // m_pMusic = Engine::Music::createFromFile("assets/musics/test_music.ogg");
     m_pMusic = g_pResourceManager->getMusic("test_music.ogg");
 
-    m_pFont = Engine::Font::createFromFile("assets/fonts/test_font.otf", 24);
+    m_pFont = g_pResourceManager->getFont("test_font.otf", 24);
 }
 
 MainMenuState::~MainMenuState()

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Engine/Audio.h>
+#include <Engine/Resource.h>
 
 #include <atomic>
 #include <memory>
@@ -16,7 +17,7 @@ namespace Engine
     using SoundInstanceRef = std::shared_ptr<SoundInstance>;
 
 
-    class Sound final
+    class Sound final : public Resource
     {
     public:
         static SoundRef createFromFile(const std::string& filename);

@@ -7,6 +7,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "Engine/Resource.h"
+
 
 struct stbtt_fontinfo;
 struct stbrp_context;
@@ -22,7 +24,7 @@ namespace Engine
     using TextureRef = std::shared_ptr<Texture>;
 
 
-    class Font final
+    class Font final : public Resource
     {
     public:
         static FontRef createFromFile(const std::string& filename, int height);
