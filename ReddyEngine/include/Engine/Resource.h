@@ -8,6 +8,9 @@ namespace Engine
     class Resource
     {
     public:
-        virtual ~Resource() {}
+        virtual ~Resource() {};
+        const std::string& getFilename() { return m_filename; };
+    protected:
+        std::string m_filename;
     };
 }

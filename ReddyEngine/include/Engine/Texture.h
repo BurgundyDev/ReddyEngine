@@ -32,9 +32,7 @@ namespace Engine
 
         void setData(const uint8_t* data); // For dynamic textures only
 
-
         const glm::ivec2& getSize() const { return m_size; }
-        const std::string& getName() const { return m_name; }
 
         void bind(int slot = 0);
 
@@ -43,7 +41,6 @@ namespace Engine
 
         glm::ivec2 m_size = { 0, 0 };
         GLuint m_handle = 0;
-        std::string m_name;
         bool m_isDynamic = false;
         TextureFormat m_format = TextureFormat::R8G8B8A8;
     };
