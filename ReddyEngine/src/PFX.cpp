@@ -69,6 +69,8 @@ namespace Engine
             emitterJson["endOnlyAffectAlpha"] = emitter.endOnlyAffectAlpha;
             emitterJson["additive"] = emitter.additive.serialize();
             emitterJson["size"] = emitter.size.serialize();
+            emitterJson["rotation"] = emitter.rotation.serialize();
+            emitterJson["rotationSpeed"] = emitter.rotationSpeed.serialize();
             emitterJson["speed"] = emitter.speed.serialize();
             emitterJson["duration"] = emitter.duration.serialize();
 
@@ -107,6 +109,8 @@ namespace Engine
             emitter.color.deserialize(emitterJson["color"]);
             emitter.additive.deserialize(emitterJson["additive"]);
             emitter.size.deserialize(emitterJson["size"]);
+            emitter.rotation.deserialize(emitterJson["rotation"]);
+            emitter.rotationSpeed.deserialize(emitterJson["rotationSpeed"]);
             emitter.speed.deserialize(emitterJson["speed"]);
             emitter.duration.deserialize(emitterJson["duration"]);
 
@@ -221,6 +225,9 @@ namespace Engine
             pParticle->additiveEnd = emitter.pEmitterRef->additive.genEnd();
             pParticle->sizeStart = emitter.pEmitterRef->size.genStart();
             pParticle->sizeEnd = emitter.pEmitterRef->size.genEnd();
+            pParticle->rotationSpeedStart = emitter.pEmitterRef->rotationSpeed.genStart();
+            pParticle->rotationSpeedEnd = emitter.pEmitterRef->rotationSpeed.genEnd();
+            pParticle->rotation = emitter.pEmitterRef->rotation.gen();
             pParticle->speedStart = emitter.pEmitterRef->speed.genStart();
             pParticle->speedEnd = emitter.pEmitterRef->speed.genEnd();
             pParticle->pTexture = emitter.pEmitterRef->pTexture;
@@ -282,12 +289,15 @@ namespace Engine
             auto speed = Utils::lerp(pParticle->speedStart, pParticle->speedEnd, pParticle->progress);
             pParticle->position += pParticle->dir * speed * dt;
 
+            auto rotationSpeed = Utils::lerp(pParticle->rotationSpeedStart, pParticle->rotationSpeedEnd, pParticle->progress);
+            pParticle->rotation += rotationSpeed * dt;
+
             pPrevParticle = pParticle;
             pParticle = pParticle->pNext;
         }
     }
 
-    void PFXInstance::draw(const glm::vec2& position, float rotation, float scale)
+    void PFXInstance::draw(const glm::vec2& position, float in_rotation, float scale)
     {
         if (!m_isAlive) return;
 
@@ -305,7 +315,7 @@ namespace Engine
 
             color = Utils::lerp(premultiplied, color, additive);
 
-            sb->draw(pParticle->pTexture, position + pParticle->position, color, 0.0f /* TODO */, size * scale * 0.01f * pParticle->texInvSize);
+            sb->draw(pParticle->pTexture, position + pParticle->position, color, pParticle->rotation + in_rotation, size * scale * 0.01f * pParticle->texInvSize);
 
             pParticle = pParticle->pNext;
         }

@@ -135,9 +135,11 @@ namespace Engine
         RangedPFXValue<glm::vec4> color = {{{1, .3f, 0, 1}, {1, 1, 1, 1}}, {{0, 0, 0, 0}, {0, 0, 0, 0}}, true, false};
         bool endOnlyAffectAlpha = true;
         RangedPFXValue<float> additive = {{1, 1}, {0, 0}, false, false};
+        RangedPFXSingleValue<float> rotation = {{0, 360}, true};
+        RangedPFXValue<float> rotationSpeed = {{90, 180}, {0, 0}, true, false};
         RangedPFXValue<float> size = {{0, 5}, {50, 150}, true, true};
         RangedPFXValue<float> speed = {{300, 600}, {0, 0}, true, false};
-        RangedPFXSingleValue<float> duration = {{0.5f, 1.5f}, false};
+        RangedPFXSingleValue<float> duration = {{0.5f, 1.5f}, true};
         //TODO: Rotation, Gravity, Spawn shape + radius
     };
 
@@ -176,6 +178,7 @@ namespace Engine
             bool inUse = false;
             float progress;
             float delay;
+            float rotation;
             TextureRef pTexture;
             float texInvSize;
             glm::vec2 position;
@@ -186,6 +189,8 @@ namespace Engine
             float additiveEnd;
             float sizeStart;
             float sizeEnd;
+            float rotationSpeedStart;
+            float rotationSpeedEnd;
             float speedStart;
             float speedEnd;
         };

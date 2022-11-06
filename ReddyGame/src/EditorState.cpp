@@ -278,6 +278,48 @@ void EditorState::drawPFXUI()
                     ImGui::Unindent(10.0f);
                 }
 
+                // Rotation
+                {
+                    ImGui::Text("Rotation");
+                    ImGui::Indent(10.0f);
+
+                    if (ImGui::Checkbox("Random##rotrandom", &emitter.rotation.random)) changed = true;
+                    ImGui::DragFloat("Rot 1", &emitter.rotation.range[0]);
+                    if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                    if (emitter.rotation.random)
+                    {
+                        ImGui::DragFloat("Rot 2", &emitter.rotation.range[1]);
+                        if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                    }
+
+                    ImGui::Unindent(10.0f);
+                }
+
+                // Rotation Speed
+                {
+                    ImGui::Text("Rotation Speed");
+                    ImGui::Indent(10.0f);
+
+                    if (ImGui::Checkbox("Random Start##rotspeedrandomstart", &emitter.rotationSpeed.randomStart)) changed = true;
+                    ImGui::DragFloat("Start Rot Speed 1", &emitter.rotationSpeed.startRange[0], 0.1f);
+                    if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                    if (emitter.rotationSpeed.randomStart)
+                    {
+                        ImGui::DragFloat("Start Rot Speed 2", &emitter.rotationSpeed.startRange[1], 0.1f);
+                        if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                    }
+                    if (ImGui::Checkbox("Random End##rotspeedrandomend", &emitter.rotationSpeed.randomEnd)) changed = true;
+                    ImGui::DragFloat("End Rot Speed 1", &emitter.rotationSpeed.endRange[0], 0.1f);
+                    if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                    if (emitter.rotationSpeed.randomEnd)
+                    {
+                        ImGui::DragFloat("End Rot Speed 2", &emitter.rotationSpeed.endRange[1], 0.1f);
+                        if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                    }
+
+                    ImGui::Unindent(10.0f);
+                }
+
                 // Speed
                 {
                     ImGui::Text("Speed");
