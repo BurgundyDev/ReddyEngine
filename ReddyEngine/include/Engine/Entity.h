@@ -27,7 +27,7 @@ namespace Engine
 		Transform m_transform;
 
 	public:
-		Entity(const EntityRef parent);
+		Entity(const EntityRef& parent);
 		Entity();
 		~Entity();
 

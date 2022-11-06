@@ -23,9 +23,9 @@ namespace Engine
 		return createEntity(root);
 	}
 
-	const EntityRef EntityManager::createEntity(EntityRef parent)
+	const EntityRef EntityManager::createEntity(const EntityRef& parent)
 	{
-		EntityRef newEntity = std::make_shared<Entity>();
+		EntityRef newEntity = std::make_shared<Entity>(Entity(parent));
 		newEntity->parent = parent.get();
 		newEntity->id = ++m_id;
 
@@ -35,7 +35,7 @@ namespace Engine
 		return newEntity;
 	}
 
-	void EntityManager::destroyEntity(EntityRef entity)
+	void EntityManager::destroyEntity(const EntityRef& entity)
 	{
 		entity->onDestroy();
 

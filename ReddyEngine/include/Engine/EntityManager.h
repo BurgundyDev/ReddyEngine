@@ -20,8 +20,8 @@ namespace Engine
 		void fixedUpdate(float deltaTime);
 
 		const EntityRef createEntity();
-		const EntityRef createEntity(const EntityRef parent);
-		void destroyEntity(const EntityRef entity);
+		const EntityRef createEntity(const EntityRef& parent);
+		void destroyEntity(const EntityRef& entity);
 	
 	private:
 		Entity* m_pRoot;

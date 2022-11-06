@@ -1,4 +1,5 @@
 #include "Engine/Component.h"
+#include "Engine/Log.h"
 
 namespace Engine
 {
@@ -34,12 +35,12 @@ namespace Engine
 
 	Json::Value Component::serialize()
 	{
-		throw std::logic_error("The method or operation is not implemented.");
+		return Json::nullValue;
 	}
 
 	void Component::deserialize(Json::Value json)
 	{
-		throw std::logic_error("The method or operation is not implemented.");
+		CORE_WARN("Deserialize not implemented.");
 	}
 
 }
