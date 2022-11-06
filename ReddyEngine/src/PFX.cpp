@@ -205,17 +205,6 @@ namespace Engine
         return nullptr;
     }
 
-    //
-    //static Vector2 randCircle(const Vector2& center, float radius)
-    //{
-    //    float dist = ORandFloat(0.0f, 1.0f);
-    //    dist *= dist;
-    //    dist = 1 - dist;
-    //    dist *= radius;
-    //    float angle = ORandFloat(0.0f, O2PI);
-    //    return{center.x + cosf(angle) * dist, center.y + sinf(angle) * dist};
-    //}
-
     void PFXInstance::spawn(int count, const Emitter& emitter)
     {
         for (int i = 0; i < count; ++i)
