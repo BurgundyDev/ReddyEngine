@@ -7,7 +7,9 @@
 #include <Engine/Log.h>
 #include <Engine/PFX.h>
 #include <Engine/ReddyEngine.h>
+#include <Engine/ResourceManager.h>
 #include <Engine/Scene.h>
+#include <Engine/SpriteBatch.h>
 #include <Engine/Utils.h>
 
 #include <imgui.h>
@@ -98,17 +100,191 @@ void EditorState::update(float dt)
         ImGui::EndMainMenuBar();
     }
 
+    switch (m_editDocumentType)
+    {
+        case EditDocumentType::Scene:
+            drawSceneUI();
+            break;
+        case EditDocumentType::PFX:
+            drawPFXUI();
+            if (m_pPfxInstance) m_pPfxInstance->update(dt);
+            break;
+    }
+}
+
+void EditorState::drawSceneUI()
+{
     // Layers
     if (ImGui::Begin("Layers"))
     {
-        ImGui::End();
     }
+    ImGui::End();
 
     // Inspector (For selected entity/entities)
-    if (ImGui::Begin("Inspector"))
+    if (ImGui::Begin("Entity Inspector"))
     {
-        ImGui::End();
     }
+    ImGui::End();
+}
+
+void EditorState::drawPFXUI()
+{
+    if (ImGui::Begin("PFX Inspector"))
+    {
+        if (ImGui::Button("Play"))
+        {
+            m_pPfxInstance = std::make_shared<Engine::PFXInstance>(m_pPfx);
+        }
+        if (ImGui::Button("Add Emitter"))
+        {
+            Engine::EmitterDef emitter;
+            emitter.pTexture = Engine::getResourceManager()->getTexture("textures/particle.png");
+            m_pPfx->emitters.push_back(emitter);
+        }
+        int i = 0;
+        for (auto& emitter : m_pPfx->emitters)
+        {
+            ++i;
+            if (ImGui::CollapsingHeader(("Emitter " + std::to_string(i)).c_str()))
+            {
+                ImGui::Indent(10.0f);
+
+                {
+                    const char* EMITTER_TYPE_CHOICES[] = { "burst", "continuous" };
+                    int current_choice = (int)emitter.type;
+                    if (ImGui::Combo("Type", &current_choice, "burst\0continuous"))
+                    {
+                        emitter.type = (Engine::EmitterType)current_choice;
+                    }
+                }
+
+                switch (emitter.type)
+                {
+                    case Engine::EmitterType::burst:
+                        ImGui::DragFloat("Burst Duration", &emitter.burstDuration, 0.01f, 0.0f, 60.0f * 20.0f);
+                        ImGui::DragInt("Burst Amount", &emitter.burstAmount, 1.0f, 1, 1000);
+                        break;
+                    case Engine::EmitterType::continuous:
+                        ImGui::DragFloat("Spawn Rate", &emitter.spawnRate);
+                        break;
+                }
+
+                {
+                    char buf[260];
+                    if (emitter.pTexture)
+                        memcpy(buf, emitter.pTexture->getFilename().c_str(), emitter.pTexture->getFilename().size() + 1);
+                    else
+                        buf[0] = '\0';
+                    ImGui::InputText("Texture", buf, 260);
+                    emitter.pTexture = Engine::getResourceManager()->getTexture(buf);
+                }
+
+                ImGui::SliderFloat("Spread", &emitter.spread, 0.0f, 360.0f);
+
+                // Color
+                {
+                    ImGui::Text("Color");
+                    ImGui::Indent(10.0f);
+
+                    ImGui::Checkbox("Random Start##colorrandomstart", &emitter.color.randomStart);
+                    ImGui::ColorEdit4("Start Color 1", &emitter.color.startRange[0].x);
+                    if (emitter.color.randomStart)
+                        ImGui::ColorEdit4("Start Color 2", &emitter.color.startRange[1].x);
+                    ImGui::Checkbox("Random End##colorrandomend", &emitter.color.randomEnd);
+                    ImGui::ColorEdit4("End Color 1", &emitter.color.endRange[0].x);
+                    if (emitter.color.randomEnd)
+                        ImGui::ColorEdit4("End Color 2", &emitter.color.endRange[1].x);
+                    ImGui::Checkbox("End only affect Alpha", &emitter.endOnlyAffectAlpha);
+
+                    ImGui::Unindent(10.0f);
+                }
+
+                // additive
+                {
+                    ImGui::Text("Additive");
+                    ImGui::Indent(10.0f);
+
+                    ImGui::Checkbox("Random Start##additiverandomstart", &emitter.additive.randomStart);
+                    ImGui::SliderFloat("Start Additive 1", &emitter.additive.startRange[0], 0.0f, 1.0f);
+                    if (emitter.additive.randomStart)
+                        ImGui::SliderFloat("Start Additive 2", &emitter.additive.startRange[1], 0.0f, 1.0f);
+                    ImGui::Checkbox("Random End##additiverandomend", &emitter.additive.randomEnd);
+                    ImGui::SliderFloat("End Additive 1", &emitter.additive.endRange[0], 0.0f, 1.0f);
+                    if (emitter.additive.randomEnd)
+                        ImGui::SliderFloat("End Additive 2", &emitter.additive.endRange[1], 0.0f, 1.0f);
+
+                    ImGui::Unindent(10.0f);
+                }
+
+                // size
+                {
+                    ImGui::Text("Additive");
+                    ImGui::Indent(10.0f);
+
+                    ImGui::Checkbox("Random Start##sizerandomstart", &emitter.size.randomStart);
+                    ImGui::DragFloat("Start Size 1", &emitter.size.startRange[0], 0.1f);
+                    if (emitter.size.randomStart)
+                        ImGui::DragFloat("Start Size 2", &emitter.size.startRange[1], 0.1f);
+                    ImGui::Checkbox("Random End##sizerandomend", &emitter.size.randomEnd);
+                    ImGui::DragFloat("End Size 1", &emitter.size.endRange[0], 0.1f);
+                    if (emitter.size.randomEnd)
+                        ImGui::DragFloat("End Size 2", &emitter.size.endRange[1], 0.1f);
+
+                    ImGui::Unindent(10.0f);
+                }
+
+                // size
+                {
+                    ImGui::Text("Speed");
+                    ImGui::Indent(10.0f);
+
+                    ImGui::Checkbox("Random Start##speedrandomstart", &emitter.speed.randomStart);
+                    ImGui::DragFloat("Start Speed 1", &emitter.speed.startRange[0]);
+                    if (emitter.speed.randomStart)
+                        ImGui::DragFloat("Start Speed 2", &emitter.speed.startRange[1]);
+                    ImGui::Checkbox("Random End##speedrandomend", &emitter.speed.randomEnd);
+                    ImGui::DragFloat("End Speed 1", &emitter.speed.endRange[0]);
+                    if (emitter.speed.randomEnd)
+                        ImGui::DragFloat("End Speed 2", &emitter.speed.endRange[1]);
+
+                    ImGui::Unindent(10.0f);
+                }
+
+                // Duration
+                {
+                    ImGui::Text("Duration");
+                    ImGui::Indent(10.0f);
+
+                    ImGui::Checkbox("Random##durationrandom", &emitter.duration.random);
+                    ImGui::DragFloat("Duration 1", &emitter.duration.range[0]);
+                    if (emitter.duration.random)
+                        ImGui::DragFloat("Duration 2", &emitter.duration.range[1]);
+
+                    ImGui::Unindent(10.0f);
+                }
+
+                ImGui::Unindent(10.0f);
+            }
+        }
+    }
+    ImGui::End();
+}
+
+void EditorState::draw()
+{
+    auto sb = Engine::getSpriteBatch().get();
+    sb->begin();
+
+    switch (m_editDocumentType)
+    {
+        case EditDocumentType::Scene:
+            break;
+        case EditDocumentType::PFX:
+            if (m_pPfxInstance) m_pPfxInstance->draw(Engine::getResolution() * 0.5f, 0.0f, 64.0f /*TODO zoom*/);
+            break;
+    }
+
+    sb->end();
 }
 
 
@@ -123,9 +299,15 @@ void EditorState::onNew(EditDocumentType documentType)
 
     // Clear everything
     m_editDocumentType = documentType;
-    m_dirty = false;
+    m_dirty = true;
     m_filename = "untitled";
     m_pActionManager->clear();
+
+    if (m_editDocumentType == EditDocumentType::PFX)
+    {
+        m_pPfx = Engine::PFX::create();
+        m_pfxJson = m_pPfx->serialize();
+    }
 }
 
 void EditorState::onOpen()
@@ -203,11 +385,14 @@ void EditorState::open(const std::string& filename)
 
     if (type == "scene")
     {
+        m_editDocumentType = EditDocumentType::Scene;
         Engine::Scene::deserialize(json);
     }
     else if (type == "pfx")
     {
-        m_pPfx = Engine::PFX::createFromFile(filename);
+        m_editDocumentType = EditDocumentType::PFX;
+        m_pPfx = Engine::PFX::createFromJson(json);
+        m_pfxJson = m_pPfx->serialize();
     }
     else
     {

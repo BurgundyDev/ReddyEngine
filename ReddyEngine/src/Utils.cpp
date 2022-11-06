@@ -729,6 +729,46 @@ namespace Engine
             return ret;
         }
 
+        Json::Value serializeJsonValue(int8_t val) { return serializeInt8(val); }
+        Json::Value serializeJsonValue(uint8_t val) { return serializeUInt8(val); }
+        Json::Value serializeJsonValue(int16_t val) { return serializeInt16(val); }
+        Json::Value serializeJsonValue(uint16_t val) { return serializeUInt16(val); }
+        Json::Value serializeJsonValue(int32_t val) { return serializeInt32(val); }
+        Json::Value serializeJsonValue(uint32_t val) { return serializeUInt32(val); }
+        Json::Value serializeJsonValue(int64_t val) { return serializeInt64(val); }
+        Json::Value serializeJsonValue(uint64_t val) { return serializeUInt64(val); }
+        Json::Value serializeJsonValue(float val) { return serializeFloat(val); }
+        Json::Value serializeJsonValue(double val) { return deserializeDouble(val); }
+        Json::Value serializeJsonValue(bool val) { return deserializeBool(val); }
+        Json::Value serializeJsonValue(const std::string &val) { return serializeString(val); }
+        Json::Value serializeJsonValue(const glm::vec2& val) { return serializeFloat2(&val.x); }
+        Json::Value serializeJsonValue(const glm::vec3& val) { return serializeFloat3(&val.x); }
+        Json::Value serializeJsonValue(const glm::vec4& val) { return serializeFloat4(&val.x); }
+        Json::Value serializeJsonValue(const glm::ivec2& val) { return serializeInt2(&val.x); }
+        Json::Value serializeJsonValue(const glm::ivec4& val) { return serializeInt4(&val.x); }
+        Json::Value serializeJsonValue(const glm::mat4& val) { return serializeMatrix(&val[0][0]); }
+        Json::Value serializeJsonValue(const std::vector<std::string> &val) { return serializeStringArray(val); }
+
+        template<> int8_t deserializeJsonValue<int8_t>(const Json::Value &json) { return deserializeInt8(json); }
+        template<> uint8_t deserializeJsonValue<uint8_t>(const Json::Value &json) { return deserializeUInt8(json); }
+        template<> int16_t deserializeJsonValue<int16_t>(const Json::Value &json) { return deserializeInt16(json); }
+        template<> uint16_t deserializeJsonValue<uint16_t>(const Json::Value &json) { return deserializeUInt16(json); }
+        template<> int32_t deserializeJsonValue<int32_t>(const Json::Value &json) { return deserializeInt32(json); }
+        template<> uint32_t deserializeJsonValue<uint32_t>(const Json::Value &json) { return deserializeUInt32(json); }
+        template<> int64_t deserializeJsonValue<int64_t>(const Json::Value &json) { return deserializeInt64(json); }
+        template<> uint64_t deserializeJsonValue<uint64_t>(const Json::Value &json) { return deserializeUInt64(json); }
+        template<> float deserializeJsonValue<float>(const Json::Value &json) { return deserializeFloat(json); }
+        template<> double deserializeJsonValue<double>(const Json::Value &json) { return deserializeDouble(json); }
+        template<> bool deserializeJsonValue<bool>(const Json::Value &json) { return deserializeBool(json); }
+        template<> std::string deserializeJsonValue<std::string>(const Json::Value &json) { return deserializeString(json); }
+        template<> glm::vec2 deserializeJsonValue<glm::vec2>(const Json::Value &json) { glm::vec2 ret; deserializeFloat2(&ret.x, json); return ret; }
+        template<> glm::vec3 deserializeJsonValue<glm::vec3>(const Json::Value &json) { glm::vec3 ret; deserializeFloat3(&ret.x, json); return ret; }
+        template<> glm::vec4 deserializeJsonValue<glm::vec4>(const Json::Value &json) { glm::vec4 ret; deserializeFloat4(&ret.x, json); return ret; }
+        template<> glm::ivec2 deserializeJsonValue<glm::ivec2>(const Json::Value &json) { glm::ivec2 ret; deserializeInt2(&ret.x, json); return ret; }
+        template<> glm::ivec4 deserializeJsonValue<glm::ivec4>(const Json::Value &json) { glm::ivec4 ret; deserializeInt4(&ret.x, json); return ret; }
+        template<> glm::mat4 deserializeJsonValue<glm::mat4>(const Json::Value &json) { glm::mat4 ret; deserializeMatrix(&ret[0][0], json); return ret; }
+        template<> std::vector<std::string> deserializeJsonValue<std::vector<std::string>>(const Json::Value &json) { return deserializeStringArray(json); }
+
         
         // Some magic found here: http://paulbourke.net/miscellaneous/interpolation/
         //

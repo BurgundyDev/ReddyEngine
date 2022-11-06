@@ -49,7 +49,6 @@ namespace Engine
 
         auto pRet = createFromData(size, image);
         stbi_image_free(image);
-        pRet->m_name = Utils::getFilename(filename);
         return pRet;
     }
 

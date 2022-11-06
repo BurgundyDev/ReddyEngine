@@ -2,6 +2,9 @@
 
 #include <json/json.h>
 #include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
 
 #include <string>
 #include <vector>
@@ -47,6 +50,7 @@ namespace Engine
         bool loadJson(Json::Value &out, const std::string& filename);
         bool saveJson(const Json::Value &json, const std::string& filename);
 
+        // Json serialize/deserialize
         Json::Value serializeInt8(int8_t val);
         Json::Value serializeUInt8(uint8_t val);
         Json::Value serializeInt16(int16_t val);
@@ -86,6 +90,28 @@ namespace Engine
         void deserializeInt4(int* out, const Json::Value &json, const int *in_default = nullptr);
         void deserializeMatrix(float* out, const Json::Value &json, const float *in_default = nullptr); // Null = identity
         std::vector<std::string> deserializeStringArray(const Json::Value &json, const std::vector<std::string> &in_default = {});
+        
+        Json::Value serializeJsonValue(int8_t val);
+        Json::Value serializeJsonValue(uint8_t val);
+        Json::Value serializeJsonValue(int16_t val);
+        Json::Value serializeJsonValue(uint16_t val);
+        Json::Value serializeJsonValue(int32_t val);
+        Json::Value serializeJsonValue(uint32_t val);
+        Json::Value serializeJsonValue(int64_t val);
+        Json::Value serializeJsonValue(uint64_t val);
+        Json::Value serializeJsonValue(float val);
+        Json::Value serializeJsonValue(double val);
+        Json::Value serializeJsonValue(bool val);
+        Json::Value serializeJsonValue(const std::string &val);
+        Json::Value serializeJsonValue(const glm::vec2& val);
+        Json::Value serializeJsonValue(const glm::vec3& val);
+        Json::Value serializeJsonValue(const glm::vec4& val);
+        Json::Value serializeJsonValue(const glm::ivec2& val);
+        Json::Value serializeJsonValue(const glm::ivec4& val);
+        Json::Value serializeJsonValue(const glm::mat4& val);
+        Json::Value serializeJsonValue(const std::vector<std::string> &val);
+
+        template<typename T> T deserializeJsonValue(const Json::Value &json);
 
 
         // Curves

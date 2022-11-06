@@ -2,6 +2,8 @@
 
 #include "GameState.h"
 
+#include <json/json.h>
+
 #include <memory>
 #include <string>
 
@@ -13,6 +15,9 @@ namespace Engine
 {
     class PFX;
     using PFXRef = std::shared_ptr<PFX>;
+
+    class PFXInstance;
+    using PFXInstanceRef = std::shared_ptr<PFXInstance>;
 }
 
 
@@ -30,6 +35,7 @@ public:
 
     void enter(const GameStateRef& previousState) override;
     void update(float dt) override;
+    void draw() override;
 
 private:
     // Events from UI or Shortcuts
@@ -52,9 +58,15 @@ private:
     bool saveAs(); // Returns false if user cancelled
     bool askSaveUnsavedChanges(); // Returns false if operation was cancelled
 
+    void drawSceneUI();
+    void drawPFXUI();
+
     EditDocumentType m_editDocumentType = EditDocumentType::Scene;
     ActionManagerRef m_pActionManager;
     std::string m_filename = "untitled";
     bool m_dirty = true;
+
+    Json::Value m_pfxJson; // Last serialized since last modification
     Engine::PFXRef m_pPfx;
+    Engine::PFXInstanceRef m_pPfxInstance;
 };
