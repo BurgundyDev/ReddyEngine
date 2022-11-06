@@ -38,6 +38,8 @@ namespace Engine
             }
         }
 
+        // A template implementing height for fonts that use it for Font::createFromFile
+        // A better and more versatile solution would be using a variable argument ResourceManager::getResource function, but as for now this only appears to be needed for fonts, no need to implement that.
         template<typename Tresouce>
         std::shared_ptr<Tresouce> getResource(const std::string& name, int height)
         {
