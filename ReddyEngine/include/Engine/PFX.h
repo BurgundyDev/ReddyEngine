@@ -37,6 +37,7 @@ namespace Engine
         T endRange[2];
         bool randomStart = false;
         bool randomEnd = false;
+        bool sameStartEnd = true;
 
         Json::Value serialize() const
         {
@@ -44,6 +45,7 @@ namespace Engine
 
             json["randomStart"] = randomStart;
             json["randomEnd"] = randomEnd;
+            json["sameStartEnd"] = sameStartEnd;
 
             Json::Value startRangeJson(Json::arrayValue);
             startRangeJson.append(Utils::serializeJsonValue(startRange[0]));
@@ -62,6 +64,7 @@ namespace Engine
         {
             randomStart = Utils::deserializeBool(json["randomStart"], false);
             randomEnd = Utils::deserializeBool(json["randomEnd"], false);
+            sameStartEnd = Utils::deserializeBool(json["sameStartEnd"], true);
 
             startRange[0] = Utils::deserializeJsonValue<T>(json["startRange"][0]);
             startRange[1] = Utils::deserializeJsonValue<T>(json["startRange"][1]);
@@ -77,8 +80,9 @@ namespace Engine
             return startRange[0] + (startRange[1] - startRange[0]) * p;
         }
 
-        T genEnd() const
+        T genEnd(const T& startValue) const
         {
+            if (sameStartEnd) return startValue;
             if (!randomEnd) return endRange[0];
             float p = (float)(rand() % 10001) / 10000.0f;
             return endRange[0] + (endRange[1] - endRange[0]) * p;
@@ -132,15 +136,16 @@ namespace Engine
         float spawnRate = 10.0f; // For continuous
         TextureRef pTexture;
         float spread = 360.0f;
-        RangedPFXValue<glm::vec4> color = {{{1, .3f, 0, 1}, {1, 1, 1, 1}}, {{0, 0, 0, 0}, {0, 0, 0, 0}}, true, false};
+        RangedPFXValue<glm::vec4> color = {{{1, .3f, 0, 1}, {1, 1, 1, 1}}, {{0, 0, 0, 0}, {0, 0, 0, 0}}, true, false, false};
         bool endOnlyAffectAlpha = true;
-        RangedPFXValue<float> additive = {{1, 1}, {0, 0}, false, false};
+        RangedPFXValue<float> additive = {{1, 1}, {0, 0}, false, false, false};
         RangedPFXSingleValue<float> rotation = {{0, 360}, true};
-        RangedPFXValue<float> rotationSpeed = {{90, 180}, {0, 0}, true, false};
-        RangedPFXValue<float> size = {{0, 5}, {50, 150}, true, true};
-        RangedPFXValue<float> speed = {{300, 600}, {0, 0}, true, false};
+        RangedPFXValue<float> rotationSpeed = {{90, 180}, {0, 0}, true, false, false};
+        RangedPFXValue<float> size = {{0, 5}, {50, 150}, true, true, false};
+        RangedPFXValue<float> speed = {{300, 600}, {0, 0}, true, false, false};
         RangedPFXSingleValue<float> duration = {{0.5f, 1.5f}, true};
-        //TODO: Rotation, Gravity, Spawn shape + radius
+        RangedPFXValue<glm::vec2> gravity = {{{0, -100.0f}, {0, 0}}, {{0, 0}, {0, 0}}, false, false, true};
+        //TODO: Spawn shape + radius
     };
 
 
@@ -182,6 +187,8 @@ namespace Engine
             TextureRef pTexture;
             float texInvSize;
             glm::vec2 position;
+            glm::vec2 gravityStart;
+            glm::vec2 gravityEnd;
             glm::vec2 dir;
             glm::vec4 colorStart;
             glm::vec4 colorEnd;

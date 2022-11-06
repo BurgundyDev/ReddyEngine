@@ -203,9 +203,11 @@ void EditorState::drawPFXUI()
 
                 // Color
                 {
+                    ImGui::Separator();
                     ImGui::Text("Color");
                     ImGui::Indent(10.0f);
 
+                    if (ImGui::Checkbox("Same Start-End##colorsamestartend", &emitter.color.sameStartEnd)) changed = true;
                     if (ImGui::Checkbox("Random Start##colorrandomstart", &emitter.color.randomStart)) changed = true;
                     ImGui::ColorEdit4("Start Color 1", &emitter.color.startRange[0].x);
                     if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
@@ -214,25 +216,30 @@ void EditorState::drawPFXUI()
                         ImGui::ColorEdit4("Start Color 2", &emitter.color.startRange[1].x);
                         if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
                     }
-                    if (ImGui::Checkbox("Random End##colorrandomend", &emitter.color.randomEnd)) changed = true;
-                    ImGui::ColorEdit4("End Color 1", &emitter.color.endRange[0].x);
-                    if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
-                    if (emitter.color.randomEnd)
+                    if (!emitter.color.sameStartEnd)
                     {
-                        ImGui::ColorEdit4("End Color 2", &emitter.color.endRange[1].x);
+                        if (ImGui::Checkbox("Random End##colorrandomend", &emitter.color.randomEnd)) changed = true;
+                        ImGui::ColorEdit4("End Color 1", &emitter.color.endRange[0].x);
+                        if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                        if (emitter.color.randomEnd)
+                        {
+                            ImGui::ColorEdit4("End Color 2", &emitter.color.endRange[1].x);
+                            if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                        }
+                        ImGui::Checkbox("End only affect Alpha", &emitter.endOnlyAffectAlpha);
                         if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
                     }
-                    ImGui::Checkbox("End only affect Alpha", &emitter.endOnlyAffectAlpha);
-                    if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
 
                     ImGui::Unindent(10.0f);
                 }
 
                 // additive
                 {
+                    ImGui::Separator();
                     ImGui::Text("Additive");
                     ImGui::Indent(10.0f);
-
+                    
+                    if (ImGui::Checkbox("Same Start-End##additivesamestartend", &emitter.additive.sameStartEnd)) changed = true;
                     if (ImGui::Checkbox("Random Start##additiverandomstart", &emitter.additive.randomStart)) changed = true;
                     ImGui::SliderFloat("Start Additive 1", &emitter.additive.startRange[0], 0.0f, 1.0f);
                     if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
@@ -241,13 +248,16 @@ void EditorState::drawPFXUI()
                         ImGui::SliderFloat("Start Additive 2", &emitter.additive.startRange[1], 0.0f, 1.0f);
                         if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
                     }
-                    if (ImGui::Checkbox("Random End##additiverandomend", &emitter.additive.randomEnd)) changed = true;
-                    ImGui::SliderFloat("End Additive 1", &emitter.additive.endRange[0], 0.0f, 1.0f);
-                    if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
-                    if (emitter.additive.randomEnd)
+                    if (!emitter.additive.sameStartEnd)
                     {
-                        ImGui::SliderFloat("End Additive 2", &emitter.additive.endRange[1], 0.0f, 1.0f);
+                        if (ImGui::Checkbox("Random End##additiverandomend", &emitter.additive.randomEnd)) changed = true;
+                        ImGui::SliderFloat("End Additive 1", &emitter.additive.endRange[0], 0.0f, 1.0f);
                         if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                        if (emitter.additive.randomEnd)
+                        {
+                            ImGui::SliderFloat("End Additive 2", &emitter.additive.endRange[1], 0.0f, 1.0f);
+                            if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                        }
                     }
 
                     ImGui::Unindent(10.0f);
@@ -255,9 +265,11 @@ void EditorState::drawPFXUI()
 
                 // size
                 {
+                    ImGui::Separator();
                     ImGui::Text("Size");
                     ImGui::Indent(10.0f);
-
+                    
+                    if (ImGui::Checkbox("Same Start-End##sizesamestartend", &emitter.size.sameStartEnd)) changed = true;
                     if (ImGui::Checkbox("Random Start##sizerandomstart", &emitter.size.randomStart)) changed = true;
                     ImGui::DragFloat("Start Size 1", &emitter.size.startRange[0], 0.1f);
                     if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
@@ -266,13 +278,16 @@ void EditorState::drawPFXUI()
                         ImGui::DragFloat("Start Size 2", &emitter.size.startRange[1], 0.1f);
                         if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
                     }
-                    if (ImGui::Checkbox("Random End##sizerandomend", &emitter.size.randomEnd)) changed = true;
-                    ImGui::DragFloat("End Size 1", &emitter.size.endRange[0], 0.1f);
-                    if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
-                    if (emitter.size.randomEnd)
+                    if (!emitter.size.sameStartEnd)
                     {
-                        ImGui::DragFloat("End Size 2", &emitter.size.endRange[1], 0.1f);
+                        if (ImGui::Checkbox("Random End##sizerandomend", &emitter.size.randomEnd)) changed = true;
+                        ImGui::DragFloat("End Size 1", &emitter.size.endRange[0], 0.1f);
                         if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                        if (emitter.size.randomEnd)
+                        {
+                            ImGui::DragFloat("End Size 2", &emitter.size.endRange[1], 0.1f);
+                            if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                        }
                     }
 
                     ImGui::Unindent(10.0f);
@@ -280,9 +295,10 @@ void EditorState::drawPFXUI()
 
                 // Rotation
                 {
+                    ImGui::Separator();
                     ImGui::Text("Rotation");
                     ImGui::Indent(10.0f);
-
+                    
                     if (ImGui::Checkbox("Random##rotrandom", &emitter.rotation.random)) changed = true;
                     ImGui::DragFloat("Rot 1", &emitter.rotation.range[0]);
                     if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
@@ -297,9 +313,11 @@ void EditorState::drawPFXUI()
 
                 // Rotation Speed
                 {
+                    ImGui::Separator();
                     ImGui::Text("Rotation Speed");
                     ImGui::Indent(10.0f);
-
+                    
+                    if (ImGui::Checkbox("Same Start-End##rotationspeedsamestartend", &emitter.rotationSpeed.sameStartEnd)) changed = true;
                     if (ImGui::Checkbox("Random Start##rotspeedrandomstart", &emitter.rotationSpeed.randomStart)) changed = true;
                     ImGui::DragFloat("Start Rot Speed 1", &emitter.rotationSpeed.startRange[0], 0.1f);
                     if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
@@ -308,13 +326,16 @@ void EditorState::drawPFXUI()
                         ImGui::DragFloat("Start Rot Speed 2", &emitter.rotationSpeed.startRange[1], 0.1f);
                         if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
                     }
-                    if (ImGui::Checkbox("Random End##rotspeedrandomend", &emitter.rotationSpeed.randomEnd)) changed = true;
-                    ImGui::DragFloat("End Rot Speed 1", &emitter.rotationSpeed.endRange[0], 0.1f);
-                    if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
-                    if (emitter.rotationSpeed.randomEnd)
+                    if (!emitter.rotationSpeed.sameStartEnd)
                     {
-                        ImGui::DragFloat("End Rot Speed 2", &emitter.rotationSpeed.endRange[1], 0.1f);
+                        if (ImGui::Checkbox("Random End##rotspeedrandomend", &emitter.rotationSpeed.randomEnd)) changed = true;
+                        ImGui::DragFloat("End Rot Speed 1", &emitter.rotationSpeed.endRange[0], 0.1f);
                         if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                        if (emitter.rotationSpeed.randomEnd)
+                        {
+                            ImGui::DragFloat("End Rot Speed 2", &emitter.rotationSpeed.endRange[1], 0.1f);
+                            if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                        }
                     }
 
                     ImGui::Unindent(10.0f);
@@ -322,9 +343,11 @@ void EditorState::drawPFXUI()
 
                 // Speed
                 {
+                    ImGui::Separator();
                     ImGui::Text("Speed");
                     ImGui::Indent(10.0f);
-
+                    
+                    if (ImGui::Checkbox("Same Start-End##speedsamestartend", &emitter.speed.sameStartEnd)) changed = true;
                     if (ImGui::Checkbox("Random Start##speedrandomstart", &emitter.speed.randomStart)) changed = true;
                     ImGui::DragFloat("Start Speed 1", &emitter.speed.startRange[0]);
                     if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
@@ -333,13 +356,16 @@ void EditorState::drawPFXUI()
                         ImGui::DragFloat("Start Speed 2", &emitter.speed.startRange[1]);
                         if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
                     }
-                    if (ImGui::Checkbox("Random End##speedrandomend", &emitter.speed.randomEnd)) changed = true;
-                    ImGui::DragFloat("End Speed 1", &emitter.speed.endRange[0]);
-                    if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
-                    if (emitter.speed.randomEnd)
+                    if (!emitter.speed.sameStartEnd)
                     {
-                        ImGui::DragFloat("End Speed 2", &emitter.speed.endRange[1]);
+                        if (ImGui::Checkbox("Random End##speedrandomend", &emitter.speed.randomEnd)) changed = true;
+                        ImGui::DragFloat("End Speed 1", &emitter.speed.endRange[0]);
                         if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                        if (emitter.speed.randomEnd)
+                        {
+                            ImGui::DragFloat("End Speed 2", &emitter.speed.endRange[1]);
+                            if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                        }
                     }
 
                     ImGui::Unindent(10.0f);
@@ -347,6 +373,7 @@ void EditorState::drawPFXUI()
 
                 // Duration
                 {
+                    ImGui::Separator();
                     ImGui::Text("Duration");
                     ImGui::Indent(10.0f);
 
@@ -357,6 +384,36 @@ void EditorState::drawPFXUI()
                     {
                         ImGui::DragFloat("Duration 2", &emitter.duration.range[1]);
                         if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                    }
+
+                    ImGui::Unindent(10.0f);
+                }
+
+                // Gravity
+                {
+                    ImGui::Separator();
+                    ImGui::Text("Gravity");
+                    ImGui::Indent(10.0f);
+                    
+                    if (ImGui::Checkbox("Same Start-End##gravitysamestartend", &emitter.gravity.sameStartEnd)) changed = true;
+                    if (ImGui::Checkbox("Random Start##gravityrandomstart", &emitter.gravity.randomStart)) changed = true;
+                    ImGui::DragFloat2("Start Grav 1", &emitter.gravity.startRange[0].x);
+                    if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                    if (emitter.gravity.randomStart)
+                    {
+                        ImGui::DragFloat2("Start Grav 2", &emitter.gravity.startRange[1].x);
+                        if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                    }
+                    if (!emitter.gravity.sameStartEnd)
+                    {
+                        if (ImGui::Checkbox("Random End##gravityrandomend", &emitter.gravity.randomEnd)) changed = true;
+                        ImGui::DragFloat2("End Grav 1", &emitter.gravity.endRange[0].x);
+                        if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                        if (emitter.gravity.randomEnd)
+                        {
+                            ImGui::DragFloat2("End Grav 2", &emitter.gravity.endRange[1].x);
+                            if (ImGui::IsItemDeactivatedAfterEdit()) changed = true;
+                        }
                     }
 
                     ImGui::Unindent(10.0f);

@@ -212,7 +212,7 @@ namespace Engine
             pParticle->position = {0, 0};
             pParticle->delay = 1.0f / emitter.pEmitterRef->duration.gen();
             pParticle->colorStart = emitter.pEmitterRef->color.genStart();
-            pParticle->colorEnd = emitter.pEmitterRef->color.genEnd();
+            pParticle->colorEnd = emitter.pEmitterRef->color.genEnd(pParticle->colorStart);
 
             if (emitter.pEmitterRef->endOnlyAffectAlpha)
             {
@@ -222,14 +222,16 @@ namespace Engine
             }
 
             pParticle->additiveStart = emitter.pEmitterRef->additive.genStart();
-            pParticle->additiveEnd = emitter.pEmitterRef->additive.genEnd();
+            pParticle->additiveEnd = emitter.pEmitterRef->additive.genEnd(pParticle->additiveStart);
+            pParticle->gravityStart = emitter.pEmitterRef->gravity.genStart();
+            pParticle->gravityEnd = emitter.pEmitterRef->gravity.genEnd(pParticle->gravityStart);
             pParticle->sizeStart = emitter.pEmitterRef->size.genStart();
-            pParticle->sizeEnd = emitter.pEmitterRef->size.genEnd();
+            pParticle->sizeEnd = emitter.pEmitterRef->size.genEnd(pParticle->sizeStart);
             pParticle->rotationSpeedStart = emitter.pEmitterRef->rotationSpeed.genStart();
-            pParticle->rotationSpeedEnd = emitter.pEmitterRef->rotationSpeed.genEnd();
+            pParticle->rotationSpeedEnd = emitter.pEmitterRef->rotationSpeed.genEnd(pParticle->rotationSpeedStart);
             pParticle->rotation = emitter.pEmitterRef->rotation.gen();
             pParticle->speedStart = emitter.pEmitterRef->speed.genStart();
-            pParticle->speedEnd = emitter.pEmitterRef->speed.genEnd();
+            pParticle->speedEnd = emitter.pEmitterRef->speed.genEnd(pParticle->speedStart);
             pParticle->pTexture = emitter.pEmitterRef->pTexture;
             pParticle->texInvSize = emitter.pEmitterRef->pTexture ? 1.0f / (float)emitter.pEmitterRef->pTexture->getSize().x : 1.0f;
             {
@@ -288,6 +290,9 @@ namespace Engine
 
             auto speed = Utils::lerp(pParticle->speedStart, pParticle->speedEnd, pParticle->progress);
             pParticle->position += pParticle->dir * speed * dt;
+
+            auto gravity = Utils::lerp(pParticle->gravityStart, pParticle->gravityEnd, pParticle->progress);
+            pParticle->position += gravity * dt;
 
             auto rotationSpeed = Utils::lerp(pParticle->rotationSpeedStart, pParticle->rotationSpeedEnd, pParticle->progress);
             pParticle->rotation += rotationSpeed * dt;

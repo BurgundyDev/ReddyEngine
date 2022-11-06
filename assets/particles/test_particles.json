@@ -5,6 +5,7 @@
             "endRange" : [ 0.0, 0.0 ],
             "randomEnd" : false,
             "randomStart" : false,
+            "sameStartEnd" : false,
             "startRange" : [ 1.0, 1.0 ]
          },
          "burstAmount" : 100,
@@ -16,8 +17,9 @@
             ],
             "randomEnd" : false,
             "randomStart" : true,
+            "sameStartEnd" : false,
             "startRange" : [
-               [ 0.26470589637756348, 1.0, 0.0, 1.0 ],
+               [ 1.0, 0.44117647409439087, 0.0, 1.0 ],
                [ 1.0, 1.0, 1.0, 1.0 ]
             ]
          },
@@ -34,12 +36,14 @@
             "endRange" : [ 0.0, 0.0 ],
             "randomEnd" : false,
             "randomStart" : true,
+            "sameStartEnd" : false,
             "startRange" : [ -360.0, 360.0 ]
          },
          "size" : {
-            "endRange" : [ 26.399999618530273, 84.0 ],
+            "endRange" : [ 15.300000190734863, 53.099998474121094 ],
             "randomEnd" : true,
             "randomStart" : true,
+            "sameStartEnd" : false,
             "startRange" : [ 0.0, 5.0 ]
          },
          "spawnRate" : 10.0,
@@ -47,9 +51,10 @@
             "endRange" : [ 0.0, 0.0 ],
             "randomEnd" : false,
             "randomStart" : true,
-            "startRange" : [ 300.0, 600.0 ]
+            "sameStartEnd" : false,
+            "startRange" : [ 446.0, 871.0 ]
          },
-         "spread" : 360.0,
+         "spread" : 82.247001647949219,
          "texture" : "",
          "type" : "burst"
       }
