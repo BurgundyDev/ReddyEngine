@@ -112,6 +112,16 @@ void EditorState::update(float dt)
             if (ImGui::MenuItem("Delete", "Del", nullptr, enabled)) onDelete();
             ImGui::EndMenu();
         }
+
+        if (ImGui::BeginMenu("View"))
+        {
+            if (ImGui::MenuItem("Reset Camera")) 
+            {
+                m_position = {0,0};
+                m_zoom = 2;
+            }
+            ImGui::EndMenu();
+        }
         
         ImGui::EndMainMenuBar();
     }
@@ -198,15 +208,28 @@ void EditorState::draw()
             // Draw faint cross in the middle so we know where's the center
             auto pos = -m_position;
             sb->drawRect(nullptr, glm::vec4(
-                Engine::getResolution().x * 0.5f + (pos.x - 1.0f) * m_zoomf,
+                Engine::getResolution().x * 0.5f + (pos.x - 10.0f) * m_zoomf,
                 Engine::getResolution().y * 0.5f + (pos.y) * m_zoomf,
-                2.0f * m_zoomf, 1.0f),
-                glm::vec4(0.35f));
+                20.0f * m_zoomf, 1.0f),
+                glm::vec4(0.5f));
             sb->drawRect(nullptr, glm::vec4(
                 Engine::getResolution().x * 0.5f + (pos.x) * m_zoomf,
-                Engine::getResolution().y * 0.5f + (pos.y - 1.0f) * m_zoomf,
-                1.0f, 2.0f * m_zoomf),
-                glm::vec4(0.35f));
+                Engine::getResolution().y * 0.5f + (pos.y - 10.0f) * m_zoomf,
+                1.0f, 20.0f * m_zoomf),
+                glm::vec4(0.5f));
+            for (int i = -10; i <= 10; ++i)
+            {
+                sb->drawRect(nullptr, glm::vec4(
+                    Engine::getResolution().x * 0.5f + (pos.x + (float)i) * m_zoomf,
+                    Engine::getResolution().y * 0.5f + (pos.y - 0.1f) * m_zoomf,
+                    1.0f, 0.2f * m_zoomf),
+                    glm::vec4(0.5f));
+                sb->drawRect(nullptr, glm::vec4(
+                    Engine::getResolution().x * 0.5f + (pos.x - 0.1f) * m_zoomf,
+                    Engine::getResolution().y * 0.5f + (pos.y + (float)i) * m_zoomf,
+                    0.2f * m_zoomf, 1.0f),
+                    glm::vec4(0.5f));
+            }
             if (m_pPfxInstance) m_pPfxInstance->draw(Engine::getResolution() * 0.5f - m_position * m_zoomf, 0.0f, m_zoomf);
             break;
         }
