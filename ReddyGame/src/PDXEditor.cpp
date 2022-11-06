@@ -326,7 +326,7 @@ void EditorState::drawPFXUI()
 
         if (changed)
         {
-            m_dirty = true;
+            setDirty(true);
             auto prevJson = m_pfxJson;
             m_pfxJson = m_pPfx->serialize();
             auto newJson = m_pfxJson;
@@ -336,14 +336,14 @@ void EditorState::drawPFXUI()
                 m_pPfxInstance.reset();
                 m_pPfx->deserialize(newJson);
                 m_pfxJson = newJson;
-                m_dirty = true;
+                setDirty(true);
             },
                                         [this, prevJson]() // Undo
             {
                 m_pPfxInstance.reset();
                 m_pPfx->deserialize(prevJson);
                 m_pfxJson = prevJson;
-                m_dirty = true;
+                setDirty(true);
             });
         }
     }

@@ -56,6 +56,14 @@ void EditorState::enter(const GameStateRef& previousState)
     }
 }
 
+void EditorState::setDirty(bool dirty)
+{
+    m_dirty = dirty;
+    auto caption = Engine::Utils::getFilenameWithoutExtension(m_filename);
+    if (m_dirty) caption += "*";
+    Engine::setWindowCaption(caption);
+}
+
 void EditorState::update(float dt)
 {
     // Shortcut (Hack, we should use events)
@@ -199,37 +207,38 @@ void EditorState::draw()
     auto sb = Engine::getSpriteBatch().get();
     sb->begin();
 
+    // Draw faint cross in the middle so we know where's the center
+    auto pos = -m_position;
+    sb->drawRect(nullptr, glm::vec4(
+        Engine::getResolution().x * 0.5f + (pos.x - 10.0f) * m_zoomf,
+        Engine::getResolution().y * 0.5f + (pos.y) * m_zoomf,
+        20.0f * m_zoomf, 1.0f),
+        glm::vec4(0.5f));
+    sb->drawRect(nullptr, glm::vec4(
+        Engine::getResolution().x * 0.5f + (pos.x) * m_zoomf,
+        Engine::getResolution().y * 0.5f + (pos.y - 10.0f) * m_zoomf,
+        1.0f, 20.0f * m_zoomf),
+        glm::vec4(0.5f));
+    for (int i = -10; i <= 10; ++i)
+    {
+        sb->drawRect(nullptr, glm::vec4(
+            Engine::getResolution().x * 0.5f + (pos.x + (float)i) * m_zoomf,
+            Engine::getResolution().y * 0.5f + (pos.y - 0.1f) * m_zoomf,
+            1.0f, 0.2f * m_zoomf),
+            glm::vec4(0.5f));
+        sb->drawRect(nullptr, glm::vec4(
+            Engine::getResolution().x * 0.5f + (pos.x - 0.1f) * m_zoomf,
+            Engine::getResolution().y * 0.5f + (pos.y + (float)i) * m_zoomf,
+            0.2f * m_zoomf, 1.0f),
+            glm::vec4(0.5f));
+    }
+
     switch (m_editDocumentType)
     {
         case EditDocumentType::Scene:
             break;
         case EditDocumentType::PFX:
         {
-            // Draw faint cross in the middle so we know where's the center
-            auto pos = -m_position;
-            sb->drawRect(nullptr, glm::vec4(
-                Engine::getResolution().x * 0.5f + (pos.x - 10.0f) * m_zoomf,
-                Engine::getResolution().y * 0.5f + (pos.y) * m_zoomf,
-                20.0f * m_zoomf, 1.0f),
-                glm::vec4(0.5f));
-            sb->drawRect(nullptr, glm::vec4(
-                Engine::getResolution().x * 0.5f + (pos.x) * m_zoomf,
-                Engine::getResolution().y * 0.5f + (pos.y - 10.0f) * m_zoomf,
-                1.0f, 20.0f * m_zoomf),
-                glm::vec4(0.5f));
-            for (int i = -10; i <= 10; ++i)
-            {
-                sb->drawRect(nullptr, glm::vec4(
-                    Engine::getResolution().x * 0.5f + (pos.x + (float)i) * m_zoomf,
-                    Engine::getResolution().y * 0.5f + (pos.y - 0.1f) * m_zoomf,
-                    1.0f, 0.2f * m_zoomf),
-                    glm::vec4(0.5f));
-                sb->drawRect(nullptr, glm::vec4(
-                    Engine::getResolution().x * 0.5f + (pos.x - 0.1f) * m_zoomf,
-                    Engine::getResolution().y * 0.5f + (pos.y + (float)i) * m_zoomf,
-                    0.2f * m_zoomf, 1.0f),
-                    glm::vec4(0.5f));
-            }
             if (m_pPfxInstance) m_pPfxInstance->draw(Engine::getResolution() * 0.5f - m_position * m_zoomf, 0.0f, m_zoomf);
             break;
         }
@@ -250,8 +259,8 @@ void EditorState::onNew(EditDocumentType documentType)
 
     // Clear everything
     m_editDocumentType = documentType;
-    m_dirty = true;
     m_filename = "untitled";
+    setDirty(true);
     m_pActionManager->clear();
 
     if (m_editDocumentType == EditDocumentType::PFX)
@@ -358,7 +367,7 @@ void EditorState::open(const std::string& filename)
     m_zoom = Engine::Utils::deserializeJsonValue<int>(json["camera"]["zoom"]);
     m_filename = filename;
     m_pActionManager->clear();
-    m_dirty = false;
+    setDirty(false);
     addRecentFile(m_filename);
 }
 
@@ -373,7 +382,7 @@ bool EditorState::openAs()
 
 void EditorState::save()
 {
-    m_dirty = false;
+    setDirty(false);
     Json::Value json;
 
     switch (m_editDocumentType)

@@ -61,6 +61,7 @@ private:
 
     void drawSceneUI();
     void drawPFXUI();
+    void setDirty(bool dirty);
 
     EditDocumentType m_editDocumentType = EditDocumentType::Scene;
     ActionManagerRef m_pActionManager;

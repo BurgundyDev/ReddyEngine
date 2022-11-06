@@ -35,5 +35,6 @@ namespace Engine
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv);
     glm::vec2 getResolution();
     void setFixedUpdateFPS(int fps = 60);
+    void setWindowCaption(const std::string& caption);
     void quit();
 }
