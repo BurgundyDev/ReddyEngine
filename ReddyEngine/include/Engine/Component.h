@@ -1,23 +1,23 @@
 #pragma once
 
-#include "Engine/ISerializable.h"
-
 #include <memory>
+
+#include <json/value.h>
 
 namespace Engine 
 {
 	class Entity;
 
-	class Component : ISerializable
+	class Component
 	{
 	public:
 		Component();
 		~Component();
 
-		std::shared_ptr<Entity> entity;
+		Entity* entity;
 
-		virtual void update(float deltaTime) = 0;
-		virtual void fixedUpdate(float deltaTime) = 0;
+		void update(float deltaTime);
+		void fixedUpdate(float deltaTime);
 
 		virtual void onCreate() = 0;
 		virtual void onDestroy() = 0;
@@ -27,10 +27,10 @@ namespace Engine
 		void enable();
 		void disable();
 
-		Json::Value serialize() override;
-		void deserialize(Json::Value json) override;
+		Json::Value serialize();
+		void deserialize(Json::Value json);
 	private:
-		bool isEnabled = true;
+		bool isEnabled = false;
 	};
 }
 

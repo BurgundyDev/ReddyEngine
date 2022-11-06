@@ -48,5 +48,5 @@ void EntityTestState::spawnLastEntityChild()
 		CLIENT_ERROR("There is no Last Entity!");
 		return;
 	}
-	Engine::getEntityManager()->createEntity(lastEntity);
+	Engine::getEntityManager()->createEntity(lastEntity.get());
 }

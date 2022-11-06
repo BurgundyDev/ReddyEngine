@@ -7,10 +7,7 @@
 
 namespace Engine
 {
-	// probably when moving from ReddyGame to Json's files 
-	// we should change EntityManager to be only owner of Entities
-	using EntityUnique = std::unique_ptr<Entity>;
-	using EntityShared = std::shared_ptr<Entity>;
+	using EntityRef = std::shared_ptr<Entity>;
 
 	class EntityManager final
 	{
@@ -21,11 +18,13 @@ namespace Engine
 		void update(float deltaTime);
 		void fixedUpdate(float deltaTime);
 
-		EntityShared& createEntity();
-		EntityShared& createEntity(EntityShared parent);
-		void destroyEntity(EntityShared entity);
+		EntityRef& createEntity();
+		EntityRef& createEntity(Entity* parent);
+		EntityRef& createEntity(EntityRef parent);
+		void destroyEntity(EntityRef entity);
 	
 	private:
-		EntityShared root;
+		Entity* m_root;
+		uint64_t m_id;
 	};
 }
