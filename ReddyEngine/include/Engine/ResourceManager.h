@@ -4,7 +4,8 @@
 #include "Engine/Music.h"
 #include "Engine/Texture.h"
 #include "Engine/Font.h"
-#include "Resource.h"
+#include "Engine/PFX.h"
+#include "Engine/Resource.h"
 #include <string>
 #include <unordered_map>
 
@@ -16,6 +17,7 @@ namespace Engine
         SoundRef getSound(const std::string& name);
         MusicRef getMusic(const std::string& name);
         TextureRef getTexture(const std::string& name);
+        PFXRef getPFX(const std::string& name);
         FontRef getFont(const std::string& name, int height);
     private:
         std::unordered_map<std::string, ResourceRef> loadedResources;
