@@ -4,6 +4,7 @@
 
 #include <json/json.h>
 #include <glm/vec2.hpp>
+#include <SDL_events.h>
 
 #include <memory>
 #include <string>
