@@ -26,18 +26,22 @@ namespace Engine
     class ResourceManager;
     using ResourceManagerRef = std::shared_ptr<ResourceManager>;
 
-    class SpriteManager;
-    using SpriteManagerRef = std::shared_ptr<SpriteManager>;
-
     class EntityManager;
     using EntityManagerRef = std::shared_ptr<EntityManager>;
+
+	class EventSystem;
+	using EventSystemRef = std::shared_ptr<EventSystem>;
+
+	class SpriteManager;
+	using SpriteManagerRef = std::shared_ptr<SpriteManager>;
 
 
     const SpriteBatchRef& getSpriteBatch();
     const InputRef& getInput();
     const AudioRef& getAudio();
     const ResourceManagerRef& getResourceManager();
-    const EntityManagerRef& getEntityManager();
+	const EntityManagerRef& getEntityManager();
+	const EventSystemRef& getEventSystem();
     const SpriteManagerRef& getSpriteManager();
 
 
