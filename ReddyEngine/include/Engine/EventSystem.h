@@ -11,12 +11,10 @@ namespace Engine
 {
 	class EventHandlerBase {
 	public:
-		// Call the member function
 		void exec(SDL_Event* evnt) {
 			call(evnt);
 		}
 	private:
-		// Implemented by MemberFunctionHandler
 		virtual void call(SDL_Event* evnt) = 0;
 	};
 
@@ -46,7 +44,7 @@ namespace Engine
 		std::queue<SDL_Event> m_pEventQueue;
 		std::map<SDL_EventType, HandlerList*> m_pEventHandlersMap;
 	public:
-		EventSystem(); // check if it will be useful later
+		EventSystem(); // remove later
 		~EventSystem();
 
 		void dispatchEvents();
