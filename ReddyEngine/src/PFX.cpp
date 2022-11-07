@@ -47,6 +47,8 @@ namespace Engine
         {
             Json::Value emitterJson;
 
+            emitterJson["name"] = emitter.name;
+
             switch (emitter.type)
             {
                 case EmitterType::burst:
@@ -95,6 +97,8 @@ namespace Engine
         for (const auto& emitterJson : emittersJson)
         {
             EmitterDef emitter;
+
+            emitter.name = Utils::deserializeString(emitterJson["name"], "emitter");
 
             auto type = Utils::deserializeString(emitterJson["type"], "burst");
             if (type == "burst") emitter.type = EmitterType::burst;

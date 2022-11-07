@@ -7,6 +7,159 @@
 #include <Engine/Texture.h>
 
 #include <imgui.h>
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui_internal.h>
+
+
+namespace ImGui
+{
+    // Button to close a window
+    bool UpButton(ImGuiID id, const ImVec2& pos)
+    {
+        ImGuiContext& g = *GImGui;
+        ImGuiWindow* window = g.CurrentWindow;
+
+        // Tweak 1: Shrink hit-testing area if button covers an abnormally large proportion of the visible region. That's in order to facilitate moving the window away. (#3825)
+        // This may better be applied as a general hit-rect reduction mechanism for all widgets to ensure the area to move window is always accessible?
+        const ImRect bb(pos, pos + ImVec2(g.FontSize, g.FontSize) + g.Style.FramePadding * 2.0f);
+        ImRect bb_interact = bb;
+        const float area_to_visible_ratio = window->OuterRectClipped.GetArea() / bb.GetArea();
+        if (area_to_visible_ratio < 1.5f)
+            bb_interact.Expand(ImFloor(bb_interact.GetSize() * -0.25f));
+
+        // Tweak 2: We intentionally allow interaction when clipped so that a mechanical Alt,Right,Activate sequence can always close a window.
+        // (this isn't the regular behavior of buttons, but it doesn't affect the user much because navigation tends to keep items visible).
+        bool is_clipped = !ItemAdd(bb_interact, id);
+
+        bool hovered, held;
+        bool pressed = ButtonBehavior(bb_interact, id, &hovered, &held);
+        if (is_clipped)
+            return pressed;
+
+        // Render
+        // FIXME: Clarify this mess
+        ImU32 col = GetColorU32(held ? ImGuiCol_ButtonActive : ImGuiCol_ButtonHovered);
+        ImVec2 center = bb.GetCenter();
+        if (hovered)
+            window->DrawList->AddCircleFilled(center, ImMax(2.0f, g.FontSize * 0.5f + 1.0f), col, 12);
+
+        float cross_extent = g.FontSize * 0.5f * 0.7071f - 1.0f;
+        ImU32 cross_col = GetColorU32(ImGuiCol_Text);
+        center -= ImVec2(0.5f, 0.5f);
+        window->DrawList->AddLine(center + ImVec2(0, -cross_extent * 0.5f), center + ImVec2(-cross_extent, cross_extent * 0.5f), cross_col, 1.0f);
+        window->DrawList->AddLine(center + ImVec2(0, -cross_extent * 0.5f), center + ImVec2(+cross_extent, cross_extent * 0.5f), cross_col, 1.0f);
+
+        return pressed;
+    }
+
+    // Button to close a window
+    bool DownButton(ImGuiID id, const ImVec2& pos)
+    {
+        ImGuiContext& g = *GImGui;
+        ImGuiWindow* window = g.CurrentWindow;
+
+        // Tweak 1: Shrink hit-testing area if button covers an abnormally large proportion of the visible region. That's in order to facilitate moving the window away. (#3825)
+        // This may better be applied as a general hit-rect reduction mechanism for all widgets to ensure the area to move window is always accessible?
+        const ImRect bb(pos, pos + ImVec2(g.FontSize, g.FontSize) + g.Style.FramePadding * 2.0f);
+        ImRect bb_interact = bb;
+        const float area_to_visible_ratio = window->OuterRectClipped.GetArea() / bb.GetArea();
+        if (area_to_visible_ratio < 1.5f)
+            bb_interact.Expand(ImFloor(bb_interact.GetSize() * -0.25f));
+
+        // Tweak 2: We intentionally allow interaction when clipped so that a mechanical Alt,Right,Activate sequence can always close a window.
+        // (this isn't the regular behavior of buttons, but it doesn't affect the user much because navigation tends to keep items visible).
+        bool is_clipped = !ItemAdd(bb_interact, id);
+
+        bool hovered, held;
+        bool pressed = ButtonBehavior(bb_interact, id, &hovered, &held);
+        if (is_clipped)
+            return pressed;
+
+        // Render
+        // FIXME: Clarify this mess
+        ImU32 col = GetColorU32(held ? ImGuiCol_ButtonActive : ImGuiCol_ButtonHovered);
+        ImVec2 center = bb.GetCenter();
+        if (hovered)
+            window->DrawList->AddCircleFilled(center, ImMax(2.0f, g.FontSize * 0.5f + 1.0f), col, 12);
+
+        float cross_extent = g.FontSize * 0.5f * 0.7071f - 1.0f;
+        ImU32 cross_col = GetColorU32(ImGuiCol_Text);
+        center -= ImVec2(0.5f, 0.5f);
+        window->DrawList->AddLine(center + ImVec2(0, cross_extent * 0.5f), center + ImVec2(-cross_extent, -cross_extent * 0.5f), cross_col, 1.0f);
+        window->DrawList->AddLine(center + ImVec2(0, cross_extent * 0.5f), center + ImVec2(+cross_extent, -cross_extent * 0.5f), cross_col, 1.0f);
+
+        return pressed;
+    }
+
+    // p_visible == NULL                        : regular collapsing header
+    // p_visible != NULL && *p_visible == true  : show a small close button on the corner of the header, clicking the button will set *p_visible = false
+    // p_visible != NULL && *p_visible == false : do not show the header at all
+    // Do not mistake this with the Open state of the header itself, which you can adjust with SetNextItemOpen() or ImGuiTreeNodeFlags_DefaultOpen.
+    // Returns 0 if collapsed, -1 if moving up, 1 if moving down, 2 if open. (Kind of hacky, but it works)
+    int CollapsingHeaderWithUpDown(const char* label, bool* p_visible = 0, ImGuiTreeNodeFlags flags = 0)
+    {
+        ImGuiWindow* window = GetCurrentWindow();
+        if (window->SkipItems)
+            return false;
+
+        if (p_visible && !*p_visible)
+            return false;
+
+        ImGuiID id = window->GetID(label);
+        flags |= ImGuiTreeNodeFlags_CollapsingHeader;
+        if (p_visible)
+            flags |= ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_ClipLabelForTrailingButton;
+        bool is_open = TreeNodeBehavior(id, flags, label);
+        int ret = 0;
+        if (p_visible != NULL)
+        {
+            {
+                // Create a small overlapping close button
+                // FIXME: We can evolve this into user accessible helpers to add extra buttons on title bars, headers, etc.
+                // FIXME: CloseButton can overlap into text, need find a way to clip the text somehow.
+                ImGuiContext& g = *GImGui;
+                ImGuiLastItemData last_item_backup = g.LastItemData;
+                float button_size = g.FontSize;
+                float button_x = ImMax(g.LastItemData.Rect.Min.x, g.LastItemData.Rect.Max.x - g.Style.FramePadding.x * 2.0f - button_size);
+                float button_y = g.LastItemData.Rect.Min.y;
+                ImGuiID close_button_id = GetIDWithSeed("#CLOSE", NULL, id);
+                if (CloseButton(close_button_id, ImVec2(button_x, button_y)))
+                    *p_visible = false;
+                g.LastItemData = last_item_backup;
+            }
+            {
+                // Create a small overlapping close button
+                // FIXME: We can evolve this into user accessible helpers to add extra buttons on title bars, headers, etc.
+                // FIXME: CloseButton can overlap into text, need find a way to clip the text somehow.
+                ImGuiContext& g = *GImGui;
+                ImGuiLastItemData last_item_backup = g.LastItemData;
+                float button_size = g.FontSize;
+                float button_x = ImMax(g.LastItemData.Rect.Min.x, g.LastItemData.Rect.Max.x - g.Style.FramePadding.x * 2.0f - button_size);
+                float button_y = g.LastItemData.Rect.Min.y;
+                ImGuiID close_button_id = GetIDWithSeed("#MOVDOWN", NULL, id);
+                if (DownButton(close_button_id, ImVec2(button_x - 20, button_y)))
+                    ret = 1;
+                g.LastItemData = last_item_backup;
+            }
+            {
+                // Create a small overlapping close button
+                // FIXME: We can evolve this into user accessible helpers to add extra buttons on title bars, headers, etc.
+                // FIXME: CloseButton can overlap into text, need find a way to clip the text somehow.
+                ImGuiContext& g = *GImGui;
+                ImGuiLastItemData last_item_backup = g.LastItemData;
+                float button_size = g.FontSize;
+                float button_x = ImMax(g.LastItemData.Rect.Min.x, g.LastItemData.Rect.Max.x - g.Style.FramePadding.x * 2.0f - button_size);
+                float button_y = g.LastItemData.Rect.Min.y;
+                ImGuiID close_button_id = GetIDWithSeed("#MOVUP", NULL, id);
+                if (UpButton(close_button_id, ImVec2(button_x - 40, button_y)))
+                    ret = -1;
+                g.LastItemData = last_item_backup;
+            }
+        }
+
+        return ret ? ret : (is_open ? 2 : 0);
+    }
+}
 
 
 void EditorState::drawPFXUI()
@@ -31,17 +184,24 @@ void EditorState::drawPFXUI()
             auto& emitter = *it;
 
             ++i;
-            if (ImGui::CollapsingHeader(("Emitter " + std::to_string(i)).c_str()))
+            bool open = true;
+            int nav = 0;
+            if ((nav = ImGui::CollapsingHeaderWithUpDown((emitter.name + "##emitter" + std::to_string(i)).c_str(), &open)) == 2)
             {
+                ImGui::PushID(i);
                 ImGui::Indent(10.0f);
-                
-                if (ImGui::Button(("Remove Emitter " + std::to_string(i)).c_str()))
-                {
-                    changed = true;
-                    it = m_pPfx->emitters.erase(it);
-                    continue;
-                }
 
+                {
+                    char buf[260];
+                    memcpy(buf, emitter.name.c_str(), emitter.name.size() + 1);
+                    ImGui::InputText("Name", buf, 260);
+                    if (ImGui::IsItemDeactivatedAfterEdit())
+                    {
+                        emitter.name = buf;
+                        changed = true;
+                    }
+                }
+                
                 {
                     const char* EMITTER_TYPE_CHOICES[] = { "burst", "continuous" };
                     int current_choice = (int)emitter.type;
@@ -319,6 +479,38 @@ void EditorState::drawPFXUI()
                 }
 
                 ImGui::Unindent(10.0f);
+                ImGui::PopID();
+            }
+
+            if (!open)
+            {
+                changed = true;
+                it = m_pPfx->emitters.erase(it);
+                continue;
+            }
+
+            if (nav == -1)
+            {
+                if (i > 1)
+                {
+                    changed = true;
+                    auto copy = emitter;
+                    it = m_pPfx->emitters.erase(it);
+                    it = m_pPfx->emitters.insert(it - 1, copy) + 1;
+                    continue;
+                }
+            }
+
+            if (nav == 1)
+            {
+                if (i < (int)m_pPfx->emitters.size())
+                {
+                    changed = true;
+                    auto copy = emitter;
+                    it = m_pPfx->emitters.erase(it);
+                    it = m_pPfx->emitters.insert(it + 1, copy) + 1;
+                    continue;
+                }
             }
 
             ++it;
