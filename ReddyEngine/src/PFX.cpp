@@ -141,7 +141,7 @@ namespace Engine
             auto pEmitter = &m_emitters[i];
             pEmitter->pEmitterRef = &pfxEmitters[i];
             pEmitter->progress = 0.0f;
-            pEmitter->spawnAccum = 0.0f;
+            pEmitter->spawnAccum = 1.0f;
             pEmitter->spawnRate = pEmitter->pEmitterRef->spawnRate;
             if (pEmitter->pEmitterRef->type == EmitterType::burst && pEmitter->pEmitterRef->burstDuration > 0.0f)
             {
@@ -284,7 +284,7 @@ namespace Engine
                 }
             }
 
-            emitter.spawnAccum += dt / emitter.spawnRate;
+            emitter.spawnAccum += dt * emitter.spawnRate;
 
             while (emitter.spawnAccum >= 1.0f)
             {
