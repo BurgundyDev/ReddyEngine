@@ -73,6 +73,8 @@ void EditorState::update(float dt)
             if (Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT)) onRedo();
             else onUndo();
         }
+        if (Engine::getInput()->isKeyJustDown(SDL_SCANCODE_SPACE) && !ImGui::GetIO().WantCaptureKeyboard)
+            m_pPfxInstance = std::make_shared<Engine::PFXInstance>(m_pPfx);
     }
 
     // Menu bar
@@ -130,7 +132,16 @@ void EditorState::update(float dt)
             }
             ImGui::EndMenu();
         }
-        
+
+        if (ImGui::BeginMenu("PFX"))
+        {
+            if (ImGui::MenuItem("Play", "Spacebar"))
+            {
+                m_pPfxInstance = std::make_shared<Engine::PFXInstance>(m_pPfx);
+            }
+            ImGui::EndMenu();
+        }
+
         ImGui::EndMainMenuBar();
     }
 

@@ -1,6 +1,7 @@
 #include "EditorState.h"
 #include "ActionManager.h"
 
+#include <Engine/Input.h>
 #include <Engine/PFX.h>
 #include <Engine/ReddyEngine.h>
 #include <Engine/ResourceManager.h>
@@ -166,18 +167,14 @@ void EditorState::drawPFXUI()
 {
     if (ImGui::Begin("PFX Inspector"))
     {
-        if (ImGui::Button("Play"))
+        ImGui::BeginChild("Client Area", ImGui::GetWindowSize() - ImVec2(12, 62));
+
+        if (/*ImGui::Button("Play [SpaceBar]") || */
+            (Engine::getInput()->isKeyJustDown(SDL_SCANCODE_SPACE) && !ImGui::GetIO().WantCaptureKeyboard))
         {
             m_pPfxInstance = std::make_shared<Engine::PFXInstance>(m_pPfx);
         }
         bool changed = false;
-        if (ImGui::Button("Add Emitter"))
-        {
-            Engine::EmitterDef emitter;
-            emitter.pTexture = Engine::getResourceManager()->getTexture("textures/particle.png");
-            m_pPfx->emitters.push_back(emitter);
-            changed = true;
-        }
         int i = 0;
         for (auto it = m_pPfx->emitters.begin(); it != m_pPfx->emitters.end(); )
         {
@@ -514,6 +511,19 @@ void EditorState::drawPFXUI()
             }
 
             ++it;
+        }
+
+        ImGui::EndChild();
+
+        ImGui::Separator();
+
+        ImGui::SetCursorPos({ImGui::GetWindowWidth() - 50, ImGui::GetCursorPosY()});
+        if (ImGui::Button(" + "))
+        {
+            Engine::EmitterDef emitter;
+            emitter.pTexture = Engine::getResourceManager()->getTexture("textures/particle.png");
+            m_pPfx->emitters.push_back(emitter);
+            changed = true;
         }
 
         if (changed)
