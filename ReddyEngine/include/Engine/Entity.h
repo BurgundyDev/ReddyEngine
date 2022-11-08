@@ -74,8 +74,8 @@ namespace Engine
 
 			pComponent = std::make_shared<T>();
 			
-			pComponent->entity = this;
-			m_components->push_back(pComponent);
+			pComponent->m_pEntity = this;
+			m_components.push_back(pComponent);
 			componentAdded(pComponent);
 
 			return pComponent;

@@ -7,7 +7,6 @@
 namespace Engine
 {
     class SpriteComponent;
-    using SpriteComponentRef = std::shared_ptr<SpriteComponent>;
 
 
     class SpriteManager final
@@ -15,12 +14,12 @@ namespace Engine
     public:
         void clear();
 
-        void registerSprite(const SpriteComponentRef& pSprite);
-        void deregisterSprite(const SpriteComponentRef& pSprite);
+        void registerSprite(SpriteComponent* pSprite);
+        void deregisterSprite(SpriteComponent* pSprite);
 
         void draw();
 
     private:
-        std::vector<SpriteComponentRef> m_sprites;
+        std::vector<SpriteComponent*> m_sprites;
     };
 }

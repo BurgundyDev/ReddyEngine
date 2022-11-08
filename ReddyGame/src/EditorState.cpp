@@ -12,6 +12,9 @@
 #include <Engine/Scene.h>
 #include <Engine/SpriteBatch.h>
 #include <Engine/Utils.h>
+#include <Engine/Entity.h>
+#include <Engine/EntityManager.h>
+#include <Engine/SpriteComponent.h>
 
 #include <imgui.h>
 #include <tinyfiledialogs/tinyfiledialogs.h>
@@ -235,6 +238,16 @@ void EditorState::update(float dt)
         auto zoomTarget = ZOOM_LEVELS[m_zoom];
         m_zoomf = Engine::Utils::lerp(m_zoomf, zoomTarget, std::min(1.0f, dt * 50.0f));
     }
+
+    // Update scene
+    switch (m_editDocumentType)
+    {
+        case EditDocumentType::Scene:
+            Engine::Scene::update(dt);
+            break;
+        case EditDocumentType::PFX:
+            break;
+    }
 }
 
 void EditorState::drawSceneUI()
@@ -286,15 +299,28 @@ void EditorState::draw()
     switch (m_editDocumentType)
     {
         case EditDocumentType::Scene:
+            Engine::Scene::draw();
             break;
         case EditDocumentType::PFX:
-        {
             if (m_pPfxInstance) m_pPfxInstance->draw(Engine::getResolution() * 0.5f - m_position * m_zoomf, 0.0f, m_zoomf);
             break;
-        }
     }
 
     sb->end();
+}
+
+void EditorState::changeSelection(const std::vector<Engine::EntityRef>& in_newSelection)
+{
+    auto prevSelection = m_selected;
+    auto newSelection = in_newSelection;
+
+    m_pActionManager->addAction("Select", [this, newSelection]()
+    {
+        m_selected = newSelection;
+    }, [this, prevSelection]()
+    {
+        m_selected = prevSelection;
+    });
 }
 
 
@@ -375,22 +401,36 @@ void EditorState::onDelete()
 
 void EditorState::onCreateEmptyEntity()
 {
+    auto pEntity = Engine::getEntityManager()->createEntity();
+    changeSelection({pEntity});
 }
 
 void EditorState::onCreateSpriteEntity()
 {
+    auto pEntity = Engine::getEntityManager()->createEntity();
+    pEntity->addComponent<Engine::SpriteComponent>();
+    changeSelection({pEntity});
 }
 
 void EditorState::onCreateTextEntity()
 {
+    //auto pEntity = Engine::getEntityManager()->createEntity();
+    //pEntity->addComponent<Engine::TextComponent>();
+    //changeSelection({pEntity});
 }
 
 void EditorState::onCreateSoundEntity()
 {
+    //auto pEntity = Engine::getEntityManager()->createEntity();
+    //pEntity->addComponent<Engine::SoundComponent>();
+    //changeSelection({pEntity});
 }
 
 void EditorState::onCreateParticleEntity()
 {
+    //auto pEntity = Engine::getEntityManager()->createEntity();
+    //pEntity->addComponent<Engine::PFXComponent>();
+    //changeSelection({pEntity});
 }
 
 

@@ -241,7 +241,7 @@ namespace Engine
             glm::vec2 offset = 
                 chr->offset.x * right * scale + 
                 chr->offset.y * down * scale;
-            sb->draw(m_pAtlas, pos + offset, color, rotation, scale, {0.0f, 0.0f}, chr->uvs);
+            sb->draw(m_pAtlas, pos + offset, color, rotation, glm::vec2(scale), {0.0f, 0.0f}, chr->uvs);
 
             // Advance
             float xAdvance = chr->xAdvance;

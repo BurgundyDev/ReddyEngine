@@ -36,17 +36,27 @@ namespace Engine
 		m_pRoot = std::make_shared<Entity>();
 	}
 
-	const EntityRef EntityManager::createEntity()
+	EntityRef EntityManager::createEntity()
 	{
 		EntityRef pNewEntity = std::make_shared<Entity>();
 		pNewEntity->id = ++m_id;
+		m_pRoot->addChild(pNewEntity);
 		return pNewEntity;
 	}
 
-	const EntityRef EntityManager::createEntity(const Json::Value& json)
+	EntityRef EntityManager::createEntity(const EntityRef& pParent)
+	{
+		EntityRef pNewEntity = std::make_shared<Entity>();
+		pNewEntity->id = ++m_id;
+		pParent->addChild(pNewEntity);
+		return pNewEntity;
+	}
+
+	EntityRef EntityManager::createEntityFromJson(const EntityRef& pParent, const Json::Value& json)
 	{
 		EntityRef pNewEntity = std::make_shared<Entity>();
 		pNewEntity->deserialize(json);
+		pParent->addChild(pNewEntity);
 		m_id = std::max(m_id, pNewEntity->id + 1); // If we're loading a file, make sure next id is at least higher than this one
 		return pNewEntity;
 	}

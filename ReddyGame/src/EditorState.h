@@ -19,6 +19,9 @@ namespace Engine
 
     class PFXInstance;
     using PFXInstanceRef = std::shared_ptr<PFXInstance>;
+
+    class Entity;
+    using EntityRef = std::shared_ptr<Entity>;
 }
 
 
@@ -68,6 +71,7 @@ private:
     void drawPFXUI();
     void setDirty(bool dirty);
     void clear();
+    void changeSelection(const std::vector<Engine::EntityRef>& newSelection);
 
     EditDocumentType m_editDocumentType = EditDocumentType::Scene;
     ActionManagerRef m_pActionManager;
@@ -89,4 +93,7 @@ private:
     Json::Value m_pfxJson; // Last serialized since last modification
     Engine::PFXRef m_pPfx;
     Engine::PFXInstanceRef m_pPfxInstance;
+
+    // Scene editor stuff
+    std::vector<Engine::EntityRef> m_selected;
 };

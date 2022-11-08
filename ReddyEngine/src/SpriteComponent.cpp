@@ -3,27 +3,34 @@
 #include "Engine/Texture.h"
 #include "Engine/ResourceManager.h"
 #include "Engine/ReddyEngine.h"
+#include "Engine/SpriteManager.h"
 
 
 namespace Engine
 {
+    SpriteComponent::SpriteComponent()
+    {
+        pTexture = getResourceManager()->getTexture("textures/defaultTexture.png");
+    }
+
     void SpriteComponent::onEnable()
     {
-        // Register
+        getSpriteManager()->registerSprite(this);
     }
 
     void SpriteComponent::onDisable()
     {
-        // Deregister
+        getSpriteManager()->deregisterSprite(this);
     }
 
     Json::Value SpriteComponent::serialize()
     {
         auto json = Component::serialize();
 
-        json["texture"] = m_pTexture ? m_pTexture->getFilename() : "";
-        json["color"] = Utils::serializeJsonValue(m_color);
-        json["origin"] = Utils::serializeJsonValue(m_origin);
+        json["texture"] = pTexture ? pTexture->getFilename() : "";
+        json["color"] = Utils::serializeJsonValue(color);
+        json["origin"] = Utils::serializeJsonValue(origin);
+        json["uvs"] = Utils::serializeJsonValue(uvs);
 
         return json;
     }
@@ -32,10 +39,15 @@ namespace Engine
     {
         Component::deserialize(json);
 
-        m_pTexture = getResourceManager()->getTexture(Utils::deserializeString("texture"));
+        pTexture = getResourceManager()->getTexture(Utils::deserializeString("texture"));
+
         const float DEFAULT_COLOR[4] = {1, 1, 1, 1};
-        Utils::deserializeFloat4(&m_color.r, json["color"], DEFAULT_COLOR);
+        Utils::deserializeFloat4(&color.r, json["color"], DEFAULT_COLOR);
+
         const float DEFAULT_ORIGIN[2] = {0.5f, 0.5f};
-        Utils::deserializeFloat2(&m_origin.r, json["origin"], DEFAULT_ORIGIN);
+        Utils::deserializeFloat2(&origin.x, json["origin"], DEFAULT_ORIGIN);
+
+        const float DEFAULT_UVS[4] = {0, 0, 1, 1};
+        Utils::deserializeFloat4(&uvs.x, json["uvs"], DEFAULT_UVS);
     }
 }

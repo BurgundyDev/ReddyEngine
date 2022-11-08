@@ -15,7 +15,7 @@ namespace Engine
     class SpriteComponent final : public Component
     {
     public:
-		SpriteComponent() {}
+		SpriteComponent();
 		~SpriteComponent() {}
 
 		void onEnable() override;
@@ -26,9 +26,9 @@ namespace Engine
 
 		std::string getType() const override { return "Sprite"; }
 
-	private:
-		TextureRef m_pTexture;
-		glm::vec4 m_color = {1, 1, 1, 1};
-		glm::vec2 m_origin = {0.5f, 0.5f};
+		TextureRef pTexture;
+		glm::vec4 color = {1, 1, 1, 1};
+		glm::vec2 origin = {0.5f, 0.5f};
+		glm::vec4 uvs = {0, 0, 1, 1};
     };
 }

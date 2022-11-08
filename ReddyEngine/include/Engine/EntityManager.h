@@ -25,8 +25,9 @@ namespace Engine
 
 		void clear();
 
-		const EntityRef createEntity();
-		const EntityRef createEntity(const Json::Value& json);
+		EntityRef createEntity(); // Adds to root
+		EntityRef createEntity(const EntityRef& pParent);
+		EntityRef createEntityFromJson(const EntityRef& pParent, const Json::Value& json);
 		void destroyEntity(EntityRef pEntity);
 
 		const EntityRef& getRoot() const { return m_pRoot; }

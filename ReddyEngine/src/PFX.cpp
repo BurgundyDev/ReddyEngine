@@ -340,7 +340,7 @@ namespace Engine
 
             color = Utils::lerp(premultiplied, color, additive);
 
-            sb->draw(pParticle->pTexture, position + pParticle->position * scale, color, pParticle->rotation + in_rotation, size * scale * pParticle->texInvSize);
+            sb->draw(pParticle->pTexture, position + pParticle->position * scale, color, pParticle->rotation + in_rotation, glm::vec2(size * scale * pParticle->texInvSize));
 
             pParticle = pParticle->pNext;
         }

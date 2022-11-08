@@ -27,7 +27,7 @@ namespace Engine
             m_commandsCopy = m_commands;
             m_commands.clear();
 
-            for (const auto& command : m_commands)
+            for (const auto& command : m_commandsCopy)
             {
                 switch (command.type)
                 {

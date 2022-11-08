@@ -46,6 +46,8 @@ namespace Engine
 		virtual bool edit() { return false; } // For editor, returns true if the Inspector modified a value
 
 	private:
+		friend class Entity;
+
 		bool m_isEnabled = true;
 		Entity* m_pEntity = nullptr;
 	};
