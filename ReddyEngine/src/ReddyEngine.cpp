@@ -44,7 +44,7 @@ namespace Engine
         {
             auto success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO) == 0;
             SDL_GLContext gl_context = SDL_GL_CreateContext(NULL);
-            CORE_FATAL(success, "Error: %s", SDL_GetError());
+            CORE_ASSERT(success, "Error: %s", SDL_GetError());
         }
 
       
@@ -116,6 +116,11 @@ namespace Engine
 
         // Once everything is setup, the game can load stuff
         pGame->loadContent();
+
+        // Register Input Event Listeners 
+
+        g_pEventSystem->registerListener<Engine::KeyEvent>(g_pInput.get(), std::bind(&Input::keyEventCallback, g_pInput.get(), _1));
+
 
         // Main loop
         Uint64 lastTime = SDL_GetPerformanceCounter();
@@ -189,6 +194,8 @@ namespace Engine
                     g_pInput->onMouseMove({event.motion.x, event.motion.y});
                     break;
                 }
+
+				g_pEventSystem->dispatchEvents();
             }
             if (g_done) break;
 

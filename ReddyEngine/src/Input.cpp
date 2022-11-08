@@ -1,6 +1,5 @@
 #include "Engine/Input.h"
 
-
 namespace Engine
 {
     Input::Input()
@@ -23,7 +22,22 @@ namespace Engine
     {
     }
 
-    bool Input::isKeyDown(SDL_Scancode scancode) const
+	void Input::keyEventCallback(IEvent* e)
+	{
+        KeyEvent* ke = (KeyEvent*) e;
+
+        switch (ke->key.type)
+        {
+		case SDL_KEYDOWN:
+            onKeyDown(ke->key.keysym.scancode);
+            break;
+		case SDL_KEYUP:
+            onKeyUp(ke->key.keysym.scancode);
+			break;
+		}
+	}
+
+	bool Input::isKeyDown(SDL_Scancode scancode) const
     {
         return m_keyboardState[(int)scancode];
     }
