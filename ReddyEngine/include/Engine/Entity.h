@@ -98,7 +98,7 @@ namespace Engine
 		}
 
 	public:
-		void edit(); // For editor
+		bool edit(); // For editor
 
 	private:
 		void componentAdded(const ComponentRef& pComponent);

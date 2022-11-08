@@ -6,7 +6,10 @@
 #include "Engine/ReddyEngine.h"
 #include "ComponentManager.h"
 
+#include <imgui.h>
+
 #include <functional>
+
 
 namespace Engine
 {
@@ -63,6 +66,9 @@ namespace Engine
 
 		json["id"] = id;
 		json["name"] = name;
+		json["transform"]["position"] = Utils::serializeJsonValue(m_transform.position);
+		json["transform"]["rotation"] = Utils::serializeJsonValue(m_transform.rotation);
+		json["transform"]["scale"] = Utils::serializeJsonValue(m_transform.scale);
 
 		Json::Value componentsJson(Json::arrayValue);
 		for (const auto& pComponent : m_components)
@@ -74,8 +80,20 @@ namespace Engine
 
 	void Entity::deserialize(const Json::Value json)
 	{
+		for (const auto& pComponent : m_components)
+		{
+			getEntityManager()->getComponentManager()->removeComponent(pComponent);
+		}
+		m_components.clear();
+
+
 		id = Utils::deserializeUInt64(json["id"]);
 		name = Utils::deserializeString(json["name"]);
+
+		m_transform.position = Utils::deserializeJsonValue<glm::vec2>(json["transform"]["position"]);
+		m_transform.rotation = Utils::deserializeFloat(json["transform"]["rotation"], 0.0f);
+		const float DEFAULT_SCALE[2] = { 1.0f, 1.0f };
+		Utils::deserializeFloat2(&m_transform.scale.x, json["transform"]["scale"], DEFAULT_SCALE);
 
 		const auto& componentsJson = json["components"];
 		for (const auto& componentJson : componentsJson)
@@ -92,15 +110,26 @@ namespace Engine
 			m_components.push_back(pComponent);
 			getEntityManager()->getComponentManager()->addComponent(pComponent);
 		}
-	}
 
+		m_transformDirty = true;
+	}
+	
 	void Entity::setTransform(const Transform transform)
 	{
 		m_transform = transform;
 		m_transformDirty = true;
 	}
 
-	void Entity::edit()
+	bool Entity::edit()
 	{
+		bool modified = false;
+
+		for (auto it = m_components.begin(); it != m_components.end(); ++it)
+		{
+			const auto& pComponent = *it;
+			modified |= pComponent->edit();
+		}
+
+		return modified;
 	}
 }
