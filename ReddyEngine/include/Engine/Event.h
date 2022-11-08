@@ -10,11 +10,20 @@ namespace Engine
 	{
 	public:
 		std::type_index type_index;
-		
-		IEvent() : type_index(typeid(this)) {};
+
+		IEvent() : type_index(typeid(int)) {};
 	};
 
-	class WindowEvent : public IEvent
+	template <typename T>
+	class Event : public IEvent
+	{
+	public:
+		std::type_index type_index;
+
+		Event() : type_index(typeid(T)) {};
+	};
+
+	class WindowEvent : public Event<WindowEvent>
 	{
 	public:
 		WindowEvent(SDL_WindowEvent event) : window(event) {};
@@ -22,7 +31,7 @@ namespace Engine
 		SDL_WindowEvent window;
 	};
 
-	class KeyEvent : public IEvent
+	class KeyEvent : public Event<KeyEvent>
 	{
 	public:
 		KeyEvent(SDL_KeyboardEvent event) : key(event) {};
@@ -30,7 +39,7 @@ namespace Engine
 		SDL_KeyboardEvent key;
 	};
 
-	class MouseButtonEvent : public IEvent
+	class MouseButtonEvent : public Event<MouseButtonEvent>
 	{
 	public:
 		MouseButtonEvent(SDL_MouseButtonEvent event) : button(event) {};
@@ -38,7 +47,7 @@ namespace Engine
 		SDL_MouseButtonEvent button;
 	};
 
-	class MouseMovedEvent : public IEvent
+	class MouseMovedEvent : public Event<MouseMovedEvent>
 	{
 	public:
 		MouseMovedEvent(SDL_MouseMotionEvent event) : motion(event) {};
@@ -46,7 +55,7 @@ namespace Engine
 		SDL_MouseMotionEvent motion;
 	};
 
-	class MouseScrolledEvent : public IEvent
+	class MouseScrolledEvent : public Event<MouseScrolledEvent>
 	{
 	public:
 		MouseScrolledEvent(SDL_MouseWheelEvent event) : wheel(event) {};
@@ -54,7 +63,7 @@ namespace Engine
 		SDL_MouseWheelEvent wheel;
 	};
 
-	class JoyAxisEvent : public IEvent
+	class JoyAxisEvent : public Event<JoyAxisEvent>
 	{
 	public:
 		JoyAxisEvent(SDL_JoyAxisEvent event) : jaxis(event) {};
@@ -62,7 +71,7 @@ namespace Engine
 		SDL_JoyAxisEvent jaxis;
 	};
 
-	class JoyButtonEvent : public IEvent
+	class JoyButtonEvent : public Event<JoyButtonEvent>
 	{
 	public:
 		JoyButtonEvent(SDL_JoyButtonEvent event) : jbutton(event) {};
@@ -70,7 +79,7 @@ namespace Engine
 		SDL_JoyButtonEvent jbutton;
 	};
 
-	class JoyDeviceEvent : public IEvent
+	class JoyDeviceEvent : public Event<JoyDeviceEvent>
 	{
 	public:
 		JoyDeviceEvent(SDL_JoyDeviceEvent event) : jdevice(event) {};
@@ -78,7 +87,7 @@ namespace Engine
 		SDL_JoyDeviceEvent jdevice;
 	};
 
-	class ControllerAxisEvent : public IEvent
+	class ControllerAxisEvent : public Event<ControllerAxisEvent>
 	{
 	public:
 		ControllerAxisEvent(SDL_ControllerAxisEvent event) : caxis(event) {};
@@ -86,7 +95,7 @@ namespace Engine
 		SDL_ControllerAxisEvent caxis;
 	};
 
-	class ControllerButtonEvent : public IEvent
+	class ControllerButtonEvent : public Event<ControllerButtonEvent>
 	{
 	public:
 		ControllerButtonEvent(SDL_ControllerButtonEvent event) : cbutton(event) {};
@@ -94,7 +103,7 @@ namespace Engine
 		SDL_ControllerButtonEvent cbutton;
 	};
 
-	class ControllerDeviceEvent : public IEvent
+	class ControllerDeviceEvent : public Event<ControllerDeviceEvent>
 	{
 	public:
 		ControllerDeviceEvent(SDL_ControllerDeviceEvent event) : cdevice(event) {};
@@ -102,7 +111,7 @@ namespace Engine
 		SDL_ControllerDeviceEvent cdevice;
 	};
 
-	class DropEvent : public IEvent
+	class DropEvent : public Event<DropEvent>
 	{
 	public:
 		DropEvent(SDL_DropEvent event) : drop(event) {};
