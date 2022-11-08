@@ -1,6 +1,7 @@
 #include "Engine/Scene.h"
 #include "Engine/EntityManager.h"
 #include "Engine/ReddyEngine.h"
+#include "Engine/SpriteManager.h"
 
 
 namespace Engine
@@ -10,6 +11,7 @@ namespace Engine
         void clear()
         {
             getEntityManager()->clear();
+            getSpriteManager()->clear();
         }
 
         Json::Value serialize()

@@ -6,6 +6,7 @@
 #include "Engine/SpriteBatch.h"
 #include "Engine/ResourceManager.h"
 #include "Engine/EntityManager.h"
+#include "Engine/SpriteManager.h"
 
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -22,6 +23,7 @@ namespace Engine
     static AudioRef g_pAudio;
     static ResourceManagerRef g_pResourceManager;
     static EntityManagerRef g_pEntityManager;
+    static SpriteManagerRef g_pSpriteManager;
 
     static int g_fixedUpdateFPS = 60;
     static bool g_done = false;
@@ -106,8 +108,8 @@ namespace Engine
         g_pAudio = std::make_shared<Audio>();
         g_pSpriteBatch = std::make_shared<SpriteBatch>();
         g_pResourceManager = std::make_shared<ResourceManager>();
+        g_pSpriteManager = std::make_shared<SpriteManager>();
         g_pEntityManager = std::make_shared<EntityManager>();
-
 
         // Once everything is setup, the game can load stuff
         pGame->loadContent();
@@ -247,6 +249,9 @@ namespace Engine
         Config::save();
 
         // Cleanup
+        g_pEntityManager.reset();
+        g_pEntityManager.reset();
+        g_pResourceManager.reset();
         g_pSpriteBatch.reset();
         g_pAudio.reset();
         g_pInput.reset();
@@ -285,10 +290,15 @@ namespace Engine
         return g_pResourceManager;
     }
 
-	const Engine::EntityManagerRef& getEntityManager()
+	const EntityManagerRef& getEntityManager()
 	{
         return g_pEntityManager;
 	}
+
+    const SpriteManagerRef& getSpriteManager()
+    {
+        return g_pSpriteManager;
+    }
 
 	glm::vec2 getResolution()
     {

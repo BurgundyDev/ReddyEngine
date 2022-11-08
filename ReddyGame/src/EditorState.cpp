@@ -137,7 +137,7 @@ void EditorState::update(float dt)
         {
             if (ImGui::BeginMenu("Scene"))
             {
-                if (ImGui::BeginMenu("Create Entity"))
+                if (ImGui::BeginMenu("Create Entity (Shift+A)"))
                 {
                     if (ImGui::MenuItem("Empty")) onCreateEmptyEntity();
                     if (ImGui::MenuItem("Sprite")) onCreateSpriteEntity();
@@ -180,9 +180,9 @@ void EditorState::update(float dt)
     }
 
     // Context menu
-    if (!ImGui::GetIO().WantCaptureMouse && Engine::getInput()->isButtonJustDown(SDL_BUTTON_RIGHT))
+    if (m_editDocumentType == EditDocumentType::Scene)
     {
-        if (m_editDocumentType == EditDocumentType::Scene)
+        if (Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT) && Engine::getInput()->isKeyJustDown(SDL_SCANCODE_A))
         {
             ImGui::OpenPopup("CreateEntityContext");
         }

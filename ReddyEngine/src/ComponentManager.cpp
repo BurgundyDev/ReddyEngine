@@ -34,9 +34,13 @@ namespace Engine
                     case CommandType::Create:
                         m_components.push_back(command.pComponent);
                         command.pComponent->onCreate();
+                        if (command.pComponent->isEnabled())
+                            command.pComponent->onEnable();
                         break;
 
                     case CommandType::Destroy:
+                        if (command.pComponent->isEnabled())
+                            command.pComponent->onDisable();
                         command.pComponent->onDestroy();
                         for (auto it = m_components.begin(); it != m_components.end(); ++it)
                             if (*it == command.pComponent)
@@ -45,6 +49,8 @@ namespace Engine
                 }
             }
         }
+
+        m_commandsCopy.clear();
     }
 
     void ComponentManager::update(float dt)

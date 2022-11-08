@@ -2,12 +2,14 @@
 #include "Engine/Log.h"
 #include "Engine/Entity.h"
 #include "Engine/Utils.h"
+#include "Engine/SpriteComponent.h"
 
 
 namespace Engine
 {
 	ComponentRef Component::create(const std::string& className)
 	{
+		if (className == "Sprite") return std::make_shared<SpriteComponent>();
 		return nullptr;
 	}
 
@@ -24,17 +26,23 @@ namespace Engine
 		return m_pEntity ? m_pEntity->shared_from_this() : nullptr;
 	}
 
-	// TODO
-		void Component::enable()
+	void Component::enable()
+	{
+		if (!m_isEnabled)
 		{
 			m_isEnabled = true;
+			onEnable();
 		}
+	}
 
-		void Component::disable()
+	void Component::disable()
+	{
+		if (m_isEnabled)
 		{
 			m_isEnabled = false;
+			onDisable();
 		}
-	// END TODO
+	}
 
 	Json::Value Component::serialize()
 	{
@@ -44,7 +52,7 @@ namespace Engine
 		return json;
 	}
 
-	void Component::deserialize(Json::Value json)
+	void Component::deserialize(const Json::Value& json)
 	{
 		m_isEnabled = Utils::deserializeBool(json["enabled"], true);
 	}

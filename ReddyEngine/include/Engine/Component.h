@@ -32,11 +32,12 @@ namespace Engine
 		virtual void onDisable() {};
 
 		virtual Json::Value serialize();
-		virtual void deserialize(Json::Value json);
+		virtual void deserialize(const Json::Value& json);
 
 		virtual std::string getType() const = 0;
 
 		EntityRef getEntity();
+		bool isEnabled() const { return m_isEnabled; }
 		
 		void enable();
 		void disable();
