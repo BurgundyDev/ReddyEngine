@@ -3,6 +3,7 @@
 #include "Engine/SpriteBatch.h"
 #include "Engine/SpriteComponent.h"
 #include "Engine/Entity.h"
+#include "Engine/Constants.h"
 
 
 namespace Engine
@@ -31,6 +32,8 @@ namespace Engine
 
     void SpriteManager::draw()
     {
+        //TODO: Layers and chunks n shit
+
         auto sb = getSpriteBatch().get();
 
         for (auto pSprite : m_sprites)
@@ -41,7 +44,7 @@ namespace Engine
                      transform.position,
                      pSprite->color, 
                      transform.rotation,
-                     transform.scale,
+                     transform.scale * SPRITE_BASE_SCALE,
                      pSprite->origin,
                      pSprite->uvs);
         }

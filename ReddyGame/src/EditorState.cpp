@@ -18,6 +18,7 @@
 
 #include <imgui.h>
 #include <tinyfiledialogs/tinyfiledialogs.h>
+#include <glm/gtx/transform.hpp>
 
 
 static const char *FILE_PATTERNS[] = { "*.json" };
@@ -70,14 +71,22 @@ void EditorState::setDirty(bool dirty)
 void EditorState::update(float dt)
 {
     // Shortcut (Hack, we should use events)
+    if (!ImGui::GetIO().WantCaptureKeyboard)
     {
         if (Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL) && Engine::getInput()->isKeyJustDown(SDL_SCANCODE_Z))
         {
             if (Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT)) onRedo();
             else onUndo();
         }
-        if (Engine::getInput()->isKeyJustDown(SDL_SCANCODE_SPACE) && !ImGui::GetIO().WantCaptureKeyboard)
-            m_pPfxInstance = std::make_shared<Engine::PFXInstance>(m_pPfx);
+
+        // Document type specifics
+        switch (m_editDocumentType)
+        {
+            case EditDocumentType::PFX:
+                if (Engine::getInput()->isKeyJustDown(SDL_SCANCODE_SPACE))
+                    m_pPfxInstance = std::make_shared<Engine::PFXInstance>(m_pPfx);
+                break;
+        }
     }
 
     // Menu bar
@@ -250,50 +259,24 @@ void EditorState::update(float dt)
     }
 }
 
-void EditorState::drawSceneUI()
-{
-    // Layers
-    if (ImGui::Begin("Layers"))
-    {
-    }
-    ImGui::End();
-
-    // Inspector (For selected entity/entities)
-    if (ImGui::Begin("Entity Inspector"))
-    {
-    }
-    ImGui::End();
-}
-
 void EditorState::draw()
 {
+    glm::mat4 transform = 
+        glm::translate(glm::vec3(Engine::getResolution() * 0.5f, 0.0f)) *
+        glm::scale(glm::vec3(m_zoomf)) * 
+        glm::translate(glm::vec3(-m_position, 0.0f));
+
     auto sb = Engine::getSpriteBatch().get();
-    sb->begin();
+    sb->begin(transform);
 
     // Draw faint cross in the middle so we know where's the center
-    auto pos = -m_position;
-    sb->drawRect(nullptr, glm::vec4(
-        Engine::getResolution().x * 0.5f + (pos.x - 10.0f) * m_zoomf,
-        Engine::getResolution().y * 0.5f + (pos.y) * m_zoomf,
-        20.0f * m_zoomf, 1.0f),
-        glm::vec4(0.5f));
-    sb->drawRect(nullptr, glm::vec4(
-        Engine::getResolution().x * 0.5f + (pos.x) * m_zoomf,
-        Engine::getResolution().y * 0.5f + (pos.y - 10.0f) * m_zoomf,
-        1.0f, 20.0f * m_zoomf),
-        glm::vec4(0.5f));
+    sb->drawRect(nullptr, glm::vec4(-10.0f, 0.0f, 20.0f, 1.0f / m_zoomf), glm::vec4(0.5f));
+    sb->drawRect(nullptr, glm::vec4(0.0f, -10.0f, 1.0f / m_zoomf, 20.0f), glm::vec4(0.5f));
+
     for (int i = -10; i <= 10; ++i)
     {
-        sb->drawRect(nullptr, glm::vec4(
-            Engine::getResolution().x * 0.5f + (pos.x + (float)i) * m_zoomf,
-            Engine::getResolution().y * 0.5f + (pos.y - 0.1f) * m_zoomf,
-            1.0f, 0.2f * m_zoomf),
-            glm::vec4(0.5f));
-        sb->drawRect(nullptr, glm::vec4(
-            Engine::getResolution().x * 0.5f + (pos.x - 0.1f) * m_zoomf,
-            Engine::getResolution().y * 0.5f + (pos.y + (float)i) * m_zoomf,
-            0.2f * m_zoomf, 1.0f),
-            glm::vec4(0.5f));
+        sb->drawRect(nullptr, glm::vec4((float)i, -0.1f, 1.0f / m_zoomf, 0.2f), glm::vec4(0.5f));
+        sb->drawRect(nullptr, glm::vec4(-0.1f, (float)i, 0.2f, 1.0f / m_zoomf), glm::vec4(0.5f));
     }
 
     switch (m_editDocumentType)
@@ -302,7 +285,7 @@ void EditorState::draw()
             Engine::Scene::draw();
             break;
         case EditDocumentType::PFX:
-            if (m_pPfxInstance) m_pPfxInstance->draw(Engine::getResolution() * 0.5f - m_position * m_zoomf, 0.0f, m_zoomf);
+            if (m_pPfxInstance) m_pPfxInstance->draw({0, 0});
             break;
     }
 

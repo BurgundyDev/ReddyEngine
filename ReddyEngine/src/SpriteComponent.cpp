@@ -4,6 +4,7 @@
 #include "Engine/ResourceManager.h"
 #include "Engine/ReddyEngine.h"
 #include "Engine/SpriteManager.h"
+#include "Engine/Constants.h"
 
 
 namespace Engine
@@ -39,7 +40,7 @@ namespace Engine
     {
         Component::deserialize(json);
 
-        pTexture = getResourceManager()->getTexture(Utils::deserializeString("texture"));
+        pTexture = getResourceManager()->getTexture(Utils::deserializeString(json["texture"]));
 
         const float DEFAULT_COLOR[4] = {1, 1, 1, 1};
         Utils::deserializeFloat4(&color.r, json["color"], DEFAULT_COLOR);

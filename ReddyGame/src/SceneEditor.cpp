@@ -1,19 +1,34 @@
+#include "EditorState.h"
+
+#include <Engine/Entity.h>
+
+#include <imgui.h>
 
 
-// void EditorState::enter()
-// {
-//     Engine::getEventSystem()->register<EventKeyDown>(this, std::bind(&EditorState::onKeyDown, this));
-// }
+void EditorState::drawSceneUI()
+{
+    // Scene tree
+    if (ImGui::Begin("Scene"))
+    {
+    }
+    ImGui::End();
 
-// void EditorState::leave()
-// {
-//     Engine::getEventSystem()->deregister<EventKeyDown>(this);
-// }
+    // Layers
+    if (ImGui::Begin("Layers"))
+    {
+    }
+    ImGui::End();
 
-// void EditorState::onKeyDown(Event* pEvent)
-// {
-//     auto pKeyEvent = (KeyEvent*)pEvent;
-   
-//     if (pKeyEvent->scanCode == SDL_SCANCODE_F1)
-//         showHelp();
-// }
+    // Inspector (For selected entity/entities)
+    if (ImGui::Begin("Entity Inspector"))
+    {
+        // For now, we only do 1 entity
+        if (m_selected.size() == 1)
+        {
+            if (m_selected.front()->edit())
+            {
+            }
+        }
+    }
+    ImGui::End();
+}

@@ -10,6 +10,7 @@ namespace Engine
 	ComponentRef Component::create(const std::string& className)
 	{
 		if (className == "Sprite") return std::make_shared<SpriteComponent>();
+		CORE_ERROR("Unrecognized Component Type: " + className);
 		return nullptr;
 	}
 

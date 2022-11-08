@@ -70,10 +70,17 @@ namespace Engine
 		json["transform"]["rotation"] = Utils::serializeJsonValue(m_transform.rotation);
 		json["transform"]["scale"] = Utils::serializeJsonValue(m_transform.scale);
 
+		// Components
 		Json::Value componentsJson(Json::arrayValue);
 		for (const auto& pComponent : m_components)
 			componentsJson.append(pComponent->serialize());
 		json["components"] = componentsJson;
+
+		// Children
+		Json::Value childrenJson(Json::arrayValue);
+		for (const auto& pChild : m_children)
+			childrenJson.append(pChild->serialize());
+		json["children"] = childrenJson;
 
 		return json;
 	}
@@ -86,15 +93,17 @@ namespace Engine
 		}
 		m_components.clear();
 
-
 		id = Utils::deserializeUInt64(json["id"]);
 		name = Utils::deserializeString(json["name"]);
 
+		// Transform
 		m_transform.position = Utils::deserializeJsonValue<glm::vec2>(json["transform"]["position"]);
 		m_transform.rotation = Utils::deserializeFloat(json["transform"]["rotation"], 0.0f);
 		const float DEFAULT_SCALE[2] = { 1.0f, 1.0f };
 		Utils::deserializeFloat2(&m_transform.scale.x, json["transform"]["scale"], DEFAULT_SCALE);
+		m_transformDirty = true;
 
+		// Components
 		const auto& componentsJson = json["components"];
 		for (const auto& componentJson : componentsJson)
 		{
@@ -107,11 +116,17 @@ namespace Engine
 			}
 
 			pComponent->deserialize(componentJson);
+			pComponent->m_pEntity = this;
 			m_components.push_back(pComponent);
-			getEntityManager()->getComponentManager()->addComponent(pComponent);
+			componentAdded(pComponent);
 		}
 
-		m_transformDirty = true;
+		// Children
+		const auto& childrenJson = json["children"];
+		for (const auto& childJson : childrenJson)
+		{
+			getEntityManager()->createEntityFromJson(shared_from_this(), childJson);
+		}
 	}
 	
 	void Entity::setTransform(const Transform transform)

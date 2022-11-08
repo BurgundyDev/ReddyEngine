@@ -16,6 +16,7 @@ static const int MAX_SPRITE_COUNT = 300; // 1200 vertices
 
 static const GLchar* VERTEX_SHADER =
     "uniform mat4 ProjMtx;\n"
+    "uniform mat4 ViewMtx;\n"
     "in vec2 Position;\n"
     "in vec2 UV;\n"
     "in vec4 Color;\n"
@@ -25,7 +26,7 @@ static const GLchar* VERTEX_SHADER =
     "{\n"
     "    Frag_UV = UV;\n"
     "    Frag_Color = Color;\n"
-    "    gl_Position = ProjMtx * vec4(Position.xy,0,1);\n"
+    "    gl_Position = ProjMtx * ViewMtx * vec4(Position.xy,0,1);\n"
     "}\n";
 
 static const GLchar* FRAGMENT_SHADER =
@@ -118,6 +119,7 @@ namespace Engine
 
         m_attribLocationTexture = glGetUniformLocation(m_shader, "Texture");
         m_attribLocationProj = glGetUniformLocation(m_shader, "ProjMtx");
+        m_attribLocationView = glGetUniformLocation(m_shader, "ViewMtx");
         m_attribLocationVertexPos = (GLuint)glGetAttribLocation(m_shader, "Position");
         m_attribLocationVertexTexCoord = (GLuint)glGetAttribLocation(m_shader, "UV");
         m_attribLocationVertexColor = (GLuint)glGetAttribLocation(m_shader, "Color");
@@ -198,6 +200,9 @@ namespace Engine
         CORE_FATAL(!m_isInBatch, "SpriteBatch::begin() called without previously called end() on a previous batch");
 
         m_isInBatch = true;
+        m_transform = transform;
+
+        glUniformMatrix4fv(m_attribLocationView, 1, GL_FALSE, &transform[0][0]);
     }
 
     void SpriteBatch::end()

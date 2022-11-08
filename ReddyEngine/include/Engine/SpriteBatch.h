@@ -41,6 +41,8 @@ namespace Engine
         // Force draw pending sprites
         void flush();
 
+        const glm::mat4& getTransform() const { return m_transform; }
+
     private:
         struct Vertex
         {
@@ -57,6 +59,7 @@ namespace Engine
         glm::mat4 m_transform;
 
         GLuint m_attribLocationProj = 0;
+        GLuint m_attribLocationView = 0;
         GLuint m_attribLocationTexture = 0;
         GLuint m_attribLocationVertexPos = 0;
         GLuint m_attribLocationVertexTexCoord = 0;
