@@ -18,37 +18,36 @@ namespace Engine
 		EventType type;
 	};
 
+
 	class EventSystem
 	{
-	private:
-		typedef void* EventListenerInstance;
-
-		std::queue<EventStructure*> m_pEventQueue;
-		std::map<EventType, std::vector<std::function<void(IEvent*)>>> m_pEventHandlersMap;
 	public:
-		EventSystem(); // remove later
-		~EventSystem();
-
-		template <typename T> 
-		void pushEventToQueue(T* e);
+		EventSystem() {};
+		~EventSystem() {};
+		
+		using EventListenerInstance = void*;
 	
+		// Events dispatch
+
+		void dispatchEvents();
+
+		// Event registration
+
 		template<typename T>
 		void registerEvent(T* e)
 		{
 			m_pEventQueue.push(std::map(e, T::GetType()));
 		}
 
-		void dispatchEvents();
-
 		void registerEvent(SDL_Event* e);
+
+
+		// Listener registration and deregistration
 
 		template<class T>
 		void registerListener(EventListenerInstance instance,  std::function<void (IEvent*)>& callback)
 		{
 			EventType id = T::GetStaticEventType();
-			//if (m_pEventHandlersMap[id].size() == 0)
-			//	m_pEventHandlersMap[id] = std::vector<T*>;
-
 			m_pEventHandlersMap[id].push_back(callback);
 		}
 
@@ -65,6 +64,9 @@ namespace Engine
 		}
 
 	private:
+		std::queue<EventStructure*> m_pEventQueue;
+		std::map<EventType, std::vector<std::function<void(IEvent*)>>> m_pEventHandlersMap;
+
 		template<typename T>
 		void callEvent(T* e)
 		{
@@ -73,6 +75,16 @@ namespace Engine
 			{
 				callback(e);
 			}
+		}
+
+		template <typename T>
+		void pushEventToQueue(T* e)
+		{
+			EventStructure* eventStruct = new EventStructure();
+			eventStruct->event = e;
+			eventStruct->type = e->GetEventType();
+
+			m_pEventQueue.push(eventStruct);
 		}
 	};
 }
