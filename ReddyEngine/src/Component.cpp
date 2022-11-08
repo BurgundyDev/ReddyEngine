@@ -1,47 +1,48 @@
 #include "Engine/Component.h"
 #include "Engine/Log.h"
+#include "Engine/Entity.h"
+
 
 namespace Engine
 {
+	ComponentRef Component::create(const std::string& className)
+	{
+		return nullptr;
+	}
+
 	Component::Component()
 	{
-
 	}
 
 	Component::~Component()
 	{
-
 	}
-
-	void Component::onCreate()
+	
+	EntityRef Component::getEntity()
 	{
-		isEnabled = true;
+		return m_pEntity ? m_pEntity->shared_from_this() : nullptr;
 	}
 
-	void Component::onEnable()
-	{
-		isEnabled = true;
-	}
+	// TODO
+		void Component::onCreate()
+		{
+			m_isEnabled = true;
+		}
 
-	void Component::enable()
-	{
-		isEnabled = true;
-	}
+		void Component::onEnable()
+		{
+			m_isEnabled = true;
+		}
 
-	void Component::disable()
-	{
-		isEnabled = false;
-	}
+		void Component::enable()
+		{
+			m_isEnabled = true;
+		}
 
-	Json::Value Component::serialize()
-	{
-		return Json::nullValue;
-	}
-
-	void Component::deserialize(Json::Value json)
-	{
-		CORE_WARN("Deserialize not implemented.");
-	}
-
+		void Component::disable()
+		{
+			m_isEnabled = false;
+		}
+	// END TODO
 }
 

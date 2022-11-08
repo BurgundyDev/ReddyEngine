@@ -1,64 +1,91 @@
 #include "Engine/EntityManager.h"
 #include "Engine/Entity.h"
-
+#include "Engine/Log.h"
+#include "ComponentManager.h"
 
 #include <algorithm>
 
 namespace Engine
 {
 
-	EntityManager::EntityManager() : m_pRoot(new Entity()), m_id(0)
+	EntityManager::EntityManager()
+		: m_pRoot(std::make_shared<Entity>())
+		, m_id(0)
+		, m_pComponentManager(std::make_shared<ComponentManager>())
 	{
-		
 	}
 
 	EntityManager::~EntityManager()
 	{
-		delete m_pRoot;
+	}
+
+	Json::Value EntityManager::serialize()
+	{
+		return m_pRoot->serialize();
+	}
+
+    void EntityManager::deserialize(const Json::Value& json)
+	{
+		clear();
+		m_pRoot->deserialize(json);
+	}
+
+	void EntityManager::clear()
+	{
+		m_pRoot.reset();
+		m_pRoot = std::make_shared<Entity>();
 	}
 
 	const EntityRef EntityManager::createEntity()
 	{
-		EntityRef root = std::make_shared<Entity>(*m_pRoot);
-		return createEntity(root);
+		EntityRef pNewEntity = std::make_shared<Entity>();
+		pNewEntity->id = ++m_id;
+		return pNewEntity;
 	}
 
-	const EntityRef EntityManager::createEntity(const EntityRef& parent)
+	const EntityRef EntityManager::createEntity(const Json::Value& json)
 	{
-		EntityRef newEntity = std::make_shared<Entity>(Entity(parent));
-		newEntity->parent = parent.get();
-		newEntity->id = ++m_id;
-
-		parent->children.push_back(newEntity);
-		
-		newEntity->onCreate();
-		return newEntity;
+		EntityRef pNewEntity = std::make_shared<Entity>();
+		pNewEntity->deserialize(json);
+		m_id = std::max(m_id, pNewEntity->id + 1); // If we're loading a file, make sure next id is at least higher than this one
+		return pNewEntity;
 	}
 
-	void EntityManager::destroyEntity(const EntityRef& entity)
+	const ComponentManagerRef& EntityManager::getComponentManager() const
 	{
-		entity->onDestroy();
-
-		{
-			auto parent = entity->parent;
-			parent->children.erase(std::remove(parent->children.begin(), parent->children.end(), entity));
-		}
+		return m_pComponentManager;
 	}
-	void EntityManager::update(float deltaTime)
+
+	void EntityManager::destroyEntity(EntityRef pEntity)
 	{
-		m_pRoot->update(deltaTime);
+		if (pEntity == m_pRoot)
+			CORE_FATAL(false, "Cannot erase Root entity!");
+
+		if (pEntity->getParent())
+			pEntity->getParent()->removeChild(pEntity);
+
+		const auto& components = pEntity->getComponents();
+		for (const auto& pComponent : components)
+			m_pComponentManager->removeComponent(pComponent);
+
+		m_entitiesToDestroy.push_back(pEntity); // We keep that around because components' onDestroy() might still refer to the entity
 	}
 
-	void EntityManager::fixedUpdate(float deltaTime)
+	void EntityManager::update(float dt)
 	{
-		m_pRoot->fixedUpdate(deltaTime);
+		m_entitiesToDestroy.clear();
 
-		auto childs = m_pRoot->children;
+		m_pComponentManager->update(dt);
 
-		for (auto it = childs.begin(); it != childs.end(); it++)
-		{
-			(*it)->fixedUpdate(deltaTime);
-		}
+		m_entitiesToDestroy.clear();
 	}
 
+	void EntityManager::fixedUpdate(float dt)
+	{
+		m_entitiesToDestroy.clear();
+
+		m_pComponentManager->fixedUpdate(dt);
+
+		m_entitiesToDestroy.clear();
+	}
 }

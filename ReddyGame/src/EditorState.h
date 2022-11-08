@@ -52,6 +52,11 @@ private:
     void onPaste();
     void onDuplicate();
     void onDelete();
+    void onCreateEmptyEntity();
+    void onCreateSpriteEntity();
+    void onCreateTextEntity();
+    void onCreateSoundEntity();
+    void onCreateParticleEntity();
 
     void open(const std::string& filename);
     bool openAs(); // Returns false if user cancelled
@@ -62,6 +67,7 @@ private:
     void drawSceneUI();
     void drawPFXUI();
     void setDirty(bool dirty);
+    void clear();
 
     EditDocumentType m_editDocumentType = EditDocumentType::Scene;
     ActionManagerRef m_pActionManager;

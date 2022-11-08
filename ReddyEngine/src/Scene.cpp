@@ -1,22 +1,27 @@
 #include "Engine/Scene.h"
+#include "Engine/EntityManager.h"
+#include "Engine/ReddyEngine.h"
 
 
 namespace Engine
 {
     namespace Scene
     {
+        void clear()
+        {
+            getEntityManager()->clear();
+        }
+
         Json::Value serialize()
         {
-            return Json::Value(Json::objectValue);
+            Json::Value json;
+            json["root"] = getEntityManager()->serialize();
+            return json;
         }
 
         void deserialize(const Json::Value& json)
         {
-            // Clear engine of all previously loaded stuff
-            // ...
-
-            // Deserialize scene
-            // ...
+            getEntityManager()->deserialize(json["root"]);
         }
     }
 }
