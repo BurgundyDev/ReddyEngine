@@ -4,8 +4,11 @@
 
 #include <memory>
 
+#include "Engine/EventSystem.h"
+
 #include <SDL_keycode.h>
 #include <SDL_mouse.h>
+#include <SDL_events.h>
 
 
 namespace Engine
@@ -18,10 +21,14 @@ namespace Engine
         void preUpdate(); // Before SDL events processing
         void update(); // After SDL events processing
 
+
         const glm::vec2& getMousePos() const { return m_mousePos; }
         const glm::vec2& getMouseDelta() const { return m_mouseDelta; }
         int getMouseWheel() const { return m_mouseWheel; }
 
+        void keyEventCallback(IEvent* e);
+
+        
         bool isKeyDown(SDL_Scancode scancode) const;
         bool isKeyUp(SDL_Scancode scancode) const;
         bool isKeyJustDown(SDL_Scancode scancode) const; // Was pressed this frame
