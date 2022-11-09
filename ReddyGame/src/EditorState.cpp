@@ -57,24 +57,6 @@ void EditorState::enter(const GameStateRef& previousState)
         m_filename = "untitled";
         m_pActionManager->clear();
     }
-    std::function<void (Engine::IEvent*)> binding = std::bind(&EditorState::keyEventCallback, this, _1);
-	Engine::getEventSystem()->registerListener<Engine::KeyEvent>(this, binding);
-}
-
-void EditorState::keyEventCallback(Engine::IEvent* e)
-{
-    Engine::KeyEvent* ke = (Engine::KeyEvent*) e;
-
-	switch (ke->key.type)
-	{
-	case SDL_KEYDOWN:
-		onKeyDown(ke->key.keysym.sym);
-	}
-}
-
-void EditorState::onKeyDown(SDL_Keycode key)
-{
-	lastInputString = SDL_GetKeyName(key);
 }
 
 void EditorState::setDirty(bool dirty)
@@ -216,33 +198,6 @@ void EditorState::update(float dt)
         auto zoomTarget = ZOOM_LEVELS[m_zoom];
         m_zoomf = Engine::Utils::lerp(m_zoomf, zoomTarget, std::min(1.0f, dt * 50.0f));
     }
-}
-
-void EditorState::drawSceneUI()
-{
-    // Layers
-    if (ImGui::Begin("Layers"))
-    {
-    }
-    ImGui::End();
-
-	if (ImGui::Begin("Input Test"))
-	{
-		ImGui::Checkbox("Start Input System Test", &isInputTestActive);
-		if (isInputTestActive)
-		{
-			ImGui::Text("Pressed input: ");
-			if (lastInputString != "")
-				ImGui::Text("%s", lastInputString.c_str());
-		}
-	}
-	ImGui::End();
-
-    // Inspector (For selected entity/entities)
-    if (ImGui::Begin("Entity Inspector"))
-    {
-    }
-    ImGui::End();
 }
 
 void EditorState::draw()
