@@ -45,7 +45,6 @@
                [ 0.0, 0.0 ]
             ]
          },
-         "name" : "Ring",
          "rotation" : {
             "random" : true,
             "range" : [ 0.0, 360.0 ]
@@ -121,7 +120,6 @@
                [ 0.0, 0.0 ]
             ]
          },
-         "name" : "Explosion",
          "rotation" : {
             "random" : true,
             "range" : [ 0.0, 360.0 ]
@@ -152,7 +150,7 @@
             "sameStartEnd" : false,
             "startRange" : [ 300.0, 600.0 ]
          },
-         "spread" : 275.05599975585938,
+         "spread" : 360.0,
          "texture" : "textures/particle.png",
          "type" : "burst"
       }

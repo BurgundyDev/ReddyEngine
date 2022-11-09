@@ -110,7 +110,6 @@ namespace Engine
         g_pAudio = std::make_shared<Audio>();
         g_pSpriteBatch = std::make_shared<SpriteBatch>();
         g_pResourceManager = std::make_shared<ResourceManager>();
-        g_pSpriteManager = std::make_shared<SpriteManager>();
         g_pEntityManager = std::make_shared<EntityManager>();
         g_pEventSystem = std::make_shared<EventSystem>();
 
@@ -274,9 +273,6 @@ namespace Engine
         Config::save();
 
         // Cleanup
-        g_pEntityManager.reset();
-        g_pEntityManager.reset();
-        g_pResourceManager.reset();
         g_pSpriteBatch.reset();
         g_pAudio.reset();
         g_pInput.reset();
@@ -315,7 +311,7 @@ namespace Engine
         return g_pResourceManager;
     }
 
-	const EntityManagerRef& getEntityManager()
+	const Engine::EntityManagerRef& getEntityManager()
 	{
         return g_pEntityManager;
 	}
