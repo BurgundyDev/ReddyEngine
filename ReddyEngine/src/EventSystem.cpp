@@ -3,6 +3,26 @@
 
 namespace Engine
 {
+	template <typename T>
+	void EventSystem::pushEventToQueue(T* e)
+	{
+		EventStructure* eventStruct = new EventStructure();
+		eventStruct->event = e;
+		eventStruct->type = e->GetEventType();
+
+		m_pEventQueue.push(eventStruct);
+	}
+
+	EventSystem::EventSystem()
+	{
+
+	}
+
+	EventSystem::~EventSystem()
+	{
+
+	}
+
 	void EventSystem::registerEvent(SDL_Event* e)
 	{
 		switch (e->type)
