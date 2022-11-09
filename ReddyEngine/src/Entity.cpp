@@ -1,74 +1,52 @@
 #include "Engine/Entity.h"
-#include "Engine/Component.h"
-#include "Engine/Utils.h"
-#include "Engine/Log.h"
-#include "Engine/EntityManager.h"
-#include "Engine/ReddyEngine.h"
-#include "ComponentManager.h"
-
-#include <imgui.h>
 
 #include <functional>
 
-
 namespace Engine
 {
+	Entity::Entity(const EntityRef& parent) : parent(parent.get())
+	{
+
+	}
+
+	Entity::Entity()
+	{
+		parent = nullptr;
+	}
+
 	Entity::~Entity()
 	{
 	}
 
-	bool Entity::addChild(EntityRef pChild)
+	void Entity::update(float deltaTime)
 	{
-		if (pChild->m_pParent) pChild->m_pParent->removeChild(pChild); // This could potentially make the pChild shared_ptr const reference invalid, that's why we pass by value
-		for (const auto& pMyChild : m_children) if (pMyChild == pChild) return false;
-		m_children.push_back(pChild);
-		pChild->m_pParent = this;
-		return true;
-	}
+		auto childs = children;
 
-	bool Entity::removeChild(const EntityRef& pChild)
-	{
-		auto rpChild = pChild.get();
-		for (auto it = m_children.begin(); it != m_children.end(); ++it)
+		for (auto it = childs.begin(); it != childs.end(); it++)
 		{
-			if (it->get() == rpChild)
-			{
-				rpChild->m_pParent = nullptr;
-				m_children.erase(it);
-				return true;
-			}
+			(*it)->update(deltaTime);
 		}
-		return false;
 	}
 
-	bool Entity::removeComponent(const ComponentRef& pComponent)
+	void Entity::fixedUpdate(float deltaTime)
 	{
-		for (auto it = m_components.begin(); it != m_components.end(); ++it)
+		auto childs = children;
+
+		for (auto it = childs.begin(); it != childs.end(); it++)
 		{
-			if (*it == pComponent)
-			{
-				getEntityManager()->getComponentManager()->removeComponent(pComponent);
-				m_components.erase(it);
-				return true;
-			}
+			(*it)->fixedUpdate(deltaTime);
 		}
-		return false;
 	}
 
-	void Entity::componentAdded(const ComponentRef& pComponent)
+	void Entity::onCreate()
 	{
-		getEntityManager()->getComponentManager()->addComponent(pComponent);
+		
 	}
 
-	Json::Value Entity::serialize()
+	void Entity::onDestroy()
 	{
-		Json::Value json;
 
-		json["id"] = id;
-		json["name"] = name;
-		json["transform"]["position"] = Utils::serializeJsonValue(m_transform.position);
-		json["transform"]["rotation"] = Utils::serializeJsonValue(m_transform.rotation);
-		json["transform"]["scale"] = Utils::serializeJsonValue(m_transform.scale);
+	}
 
 		// Components
 		Json::Value componentsJson(Json::arrayValue);
@@ -127,24 +105,5 @@ namespace Engine
 		{
 			getEntityManager()->createEntityFromJson(shared_from_this(), childJson);
 		}
-	}
-	
-	void Entity::setTransform(const Transform transform)
-	{
-		m_transform = transform;
-		m_transformDirty = true;
-	}
-
-	bool Entity::edit()
-	{
-		bool modified = false;
-
-		for (auto it = m_components.begin(); it != m_components.end(); ++it)
-		{
-			const auto& pComponent = *it;
-			modified |= pComponent->edit();
-		}
-
-		return modified;
 	}
 }

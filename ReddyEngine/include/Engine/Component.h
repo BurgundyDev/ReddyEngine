@@ -1,54 +1,37 @@
 #pragma once
 
-#include <json/json.h>
-
 #include <memory>
 
+#include <json/value.h>
 
 namespace Engine 
 {
 	class Entity;
-	using EntityRef = std::shared_ptr<Entity>;
-
-
-	class Component;
-	using ComponentRef = std::shared_ptr<Component>;
-
 
 	class Component
 	{
 	public:
-		static ComponentRef create(const std::string& className);
-
 		Component();
-		virtual ~Component();
+		~Component();
 
-		virtual void update(float deltaTime) {}
-		virtual void fixedUpdate(float deltaTime) {}
+		Entity* entity;
 
-		virtual void onCreate() {};
-		virtual void onDestroy() {};
-		virtual void onEnable() {};
-		virtual void onDisable() {};
+		void update(float deltaTime);
+		void fixedUpdate(float deltaTime);
 
-		virtual Json::Value serialize();
-		virtual void deserialize(const Json::Value& json);
-
-		virtual std::string getType() const = 0;
-
-		EntityRef getEntity();
-		bool isEnabled() const { return m_isEnabled; }
+		virtual void onCreate() = 0;
+		virtual void onDestroy() = 0;
+		virtual void onEnable() = 0;
+		virtual void onDisable() = 0;
 		
 		void enable();
 		void disable();
 
-	public:
-		virtual bool edit() { return false; } // For editor, returns true if the Inspector modified a value
-
+		Json::Value serialize();
+		void deserialize(Json::Value json);
 	private:
-		friend class Entity;
-
-		bool m_isEnabled = true;
-		Entity* m_pEntity = nullptr;
+		bool isEnabled = false;
 	};
 }
+
+

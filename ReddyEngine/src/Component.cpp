@@ -1,9 +1,5 @@
 #include "Engine/Component.h"
 #include "Engine/Log.h"
-#include "Engine/Entity.h"
-#include "Engine/Utils.h"
-#include "Engine/SpriteComponent.h"
-
 
 namespace Engine
 {
@@ -16,46 +12,43 @@ namespace Engine
 
 	Component::Component()
 	{
+
 	}
 
 	Component::~Component()
 	{
+
 	}
-	
-	EntityRef Component::getEntity()
+
+	void Component::onCreate()
 	{
-		return m_pEntity ? m_pEntity->shared_from_this() : nullptr;
+		isEnabled = true;
+	}
+
+	void Component::onEnable()
+	{
+		isEnabled = true;
 	}
 
 	void Component::enable()
 	{
-		if (!m_isEnabled)
-		{
-			m_isEnabled = true;
-			onEnable();
-		}
+		isEnabled = true;
 	}
 
 	void Component::disable()
 	{
-		if (m_isEnabled)
-		{
-			m_isEnabled = false;
-			onDisable();
-		}
+		isEnabled = false;
 	}
 
 	Json::Value Component::serialize()
 	{
-		Json::Value json;
-		json["type"] = getType();
-		json["enabled"] = m_isEnabled;
-		return json;
+		return Json::nullValue;
 	}
 
-	void Component::deserialize(const Json::Value& json)
+	void Component::deserialize(Json::Value json)
 	{
-		m_isEnabled = Utils::deserializeBool(json["enabled"], true);
+		CORE_WARN("Deserialize not implemented.");
 	}
+
 }
 

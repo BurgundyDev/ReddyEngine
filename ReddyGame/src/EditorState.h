@@ -57,11 +57,6 @@ private:
     void onPaste();
     void onDuplicate();
     void onDelete();
-    void onCreateEmptyEntity();
-    void onCreateSpriteEntity();
-    void onCreateTextEntity();
-    void onCreateSoundEntity();
-    void onCreateParticleEntity();
 
     void open(const std::string& filename);
     bool openAs(); // Returns false if user cancelled
@@ -98,6 +93,7 @@ private:
     Engine::PFXRef m_pPfx;
     Engine::PFXInstanceRef m_pPfxInstance;
 
-    // Scene editor stuff
-    std::vector<Engine::EntityRef> m_selected;
+	bool isInputTestActive = false;
+	std::string lastInputString = "";
+    
 };

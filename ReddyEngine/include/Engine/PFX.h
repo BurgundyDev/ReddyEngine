@@ -130,7 +130,6 @@ namespace Engine
 
     struct EmitterDef
     {
-        std::string name = "emitter";
         EmitterType type = EmitterType::burst;
         float burstDuration = 0.0f;
         int burstAmount = 100; // For burst

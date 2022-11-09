@@ -29,7 +29,7 @@ namespace Engine
                   const glm::vec2& position, 
                   const glm::vec4& color = { 1, 1, 1, 1 }, 
                   float rotation = 0.0f, 
-                  const glm::vec2& scale = {1, 1}, 
+                  float scale = 1.0f, 
                   const glm::vec2& origin = { 0.5f, 0.5f }, 
                   const glm::vec4& uvs = { 0, 0, 1, 1 });
 

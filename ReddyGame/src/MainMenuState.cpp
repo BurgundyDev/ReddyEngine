@@ -24,7 +24,7 @@ MainMenuState::MainMenuState()
     m_pSoundInstance = std::make_shared<Engine::SoundInstance>(m_pSound);
     m_pSoundInstance->setLoop(true);
     
-    m_pMusic = g_pResourceManager->getMusic("musics/MedievalTavern.ogg");
+    m_pMusic = g_pResourceManager->getMusic("musics/test_music.ogg");
 
     m_pFont = g_pResourceManager->getFont("fonts/test_font.otf", 24);
 }

@@ -218,7 +218,7 @@ namespace Engine
                            const glm::vec2& position, 
                            const glm::vec4& color, 
                            float rotation, 
-                           const glm::vec2& scale, 
+                           float scale, 
                            const glm::vec2& origin, 
                            const glm::vec4& uvs)
     {
@@ -235,7 +235,7 @@ namespace Engine
         auto sizeyf = static_cast<float>(textureSize.y);
         sizexf *= std::abs(uvs.z - uvs.x);
         sizeyf *= std::abs(uvs.w - uvs.y);
-        auto hSize = glm::vec2(sizexf * .5f * scale.x, sizeyf * .5f * scale.y);
+        auto hSize = glm::vec2(sizexf * .5f * scale, sizeyf * .5f * scale);
         auto radTheta = glm::radians(rotation);
         auto sinTheta = std::sin(radTheta);
         auto cosTheta = std::cos(radTheta);
