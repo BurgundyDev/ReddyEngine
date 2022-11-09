@@ -4,6 +4,7 @@
 #include "MainMenuState.h"
 
 #include <Engine/Config.h>
+#include <Engine/EventSystem.h>
 #include <Engine/Input.h>
 #include <Engine/Log.h>
 #include <Engine/PFX.h>
@@ -20,7 +21,6 @@
 #include <tinyfiledialogs/tinyfiledialogs.h>
 #include <glm/gtx/transform.hpp>
 
-#include <SDL_events.h>
 
 static const char *FILE_PATTERNS[] = { "*.json" };
 

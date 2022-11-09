@@ -1,52 +1,77 @@
 #pragma once
 
-#include "Engine/Event.h"
+#include <SDL_events.h>
 
 #include <functional>
 #include <queue>
 #include <set>
 #include <map>
-#include <typeindex>
-
-using namespace std::placeholders;
 
 namespace Engine
 {
+	class EventHandlerBase {
+	public:
+		void exec(SDL_Event* evnt) {
+			call(evnt);
+		}
+	private:
+		virtual void call(SDL_Event* evnt) = 0;
+	};
+
+	template<class T>
+	class EventHandler : public EventHandlerBase
+	{
+	public:
+		EventHandler(T* instance, std::function<void(SDL_Event*)> callback) : instance(instance),
+			callback(callback) {};
+
+		void call(SDL_Event* e)
+		{
+			callback(e);
+		}
+
+	private:
+		T* instance;
+		std::function<void(SDL_Event*)> callback;
+	};
+
+
+	typedef std::list<EventHandlerBase*> HandlerList;
+
 	class EventSystem
 	{
 	private:
-		typedef void* EventHandler;
-		
-		std::queue<IEvent*> m_pEventQueue;
-		std::map<std::type_index, std::vector<std::function<void (IEvent*)>>> m_pEventHandlersMap;
+		std::queue<SDL_Event> m_pEventQueue;
+		std::map<SDL_EventType, HandlerList*> m_pEventHandlersMap;
 	public:
 		EventSystem(); // remove later
 		~EventSystem();
 
 		void dispatchEvents();
-
-		void queueEvent(IEvent* e);
 		void queueEvent(SDL_Event* e);
 
-		template<typename T>
-		void registerListener(EventHandler instance,  std::function<void(IEvent*)> callback)
+		template<class T>
+		void registerListener(SDL_EventType eventType, T* instance,  std::function<void(SDL_Event*)> callback)
 		{
-			std::type_index id = typeid(T);
-			//if (m_pEventHandlersMap[id].size() == 0)
-			//	m_pEventHandlersMap[id] = std::vector<T*>;
+			if (m_pEventHandlersMap[eventType] == nullptr)
+				m_pEventHandlersMap[eventType] = new HandlerList();
 
-			m_pEventHandlersMap[id].push_back(callback);
+			m_pEventHandlersMap[eventType]->push_back(
+				new EventHandler<T>(instance, callback)
+			);
 		}
 
-		template<typename T>
-		void deregisterListener(EventHandler instance)
+		template<class T, class EventType>
+		void deregisterListener(EventType eventType, T* instance)
 		{
-			std::vector<EventHandler>& callbacks = m_pEventHandlersMap[eventType];
+			HandlerList* callbacks = m_pEventHandlersMap[eventType];
 
 			for (auto it = callbacks.begin(); it < it->end(); it++)
 			{
 				if (it->target == instance)
+				{
 					callbacks.erase(it);
+				}
 			}
 		}
 	};

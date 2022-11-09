@@ -197,7 +197,7 @@ namespace Engine
 
     void SpriteBatch::begin(const glm::mat4& transform)
     {
-        CORE_ASSERT(!m_isInBatch, "SpriteBatch::begin() called without previously called end() on a previous batch");
+        CORE_FATAL(!m_isInBatch, "SpriteBatch::begin() called without previously called end() on a previous batch");
 
         m_isInBatch = true;
         m_transform = transform;
@@ -207,7 +207,7 @@ namespace Engine
 
     void SpriteBatch::end()
     {
-        CORE_ASSERT(m_isInBatch, "SpriteBatch::end() called without calling begin() first");
+        CORE_FATAL(m_isInBatch, "SpriteBatch::end() called without calling begin() first");
 
         flush();
         m_isInBatch = false;
@@ -222,7 +222,7 @@ namespace Engine
                            const glm::vec2& origin, 
                            const glm::vec4& uvs)
     {
-        CORE_ASSERT(m_isInBatch, "SpriteBatch::draw() called without calling begin() first");
+        CORE_FATAL(m_isInBatch, "SpriteBatch::draw() called without calling begin() first");
 
         if (m_pCurrentTexture != pTexture)
         {
@@ -282,7 +282,7 @@ namespace Engine
                                const glm::vec4& color,
                                const glm::vec4& uvs)
     {
-        CORE_ASSERT(m_isInBatch, "SpriteBatch::drawRect() called without calling begin() first");
+        CORE_FATAL(m_isInBatch, "SpriteBatch::drawRect() called without calling begin() first");
 
         if (m_pCurrentTexture != pTexture)
         {
