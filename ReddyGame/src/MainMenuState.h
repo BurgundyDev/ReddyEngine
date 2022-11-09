@@ -3,7 +3,8 @@
 #include "GameState.h"
 
 #include <glm/vec2.hpp>
-
+#include <string>
+#include <SDL_events.h>
 
 // Forward declarations
 namespace Engine

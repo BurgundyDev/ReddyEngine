@@ -7,6 +7,7 @@
 #include "Engine/ResourceManager.h"
 #include "Engine/EntityManager.h"
 #include "Engine/SpriteManager.h"
+#include "Engine/EventSystem.h"
 
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -24,6 +25,7 @@ namespace Engine
     static ResourceManagerRef g_pResourceManager;
     static EntityManagerRef g_pEntityManager;
     static SpriteManagerRef g_pSpriteManager;
+	static EventSystemRef g_pEventSystem;
 
     static int g_fixedUpdateFPS = 60;
     static bool g_done = false;
@@ -42,7 +44,7 @@ namespace Engine
         {
             auto success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO) == 0;
             SDL_GLContext gl_context = SDL_GL_CreateContext(NULL);
-            CORE_FATAL(success, "Error: %s", SDL_GetError());
+            CORE_ASSERT(success, "Error: %s", SDL_GetError());
         }
 
       
@@ -110,15 +112,24 @@ namespace Engine
         g_pResourceManager = std::make_shared<ResourceManager>();
         g_pSpriteManager = std::make_shared<SpriteManager>();
         g_pEntityManager = std::make_shared<EntityManager>();
+        g_pEventSystem = std::make_shared<EventSystem>();
 
         // Once everything is setup, the game can load stuff
         pGame->loadContent();
+
+        // Register Input Event Listeners 
+        std::function<void(IEvent*)> callback = std::bind(&Input::keyEventCallback, g_pInput.get(), _1);
+
+        g_pEventSystem->registerListener<Engine::KeyEvent>(g_pInput.get(), callback);
+
 
         // Main loop
         Uint64 lastTime = SDL_GetPerformanceCounter();
         float fixedUpdateProgress = 0.0f;
         while (!g_done)
         {
+            g_pEventSystem->dispatchEvents();
+            
             Sint32 mouseMotionX = 0;
             Sint32 mouseMotionY = 0;
 
@@ -132,6 +143,8 @@ namespace Engine
             SDL_Event event;
             while (SDL_PollEvent(&event))
             {
+				g_pEventSystem->registerEvent(&event);
+
                 ImGui_ImplSDL2_ProcessEvent(&event);
 
                 switch (event.type)
@@ -187,9 +200,13 @@ namespace Engine
             }
             if (g_done) break;
 
+            g_pEventSystem->dispatchEvents();
+
             // Update inputs
             g_pInput->setMouseMotion({mouseMotionX, mouseMotionY});
             g_pInput->update();
+
+            g_pEventSystem->dispatchEvents();
 
             // Start the Dear ImGui frame
             ImGui_ImplOpenGL3_NewFrame();
@@ -201,6 +218,8 @@ namespace Engine
             auto deltaTime = (float)((now - lastTime) / (double)SDL_GetPerformanceFrequency());
             if (deltaTime > 1.0f / 10.0f) deltaTime = 1.0f / 10.0f;
             lastTime = now;
+
+            g_pEventSystem->dispatchEvents();
 
             // Fixed update shenanigans
             int fixedUpdated = 0;
@@ -222,9 +241,13 @@ namespace Engine
                 }
             }
 
+            g_pEventSystem->dispatchEvents();
+
             // Update
             g_pEntityManager->update(deltaTime);
             pGame->update(deltaTime);
+
+            g_pEventSystem->dispatchEvents();
 
             // Generate imgui final render data
             ImGui::Render();
@@ -234,6 +257,8 @@ namespace Engine
             glClearColor(0, 0, 0, 1);
             glClear(GL_COLOR_BUFFER_BIT);
             g_pSpriteBatch->beginFrame();
+
+            g_pEventSystem->dispatchEvents();
 
             // Draw game
             pGame->draw();
@@ -299,6 +324,10 @@ namespace Engine
     {
         return g_pSpriteManager;
     }
+	const Engine::EventSystemRef& getEventSystem()
+	{
+        return g_pEventSystem;
+	}
 
 	glm::vec2 getResolution()
     {

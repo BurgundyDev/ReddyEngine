@@ -84,7 +84,7 @@ namespace Engine
 
     void Texture::setData(const uint8_t* pData)
     {
-        CORE_FATAL(m_isDynamic, "Attempt to set data on a static texture. Use ::createDynamic()");
+        CORE_ASSERT(m_isDynamic, "Attempt to set data on a static texture. Use ::createDynamic()");
 
         glBindTexture(GL_TEXTURE_2D, m_handle);
 

@@ -70,7 +70,7 @@ namespace Engine
 	void EntityManager::destroyEntity(EntityRef pEntity)
 	{
 		if (pEntity == m_pRoot)
-			CORE_FATAL(false, "Cannot erase Root entity!");
+			CORE_FATAL("Cannot erase Root entity!");
 
 		if (pEntity->getParent())
 			pEntity->getParent()->removeChild(pEntity);

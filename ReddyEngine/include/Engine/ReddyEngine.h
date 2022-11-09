@@ -32,13 +32,17 @@ namespace Engine
     class EntityManager;
     using EntityManagerRef = std::shared_ptr<EntityManager>;
 
+    class EventSystem;
+    using EventSystemRef = std::shared_ptr<EventSystem>;
+
 
     const SpriteBatchRef& getSpriteBatch();
     const InputRef& getInput();
     const AudioRef& getAudio();
     const ResourceManagerRef& getResourceManager();
     const EntityManagerRef& getEntityManager();
-    const SpriteManagerRef& getSpriteManager();
+	const SpriteManagerRef& getSpriteManager();
+	const EventSystemRef& getEventSystem();
 
 
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv);
