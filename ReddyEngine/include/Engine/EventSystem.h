@@ -54,7 +54,7 @@ namespace Engine
 		template<typename T>
 		void deregisterListener(EventListenerInstance instance)
 		{
-			std::vector<std::function<void(IEvent*)>>& callbacks = m_pEventHandlersMap[eventType];
+			std::vector<std::function<void(IEvent*)>>& callbacks = m_pEventHandlersMap[T::GetStaticEventType()];
 
 			for (auto it = callbacks.begin(); it < it->end(); it++)
 			{
