@@ -1,10 +1,17 @@
 #pragma once
 
+#include <json/json.h>
+
 #include <memory>
 #include <vector>
 
+
 namespace Engine
 {
+	class ComponentManager;
+	using ComponentManagerRef = std::shared_ptr<ComponentManager>;
+
+
 	// Forward declarations
 	class Entity;
 
@@ -16,15 +23,29 @@ namespace Engine
 		EntityManager();
 		~EntityManager();
 
-		void update(float deltaTime);
-		void fixedUpdate(float deltaTime);
+		void clear();
 
-		const EntityRef createEntity();
-		const EntityRef createEntity(const EntityRef& parent);
-		void destroyEntity(const EntityRef& entity);
-	
+		EntityRef createEntity(); // Adds to root
+		EntityRef createEntity(const EntityRef& pParent);
+		EntityRef createEntityFromJson(const EntityRef& pParent, const Json::Value& json);
+		void destroyEntity(EntityRef pEntity);
+
+		const EntityRef& getRoot() const { return m_pRoot; }
+
+	    Json::Value serialize();
+        void deserialize(const Json::Value& json);
+
+		void update(float dt);
+		void fixedUpdate(float dt);
+
+	public:
+		// Engine use only
+		const ComponentManagerRef& getComponentManager() const;
+
 	private:
-		Entity* m_pRoot;
+		EntityRef m_pRoot;
 		uint64_t m_id;
+		ComponentManagerRef m_pComponentManager;
+		std::vector<EntityRef> m_entitiesToDestroy;
 	};
 }

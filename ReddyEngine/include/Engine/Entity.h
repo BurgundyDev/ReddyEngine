@@ -1,92 +1,95 @@
 #pragma once
 
-#include "Engine/Component.h"
-
 #include <glm/vec2.hpp>
+#include <json/json.h>
 
 #include <string>
 #include <memory>
 #include <vector>
 
-struct Transform 
-{
-	glm::vec2 position = glm::vec2(0);
-	float rotation = 0;
-	glm::vec2 scale = glm::vec2(0);
-};
 
 namespace Engine
 {
-	using EntityRef = std::shared_ptr<Entity>;
+	class Component;
 	using ComponentRef = std::shared_ptr<Component>;
-	using TransformRef = std::shared_ptr<Transform>;
 
-	class Entity final
+	class Entity;
+	using EntityRef = std::shared_ptr<Entity>;
+
+
+	struct Transform 
 	{
-	private:
-		Transform m_transform;
+		glm::vec2 position = glm::vec2(0);
+		float rotation = 0;
+		glm::vec2 scale = glm::vec2(1);
+	};
+
+
+	class Entity final : public std::enable_shared_from_this<Entity>
+	{
+	public:
+		uint64_t id = 0;
+		std::string name;
 
 	public:
-		Entity(const EntityRef& parent);
-		Entity();
 		~Entity();
 
-		uint64_t						id;
-		Entity*							parent;
-		std::vector<EntityRef>			children;
-		std::vector<ComponentRef>		components;
+		bool addChild(EntityRef pChild); // True if was added, false if already child
+		bool removeChild(const EntityRef& pChild); // True if was removed
+		EntityRef getParent() const { return m_pParent ? m_pParent->shared_from_this() : nullptr; }
+		const std::vector<EntityRef>& getChildren() const { return m_children; }
 
-		void update(float deltaTime);
-		void fixedUpdate(float deltaTime);
-		void onCreate();
-		void onDestroy();
+		const Transform& getTransform() const { return m_transform; }
+		void setTransform(const Transform transform);
+
+		const std::vector<ComponentRef>& getComponents() const { return m_components; }
 		
 		template<typename T>
 		bool hasComponent() const
 		{
-			for (auto it = components.begin(); it != components.end(); it++)
+			for (const auto& pComponent : m_components)
 			{
-				if (dynamic_cast<T*>(it->get())) return true;
+				auto pRet = std::dynamic_pointer_cast<T>(pComponent);
+				if (pRet) return true;
 			}
+			return false;
 		}
 
 		template<typename T>
-		const T& addComponent()
+		std::shared_ptr<T> getComponent() const
 		{
-			audo pComponent = getComponent<T>();
-			if (pComponent) return component;
+			for (const auto& pComponent : m_components)
+			{
+				auto pRet = std::dynamic_pointer_cast<T>(pComponent);
+				if (pRet) return pRet;
+			}
+			return nullptr;
+		}
 
-			pComponent = std::shared_ptr<T>(new T());
+		template<typename T>
+		std::shared_ptr<T> addComponent()
+		{
+			auto pComponent = getComponent<T>();
+			if (pComponent) return pComponent;
+
+			pComponent = std::make_shared<T>();
 			
-			pComponent->entity = this;
-			components->push_back(pComponent);
-			*pComponent->onCreate();
+			pComponent->m_pEntity = this;
+			m_components.push_back(pComponent);
+			componentAdded(pComponent);
 
 			return pComponent;
 		}
 
 		template<typename T>
-		const T& getComponent() const
+		bool removeComponent() const
 		{
-			for (auto& component : compnents)
-			{
-				if (dynamic_cast<T*>(component.get()))
-					return dynamic_cast<T>(component);
-			}
-			return nullptr;
+			return removeComponent(getComponent<T>());
 		}
 
-		const Transform getTransform()
-		{
-			return m_transform;
-		}
+		bool removeComponent(const ComponentRef& pComponent);
 
-		void setTransform(const Transform transform)
-		{
-			m_transform = transform;
-		}
-
-		const Json::Value serialize();
+		Json::Value serialize();
 		void deserialize(const Json::Value json);
 		
 		friend bool operator==(const Entity& lhs, const Entity& rhs)

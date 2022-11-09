@@ -13,6 +13,9 @@
 #include <Engine/Scene.h>
 #include <Engine/SpriteBatch.h>
 #include <Engine/Utils.h>
+#include <Engine/Entity.h>
+#include <Engine/EntityManager.h>
+#include <Engine/SpriteComponent.h>
 
 #include <imgui.h>
 #include <tinyfiledialogs/tinyfiledialogs.h>
@@ -143,7 +146,36 @@ void EditorState::update(float dt)
             }
             ImGui::EndMenu();
         }
-        
+
+        if (m_editDocumentType == EditDocumentType::Scene)
+        {
+            if (ImGui::BeginMenu("Scene"))
+            {
+                if (ImGui::BeginMenu("Create Entity (Shift+A)"))
+                {
+                    if (ImGui::MenuItem("Empty")) onCreateEmptyEntity();
+                    if (ImGui::MenuItem("Sprite")) onCreateSpriteEntity();
+                    if (ImGui::MenuItem("Text")) onCreateTextEntity();
+                    if (ImGui::MenuItem("Sound")) onCreateSoundEntity();
+                    if (ImGui::MenuItem("Particle")) onCreateParticleEntity();
+                    ImGui::EndMenu();
+                }
+                ImGui::EndMenu();
+            }
+        }
+
+        if (m_editDocumentType == EditDocumentType::PFX)
+        {
+            if (ImGui::BeginMenu("PFX"))
+            {
+                if (ImGui::MenuItem("Play", "Spacebar"))
+                {
+                    m_pPfxInstance = std::make_shared<Engine::PFXInstance>(m_pPfx);
+                }
+                ImGui::EndMenu();
+            }
+        }
+
         ImGui::EndMainMenuBar();
     }
 
@@ -159,6 +191,25 @@ void EditorState::update(float dt)
             drawPFXUI();
             if (m_pPfxInstance) m_pPfxInstance->update(dt);
             break;
+    }
+
+    // Context menu
+    if (m_editDocumentType == EditDocumentType::Scene)
+    {
+        if (Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT) && Engine::getInput()->isKeyJustDown(SDL_SCANCODE_A))
+        {
+            ImGui::OpenPopup("CreateEntityContext");
+        }
+    }
+
+    if (ImGui::BeginPopupContextWindow("CreateEntityContext"))
+    {
+        if (ImGui::Selectable("Empty")) onCreateEmptyEntity();
+        if (ImGui::Selectable("Sprite")) onCreateSpriteEntity();
+        if (ImGui::Selectable("Text")) onCreateTextEntity();
+        if (ImGui::Selectable("Sound")) onCreateSoundEntity();
+        if (ImGui::Selectable("Particle")) onCreateParticleEntity();
+        ImGui::EndPopup();
     }
 
     // Camera stuff
@@ -198,6 +249,16 @@ void EditorState::update(float dt)
         auto zoomTarget = ZOOM_LEVELS[m_zoom];
         m_zoomf = Engine::Utils::lerp(m_zoomf, zoomTarget, std::min(1.0f, dt * 50.0f));
     }
+
+    // Update scene
+    switch (m_editDocumentType)
+    {
+        case EditDocumentType::Scene:
+            Engine::Scene::update(dt);
+            break;
+        case EditDocumentType::PFX:
+            break;
+    }
 }
 
 void EditorState::draw()
@@ -223,11 +284,11 @@ void EditorState::draw()
     switch (m_editDocumentType)
     {
         case EditDocumentType::Scene:
+            Engine::Scene::draw();
             break;
         case EditDocumentType::PFX:
             if (m_pPfxInstance) m_pPfxInstance->draw({0, 0});
             break;
-        }
     }
 
     sb->end();
@@ -267,12 +328,9 @@ void EditorState::onNew(EditDocumentType documentType)
 {
     if (!askSaveUnsavedChanges()) return;
 
-    // Clear everything
-    m_editDocumentType = documentType;
-    m_filename = "untitled";
-    setDirty(true);
-    m_pActionManager->clear();
+    clear();
 
+    m_editDocumentType = documentType;
     if (m_editDocumentType == EditDocumentType::PFX)
     {
         m_pPfx = Engine::PFX::create();
@@ -336,6 +394,40 @@ void EditorState::onDelete()
 {
 }
 
+void EditorState::onCreateEmptyEntity()
+{
+    auto pEntity = Engine::getEntityManager()->createEntity();
+    changeSelection({pEntity});
+}
+
+void EditorState::onCreateSpriteEntity()
+{
+    auto pEntity = Engine::getEntityManager()->createEntity();
+    pEntity->addComponent<Engine::SpriteComponent>();
+    changeSelection({pEntity});
+}
+
+void EditorState::onCreateTextEntity()
+{
+    //auto pEntity = Engine::getEntityManager()->createEntity();
+    //pEntity->addComponent<Engine::TextComponent>();
+    //changeSelection({pEntity});
+}
+
+void EditorState::onCreateSoundEntity()
+{
+    //auto pEntity = Engine::getEntityManager()->createEntity();
+    //pEntity->addComponent<Engine::SoundComponent>();
+    //changeSelection({pEntity});
+}
+
+void EditorState::onCreateParticleEntity()
+{
+    //auto pEntity = Engine::getEntityManager()->createEntity();
+    //pEntity->addComponent<Engine::PFXComponent>();
+    //changeSelection({pEntity});
+}
+
 
 //-----------------------------------------------------------------------
 // File dialog bullshit
@@ -344,6 +436,8 @@ void EditorState::onDelete()
 
 void EditorState::open(const std::string& filename)
 {
+    clear();
+
     Json::Value json;
     if (!Engine::Utils::loadJson(json, filename))
     {
@@ -457,3 +551,14 @@ bool EditorState::askSaveUnsavedChanges()
 
 //-----------------------------------------------------------------------
 
+void EditorState::clear()
+{
+    m_filename = "untitled";
+    setDirty(true);
+    m_pActionManager->clear();
+    m_pPfx.reset();
+    m_pPfxInstance.reset();
+    m_position = {0, 0};
+    m_zoom = 2;
+    m_zoomf = ZOOM_LEVELS[2];
+}

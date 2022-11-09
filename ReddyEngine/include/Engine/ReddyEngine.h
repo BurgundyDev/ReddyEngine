@@ -5,6 +5,7 @@
 #include <glm/vec2.hpp>
 
 #include <memory>
+#include <string>
 
 
 namespace Engine
@@ -15,10 +16,13 @@ namespace Engine
     // Forward declarations
     class SpriteBatch;
     using SpriteBatchRef = std::shared_ptr<SpriteBatch>;
+
     class Input;
     using InputRef = std::shared_ptr<Input>;
+
     class Audio;
     using AudioRef = std::shared_ptr<Audio>;
+
     class ResourceManager;
     using ResourceManagerRef = std::shared_ptr<ResourceManager>;
 

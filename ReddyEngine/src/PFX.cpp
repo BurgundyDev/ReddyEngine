@@ -47,6 +47,8 @@ namespace Engine
         {
             Json::Value emitterJson;
 
+            emitterJson["name"] = emitter.name;
+
             switch (emitter.type)
             {
                 case EmitterType::burst:
@@ -96,6 +98,8 @@ namespace Engine
         {
             EmitterDef emitter;
 
+            emitter.name = Utils::deserializeString(emitterJson["name"], "emitter");
+
             auto type = Utils::deserializeString(emitterJson["type"], "burst");
             if (type == "burst") emitter.type = EmitterType::burst;
             else if (type == "continuous") emitter.type = EmitterType::continuous;
@@ -137,7 +141,7 @@ namespace Engine
             auto pEmitter = &m_emitters[i];
             pEmitter->pEmitterRef = &pfxEmitters[i];
             pEmitter->progress = 0.0f;
-            pEmitter->spawnAccum = 0.0f;
+            pEmitter->spawnAccum = 1.0f;
             pEmitter->spawnRate = pEmitter->pEmitterRef->spawnRate;
             if (pEmitter->pEmitterRef->type == EmitterType::burst && pEmitter->pEmitterRef->burstDuration > 0.0f)
             {
@@ -280,7 +284,7 @@ namespace Engine
                 }
             }
 
-            emitter.spawnAccum += dt / emitter.spawnRate;
+            emitter.spawnAccum += dt * emitter.spawnRate;
 
             while (emitter.spawnAccum >= 1.0f)
             {
@@ -336,7 +340,7 @@ namespace Engine
 
             color = Utils::lerp(premultiplied, color, additive);
 
-            sb->draw(pParticle->pTexture, position + pParticle->position * scale, color, pParticle->rotation + in_rotation, size * scale * pParticle->texInvSize);
+            sb->draw(pParticle->pTexture, position + pParticle->position * scale, color, pParticle->rotation + in_rotation, glm::vec2(size * scale * pParticle->texInvSize));
 
             pParticle = pParticle->pNext;
         }
