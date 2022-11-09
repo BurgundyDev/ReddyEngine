@@ -32,7 +32,11 @@ public:
     void update(float dt) override;
     void draw() override;
 
+    void enter();
+
 private:
+    void onKeyDown(SDL_Event* pEvent);
+
     Engine::SoundRef m_pQuickSound;
 
     Engine::SoundRef m_pSound;
