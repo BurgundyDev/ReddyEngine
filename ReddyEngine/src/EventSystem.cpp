@@ -1,12 +1,9 @@
 #include "Engine/EventSystem.h"
-#include "Engine/Log.h"
 
 namespace Engine
 {
-
 	EventSystem::EventSystem()
 	{
-
 	}
 
 	EventSystem::~EventSystem()
@@ -26,14 +23,19 @@ namespace Engine
 				continue;
 			}
 
-			std::vector< std::function<void (IEvent*)>>& handlerList = m_pEventHandlersMap[eventType];
+			std::vector< std::function<void(IEvent*)>>& handlerList = m_pEventHandlersMap[eventType];
 
-			for (std::function<void(IEvent*)> callback : handlerList)
+			for (auto handledEvent : handlerList)
 			{
-				callback(firstEvent);
+				handledEvent(firstEvent);
 			}
 			m_pEventQueue.pop();
 		}
+	}
+
+	void EventSystem::queueEvent(IEvent* e)
+	{
+		m_pEventQueue.push(e);
 	}
 
 	void EventSystem::queueEvent(SDL_Event* e)
@@ -45,7 +47,6 @@ namespace Engine
 		case SDL_WINDOWEVENT:
 		{
 			WindowEvent* event = new WindowEvent(e->window);
-			CORE_INFO("{}", event->type_index.name());
 			//event->type_index = typeid(WindowEvent);
 			m_pEventQueue.push(event);
 		}
