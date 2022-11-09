@@ -12,40 +12,30 @@ using namespace std::placeholders;
 
 namespace Engine
 {
-	typedef struct EventStructure
-	{
-		IEvent* event;
-		EventType type;
-	};
-
 	class EventSystem
 	{
 	private:
-		typedef void* EventListenerInstance;
+		typedef void* EventHandler;
 
-		std::queue<EventStructure*> m_pEventQueue;
-		std::map<EventType, std::vector<std::function<void(IEvent*)>>> m_pEventHandlersMap;
+		std::queue<IEvent*> m_pEventQueue;
+		std::map<std::type_index, std::vector<std::function<void(IEvent*)>>> m_pEventHandlersMap;
 	public:
 		EventSystem(); // remove later
 		~EventSystem();
 
-		template <typename T> 
-		void pushEventToQueue(T* e);
-	
-		template<typename T>
-		void registerEvent(T* e)
-		{
-			m_pEventQueue.push(std::map(e, T::GetType()));
-		}
-
 		void dispatchEvents();
 
-		void registerEvent(SDL_Event* e);
-
-		template<class T>
-		void registerListener(EventListenerInstance instance,  std::function<void (IEvent*)>& callback)
+		template <typename T>
+		void queueEvent(Event<T>* e)
 		{
-			EventType id = T::GetStaticEventType();
+			m_pEventQueue.push(e);
+		}
+		void queueEvent(SDL_Event* e);
+
+		template<typename T>
+		void registerListener(EventHandler instance,  std::function<void (IEvent*)> callback)
+		{
+			std::type_index id = typeid(T);
 			//if (m_pEventHandlersMap[id].size() == 0)
 			//	m_pEventHandlersMap[id] = std::vector<T*>;
 
@@ -53,7 +43,7 @@ namespace Engine
 		}
 
 		template<typename T>
-		void deregisterListener(EventListenerInstance instance)
+		void deregisterListener(EventHandler instance)
 		{
 			std::vector<std::function<void(IEvent*)>>& callbacks = m_pEventHandlersMap[eventType];
 
@@ -61,17 +51,6 @@ namespace Engine
 			{
 				if (it->target == instance)
 					callbacks.erase(it);
-			}
-		}
-
-	private:
-		template<typename T>
-		void callEvent(T* e)
-		{
-			auto handlerList = m_pEventHandlersMap[typeid(T)];
-			for (auto callback : handlerList)
-			{
-				callback(e);
 			}
 		}
 	};

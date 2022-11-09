@@ -4,157 +4,118 @@
 
 #include <typeindex>
 
-#define EVENT_TYPE(X)	virtual Engine::EventType GetEventType() const override{ return Engine::EventType::X; }; \
-						static Engine::EventType GetStaticEventType() { return Engine::EventType::X; };
-
-// To create new Event you have to:
-// 1. add it to the EventTypes
-// 2. create new class that inherits from IEvent and use macro EVENT_TYPE(EventType::[your_type])
-// 3. create your own field with struct of your event
-
 namespace Engine
 {
-	enum EventType {
-		Window = 0,
-		Key,
-		MouseButton,
-		MouseMoved,
-		MouseScrolled,
-		JoyAxis,
-		JoyButton,
-		JoyDevice,
-		ControllerAxis,
-		ControllerButton,
-		ControllerDevice,
-		Drop,
-	};
-
-	class IEvent 
+	class IEvent
 	{
 	public:
-		IEvent() {};
-		virtual EventType GetEventType() const = 0;
+		std::type_index type_index;
+
+		IEvent() : type_index(typeid(int)) {};
 	};
 
-	class WindowEvent : public IEvent
+	template <typename T>
+	class Event : public IEvent
+	{
+	public:
+		std::type_index type_index;
+
+		Event() : type_index(typeid(T)) {};
+	};
+
+	class WindowEvent : public Event<WindowEvent>
 	{
 	public:
 		WindowEvent(SDL_WindowEvent event) : window(event) {};
 
 		SDL_WindowEvent window;
-
-		EVENT_TYPE(Window)
 	};
 
-	class KeyEvent : public IEvent
+	class KeyEvent : public Event<KeyEvent>
 	{
 	public:
 		KeyEvent(SDL_KeyboardEvent event) : key(event) {};
 
 		SDL_KeyboardEvent key;
-		
-		EVENT_TYPE(Key)
-
 	};
 
-	class MouseButtonEvent : public IEvent
+	class MouseButtonEvent : public Event<MouseButtonEvent>
 	{
 	public:
 		MouseButtonEvent(SDL_MouseButtonEvent event) : button(event) {};
 
 		SDL_MouseButtonEvent button;
-
-
-		EVENT_TYPE(MouseButton)
 	};
 
-	class MouseMovedEvent : public IEvent
+	class MouseMovedEvent : public Event<MouseMovedEvent>
 	{
 	public:
 		MouseMovedEvent(SDL_MouseMotionEvent event) : motion(event) {};
 
 		SDL_MouseMotionEvent motion;
-
-		EVENT_TYPE(MouseMoved)
 	};
 
-	class MouseScrolledEvent : public IEvent
+	class MouseScrolledEvent : public Event<MouseScrolledEvent>
 	{
 	public:
 		MouseScrolledEvent(SDL_MouseWheelEvent event) : wheel(event) {};
 		
 		SDL_MouseWheelEvent wheel;
-		
-		EVENT_TYPE(MouseScrolled)
 	};
 
-	class JoyAxisEvent : public IEvent
+	class JoyAxisEvent : public Event<JoyAxisEvent>
 	{
 	public:
 		JoyAxisEvent(SDL_JoyAxisEvent event) : jaxis(event) {};
 
 		SDL_JoyAxisEvent jaxis;
-
-		EVENT_TYPE(JoyAxis)
 	};
 
-	class JoyButtonEvent : public IEvent
+	class JoyButtonEvent : public Event<JoyButtonEvent>
 	{
 	public:
 		JoyButtonEvent(SDL_JoyButtonEvent event) : jbutton(event) {};
 
 		SDL_JoyButtonEvent jbutton;
-
-		EVENT_TYPE(JoyButton)
 	};
 
-	class JoyDeviceEvent : public IEvent
+	class JoyDeviceEvent : public Event<JoyDeviceEvent>
 	{
 	public:
 		JoyDeviceEvent(SDL_JoyDeviceEvent event) : jdevice(event) {};
 
 		SDL_JoyDeviceEvent jdevice;
-
-		EVENT_TYPE(JoyDevice)
 	};
 
-	class ControllerAxisEvent : public IEvent
+	class ControllerAxisEvent : public Event<ControllerAxisEvent>
 	{
 	public:
 		ControllerAxisEvent(SDL_ControllerAxisEvent event) : caxis(event) {};
 
 		SDL_ControllerAxisEvent caxis;
-
-		EVENT_TYPE(ControllerAxis)
 	};
 
-	class ControllerButtonEvent : public IEvent
+	class ControllerButtonEvent : public Event<ControllerButtonEvent>
 	{
 	public:
 		ControllerButtonEvent(SDL_ControllerButtonEvent event) : cbutton(event) {};
 
 		SDL_ControllerButtonEvent cbutton;
-
-		EVENT_TYPE(ControllerButton)
 	};
 
-	class ControllerDeviceEvent : public IEvent
+	class ControllerDeviceEvent : public Event<ControllerDeviceEvent>
 	{
 	public:
 		ControllerDeviceEvent(SDL_ControllerDeviceEvent event) : cdevice(event) {};
 
 		SDL_ControllerDeviceEvent cdevice;
-
-		EVENT_TYPE(ControllerDevice)
 	};
 
-	class DropEvent : public IEvent
+	class DropEvent : public Event<DropEvent>
 	{
 	public:
 		DropEvent(SDL_DropEvent event) : drop(event) {};
 
 		SDL_DropEvent drop;
-
-		EVENT_TYPE(Drop)
 	};
 };

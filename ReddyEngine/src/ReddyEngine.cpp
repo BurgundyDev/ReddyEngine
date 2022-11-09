@@ -118,9 +118,8 @@ namespace Engine
         pGame->loadContent();
 
         // Register Input Event Listeners 
-        std::function<void(IEvent*)> callback = std::bind(&Input::keyEventCallback, g_pInput.get(), _1);
 
-        g_pEventSystem->registerListener<Engine::KeyEvent>(g_pInput.get(), callback);
+        g_pEventSystem->registerListener<Engine::KeyEvent>(g_pInput.get(), std::bind(&Input::keyEventCallback, g_pInput.get(), _1));
 
 
         // Main loop
@@ -128,8 +127,6 @@ namespace Engine
         float fixedUpdateProgress = 0.0f;
         while (!g_done)
         {
-            g_pEventSystem->dispatchEvents();
-            
             Sint32 mouseMotionX = 0;
             Sint32 mouseMotionY = 0;
 
@@ -143,7 +140,7 @@ namespace Engine
             SDL_Event event;
             while (SDL_PollEvent(&event))
             {
-				g_pEventSystem->registerEvent(&event);
+                g_pEventSystem->queueEvent(&event);
 
                 ImGui_ImplSDL2_ProcessEvent(&event);
 
@@ -197,16 +194,14 @@ namespace Engine
                     g_pInput->onMouseMove({event.motion.x, event.motion.y});
                     break;
                 }
+
+				g_pEventSystem->dispatchEvents();
             }
             if (g_done) break;
-
-            g_pEventSystem->dispatchEvents();
 
             // Update inputs
             g_pInput->setMouseMotion({mouseMotionX, mouseMotionY});
             g_pInput->update();
-
-            g_pEventSystem->dispatchEvents();
 
             // Start the Dear ImGui frame
             ImGui_ImplOpenGL3_NewFrame();
@@ -219,7 +214,7 @@ namespace Engine
             if (deltaTime > 1.0f / 10.0f) deltaTime = 1.0f / 10.0f;
             lastTime = now;
 
-            g_pEventSystem->dispatchEvents();
+			g_pEventSystem->dispatchEvents();
 
             // Fixed update shenanigans
             int fixedUpdated = 0;
@@ -241,7 +236,7 @@ namespace Engine
                 }
             }
 
-            g_pEventSystem->dispatchEvents();
+			g_pEventSystem->dispatchEvents();
 
             // Update
             g_pEntityManager->update(deltaTime);
@@ -252,13 +247,13 @@ namespace Engine
             // Generate imgui final render data
             ImGui::Render();
 
+            g_pEventSystem->dispatchEvents();
+
             // Prepare rendering
             glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
             glClearColor(0, 0, 0, 1);
             glClear(GL_COLOR_BUFFER_BIT);
             g_pSpriteBatch->beginFrame();
-
-            g_pEventSystem->dispatchEvents();
 
             // Draw game
             pGame->draw();
@@ -268,6 +263,8 @@ namespace Engine
 
             // Swap (Present)
             SDL_GL_SwapWindow(pWindow);
+
+            g_pEventSystem->dispatchEvents();
         }
 
         // Save configs (It will only save if changes have been made)
