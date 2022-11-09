@@ -7,7 +7,6 @@
 #include "Engine/ResourceManager.h"
 #include "Engine/EntityManager.h"
 #include "Engine/SpriteManager.h"
-#include "Engine/EventSystem.h"
 
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -25,7 +24,6 @@ namespace Engine
     static ResourceManagerRef g_pResourceManager;
     static EntityManagerRef g_pEntityManager;
     static SpriteManagerRef g_pSpriteManager;
-	static EventSystemRef g_pEventSystem;
 
     static int g_fixedUpdateFPS = 60;
     static bool g_done = false;
@@ -112,7 +110,6 @@ namespace Engine
         g_pResourceManager = std::make_shared<ResourceManager>();
         g_pSpriteManager = std::make_shared<SpriteManager>();
         g_pEntityManager = std::make_shared<EntityManager>();
-        g_pEventSystem = std::make_shared<EventSystem>();
 
         // Once everything is setup, the game can load stuff
         pGame->loadContent();
@@ -135,8 +132,6 @@ namespace Engine
             SDL_Event event;
             while (SDL_PollEvent(&event))
             {
-                g_pEventSystem->queueEvent(&event);
-
                 ImGui_ImplSDL2_ProcessEvent(&event);
 
                 switch (event.type)
@@ -207,8 +202,6 @@ namespace Engine
             if (deltaTime > 1.0f / 10.0f) deltaTime = 1.0f / 10.0f;
             lastTime = now;
 
-			g_pEventSystem->dispatchEvents();
-
             // Fixed update shenanigans
             int fixedUpdated = 0;
             fixedUpdateProgress += deltaTime;
@@ -229,18 +222,12 @@ namespace Engine
                 }
             }
 
-			g_pEventSystem->dispatchEvents();
-
             // Update
             g_pEntityManager->update(deltaTime);
             pGame->update(deltaTime);
 
-            g_pEventSystem->dispatchEvents();
-
             // Generate imgui final render data
             ImGui::Render();
-
-            g_pEventSystem->dispatchEvents();
 
             // Prepare rendering
             glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
@@ -256,8 +243,6 @@ namespace Engine
 
             // Swap (Present)
             SDL_GL_SwapWindow(pWindow);
-
-            g_pEventSystem->dispatchEvents();
         }
 
         // Save configs (It will only save if changes have been made)
@@ -314,10 +299,6 @@ namespace Engine
     {
         return g_pSpriteManager;
     }
-	const Engine::EventSystemRef& getEventSystem()
-	{
-        return g_pEventSystem;
-	}
 
 	glm::vec2 getResolution()
     {
