@@ -297,12 +297,22 @@ void EditorState::changeSelection(const std::vector<Engine::EntityRef>& in_newSe
     auto prevSelection = m_selected;
     auto newSelection = in_newSelection;
 
-    m_pActionManager->addAction("Select", [this, newSelection]()
+    m_pActionManager->doAction("Select",
+                               [this, newSelection]() // Redo
     {
+        for (const auto& pEntity : m_selected)
+            pEntity->isSelected = false;
         m_selected = newSelection;
-    }, [this, prevSelection]()
+        for (const auto& pEntity : m_selected)
+            pEntity->isSelected = true;
+    },
+                               [this, prevSelection]() // Undo
     {
+        for (const auto& pEntity : m_selected)
+            pEntity->isSelected = false;
         m_selected = prevSelection;
+        for (const auto& pEntity : m_selected)
+            pEntity->isSelected = true;
     });
 }
 

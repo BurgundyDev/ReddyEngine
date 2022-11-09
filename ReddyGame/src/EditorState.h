@@ -72,6 +72,8 @@ private:
     void setDirty(bool dirty);
     void clear();
     void changeSelection(const std::vector<Engine::EntityRef>& newSelection);
+    void drawEntitySceneTree(const Engine::EntityRef& pEntity);
+    const char* getEntityFriendlyName(const Engine::EntityRef& pEntity);
 
     EditDocumentType m_editDocumentType = EditDocumentType::Scene;
     ActionManagerRef m_pActionManager;

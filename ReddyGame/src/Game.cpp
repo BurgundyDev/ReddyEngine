@@ -64,6 +64,7 @@ void Game::popState()
 
 void Game::update(float deltaTime)
 {
+    //ImGui::ShowDemoWindow();
     if (!m_pGameStates.empty()) m_pGameStates.back()->update(deltaTime);
 }
 

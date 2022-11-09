@@ -28,7 +28,7 @@
       ],
       "components" : [],
       "id" : 0,
-      "name" : "",
+      "name" : "Root",
       "transform" : {
          "position" : [ 0.0, 0.0 ],
          "rotation" : 0.0,

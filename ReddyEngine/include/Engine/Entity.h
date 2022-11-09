@@ -98,7 +98,9 @@ namespace Engine
 		}
 
 	public:
-		bool edit(); // For editor
+		// Editor stuff (We could #ifdef this in final version?)
+		bool edit();
+		bool isSelected = false;
 
 	private:
 		void componentAdded(const ComponentRef& pComponent);

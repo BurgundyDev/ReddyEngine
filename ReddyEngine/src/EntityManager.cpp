@@ -13,6 +13,7 @@ namespace Engine
 		, m_id(0)
 		, m_pComponentManager(std::make_shared<ComponentManager>())
 	{
+		m_pRoot->name = "Root";
 	}
 
 	EntityManager::~EntityManager()
