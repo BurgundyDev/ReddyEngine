@@ -12,7 +12,7 @@ using namespace std::placeholders;
 
 namespace Engine
 {
-	typedef struct EventStructure
+	struct EventStructure
 	{
 		IEvent* event;
 		EventType type;

@@ -36,9 +36,10 @@ void EditorState::drawSceneUI()
     // Scene tree
     if (ImGui::Begin("Scene"))
     {
-        const auto& children = Engine::getEntityManager()->getRoot()->getChildren();
-        for (const auto& pChild : children)
-            drawEntitySceneTree(pChild);
+        //const auto& children = Engine::getEntityManager()->getRoot()->getChildren();
+        //for (const auto& pChild : children)
+        //    drawEntitySceneTree(pChild);
+        drawEntitySceneTree(Engine::getEntityManager()->getRoot());
     }
     ImGui::End();
 

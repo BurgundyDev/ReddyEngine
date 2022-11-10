@@ -22,7 +22,7 @@ namespace Engine
     using TextureRef = std::shared_ptr<Texture>;
 
 
-    enum class EmitterType
+    enum class EmitterType : int
     {
         burst,
         continuous

@@ -152,7 +152,7 @@
             "sameStartEnd" : false,
             "startRange" : [ 300.0, 600.0 ]
          },
-         "spread" : 275.05599975585938,
+         "spread" : 360.0,
          "texture" : "textures/particle.png",
          "type" : "burst"
       }
