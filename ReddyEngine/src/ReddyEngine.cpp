@@ -44,7 +44,7 @@ namespace Engine
         {
             auto success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO) == 0;
             SDL_GLContext gl_context = SDL_GL_CreateContext(NULL);
-            CORE_ASSERT(success, "Error: %s", SDL_GetError());
+            CORE_ASSERT(success, "Error: {}", SDL_GetError());
         }
 
       
