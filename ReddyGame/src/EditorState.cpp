@@ -409,17 +409,17 @@ void EditorState::onCreateSpriteEntity()
 
 void EditorState::onCreateTextEntity()
 {
-    CORE_ASSERT(false, "Unsupported Text Entity yet!");
+    CORE_ERROR_POPUP("Unsupported Text Entity yet!");
 }
 
 void EditorState::onCreateSoundEntity()
 {
-    CORE_ASSERT(false, "Unsupported Sound Entity yet!");
+    CORE_ERROR_POPUP("Unsupported Sound Entity yet!");
 }
 
 void EditorState::onCreateParticleEntity()
 {
-    CORE_ASSERT(false, "Unsupported PFX Entity yet!");
+    CORE_ERROR_POPUP("Unsupported PFX Entity yet!");
 }
 
 
