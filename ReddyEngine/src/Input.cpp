@@ -1,5 +1,9 @@
 #include "Engine/Input.h"
 
+#include "Engine/Texture.h"
+#include "imgui.h"
+#include <stb_image.h>
+
 namespace Engine
 {
     Input::Input()
@@ -118,4 +122,63 @@ namespace Engine
     {
         m_mouseWheel = vel;
     }
+
+	void Input::setMouseCursor(const std::string& path, glm::vec2 hotSpot)
+	{
+        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+
+        if (m_crusors[path] == nullptr)
+        {
+            int pSizeX, pSizeY, channels;
+            auto cursorImg = stbi_load(path.c_str(), &pSizeX, &pSizeY, &channels, 4);
+            
+
+			auto pSurface = SDL_CreateRGBSurfaceFrom(cursorImg,
+                pSizeX,
+                pSizeY,
+				32,
+                pSizeX * 4,
+				0x000000ff,
+				0x0000ff00,
+				0x00ff0000,
+				0xff000000);
+
+            if (pSurface)
+            {
+                SDL_Cursor* pCursor = SDL_CreateColorCursor(pSurface, hotSpot.x, hotSpot.y);
+                if (pCursor)
+                    m_crusors[path] = pCursor;
+            }
+			SDL_FreeSurface(pSurface);
+        }
+
+        SDL_Cursor* cursor = m_crusors[path];
+		if (cursor)
+		{
+			SDL_SetCursor(cursor);
+		}
+
+        m_isCursorCustomSet = true;
+	}
+
+	void Input::setSystemMouseCursor(SDL_SystemCursor pSysCursorType)
+	{
+        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+
+        auto cursor = SDL_CreateSystemCursor(pSysCursorType);
+		
+        if (cursor)
+		{
+			SDL_SetCursor(cursor);
+		}
+
+		m_isCursorCustomSet = true;
+	}
+
+	void Input::setDefaultCursor()
+	{
+        ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouseCursorChange;
+		m_isCursorCustomSet = false;
+	}
+
 }

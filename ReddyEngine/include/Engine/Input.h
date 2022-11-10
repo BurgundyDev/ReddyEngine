@@ -13,6 +13,8 @@
 
 namespace Engine
 {
+    class Texture;
+
     class Input
     {
     public:
@@ -25,6 +27,8 @@ namespace Engine
         const glm::vec2& getMousePos() const { return m_mousePos; }
         const glm::vec2& getMouseDelta() const { return m_mouseDelta; }
         int getMouseWheel() const { return m_mouseWheel; }
+
+        bool isCustomCursorSet() const { return m_isCursorCustomSet;  }
 
         void keyEventCallback(IEvent* e);
 
@@ -48,17 +52,22 @@ namespace Engine
         void setMouseMotion(const glm::ivec2& delta);
         void setMouseWheelMotion(int vel);
 
+        void setMouseCursor(const std::string& path, glm::vec2 hotSpot);
+        void setSystemMouseCursor(SDL_SystemCursor pSysCursor);
+        void setDefaultCursor(); // also brings back ImGui cursor
+
     private:
         glm::vec2 m_mousePos = {0, 0};
         glm::vec2 m_mouseDelta = {0, 0};
         int m_mouseWheel = 0;
+        bool m_isCursorCustomSet = false;
+        std::map<std::string, SDL_Cursor*> m_crusors;
 
         bool m_lastFrameKeyboardState[SDL_NUM_SCANCODES];
         bool m_keyboardState[SDL_NUM_SCANCODES];
         bool m_lastButtonState[8];
         bool m_buttonState[8];
     };
-
 
     using InputRef = std::shared_ptr<Input>;
 }

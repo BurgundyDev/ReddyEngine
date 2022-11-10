@@ -8,7 +8,7 @@
 #include <Engine/ReddyEngine.h>
 #include <Engine/Sound.h>
 #include <Engine/SpriteBatch.h>
-#include <Engine/EventSystem.h>
+#include <Engine/Input.h>
 
 #include <imgui.h>
 #include <functional>
@@ -82,5 +82,10 @@ void MainMenuState::draw()
     sb->begin();
     if (m_pFont) m_pFont->draw("The quick brown fox jumps over the lazy dog.", {res.x * 0.5f, 100.0f}, {1, 1, 1, 1}, m_textRotation, m_textScale, m_textAlign);
     sb->end();
+}
+
+void MainMenuState::enter(const GameStateRef& previousState)
+{
+    Engine::getInput()->setDefaultCursor();
 }
 

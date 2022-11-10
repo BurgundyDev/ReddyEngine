@@ -117,12 +117,6 @@ namespace Engine
         // Once everything is setup, the game can load stuff
         pGame->loadContent();
 
-        // Register Input Event Listeners 
-        std::function<void(IEvent*)> callback = std::bind(&Input::keyEventCallback, g_pInput.get(), _1);
-
-        g_pEventSystem->registerListener<Engine::KeyEvent>(g_pInput.get(), callback);
-
-
         // Main loop
         Uint64 lastTime = SDL_GetPerformanceCounter();
         float fixedUpdateProgress = 0.0f;

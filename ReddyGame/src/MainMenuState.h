@@ -32,6 +32,8 @@ public:
     void update(float dt) override;
     void draw() override;
 
+    void enter(const GameStateRef& previousState) override;
+
 private:
     Engine::SoundRef m_pQuickSound;
 
