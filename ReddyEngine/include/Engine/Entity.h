@@ -30,6 +30,9 @@ namespace Engine
 	public:
 		uint64_t id = 0;
 		std::string name;
+		bool sortChildren = false;
+		bool mouseChildren = true;
+		bool uiRoot = false;
 
 	public:
 		~Entity();
@@ -96,6 +99,8 @@ namespace Engine
 		{
 			return lhs.id == rhs.id;
 		}
+
+		void draw();
 
 	public:
 		// Editor stuff (We could #ifdef this in final version?)

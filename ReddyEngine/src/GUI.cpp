@@ -275,7 +275,7 @@ namespace Engine
         // Properties
 
 
-        bool stringProperty(const char* label, std::string* value)
+        bool stringProperty(const char* label, std::string* value, const char* tooltip)
         {
             bool ret = false;
             ImGui::PushID(++g_propertyCount);
@@ -288,12 +288,13 @@ namespace Engine
                 *value = buf;
                 ret = true;
             }
+            showToolTip(tooltip);
 
             ImGui::PopID();
             return false;
         }
 
-        bool enumProperty(const char* label, int* choice, const char* items_separated_by_zeros)
+        bool enumProperty(const char* label, int* choice, const char* items_separated_by_zeros, const char* tooltip)
         {
             bool ret = false;
             ImGui::PushID(++g_propertyCount);
@@ -304,48 +305,53 @@ namespace Engine
                 ret = ((*choice) != current_choice);
                 *choice = current_choice;
             }
+            showToolTip(tooltip);
 
             ImGui::PopID();
             return ret;
         }
 
-        bool floatProperty(const char* label, float* value, float min, float max)
+        bool floatProperty(const char* label, float* value, float min, float max, const char* tooltip)
         {
             ImGui::PushID(++g_propertyCount);
             ImGui::DragFloat(label, value, 0.01f, min, max);
             auto ret = ImGui::IsItemDeactivatedAfterEdit();
+            showToolTip(tooltip);
             ImGui::PopID();
             return ret;
         }
 
-        bool angleProperty(const char* label, float* value)
+        bool angleProperty(const char* label, float* value, const char* tooltip)
         {
             ImGui::PushID(++g_propertyCount);
             ImGui::DragFloat(label, value, 1.0f);
             auto ret = ImGui::IsItemDeactivatedAfterEdit();
+            showToolTip(tooltip);
             ImGui::PopID();
             return ret;
         }
 
-        bool floatSliderProperty(const char* label, float* value, float min, float max)
+        bool floatSliderProperty(const char* label, float* value, float min, float max, const char* tooltip)
         {
             ImGui::PushID(++g_propertyCount);
             ImGui::SliderFloat(label, value, min, max);
             auto ret = ImGui::IsItemDeactivatedAfterEdit();
+            showToolTip(tooltip);
             ImGui::PopID();
             return ret;
         }
 
-        bool intProperty(const char* label, int* value, int min, int max)
+        bool intProperty(const char* label, int* value, int min, int max, const char* tooltip)
         {
             ImGui::PushID(++g_propertyCount);
             ImGui::DragInt(label, value, 1.0f, min, max);
             auto ret = ImGui::IsItemDeactivatedAfterEdit();
+            showToolTip(tooltip);
             ImGui::PopID();
             return ret;
         }
 
-        bool textureProperty(const char* label, TextureRef* value)
+        bool textureProperty(const char* label, TextureRef* value, const char* tooltip)
         {
             bool ret = false;
             ImGui::PushID(++g_propertyCount);
@@ -362,51 +368,57 @@ namespace Engine
                 *value = getResourceManager()->getTexture(buf);
                 ret = true;
             }
+            showToolTip(tooltip);
 
             ImGui::PopID();
             return false;
         }
 
-        bool boolProperty(const char* label, bool* value)
+        bool boolProperty(const char* label, bool* value, const char* tooltip)
         {
             ImGui::PushID(++g_propertyCount);
             auto ret = ImGui::Checkbox(label, value);
+            showToolTip(tooltip);
             ImGui::PopID();
             return ret;
         }
 
-        bool colorProperty(const char* label, glm::vec4* color)
+        bool colorProperty(const char* label, glm::vec4* color, const char* tooltip)
         {
             ImGui::PushID(++g_propertyCount);
             ImGui::ColorEdit4(label, &color->r);
             auto ret = ImGui::IsItemDeactivatedAfterEdit();
+            showToolTip(tooltip);
             ImGui::PopID();
             return ret;
         }
 
-        bool vec2Property(const char* label, glm::vec2* value)
+        bool vec2Property(const char* label, glm::vec2* value, const char* tooltip)
         {
             ImGui::PushID(++g_propertyCount);
             ImGui::DragFloat2(label, &value->x, 0.01f);
             auto ret = ImGui::IsItemDeactivatedAfterEdit();
+            showToolTip(tooltip);
             ImGui::PopID();
             return ret;
         }
         
-        bool originProperty(const char* label, glm::vec2* value)
+        bool originProperty(const char* label, glm::vec2* value, const char* tooltip)
         {
             //TODO: Draw a box with 9 corners to quickly pick an origin
             ImGui::PushID(++g_propertyCount);
             ImGui::DragFloat2(label, &value->x, 0.01f);
             auto ret = ImGui::IsItemDeactivatedAfterEdit();
+            showToolTip(tooltip);
             ImGui::PopID();
             return ret;
         }
 
-        void idProperty(const char* label, uint64_t id)
+        void idProperty(const char* label, uint64_t id, const char* tooltip)
         {
             ImGui::PushID(++g_propertyCount);
             ImGui::LabelText(label, "%llu", id);
+            showToolTip(tooltip);
             ImGui::PopID();
         }
     }

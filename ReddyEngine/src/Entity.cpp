@@ -2,7 +2,7 @@
 #include "Engine/Component.h"
 #include "Engine/Utils.h"
 #include "Engine/Log.h"
-#include "Engine/EntityManager.h"
+#include "Engine/Scene.h"
 #include "Engine/ReddyEngine.h"
 #include "ComponentManager.h"
 
@@ -49,7 +49,7 @@ namespace Engine
 		{
 			if (*it == pComponent)
 			{
-				getEntityManager()->getComponentManager()->removeComponent(pComponent);
+				getScene()->getComponentManager()->removeComponent(pComponent);
 				m_components.erase(it);
 				return true;
 			}
@@ -59,7 +59,7 @@ namespace Engine
 
 	void Entity::componentAdded(const ComponentRef& pComponent)
 	{
-		getEntityManager()->getComponentManager()->addComponent(pComponent);
+		getScene()->getComponentManager()->addComponent(pComponent);
 	}
 
 	Json::Value Entity::serialize()
@@ -68,6 +68,9 @@ namespace Engine
 
 		json["id"] = id;
 		json["name"] = name;
+		json["sortChildren"] = sortChildren;
+		json["mouseChildren"] = mouseChildren;
+		json["uiRoot"] = uiRoot;
 		json["transform"]["position"] = Utils::serializeJsonValue(m_transform.position);
 		json["transform"]["rotation"] = Utils::serializeJsonValue(m_transform.rotation);
 		json["transform"]["scale"] = Utils::serializeJsonValue(m_transform.scale);
@@ -91,12 +94,15 @@ namespace Engine
 	{
 		for (const auto& pComponent : m_components)
 		{
-			getEntityManager()->getComponentManager()->removeComponent(pComponent);
+			getScene()->getComponentManager()->removeComponent(pComponent);
 		}
 		m_components.clear();
 
 		id = Utils::deserializeUInt64(json["id"]);
 		name = Utils::deserializeString(json["name"]);
+		sortChildren = Utils::deserializeBool(json["sortChildren"], false);
+		mouseChildren = Utils::deserializeBool(json["mouseChildren"], true);
+		uiRoot = Utils::deserializeBool(json["uiRoot"], false);
 
 		// Transform
 		m_transform.position = Utils::deserializeJsonValue<glm::vec2>(json["transform"]["position"]);
@@ -127,7 +133,7 @@ namespace Engine
 		const auto& childrenJson = json["children"];
 		for (const auto& childJson : childrenJson)
 		{
-			getEntityManager()->createEntityFromJson(shared_from_this(), childJson);
+			getScene()->createEntityFromJson(shared_from_this(), childJson);
 		}
 	}
 	
@@ -142,7 +148,10 @@ namespace Engine
 		bool changed = false;
 
 		GUI::idProperty("ID", id);
-		changed |= Engine::GUI::stringProperty("Name", &name);
+		changed |= GUI::stringProperty("Name", &name);
+		changed |= GUI::boolProperty("Sort Children", &sortChildren, "Immediate children will be sorted Top to Bottom on the Y axis.");
+		changed |= GUI::boolProperty("Mouse Children", &mouseChildren, "Allow mouse to interact with children.");
+		changed |= GUI::boolProperty("UI Root", &uiRoot, "This entity will ignore world camera position, will act as root for UI.");
 
 		GUI::beginGroup("Transform");
 		{
@@ -173,5 +182,10 @@ namespace Engine
 		}
 
 		return changed;
+	}
+
+	void Entity::draw()
+	{
+		
 	}
 }

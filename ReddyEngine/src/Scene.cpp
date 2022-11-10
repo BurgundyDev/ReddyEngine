@@ -1,45 +1,103 @@
 #include "Engine/Scene.h"
-#include "Engine/EntityManager.h"
-#include "Engine/ReddyEngine.h"
-#include "Engine/SpriteManager.h"
-#include "Engine/SpriteBatch.h"
+#include "Engine/Entity.h"
+#include "Engine/Log.h"
+#include "ComponentManager.h"
 
+#include <algorithm>
 
 namespace Engine
 {
-    namespace Scene
-    {
-        void clear()
-        {
-            getEntityManager()->clear();
-            getSpriteManager()->clear();
-        }
+	Scene::Scene()
+		: m_pRoot(std::make_shared<Entity>())
+		, m_id(0)
+		, m_pComponentManager(std::make_shared<ComponentManager>())
+	{
+		m_pRoot->name = "Root";
+	}
 
-        Json::Value serialize()
-        {
-            Json::Value json;
-            json["root"] = getEntityManager()->serialize();
-            return json;
-        }
+	Scene::~Scene()
+	{
+	}
 
-        void deserialize(const Json::Value& json)
-        {
-            getEntityManager()->deserialize(json["root"]);
-        }
+	Json::Value Scene::serialize()
+	{
+		Json::Value json;
+		json["root"] = m_pRoot->serialize();
+		return json;
+	}
 
-        void update(float dt)
-        {
-            getEntityManager()->update(dt);
-        }
+    void Scene::deserialize(const Json::Value& json)
+	{
+		clear();
+		m_pRoot->deserialize(json["root"]);
+	}
 
-        void fixedUpdate(float dt)
-        {
-            getEntityManager()->fixedUpdate(dt);
-        }
+	void Scene::clear()
+	{
+		m_pRoot.reset();
+		m_pRoot = std::make_shared<Entity>();
+		m_pRoot->name = "Root";
+	}
 
-        void draw()
-        {
-            getSpriteManager()->draw();
-        }
-    }
+	EntityRef Scene::createEntity()
+	{
+		EntityRef pNewEntity = std::make_shared<Entity>();
+		pNewEntity->id = ++m_id;
+		m_pRoot->addChild(pNewEntity);
+		return pNewEntity;
+	}
+
+	EntityRef Scene::createEntity(const EntityRef& pParent)
+	{
+		EntityRef pNewEntity = std::make_shared<Entity>();
+		pNewEntity->id = ++m_id;
+		pParent->addChild(pNewEntity);
+		return pNewEntity;
+	}
+
+	EntityRef Scene::createEntityFromJson(const EntityRef& pParent, const Json::Value& json)
+	{
+		EntityRef pNewEntity = std::make_shared<Entity>();
+		pNewEntity->deserialize(json);
+		pParent->addChild(pNewEntity);
+		m_id = std::max(m_id, pNewEntity->id + 1); // If we're loading a file, make sure next id is at least higher than this one
+		return pNewEntity;
+	}
+
+	const ComponentManagerRef& Scene::getComponentManager() const
+	{
+		return m_pComponentManager;
+	}
+
+	void Scene::destroyEntity(EntityRef pEntity)
+	{
+		if (pEntity == m_pRoot)
+			CORE_FATAL("Cannot erase Root entity!");
+
+		if (pEntity->getParent())
+			pEntity->getParent()->removeChild(pEntity);
+
+		const auto& components = pEntity->getComponents();
+		for (const auto& pComponent : components)
+			m_pComponentManager->removeComponent(pComponent);
+
+		m_entitiesToDestroy.push_back(pEntity); // We keep that around because components' onDestroy() might still refer to the entity
+	}
+
+	void Scene::update(float dt)
+	{
+		m_pComponentManager->update(dt);
+		m_entitiesToDestroy.clear();
+	}
+
+	void Scene::fixedUpdate(float dt)
+	{
+		m_pComponentManager->fixedUpdate(dt);
+		m_entitiesToDestroy.clear();
+	}
+
+	void Scene::draw()
+	{
+		m_pRoot->draw();
+	}
 }

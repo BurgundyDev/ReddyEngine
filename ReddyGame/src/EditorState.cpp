@@ -14,7 +14,7 @@
 #include <Engine/SpriteBatch.h>
 #include <Engine/Utils.h>
 #include <Engine/Entity.h>
-#include <Engine/EntityManager.h>
+#include <Engine/Scene.h>
 #include <Engine/SpriteComponent.h>
 
 #include <imgui.h>
@@ -254,7 +254,7 @@ void EditorState::update(float dt)
     switch (m_editDocumentType)
     {
         case EditDocumentType::Scene:
-            Engine::Scene::update(dt);
+            Engine::getScene()->update(dt);
             break;
         case EditDocumentType::PFX:
             break;
@@ -284,7 +284,7 @@ void EditorState::draw()
     switch (m_editDocumentType)
     {
         case EditDocumentType::Scene:
-            Engine::Scene::draw();
+            Engine::getScene()->draw();
             break;
         case EditDocumentType::PFX:
             if (m_pPfxInstance) m_pPfxInstance->draw({0, 0});
@@ -396,36 +396,30 @@ void EditorState::onDelete()
 
 void EditorState::onCreateEmptyEntity()
 {
-    auto pEntity = Engine::getEntityManager()->createEntity();
+    auto pEntity = Engine::getScene()->createEntity();
     changeSelection({pEntity});
 }
 
 void EditorState::onCreateSpriteEntity()
 {
-    auto pEntity = Engine::getEntityManager()->createEntity();
+    auto pEntity = Engine::getScene()->createEntity();
     pEntity->addComponent<Engine::SpriteComponent>();
     changeSelection({pEntity});
 }
 
 void EditorState::onCreateTextEntity()
 {
-    //auto pEntity = Engine::getEntityManager()->createEntity();
-    //pEntity->addComponent<Engine::TextComponent>();
-    //changeSelection({pEntity});
+    CORE_ASSERT(false, "Unsupported Text Entity yet!");
 }
 
 void EditorState::onCreateSoundEntity()
 {
-    //auto pEntity = Engine::getEntityManager()->createEntity();
-    //pEntity->addComponent<Engine::SoundComponent>();
-    //changeSelection({pEntity});
+    CORE_ASSERT(false, "Unsupported Sound Entity yet!");
 }
 
 void EditorState::onCreateParticleEntity()
 {
-    //auto pEntity = Engine::getEntityManager()->createEntity();
-    //pEntity->addComponent<Engine::PFXComponent>();
-    //changeSelection({pEntity});
+    CORE_ASSERT(false, "Unsupported PFX Entity yet!");
 }
 
 
@@ -452,7 +446,7 @@ void EditorState::open(const std::string& filename)
     if (type == "scene")
     {
         m_editDocumentType = EditDocumentType::Scene;
-        Engine::Scene::deserialize(json);
+        Engine::getScene()->deserialize(json);
     }
     else if (type == "pfx")
     {
@@ -493,7 +487,7 @@ void EditorState::save()
     {
         case EditDocumentType::Scene:
         {
-            json = Engine::Scene::serialize();
+            json = Engine::getScene()->serialize();
             json["type"] = "scene";
             break;
         }
@@ -556,8 +550,8 @@ void EditorState::clear()
     m_filename = "untitled";
     setDirty(true);
     m_pActionManager->clear();
-    m_pPfx.reset();
     m_pPfxInstance.reset();
+    m_pPfx.reset();
     m_position = {0, 0};
     m_zoom = 2;
     m_zoomf = ZOOM_LEVELS[2];

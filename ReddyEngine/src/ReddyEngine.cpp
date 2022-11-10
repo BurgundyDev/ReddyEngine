@@ -5,8 +5,7 @@
 #include "Engine/Log.h"
 #include "Engine/SpriteBatch.h"
 #include "Engine/ResourceManager.h"
-#include "Engine/EntityManager.h"
-#include "Engine/SpriteManager.h"
+#include "Engine/Scene.h"
 #include "Engine/EventSystem.h"
 
 #include <backends/imgui_impl_sdl.h>
@@ -23,8 +22,7 @@ namespace Engine
     static InputRef g_pInput;
     static AudioRef g_pAudio;
     static ResourceManagerRef g_pResourceManager;
-    static EntityManagerRef g_pEntityManager;
-    static SpriteManagerRef g_pSpriteManager;
+    static SceneRef g_pScene;
 	static EventSystemRef g_pEventSystem;
 
     static int g_fixedUpdateFPS = 60;
@@ -110,8 +108,7 @@ namespace Engine
         g_pAudio = std::make_shared<Audio>();
         g_pSpriteBatch = std::make_shared<SpriteBatch>();
         g_pResourceManager = std::make_shared<ResourceManager>();
-        g_pSpriteManager = std::make_shared<SpriteManager>();
-        g_pEntityManager = std::make_shared<EntityManager>();
+        g_pScene = std::make_shared<Scene>();
         g_pEventSystem = std::make_shared<EventSystem>();
 
         // Once everything is setup, the game can load stuff
@@ -222,7 +219,7 @@ namespace Engine
             {
                 float fixedUpdateTime = 1.0f / (float)g_fixedUpdateFPS;
 
-                g_pEntityManager->fixedUpdate(fixedUpdateTime);
+                g_pScene->fixedUpdate(fixedUpdateTime);
                 pGame->fixedUpdate(fixedUpdateTime);
                 
                 fixedUpdateProgress -= 1.0f / (float)g_fixedUpdateFPS;
@@ -238,7 +235,7 @@ namespace Engine
             g_pEventSystem->dispatchEvents();
 
             // Update
-            g_pEntityManager->update(deltaTime);
+            g_pScene->update(deltaTime);
             pGame->update(deltaTime);
 
             g_pEventSystem->dispatchEvents();
@@ -268,8 +265,7 @@ namespace Engine
         Config::save();
 
         // Cleanup
-        g_pEntityManager.reset();
-        g_pEntityManager.reset();
+        g_pScene.reset();
         g_pResourceManager.reset();
         g_pSpriteBatch.reset();
         g_pAudio.reset();
@@ -309,15 +305,11 @@ namespace Engine
         return g_pResourceManager;
     }
 
-	const EntityManagerRef& getEntityManager()
+	const SceneRef& getScene()
 	{
-        return g_pEntityManager;
+        return g_pScene;
 	}
 
-    const SpriteManagerRef& getSpriteManager()
-    {
-        return g_pSpriteManager;
-    }
 	const Engine::EventSystemRef& getEventSystem()
 	{
         return g_pEventSystem;

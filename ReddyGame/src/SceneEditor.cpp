@@ -1,7 +1,7 @@
 #include "EditorState.h"
 
 #include <Engine/Entity.h>
-#include <Engine/EntityManager.h>
+#include <Engine/Scene.h>
 #include <Engine/ReddyEngine.h>
 #include <Engine/SpriteComponent.h>
 #include <Engine/GUI.h>
@@ -26,9 +26,16 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
 
     if (ImGui::TreeNodeEx(pEntity.get(), flags, getEntityFriendlyName(pEntity)))
     {
+        if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+            changeSelection({pEntity});
         for (const auto& pChild : children)
             drawEntitySceneTree(pChild);
         ImGui::TreePop();
+    }
+    else
+    {
+        if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+            changeSelection({pEntity});
     }
 }
 
@@ -40,7 +47,7 @@ void EditorState::drawSceneUI()
         //const auto& children = Engine::getEntityManager()->getRoot()->getChildren();
         //for (const auto& pChild : children)
         //    drawEntitySceneTree(pChild);
-        drawEntitySceneTree(Engine::getEntityManager()->getRoot());
+        drawEntitySceneTree(Engine::getScene()->getRoot());
     }
     Engine::GUI::endEditorWindow();
 

@@ -3,7 +3,6 @@
 #include "Engine/Texture.h"
 #include "Engine/ResourceManager.h"
 #include "Engine/ReddyEngine.h"
-#include "Engine/SpriteManager.h"
 #include "Engine/Constants.h"
 #include "Engine/GUI.h"
 
@@ -13,16 +12,6 @@ namespace Engine
     SpriteComponent::SpriteComponent()
     {
         pTexture = getResourceManager()->getTexture("textures/defaultTexture.png");
-    }
-
-    void SpriteComponent::onEnable()
-    {
-        getSpriteManager()->registerSprite(this);
-    }
-
-    void SpriteComponent::onDisable()
-    {
-        getSpriteManager()->deregisterSprite(this);
     }
 
     Json::Value SpriteComponent::serialize()

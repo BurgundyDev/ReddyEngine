@@ -37,18 +37,18 @@ namespace Engine
         void endGroup();
 
         // Properties. Return true if it has changed (Needs undo)
-        bool stringProperty(const char* label, std::string* value);
-        bool enumProperty(const char* label, int* choice, const char* items_separated_by_zeros);
-        template<typename T> bool enumProperty(const char* label, T* choice, const char* items_separated_by_zeros) { return enumProperty(label, (int*)choice, items_separated_by_zeros); }
-        bool floatProperty(const char* label, float* value, float min = -1000000.0f, float max = 1000000.0f);
-        bool angleProperty(const char* label, float* value);
-        bool floatSliderProperty(const char* label, float* value, float min, float max);
-        bool intProperty(const char* label, int* value, int min = -1000000, int max = 1000000);
-        bool textureProperty(const char* label, TextureRef* value);
-        bool boolProperty(const char* label, bool* value);
-        bool colorProperty(const char* label, glm::vec4* color);
-        bool vec2Property(const char* label, glm::vec2* value);
-        bool originProperty(const char* label, glm::vec2* value);
-        void idProperty(const char* label, uint64_t id); // Can't modify this
+        bool stringProperty(const char* label, std::string* value, const char* tooltip = nullptr);
+        bool enumProperty(const char* label, int* choice, const char* items_separated_by_zeros, const char* tooltip = nullptr);
+        template<typename T> bool enumProperty(const char* label, T* choice, const char* items_separated_by_zeros, const char* tooltip = nullptr) { return enumProperty(label, (int*)choice, items_separated_by_zeros, tooltip); }
+        bool floatProperty(const char* label, float* value, float min = -1000000.0f, float max = 1000000.0f, const char* tooltip = nullptr);
+        bool angleProperty(const char* label, float* value, const char* tooltip = nullptr);
+        bool floatSliderProperty(const char* label, float* value, float min, float max, const char* tooltip = nullptr);
+        bool intProperty(const char* label, int* value, int min = -1000000, int max = 1000000, const char* tooltip = nullptr);
+        bool textureProperty(const char* label, TextureRef* value, const char* tooltip = nullptr);
+        bool boolProperty(const char* label, bool* value, const char* tooltip = nullptr);
+        bool colorProperty(const char* label, glm::vec4* color, const char* tooltip = nullptr);
+        bool vec2Property(const char* label, glm::vec2* value, const char* tooltip = nullptr);
+        bool originProperty(const char* label, glm::vec2* value, const char* tooltip = nullptr);
+        void idProperty(const char* label, uint64_t id, const char* tooltip = nullptr); // Can't modify this
     }
 }

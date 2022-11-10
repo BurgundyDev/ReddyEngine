@@ -18,9 +18,6 @@ namespace Engine
 		SpriteComponent();
 		~SpriteComponent() {}
 
-		void onEnable() override;
-		void onDisable() override;
-
 		Json::Value serialize() override;
 		void deserialize(const Json::Value& json) override;
 		bool edit() override;
