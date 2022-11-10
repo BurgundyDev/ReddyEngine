@@ -37,7 +37,7 @@ void EditorState::drawPFXUI()
                         break;
                 }
 
-                changed |= Engine::GUI::textureProperty("Texture", emitter.pTexture);
+                changed |= Engine::GUI::textureProperty("Texture", &emitter.pTexture);
                 changed |= Engine::GUI::floatSliderProperty("Spread", &emitter.spread, 0.0f, 360.0f);
 
 

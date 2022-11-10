@@ -5,6 +5,7 @@
 #include "Engine/ReddyEngine.h"
 #include "Engine/SpriteManager.h"
 #include "Engine/Constants.h"
+#include "Engine/GUI.h"
 
 
 namespace Engine
@@ -50,5 +51,16 @@ namespace Engine
 
         const float DEFAULT_UVS[4] = {0, 0, 1, 1};
         Utils::deserializeFloat4(&uvs.x, json["uvs"], DEFAULT_UVS);
+    }
+
+    bool SpriteComponent::edit()
+    {
+        bool changed = false;
+
+        changed |= GUI::textureProperty("Texture", &pTexture);
+        changed |= GUI::colorProperty("Color", &color);
+        changed |= GUI::originProperty("Origin", &origin);
+
+        return changed;
     }
 }

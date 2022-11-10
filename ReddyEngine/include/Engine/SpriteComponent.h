@@ -23,6 +23,7 @@ namespace Engine
 
 		Json::Value serialize() override;
 		void deserialize(const Json::Value& json) override;
+		bool edit() override;
 
 		std::string getType() const override { return "Sprite"; }
 

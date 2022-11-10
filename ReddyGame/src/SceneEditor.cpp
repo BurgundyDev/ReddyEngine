@@ -4,6 +4,7 @@
 #include <Engine/EntityManager.h>
 #include <Engine/ReddyEngine.h>
 #include <Engine/SpriteComponent.h>
+#include <Engine/GUI.h>
 
 #include <imgui.h>
 
@@ -34,31 +35,34 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
 void EditorState::drawSceneUI()
 {
     // Scene tree
-    if (ImGui::Begin("Scene"))
+    if (Engine::GUI::beginEditorWindow("Scene"))
     {
         //const auto& children = Engine::getEntityManager()->getRoot()->getChildren();
         //for (const auto& pChild : children)
         //    drawEntitySceneTree(pChild);
         drawEntitySceneTree(Engine::getEntityManager()->getRoot());
     }
-    ImGui::End();
+    Engine::GUI::endEditorWindow();
+
 
     // Layers
-    if (ImGui::Begin("Layers"))
+    if (Engine::GUI::beginEditorWindow("Layers"))
     {
     }
-    ImGui::End();
+    Engine::GUI::endEditorWindow();
+
 
     // Inspector (For selected entity/entities)
-    if (ImGui::Begin("Entity Inspector"))
+    if (Engine::GUI::beginEditorWindow("Entity Inspector"))
     {
         // For now, we only do 1 entity
         if (m_selected.size() == 1)
         {
             if (m_selected.front()->edit())
             {
+                // Modified
             }
         }
     }
-    ImGui::End();
+    Engine::GUI::endEditorWindow();
 }

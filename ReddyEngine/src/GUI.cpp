@@ -318,6 +318,15 @@ namespace Engine
             return ret;
         }
 
+        bool angleProperty(const char* label, float* value)
+        {
+            ImGui::PushID(++g_propertyCount);
+            ImGui::DragFloat(label, value, 1.0f);
+            auto ret = ImGui::IsItemDeactivatedAfterEdit();
+            ImGui::PopID();
+            return ret;
+        }
+
         bool floatSliderProperty(const char* label, float* value, float min, float max)
         {
             ImGui::PushID(++g_propertyCount);
@@ -336,21 +345,21 @@ namespace Engine
             return ret;
         }
 
-        bool textureProperty(const char* label, TextureRef& value)
+        bool textureProperty(const char* label, TextureRef* value)
         {
             bool ret = false;
             ImGui::PushID(++g_propertyCount);
 
             char buf[260];
-            if (value)
-                memcpy(buf, value->getFilename().c_str(), value->getFilename().size() + 1);
+            if (*value)
+                memcpy(buf, (*value)->getFilename().c_str(), (*value)->getFilename().size() + 1);
             else
                 buf[0] = '\0';
 
             ImGui::InputText(label, buf, 260);
             if (ImGui::IsItemDeactivatedAfterEdit())
             {
-                value = getResourceManager()->getTexture(buf);
+                *value = getResourceManager()->getTexture(buf);
                 ret = true;
             }
 
@@ -382,6 +391,23 @@ namespace Engine
             auto ret = ImGui::IsItemDeactivatedAfterEdit();
             ImGui::PopID();
             return ret;
+        }
+        
+        bool originProperty(const char* label, glm::vec2* value)
+        {
+            //TODO: Draw a box with 9 corners to quickly pick an origin
+            ImGui::PushID(++g_propertyCount);
+            ImGui::DragFloat2(label, &value->x, 0.01f);
+            auto ret = ImGui::IsItemDeactivatedAfterEdit();
+            ImGui::PopID();
+            return ret;
+        }
+
+        void idProperty(const char* label, uint64_t id)
+        {
+            ImGui::PushID(++g_propertyCount);
+            ImGui::LabelText(label, "%llu", id);
+            ImGui::PopID();
         }
     }
 }

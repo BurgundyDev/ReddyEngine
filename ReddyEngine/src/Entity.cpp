@@ -6,6 +6,8 @@
 #include "Engine/ReddyEngine.h"
 #include "ComponentManager.h"
 
+#include <Engine/GUI.h>
+
 #include <imgui.h>
 
 #include <functional>
@@ -137,14 +139,39 @@ namespace Engine
 
 	bool Entity::edit()
 	{
-		bool modified = false;
+		bool changed = false;
+
+		GUI::idProperty("ID", id);
+		changed |= Engine::GUI::stringProperty("Name", &name);
+
+		GUI::beginGroup("Transform");
+		{
+			changed |= GUI::vec2Property("Position", &m_transform.position);
+			changed |= GUI::angleProperty("Rotation", &m_transform.rotation);
+			
+			static bool lockScale = true;
+			if (lockScale)
+			{
+				changed |= GUI::floatProperty("Scale", &m_transform.scale.x);
+				m_transform.scale.y = m_transform.scale.x;
+			}
+			else
+				changed |= GUI::vec2Property("Scale", &m_transform.scale);
+			GUI::boolProperty("Lock Scale", &lockScale);
+		}
+		GUI::endGroup();
 
 		for (auto it = m_components.begin(); it != m_components.end(); ++it)
 		{
 			const auto& pComponent = *it;
-			modified |= pComponent->edit();
+
+			if (GUI::beginSection(pComponent->getType()) == GUI::SectionState::Open)
+			{
+				changed |= pComponent->edit();
+				GUI::endSection();
+			}
 		}
 
-		return modified;
+		return changed;
 	}
 }

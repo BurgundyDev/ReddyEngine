@@ -41,11 +41,14 @@ namespace Engine
         bool enumProperty(const char* label, int* choice, const char* items_separated_by_zeros);
         template<typename T> bool enumProperty(const char* label, T* choice, const char* items_separated_by_zeros) { return enumProperty(label, (int*)choice, items_separated_by_zeros); }
         bool floatProperty(const char* label, float* value, float min = -1000000.0f, float max = 1000000.0f);
+        bool angleProperty(const char* label, float* value);
         bool floatSliderProperty(const char* label, float* value, float min, float max);
         bool intProperty(const char* label, int* value, int min = -1000000, int max = 1000000);
-        bool textureProperty(const char* label, TextureRef& value);
+        bool textureProperty(const char* label, TextureRef* value);
         bool boolProperty(const char* label, bool* value);
         bool colorProperty(const char* label, glm::vec4* color);
         bool vec2Property(const char* label, glm::vec2* value);
+        bool originProperty(const char* label, glm::vec2* value);
+        void idProperty(const char* label, uint64_t id); // Can't modify this
     }
 }
