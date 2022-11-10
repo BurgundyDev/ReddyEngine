@@ -61,7 +61,7 @@ namespace Engine
         glm::vec2 m_mouseDelta = {0, 0};
         int m_mouseWheel = 0;
         bool m_isCursorCustomSet = false;
-        std::map<std::string, SDL_Cursor*> m_crusors;
+        std::map<std::string, SDL_Cursor*> m_cursors;
 
         bool m_lastFrameKeyboardState[SDL_NUM_SCANCODES];
         bool m_keyboardState[SDL_NUM_SCANCODES];

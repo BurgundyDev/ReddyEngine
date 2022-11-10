@@ -127,7 +127,7 @@ namespace Engine
 	{
         ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 
-        if (m_crusors[path] == nullptr)
+        if (m_cursors[path] == nullptr)
         {
             int pSizeX, pSizeY, channels;
             auto cursorImg = stbi_load(path.c_str(), &pSizeX, &pSizeY, &channels, 4);
@@ -147,12 +147,12 @@ namespace Engine
             {
                 SDL_Cursor* pCursor = SDL_CreateColorCursor(pSurface, hotSpot.x, hotSpot.y);
                 if (pCursor)
-                    m_crusors[path] = pCursor;
+                    m_cursors[path] = pCursor;
             }
 			SDL_FreeSurface(pSurface);
         }
 
-        SDL_Cursor* cursor = m_crusors[path];
+        SDL_Cursor* cursor = m_cursors[path];
 		if (cursor)
 		{
 			SDL_SetCursor(cursor);
