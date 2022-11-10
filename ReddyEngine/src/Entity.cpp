@@ -186,6 +186,10 @@ namespace Engine
 
 	void Entity::draw()
 	{
-		
+		for (const auto& pComponent : m_components)
+			pComponent->draw();
+
+		for (const auto& pChild : m_children)
+			pChild->draw();
 	}
 }

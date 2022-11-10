@@ -5,6 +5,8 @@
 #include "Engine/ReddyEngine.h"
 #include "Engine/Constants.h"
 #include "Engine/GUI.h"
+#include "Engine/Entity.h"
+#include "Engine/SpriteBatch.h"
 
 
 namespace Engine
@@ -51,5 +53,18 @@ namespace Engine
         changed |= GUI::originProperty("Origin", &origin);
 
         return changed;
+    }
+
+    void SpriteComponent::draw()
+    {
+        const auto& transform = m_pEntity->getTransform();
+
+        getSpriteBatch()->draw(pTexture,
+                               transform.position,
+                               color, 
+                               transform.rotation,
+                               transform.scale * SPRITE_BASE_SCALE,
+                               origin,
+                               uvs);
     }
 }

@@ -25,6 +25,7 @@ namespace Engine
 
 		virtual void update(float deltaTime) {}
 		virtual void fixedUpdate(float deltaTime) {}
+		virtual void draw() {}
 
 		virtual void onCreate() {};
 		virtual void onDestroy() {};
@@ -45,10 +46,12 @@ namespace Engine
 	public:
 		virtual bool edit() { return false; } // For editor, returns true if the Inspector modified a value
 
+	protected:
+		Entity* m_pEntity = nullptr;
+
 	private:
 		friend class Entity;
 
 		bool m_isEnabled = true;
-		Entity* m_pEntity = nullptr;
 	};
 }
