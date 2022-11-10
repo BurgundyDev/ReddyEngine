@@ -8,6 +8,8 @@
 #endif
 
 #include <spdlog/spdlog.h>
+#include <tinyfiledialogs/tinyfiledialogs.h>
+#include <spdlog/fmt/fmt.h>
 
 namespace Engine
 {
@@ -30,10 +32,10 @@ namespace Engine
 #define CORE_WARN(...)					SPDLOG_LOGGER_WARN(Engine::Log::GetCoreLogger(), __VA_ARGS__)
 #define CORE_ERROR(...)					SPDLOG_LOGGER_ERROR(Engine::Log::GetCoreLogger(), __VA_ARGS__)
 #define CORE_FATAL(...)					SPDLOG_LOGGER_CRITICAL(Engine::Log::GetCoreLogger(), __VA_ARGS__);									\
-											Engine::Platform::ShowFatalErrorMessageBox(Engine::Utils::concatenateChars(__VA_ARGS__));		\
-											__debugbreak();
+											Engine::Platform::ShowFatalErrorMessageBox(fmt::format(__VA_ARGS__));		\
+											__debugbreak()
 #define CORE_ASSERT(expression, ...)	if(!expression){SPDLOG_LOGGER_CRITICAL(Engine::Log::GetCoreLogger(), __VA_ARGS__);					\
-											Engine::Platform::ShowFatalErrorMessageBox(Engine::Utils::concatenateChars(__VA_ARGS__));		\
+											Engine::Platform::ShowFatalErrorMessageBox(fmt::format(__VA_ARGS__));		\
 											__debugbreak();}
 
 
@@ -42,9 +44,9 @@ namespace Engine
 #define CLIENT_WARN(...)				SPDLOG_LOGGER_WARN(Engine::Log::GetClientLogger(), __VA_ARGS__)
 #define CLIENT_ERROR(...)				SPDLOG_LOGGER_ERROR(Engine::Log::GetClientLogger(), __VA_ARGS__)	
 #define CLIENT_FATAL(...)				SPDLOG_LOGGER_CRITICAL(Engine::Log::GetClientLogger(), __VA_ARGS__);								\
-											Engine::Platform::ShowFatalErrorMessageBox(Engine::Utils::concatenateChars(__VA_ARGS__));		\
-											__debugbreak();
+											Engine::Platform::ShowFatalErrorMessageBox(fmt::format(__VA_ARGS__));		\
+											__debugbreak()
 
 #define CLIENT_ASSERT(expression, ...)	if(!expression){SPDLOG_LOGGER_CRITICAL(Engine::Log::GetClientLogger(), __VA_ARGS__);								\
-											Engine::Platform::ShowFatalErrorMessageBox(Engine::Utils::concatenateChars(__VA_ARGS__));		\
+											Engine::Platform::ShowFatalErrorMessageBox(fmt::format(__VA_ARGS__));		\
 											__debugbreak();}
