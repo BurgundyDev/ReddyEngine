@@ -222,12 +222,12 @@ void EditorState::update(float dt)
         // Mouse pan with middle button
         if (!ImGui::GetIO().WantCaptureMouse)
         {
-            if (Engine::getInput()->isButtonJustDown(SDL_BUTTON_MIDDLE))
+            if (Engine::getInput()->isButtonJustDown(SDL_BUTTON_MIDDLE) || Engine::getInput()->isButtonJustDown(SDL_BUTTON_RIGHT))
             {
                 m_mouseOnDown = Engine::getInput()->getMousePos();
                 m_positionOnDown = m_position;
             }
-            else if (Engine::getInput()->isButtonDown(SDL_BUTTON_MIDDLE))
+            else if (Engine::getInput()->isButtonDown(SDL_BUTTON_MIDDLE) || Engine::getInput()->isButtonDown(SDL_BUTTON_RIGHT))
             {
                 auto diff = m_mouseOnDown - Engine::getInput()->getMousePos();
                 diff /= m_zoomf;
