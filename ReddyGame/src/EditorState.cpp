@@ -291,6 +291,9 @@ void EditorState::draw()
             break;
     }
 
+    // Draw gizmos (Selection boxes)
+    sb->drawLine({0, 0}, {5.0f, 5.0f}, 3.0f / m_zoomf);
+
     sb->end();
 }
 

@@ -57,14 +57,11 @@ namespace Engine
 
     void SpriteComponent::draw()
     {
-        const auto& transform = m_pEntity->getTransform();
-
-        getSpriteBatch()->draw(pTexture,
-                               transform.position,
-                               color, 
-                               transform.rotation,
-                               transform.scale * SPRITE_BASE_SCALE,
-                               origin,
-                               uvs);
+        getSpriteBatch()->drawSprite(pTexture,
+                                     m_pEntity->getWorldTransformWithScale(),
+                                     color, 
+                                     m_pEntity->getTransform().scale * SPRITE_BASE_SCALE,
+                                     origin,
+                                     uvs);
     }
 }

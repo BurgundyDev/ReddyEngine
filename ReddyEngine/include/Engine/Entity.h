@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/vec2.hpp>
+#include <glm/mat4x4.hpp>
 #include <json/json.h>
 
 #include <string>
@@ -22,6 +23,22 @@ namespace Engine
 		glm::vec2 position = glm::vec2(0);
 		float rotation = 0;
 		glm::vec2 scale = glm::vec2(1);
+
+		bool operator==(const Transform& other) const
+		{
+			return 
+				position == other.position && 
+				rotation == other.rotation && 
+				scale == other.scale;
+		}
+
+		bool operator!=(const Transform& other) const
+		{
+			return 
+				position != other.position ||
+				rotation != other.rotation || 
+				scale != other.scale;
+		}
 	};
 
 
@@ -41,9 +58,6 @@ namespace Engine
 		bool removeChild(const EntityRef& pChild); // True if was removed
 		EntityRef getParent() const { return m_pParent ? m_pParent->shared_from_this() : nullptr; }
 		const std::vector<EntityRef>& getChildren() const { return m_children; }
-
-		const Transform& getTransform() const { return m_transform; }
-		void setTransform(const Transform transform);
 
 		const std::vector<ComponentRef>& getComponents() const { return m_components; }
 		
@@ -102,6 +116,19 @@ namespace Engine
 
 		void draw();
 
+		const Transform& getTransform() const { return m_transform; }
+		const glm::vec2& getPosition() const { return m_transform.position; }
+		float getRotation() const { return m_transform.rotation; }
+		const glm::vec2& getScale() const { return m_transform.scale; }
+
+		void setTransform(const Transform transform);
+		void setPosition(const glm::vec2& position);
+		void setRotation(float degrees);
+		void setScale(const glm::vec2& scale);
+
+		const glm::mat4& getWorldTransform();
+		const glm::mat4& getWorldTransformWithScale();
+
 	public:
 		// Editor stuff (We could #ifdef this in final version?)
 		bool edit();
@@ -109,11 +136,16 @@ namespace Engine
 
 	private:
 		void componentAdded(const ComponentRef& pComponent);
+		void updateDirtyTransforms();
+		void setDirtyTransform();
 
 		bool m_transformDirty = true;
 		Transform m_transform;
 		Entity* m_pParent = nullptr;
 		std::vector<EntityRef> m_children;
 		std::vector<ComponentRef> m_components;
+		glm::mat4 m_worldTransform;
+		glm::mat4 m_worldTransformWithScale;
+		glm::mat4 m_invWorldTransform; // For mouse pick
 	};
 }

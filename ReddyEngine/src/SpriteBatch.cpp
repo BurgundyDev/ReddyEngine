@@ -214,13 +214,13 @@ namespace Engine
     }
 
     // Long ass method that will be used everywhere by everything
-    void SpriteBatch::draw(const TextureRef& pTexture,
-                           const glm::vec2& position, 
-                           const glm::vec4& color, 
-                           float rotation, 
-                           const glm::vec2& scale, 
-                           const glm::vec2& origin, 
-                           const glm::vec4& uvs)
+    void SpriteBatch::drawSprite(const TextureRef& pTexture,
+                                 const glm::vec2& position, 
+                                 const glm::vec4& color, 
+                                 float rotation, 
+                                 const glm::vec2& scale, 
+                                 const glm::vec2& origin, 
+                                 const glm::vec4& uvs)
     {
         CORE_ASSERT(m_isInBatch, "SpriteBatch::draw() called without calling begin() first");
 
@@ -275,6 +275,65 @@ namespace Engine
         {
             flush();
         }
+    }
+
+    void SpriteBatch::drawSprite(const TextureRef& pTexture, // nullptr for 1x1 white
+                                 const glm::mat4& transform, 
+                                 const glm::vec4& color, 
+                                 const glm::vec2& scale, 
+                                 const glm::vec2& origin, 
+                                 const glm::vec4& uvs)
+    {
+        CORE_ASSERT(m_isInBatch, "SpriteBatch::draw() called without calling begin() first");
+
+        if (!scale.x || !scale.y) return; // Scale 0, can't draw this
+
+        if (m_pCurrentTexture != pTexture)
+        {
+            flush();
+            m_pCurrentTexture = pTexture;
+        }
+
+        glm::ivec2 textureSize = m_pCurrentTexture ? m_pCurrentTexture->getSize() : glm::ivec2{ 1, 1 };
+        glm::vec2 sizef = glm::vec2((float)textureSize.x, (float)textureSize.y) * scale;
+        glm::vec2 invOrigin(1.f - origin.x, 1.f - origin.y);
+
+        Vertex* pVerts = m_vertices + (m_spriteCount * 4);
+        pVerts[0].position = transform * glm::vec4(-sizef.x * origin.x, -sizef.y * origin.y, 0, 1);
+        pVerts[0].texCoord = {uvs.x, uvs.y};
+        pVerts[0].color = color;
+
+        pVerts[1].position = transform * glm::vec4(-sizef.x * origin.x, sizef.y * origin.y, 0, 1);
+        pVerts[1].texCoord = {uvs.x, uvs.w};
+        pVerts[1].color = color;
+
+        pVerts[2].position = transform * glm::vec4(sizef.x * origin.x, sizef.y * origin.y, 0, 1);
+        pVerts[2].texCoord = {uvs.z, uvs.w};
+        pVerts[2].color = color;
+
+        pVerts[3].position = transform * glm::vec4(sizef.x * origin.x, -sizef.y * origin.y, 0, 1);
+        pVerts[3].texCoord = {uvs.z, uvs.y};
+        pVerts[3].color = color;
+
+        ++m_spriteCount;
+
+        if (m_spriteCount == MAX_SPRITE_COUNT)
+        {
+            flush();
+        }
+    }
+
+    void SpriteBatch::drawLine(const glm::vec2& from, const glm::vec2& to, float size, const glm::vec4& color)
+    {
+        // We're cheating here. I wanted to use GL_LINES, but our imgui wrangler doesn't support them? .. So I gave up instead of spending hours re-setting up OpenGL.
+        auto mid = (from + to) * 0.5f;
+        auto dir = to - from;
+        auto len = glm::length(dir);
+        if (len == 0.0f) return;
+        dir /= len;
+        auto angle = glm::degrees(std::atan2f(dir.y, dir.x));
+
+        drawSprite(m_pDefaultWhiteTexture, mid, color, angle, {len * 0.5f, size * 0.5f});
     }
 
     void SpriteBatch::drawRect(const TextureRef& pTexture,

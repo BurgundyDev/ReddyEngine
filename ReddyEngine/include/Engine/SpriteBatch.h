@@ -25,18 +25,27 @@ namespace Engine
         void end(); // This will draw if any sprites are pending
 
         // Long ass method that will be used everywhere by everything
-        void draw(const TextureRef& pTexture, // nullptr for 1x1 white
-                  const glm::vec2& position, 
-                  const glm::vec4& color = { 1, 1, 1, 1 }, 
-                  float rotation = 0.0f, 
-                  const glm::vec2& scale = {1, 1}, 
-                  const glm::vec2& origin = { 0.5f, 0.5f }, 
-                  const glm::vec4& uvs = { 0, 0, 1, 1 });
+        void drawSprite(const TextureRef& pTexture, // nullptr for 1x1 white
+                        const glm::vec2& position, 
+                        const glm::vec4& color = { 1, 1, 1, 1 }, 
+                        float rotation = 0.0f, 
+                        const glm::vec2& scale = {1, 1}, 
+                        const glm::vec2& origin = { 0.5f, 0.5f }, 
+                        const glm::vec4& uvs = { 0, 0, 1, 1 });
+
+        void drawSprite(const TextureRef& pTexture, // nullptr for 1x1 white
+                        const glm::mat4& transform, 
+                        const glm::vec4& color = { 1, 1, 1, 1 }, 
+                        const glm::vec2& scale = {1, 1}, 
+                        const glm::vec2& origin = { 0.5f, 0.5f }, 
+                        const glm::vec4& uvs = { 0, 0, 1, 1 });
 
         void drawRect(const TextureRef& pTexture, // nullptr for white
                       const glm::vec4& rect, // x, y, w, h
                       const glm::vec4& color = { 1, 1, 1, 1 }, 
                       const glm::vec4& uvs = { 0, 0, 1, 1 }); // u1, v1, u2, v2
+
+        void drawLine(const glm::vec2& from, const glm::vec2& to, float size, const glm::vec4& color = { 1, 1, 1, 1 });
 
         // Force draw pending sprites
         void flush();

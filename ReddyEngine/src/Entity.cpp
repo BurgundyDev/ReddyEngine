@@ -4,11 +4,11 @@
 #include "Engine/Log.h"
 #include "Engine/Scene.h"
 #include "Engine/ReddyEngine.h"
+#include "Engine/GUI.h"
 #include "ComponentManager.h"
 
-#include <Engine/GUI.h>
-
 #include <imgui.h>
+#include <glm/gtx/transform.hpp>
 
 #include <functional>
 
@@ -143,6 +143,65 @@ namespace Engine
 		m_transformDirty = true;
 	}
 
+	void Entity::setPosition(const glm::vec2& position)
+	{
+		m_transform.position = position;
+		m_transformDirty = true;
+	}
+
+	void Entity::setRotation(float degrees)
+	{
+		m_transform.rotation = degrees;
+		m_transformDirty = true;
+	}
+
+	void Entity::setScale(const glm::vec2& scale)
+	{
+		m_transform.scale = scale;
+		m_transformDirty = true;
+	}
+
+	void Entity::setDirtyTransform()
+	{
+		m_transformDirty = true;
+		for (const auto& pChild : m_children)
+			pChild->setDirtyTransform();
+	}
+
+	void Entity::updateDirtyTransforms()
+	{
+		if (!m_transformDirty) return;
+
+		glm::mat4 localTransform = 
+			glm::translate(glm::vec3(m_transform.position, 0)) * 
+			glm::rotate(glm::radians(m_transform.rotation), glm::vec3(0, 0, 1));
+
+		if (m_pParent)
+			m_worldTransform = m_pParent->getWorldTransform() * localTransform; // This will recursively clean transforms up the tree.
+		else
+			m_worldTransform = localTransform;
+
+		m_worldTransformWithScale = 
+			m_worldTransform *
+			glm::scale(glm::vec3(m_transform.scale.x, m_transform.scale.y, 0));
+
+		m_invWorldTransform = glm::inverse(m_worldTransform);
+
+		m_transformDirty = false;
+	}
+	
+	const glm::mat4& Entity::getWorldTransform()
+	{
+		updateDirtyTransforms();
+		return m_worldTransform;
+	}
+
+	const glm::mat4& Entity::getWorldTransformWithScale()
+	{
+		updateDirtyTransforms();
+		return m_worldTransformWithScale;
+	}
+
 	bool Entity::edit()
 	{
 		bool changed = false;
@@ -155,6 +214,8 @@ namespace Engine
 
 		GUI::beginGroup("Transform");
 		{
+			auto transformBefore = m_transform;
+
 			changed |= GUI::vec2Property("Position", &m_transform.position);
 			changed |= GUI::angleProperty("Rotation", &m_transform.rotation);
 			
@@ -166,7 +227,9 @@ namespace Engine
 			}
 			else
 				changed |= GUI::vec2Property("Scale", &m_transform.scale);
-			GUI::boolProperty("Lock Scale", &lockScale);
+			changed |= GUI::boolProperty("Lock Scale", &lockScale);
+
+			if (transformBefore != m_transform) setDirtyTransform(); // Just dirty our transform whatever something changed
 		}
 		GUI::endGroup();
 
@@ -180,7 +243,7 @@ namespace Engine
 				GUI::endSection();
 			}
 		}
-
+		
 		return changed;
 	}
 
