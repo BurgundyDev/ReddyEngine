@@ -3,6 +3,7 @@
 #include "GameState.h"
 
 #include <Engine/Event.h>
+#include <Engine/Entity.h>
 
 #include <json/json.h>
 #include <glm/vec2.hpp>
@@ -22,9 +23,6 @@ namespace Engine
     class PFXInstance;
     using PFXInstanceRef = std::shared_ptr<PFXInstance>;
 
-    class Entity;
-    using EntityRef = std::shared_ptr<Entity>;
-
     class IEvent;
 }
 
@@ -33,6 +31,15 @@ enum class EditDocumentType
 {
     Scene,
     PFX
+};
+
+
+enum class TransformType
+{
+    None,
+    Translate,
+    Rotate,
+    Scale
 };
 
 
@@ -80,9 +87,11 @@ private:
     void drawEntitySceneTree(const Engine::EntityRef& pEntity);
     const char* getEntityFriendlyName(const Engine::EntityRef& pEntity);
     void serializeSelectionState();
+    void updateTransform();
 
     void onKeyDown(Engine::IEvent* pEvent);
     void onMouseDown(Engine::IEvent* pEvent);
+    void onMouseUp(Engine::IEvent* pEvent);
 
     EditDocumentType m_editDocumentType = EditDocumentType::Scene;
     ActionManagerRef m_pActionManager;
@@ -107,4 +116,7 @@ private:
 
     // Scene editor stuff
     std::vector<Engine::EntityRef> m_selected;
+    std::vector<glm::vec2> m_worldPositionsOnDown;
+    TransformType m_transformType = TransformType::None;
+    bool m_isMouseDownInWorld = false;
 };

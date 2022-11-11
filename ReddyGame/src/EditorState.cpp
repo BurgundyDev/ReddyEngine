@@ -16,6 +16,7 @@
 #include <Engine/Entity.h>
 #include <Engine/Scene.h>
 #include <Engine/SpriteComponent.h>
+#include <Engine/Entity.h>
 
 #include <imgui.h>
 #include <tinyfiledialogs/tinyfiledialogs.h>
@@ -66,12 +67,13 @@ void EditorState::enter(const GameStateRef& previousState)
     // Register events
     Engine::getEventSystem()->registerListener<Engine::KeyDownEvent>(this, std::bind(&EditorState::onKeyDown, this, _1));
     Engine::getEventSystem()->registerListener<Engine::MouseButtonDownEvent>(this, std::bind(&EditorState::onMouseDown, this, _1));
+    Engine::getEventSystem()->registerListener<Engine::MouseButtonUpEvent>(this, std::bind(&EditorState::onMouseUp, this, _1));
 }
 
 void EditorState::leave(const GameStateRef& newsState)
 {
     Engine::getEventSystem()->deregisterListener<Engine::KeyDownEvent>(this);
-    Engine::getEventSystem()->deregisterListener<Engine::MouseButtonDownEvent>(this);
+    Engine::getEventSystem()->deregisterListener<Engine::MouseButtonUpEvent>(this);
     Engine::getScene()->setEditorScene(false);
 }
 
@@ -109,47 +111,6 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
         {
             if (!ctrl && !shift && !alt && scancode == SDL_SCANCODE_SPACE)
                 m_pPfxInstance = std::make_shared<Engine::PFXInstance>(m_pPfx);
-            break;
-        }
-    }
-}
-
-void EditorState::onMouseDown(Engine::IEvent* pEvent)
-{
-    if (ImGui::GetIO().WantCaptureMouse) return;
-
-    auto pDownEvent = (Engine::MouseButtonDownEvent*)pEvent;
-
-    auto ctrl = Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
-    auto shift = Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT);
-    auto alt = Engine::getInput()->isKeyDown(SDL_SCANCODE_LALT);
-
-    switch (m_editDocumentType)
-    {
-        case EditDocumentType::Scene:
-        {
-            const auto& pHoveredEntity = Engine::getScene()->getHoveredEntity();
-
-            if (!pHoveredEntity && !ctrl && !m_selected.empty())
-                changeSelection({}); // Deselect
-
-            if (pHoveredEntity)
-            {
-                if (!ctrl)
-                {
-                    changeSelection({pHoveredEntity});
-                }
-                else
-                {
-                    auto newSelection = m_selected;
-                    newSelection.push_back(pHoveredEntity);
-                    changeSelection(newSelection);
-                }
-            }
-            break;
-        }
-        case EditDocumentType::PFX:
-        {
             break;
         }
     }
@@ -315,6 +276,9 @@ void EditorState::update(float dt)
         auto zoomTarget = ZOOM_LEVELS[m_zoom];
         m_zoomf = Engine::Utils::lerp(m_zoomf, zoomTarget, std::min(1.0f, dt * 50.0f));
     }
+    
+    // Transforming with mouse
+    updateTransform();
 
     // Update scene
     switch (m_editDocumentType)

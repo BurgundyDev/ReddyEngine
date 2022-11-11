@@ -123,13 +123,15 @@ namespace Engine
 		float getRotation() const { return m_transform.rotation; }
 		const glm::vec2& getScale() const { return m_transform.scale; }
 
-		void setTransform(const Transform transform);
+		void setTransform(const Transform& transform);
 		void setPosition(const glm::vec2& position);
 		void setRotation(float degrees);
 		void setScale(const glm::vec2& scale);
+		void setWorldPosition(const glm::vec2& position);
 
 		const glm::mat4& getWorldTransform();
 		const glm::mat4& getWorldTransformWithScale();
+		const glm::mat4& getInvWorldTransform();
 		const glm::mat4& getInvWorldTransformWithScale();
 
 		EntityRef getMouseHover(const glm::vec2& mousePos, bool ignoreMouseFlags = false);
@@ -156,6 +158,7 @@ namespace Engine
 		std::vector<EntityRef> m_children;
 		std::vector<ComponentRef> m_components;
 		glm::mat4 m_worldTransform;
+		glm::mat4 m_invWorldTransform;
 		glm::mat4 m_worldTransformWithScale;
 		glm::mat4 m_invWorldTransformWithScale; // For mouse pick
 	};

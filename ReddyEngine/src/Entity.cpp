@@ -157,7 +157,21 @@ namespace Engine
 		return worldTransform[3];
 	}
 	
-	void Entity::setTransform(const Transform transform)
+	void Entity::setWorldPosition(const glm::vec2& position)
+	{
+		if (!m_pParent)
+		{
+			// Root
+			m_transform.position = position;
+			m_transformDirty = true;
+			return;
+		}
+
+		m_transform.position = m_pParent->getInvWorldTransform() * glm::vec4(position, 0, 1);
+		m_transformDirty = true;
+	}
+	
+	void Entity::setTransform(const Transform& transform)
 	{
 		m_transform = transform;
 		m_transformDirty = true;
@@ -205,6 +219,7 @@ namespace Engine
 			m_worldTransform *
 			glm::scale(glm::vec3(m_transform.scale.x, m_transform.scale.y, 1));
 
+		m_invWorldTransform = glm::inverse(m_worldTransform);
 		m_invWorldTransformWithScale = glm::inverse(m_worldTransformWithScale);
 
 		m_transformDirty = false;
@@ -214,6 +229,12 @@ namespace Engine
 	{
 		updateDirtyTransforms();
 		return m_worldTransform;
+	}
+
+	const glm::mat4& Entity::getInvWorldTransform()
+	{
+		updateDirtyTransforms();
+		return m_invWorldTransform;
 	}
 
 	const glm::mat4& Entity::getWorldTransformWithScale()

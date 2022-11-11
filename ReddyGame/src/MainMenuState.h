@@ -6,6 +6,7 @@
 #include <string>
 #include <SDL_events.h>
 
+
 // Forward declarations
 namespace Engine
 {
