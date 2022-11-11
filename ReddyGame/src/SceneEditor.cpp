@@ -16,6 +16,8 @@
 
 #include <imgui.h>
 
+static Engine::EntityRef g_pDragTarget = nullptr;
+
 
 const char* EditorState::getEntityFriendlyName(const Engine::EntityRef& pEntity)
 {
@@ -26,14 +28,13 @@ const char* EditorState::getEntityFriendlyName(const Engine::EntityRef& pEntity)
 
 void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
 {
-    static std::vector<Engine::EntityRef> children;
-    children = pEntity->getChildren(); // We copy on purpose here...
+    const auto& children = pEntity->getChildren();
 
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
     if (children.empty()) flags |= ImGuiTreeNodeFlags_Leaf;
     if (pEntity->isSelected) flags |= ImGuiTreeNodeFlags_Selected;
 
-    auto nodeOpen = ImGui::TreeNodeEx(pEntity.get(), flags, getEntityFriendlyName(pEntity));
+    auto nodeOpen = ImGui::TreeNodeEx((const void*)(uintptr_t)pEntity->id, flags, getEntityFriendlyName(pEntity));
 
     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
     {
@@ -65,27 +66,7 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
     {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_SCENETREE"))
         {
-            bool valid = true;
-            for (const auto& pDragEntity : m_selected)
-            {
-                // Make sure we're not dragging a parent into one of it's child
-                if (pDragEntity->hasChild(pEntity, true))
-                {
-                    valid = false;
-                    break;
-                }
-            }
-
-            ImGui::EndDragDropTarget();
-
-            if (valid)
-            {
-                for (const auto& pDragEntity : m_selected)
-                {
-                    pEntity->addChild(pDragEntity);
-                }
-                pushUndo("Scene Tree Change");
-            }
+            g_pDragTarget = pEntity;
         }
     }
 
@@ -306,10 +287,33 @@ void EditorState::drawSceneUI() // This is also kind of update
     // Scene tree
     if (Engine::GUI::beginEditorWindow("Scene"))
     {
-        //const auto& children = Engine::getEntityManager()->getRoot()->getChildren();
-        //for (const auto& pChild : children)
-        //    drawEntitySceneTree(pChild);
+        g_pDragTarget = nullptr;
         drawEntitySceneTree(Engine::getScene()->getRoot());
+
+        if (g_pDragTarget)
+        {
+            bool valid = true;
+            for (const auto& pDragEntity : m_selected)
+            {
+                // Make sure we're not dragging a parent into one of it's child
+                if (pDragEntity == g_pDragTarget || pDragEntity->hasChild(g_pDragTarget, true))
+                {
+                    valid = false;
+                    break;
+                }
+            }
+
+            ImGui::EndDragDropTarget();
+
+            if (valid)
+            {
+                for (const auto& pDragEntity : m_selected)
+                {
+                    g_pDragTarget->addChild(pDragEntity);
+                }
+                pushUndo("Scene Tree Change");
+            }
+        }
 
         if (Engine::GUI::statusBarButton("+", "Create Entity"))
             m_openCreateEntityMenu = true;

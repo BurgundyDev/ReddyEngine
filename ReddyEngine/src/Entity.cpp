@@ -139,6 +139,7 @@ namespace Engine
 		json["mouseChildren"] = mouseChildren;
 		json["clickThrough"] = clickThrough;
 		json["uiRoot"] = uiRoot;
+		json["lockScale"] = lockScale;
 		json["transform"]["position"] = Utils::serializeJsonValue(m_transform.position);
 		json["transform"]["rotation"] = Utils::serializeJsonValue(m_transform.rotation);
 		json["transform"]["scale"] = Utils::serializeJsonValue(m_transform.scale);
@@ -178,13 +179,13 @@ namespace Engine
 		mouseChildren = Utils::deserializeBool(json["mouseChildren"], true);
 		clickThrough = Utils::deserializeBool(json["clickThrough"], false);
 		uiRoot = Utils::deserializeBool(json["uiRoot"], false);
+		lockScale = Utils::deserializeBool(json["lockScale"], true);
 
 		// Transform
 		m_transform.position = Utils::deserializeJsonValue<glm::vec2>(json["transform"]["position"]);
 		m_transform.rotation = Utils::deserializeFloat(json["transform"]["rotation"], 0.0f);
 		const float DEFAULT_SCALE[2] = { 1.0f, 1.0f };
 		Utils::deserializeFloat2(&m_transform.scale.x, json["transform"]["scale"], DEFAULT_SCALE);
-		m_transformDirty = true;
 
 		// Components
 		const auto& componentsJson = json["components"];
@@ -213,6 +214,11 @@ namespace Engine
 			{
 				getScene()->createEntityFromJson(shared_from_this(), childJson);
 			}
+			m_transformDirty = true;
+		}
+		else
+		{
+			setDirtyTransform();
 		}
 	}
 
@@ -228,36 +234,36 @@ namespace Engine
 		{
 			// Root
 			m_transform.position = position;
-			m_transformDirty = true;
+			setDirtyTransform();
 			return;
 		}
 
 		m_transform.position = m_pParent->getInvWorldTransform() * glm::vec4(position, 0, 1);
-		m_transformDirty = true;
+		setDirtyTransform();
 	}
 	
 	void Entity::setTransform(const Transform& transform)
 	{
 		m_transform = transform;
-		m_transformDirty = true;
+		setDirtyTransform();
 	}
 
 	void Entity::setPosition(const glm::vec2& position)
 	{
 		m_transform.position = position;
-		m_transformDirty = true;
+		setDirtyTransform();
 	}
 
 	void Entity::setRotation(float degrees)
 	{
 		m_transform.rotation = degrees;
-		m_transformDirty = true;
+		setDirtyTransform();
 	}
 
 	void Entity::setScale(const glm::vec2& scale)
 	{
 		m_transform.scale = scale;
-		m_transformDirty = true;
+		setDirtyTransform();
 	}
 
 	void Entity::setDirtyTransform()
@@ -410,7 +416,6 @@ namespace Engine
 			changed |= GUI::vec2Property("Position", &m_transform.position);
 			changed |= GUI::angleProperty("Rotation", &m_transform.rotation);
 			
-			static bool lockScale = true;
 			if (lockScale)
 			{
 				changed |= GUI::floatProperty("Scale", &m_transform.scale.x);

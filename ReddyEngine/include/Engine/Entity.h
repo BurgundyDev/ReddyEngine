@@ -59,6 +59,7 @@ namespace Engine
 		bool mouseChildren = true;
 		bool clickThrough = false;
 		bool uiRoot = false;
+		bool lockScale = true;
 
 	public:
 		~Entity();
