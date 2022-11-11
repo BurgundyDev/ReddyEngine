@@ -87,6 +87,16 @@ namespace Engine
 		m_entitiesToDestroy.push_back(pEntity); // We keep that around because components' onDestroy() might still refer to the entity
 	}
 
+	EntityRef Scene::getEntityByName(const std::string& name, bool recursive) const
+	{
+		return m_pRoot->getChildByName(name, recursive);
+	}
+
+	EntityRef Scene::getEntityByName(const std::string& name, const EntitySearchParams& searchParams, bool recursive) const
+	{
+		return m_pRoot->getChildByName(name, searchParams, recursive);
+	}
+
 	void Scene::update(float dt)
 	{
 		m_pComponentManager->update(dt);

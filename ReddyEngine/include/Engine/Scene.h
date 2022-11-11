@@ -15,6 +15,7 @@ namespace Engine
 	class Entity;
 	using EntityRef = std::shared_ptr<Entity>;
 
+	struct EntitySearchParams;
 
 	class Scene final
 	{
@@ -32,6 +33,11 @@ namespace Engine
 		EntityRef createEntityFromJson(const EntityRef& pParent, const Json::Value& json);
 		void destroyEntity(EntityRef pEntity);
 
+		/*! \brief Search the root for an entity with the given name */
+		EntityRef getEntityByName(const std::string& name, bool recursive = false) const;
+		/*! \brief Search the root for an entity with the given name, optionally searching  using EntitySearchParams */
+		EntityRef getEntityByName(const std::string& name, const EntitySearchParams& searchParams, bool recursive = false) const;
+		
 		const EntityRef& getRoot() const { return m_pRoot; }
 
 	    Json::Value serialize();
