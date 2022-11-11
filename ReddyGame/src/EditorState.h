@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <string>
+#include <glm/vec4.hpp>
 
 
 class ActionManager;
@@ -111,6 +112,11 @@ private:
     const float ZOOM_LEVELS[8] = {256.0f, 192.0f, 128.0f, 96.0f, 64.0f, 32.0f, 16.0f, 8.0f};
     int m_zoom = 2; // Maps to a zoom level
     float m_zoomf = ZOOM_LEVELS[2];
+
+    // Grid stuff
+    bool m_isGridVisible = true;
+    glm::vec2 m_gridStep = { 8.0f, 8.0f };
+    glm::vec4 m_gridColor = glm::vec4(0.3f);
 
     // Particle editor stuff
     Json::Value m_pfxJson; // Last serialized since last modification
