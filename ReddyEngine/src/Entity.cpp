@@ -62,7 +62,7 @@ namespace Engine
 		getScene()->getComponentManager()->addComponent(pComponent);
 	}
 
-	Json::Value Entity::serialize()
+	Json::Value Entity::serialize(bool includeChildren)
 	{
 		Json::Value json;
 
@@ -83,15 +83,21 @@ namespace Engine
 		json["components"] = componentsJson;
 
 		// Children
-		Json::Value childrenJson(Json::arrayValue);
-		for (const auto& pChild : m_children)
-			childrenJson.append(pChild->serialize());
-		json["children"] = childrenJson;
+		if (includeChildren)
+		{
+			Json::Value childrenJson(Json::arrayValue);
+			for (const auto& pChild : m_children)
+				childrenJson.append(pChild->serialize());
+			json["children"] = childrenJson;
+		}
+
+		if (getScene()->isEditorScene())
+			undoJson = json;
 
 		return json;
 	}
 
-	void Entity::deserialize(const Json::Value json)
+	void Entity::deserialize(const Json::Value json, bool includeChildren)
 	{
 		for (const auto& pComponent : m_components)
 		{
@@ -132,11 +138,17 @@ namespace Engine
 		}
 
 		// Children
-		const auto& childrenJson = json["children"];
-		for (const auto& childJson : childrenJson)
+		if (includeChildren)
 		{
-			getScene()->createEntityFromJson(shared_from_this(), childJson);
+			const auto& childrenJson = json["children"];
+			for (const auto& childJson : childrenJson)
+			{
+				getScene()->createEntityFromJson(shared_from_this(), childJson);
+			}
 		}
+
+		if (getScene()->isEditorScene())
+			undoJson = json;
 	}
 
 	glm::vec2 Entity::getWorldPosition()

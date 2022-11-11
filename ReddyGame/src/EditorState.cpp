@@ -373,6 +373,14 @@ void EditorState::draw()
     sb->end();
 }
 
+void EditorState::serializeSelectionState()
+{
+     for (const auto& pEntity : m_selected)
+     {
+         pEntity->undoJson = pEntity->serialize(false);
+     }
+}
+
 void EditorState::changeSelection(const std::vector<Engine::EntityRef>& in_newSelection)
 {
     auto prevSelection = m_selected;
@@ -386,6 +394,7 @@ void EditorState::changeSelection(const std::vector<Engine::EntityRef>& in_newSe
         m_selected = newSelection;
         for (const auto& pEntity : m_selected)
             pEntity->isSelected = true;
+        serializeSelectionState();
     },
                                [this, prevSelection]() // Undo
     {
@@ -394,6 +403,7 @@ void EditorState::changeSelection(const std::vector<Engine::EntityRef>& in_newSe
         m_selected = prevSelection;
         for (const auto& pEntity : m_selected)
             pEntity->isSelected = true;
+        serializeSelectionState();
     });
 }
 

@@ -1,4 +1,5 @@
 #include "EditorState.h"
+#include "ActionManager.h"
 
 #include <Engine/Entity.h>
 #include <Engine/Scene.h>
@@ -55,12 +56,24 @@ void EditorState::drawSceneUI()
     // Inspector (For selected entity/entities)
     if (Engine::GUI::beginEditorWindow("Entity Inspector"))
     {
-        // For now, we only do 1 entity
+        // For now, we only do 1 entity at a time
         if (m_selected.size() == 1)
         {
-            if (m_selected.front()->edit())
+            auto pEntity = m_selected.front();
+            if (pEntity->edit())
             {
-                // Modified
+                auto prevJson = pEntity->undoJson;
+                auto newJson = pEntity->serialize();
+                setDirty(true);
+                m_pActionManager->addAction("Edit Entity", [this, pEntity, newJson]()
+                {
+                    pEntity->deserialize(newJson);
+                    setDirty(true);
+                }, [this, pEntity, prevJson]()
+                {
+                    pEntity->deserialize(prevJson);
+                    setDirty(true);
+                });
             }
         }
     }

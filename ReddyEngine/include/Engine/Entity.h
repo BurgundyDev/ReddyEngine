@@ -107,8 +107,8 @@ namespace Engine
 
 		bool removeComponent(const ComponentRef& pComponent);
 
-		Json::Value serialize();
-		void deserialize(const Json::Value json);
+		Json::Value serialize(bool includeChildren = true);
+		void deserialize(const Json::Value json, bool includeChildren = true);
 		
 		friend bool operator==(const Entity& lhs, const Entity& rhs)
 		{
@@ -141,6 +141,7 @@ namespace Engine
 		bool edit();
 		bool isSelected = false;
 		void drawOutline(const glm::vec4& color, float zoomScale);
+		Json::Value undoJson; // Another editor hack to keep track of it's serialized before change.
 
 	private:
 		void componentAdded(const ComponentRef& pComponent);
