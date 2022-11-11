@@ -57,6 +57,7 @@ namespace Engine
 		const EntityRef& getHoveredEntity() const { return m_pMouseHoverEntity; }
 
 		uint64_t generateEntityId() { return ++m_id; }
+		void updateMaxId(uint64_t id) { m_id = std::max(m_id, id + 1); } // Such hacks
 
 	public:
 		// Engine use only

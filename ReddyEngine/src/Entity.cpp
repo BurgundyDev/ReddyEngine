@@ -174,6 +174,7 @@ namespace Engine
 			id = getScene()->generateEntityId();
 		else
 			id = Utils::deserializeUInt64(json["id"]);
+		getScene()->updateMaxId(id);
 		name = Utils::deserializeString(json["name"]);
 		sortChildren = Utils::deserializeBool(json["sortChildren"], false);
 		mouseChildren = Utils::deserializeBool(json["mouseChildren"], true);
@@ -212,7 +213,7 @@ namespace Engine
 			const auto& childrenJson = json["children"];
 			for (const auto& childJson : childrenJson)
 			{
-				getScene()->createEntityFromJson(shared_from_this(), childJson);
+				getScene()->createEntityFromJson(shared_from_this(), childJson, generateNewIds);
 			}
 			m_transformDirty = true;
 		}
