@@ -7,6 +7,7 @@
       "children" : [
          {
             "children" : [],
+            "clickThrough" : false,
             "components" : [
                {
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
@@ -18,22 +19,29 @@
                }
             ],
             "id" : 1,
+            "mouseChildren" : true,
             "name" : "Not Like This",
+            "sortChildren" : false,
             "transform" : {
                "position" : [ 0.0, 0.0 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
-            }
+            },
+            "uiRoot" : false
          }
       ],
+      "clickThrough" : true,
       "components" : [],
       "id" : 0,
+      "mouseChildren" : true,
       "name" : "Root",
+      "sortChildren" : false,
       "transform" : {
          "position" : [ 0.0, 0.0 ],
          "rotation" : 0.0,
          "scale" : [ 1.0, 1.0 ]
-      }
+      },
+      "uiRoot" : false
    },
    "type" : "scene",
    "version" : 1

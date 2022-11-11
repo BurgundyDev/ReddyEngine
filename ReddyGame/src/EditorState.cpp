@@ -116,6 +116,8 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
 
 void EditorState::onMouseDown(Engine::IEvent* pEvent)
 {
+    if (ImGui::GetIO().WantCaptureMouse) return;
+
     auto pDownEvent = (Engine::MouseButtonDownEvent*)pEvent;
 
     auto ctrl = Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
