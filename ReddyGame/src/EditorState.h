@@ -143,5 +143,5 @@ private:
     bool m_isMouseDownInWorld = false;
     bool m_wasAddedToSelection = false; // Another gross hack
 
-    float m_snapScale = 1.0f;
+    float m_snapScale = 0.5f;
 };
