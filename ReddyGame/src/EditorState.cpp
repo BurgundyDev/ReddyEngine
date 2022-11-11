@@ -321,8 +321,8 @@ void EditorState::draw()
 
         float maxVal = resolution.x > resolution.y ? resolution.x : resolution.y;
 
-        float gridStart = maxVal / -m_zoomf;
-        float gridEnd = maxVal / m_zoomf;
+        float gridStart = maxVal / -m_zoomf - 2.0f;
+        float gridEnd = maxVal / m_zoomf + 2.0f;
 
         for (int i = gridStart; i < gridEnd; i++)
         {
