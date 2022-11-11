@@ -367,10 +367,10 @@ void EditorState::draw()
 
 void EditorState::serializeSelectionState()
 {
-     for (const auto& pEntity : m_selected)
-     {
-         pEntity->undoJson = pEntity->serialize(false);
-     }
+     //for (const auto& pEntity : m_selected)
+     //{
+     //    pEntity->undoJson = pEntity->serialize(false);
+     //}
 }
 
 void EditorState::changeSelection(const std::vector<Engine::EntityRef>& in_newSelection)

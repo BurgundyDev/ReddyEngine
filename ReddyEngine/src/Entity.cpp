@@ -116,6 +116,19 @@ namespace Engine
 		return nullptr;
 	}
 
+	bool Entity::hasChild(const EntityRef& pChild, bool recursive) const
+	{
+		for (const auto& pMyChild : m_children)
+		{
+			if (pChild == pMyChild) return true;
+			if (recursive)
+			{
+				if (pMyChild->hasChild(pChild, recursive)) return true;
+			}
+		}
+		return false;
+	}
+
 	Json::Value Entity::serialize(bool includeChildren)
 	{
 		Json::Value json;
@@ -144,9 +157,6 @@ namespace Engine
 				childrenJson.append(pChild->serialize());
 			json["children"] = childrenJson;
 		}
-
-		if (getScene()->isEditorScene())
-			undoJson = json;
 
 		return json;
 	}
@@ -201,9 +211,6 @@ namespace Engine
 				getScene()->createEntityFromJson(shared_from_this(), childJson);
 			}
 		}
-
-		if (getScene()->isEditorScene())
-			undoJson = json;
 	}
 
 	glm::vec2 Entity::getWorldPosition()

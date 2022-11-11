@@ -122,6 +122,8 @@ namespace Engine
 		EntityRef getChildByName(const std::string& name, bool recursive = false);
 		EntityRef getChildByName(const std::string& name, const EntitySearchParams &searchParams, bool recursive = false);
 
+		bool hasChild(const EntityRef& pChild, bool recursive = false) const;
+
 		template <class T>
 		EntityRef getChildByComponent(const EntitySearchParams& searchParams, bool recursive)
 		{
@@ -209,7 +211,6 @@ namespace Engine
 		bool edit();
 		bool isSelected = false;
 		void drawOutline(const glm::vec4& color, float zoomScale);
-		Json::Value undoJson; // Another editor hack to keep track of it's serialized before change.
 
 	private:
 		void componentAdded(const ComponentRef& pComponent);

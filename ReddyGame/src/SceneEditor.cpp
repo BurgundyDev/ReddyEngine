@@ -28,18 +28,74 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
     if (children.empty()) flags |= ImGuiTreeNodeFlags_Leaf;
     if (pEntity->isSelected) flags |= ImGuiTreeNodeFlags_Selected;
 
-    if (ImGui::TreeNodeEx(pEntity.get(), flags, getEntityFriendlyName(pEntity)))
+    auto nodeOpen = ImGui::TreeNodeEx(pEntity.get(), flags, getEntityFriendlyName(pEntity));
+
+    if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
     {
-        if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+        //TODO: We should be able to select range with Shift
+        if (Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL))
+        {
+            auto newSelection = m_selected;
+            bool wasRemoved = false;
+            for (auto it = newSelection.begin(); it != newSelection.end(); ++it)
+            {
+                if (*it == pEntity)
+                {
+                    newSelection.erase(it);
+                    wasRemoved = true;
+                    break;
+                }
+            }
+            if (!wasRemoved)
+                newSelection.push_back(pEntity);
+            changeSelectionAction(newSelection);
+        }
+        else
+        {
             changeSelectionAction({pEntity});
+        }
+    }
+
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_SCENETREE"))
+        {
+            bool valid = true;
+            for (const auto& pDragEntity : m_selected)
+            {
+                // Make sure we're not dragging a parent into one of it's child
+                if (pDragEntity->hasChild(pEntity, true))
+                {
+                    valid = false;
+                    break;
+                }
+            }
+
+            ImGui::EndDragDropTarget();
+
+            if (valid)
+            {
+                for (const auto& pDragEntity : m_selected)
+                {
+                    pEntity->addChild(pDragEntity);
+                }
+                pushUndo("Scene Tree Change");
+            }
+        }
+    }
+
+    if (ImGui::BeginDragDropSource())
+    {
+        ImGui::SetDragDropPayload("_SCENETREE", NULL, 0);
+        ImGui::Text("%i Entities", m_selected.size());
+        ImGui::EndDragDropSource();
+    }
+
+    if (nodeOpen)
+    {
         for (const auto& pChild : children)
             drawEntitySceneTree(pChild);
         ImGui::TreePop();
-    }
-    else
-    {
-        if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
-            changeSelectionAction({pEntity});
     }
 }
 
