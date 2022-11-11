@@ -203,9 +203,9 @@ namespace Engine
 
 		m_worldTransformWithScale = 
 			m_worldTransform *
-			glm::scale(glm::vec3(m_transform.scale.x, m_transform.scale.y, 0));
+			glm::scale(glm::vec3(m_transform.scale.x, m_transform.scale.y, 1));
 
-		m_invWorldTransform = glm::inverse(m_worldTransform);
+		m_invWorldTransformWithScale = glm::inverse(m_worldTransformWithScale);
 
 		m_transformDirty = false;
 	}
@@ -220,6 +220,12 @@ namespace Engine
 	{
 		updateDirtyTransforms();
 		return m_worldTransformWithScale;
+	}
+
+	const glm::mat4& Entity::getInvWorldTransformWithScale()
+	{
+		updateDirtyTransforms();
+		return m_invWorldTransformWithScale;
 	}
 
 	// Pretty slow, now partitionning, we basically check every entity/components :derp:

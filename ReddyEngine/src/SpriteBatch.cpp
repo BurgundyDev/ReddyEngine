@@ -303,15 +303,15 @@ namespace Engine
         pVerts[0].texCoord = {uvs.x, uvs.y};
         pVerts[0].color = color;
 
-        pVerts[1].position = transform * glm::vec4(-sizef.x * origin.x, sizef.y * origin.y, 0, 1);
+        pVerts[1].position = transform * glm::vec4(-sizef.x * origin.x, sizef.y * invOrigin.y, 0, 1);
         pVerts[1].texCoord = {uvs.x, uvs.w};
         pVerts[1].color = color;
 
-        pVerts[2].position = transform * glm::vec4(sizef.x * origin.x, sizef.y * origin.y, 0, 1);
+        pVerts[2].position = transform * glm::vec4(sizef.x * invOrigin.x, sizef.y * invOrigin.y, 0, 1);
         pVerts[2].texCoord = {uvs.z, uvs.w};
         pVerts[2].color = color;
 
-        pVerts[3].position = transform * glm::vec4(sizef.x * origin.x, -sizef.y * origin.y, 0, 1);
+        pVerts[3].position = transform * glm::vec4(sizef.x * invOrigin.x, -sizef.y * origin.y, 0, 1);
         pVerts[3].texCoord = {uvs.z, uvs.y};
         pVerts[3].color = color;
 

@@ -130,6 +130,7 @@ namespace Engine
 
 		const glm::mat4& getWorldTransform();
 		const glm::mat4& getWorldTransformWithScale();
+		const glm::mat4& getInvWorldTransformWithScale();
 
 		EntityRef getMouseHover(const glm::vec2& mousePos, bool ignoreMouseFlags = false);
 
@@ -156,6 +157,6 @@ namespace Engine
 		std::vector<ComponentRef> m_components;
 		glm::mat4 m_worldTransform;
 		glm::mat4 m_worldTransformWithScale;
-		glm::mat4 m_invWorldTransform; // For mouse pick
+		glm::mat4 m_invWorldTransformWithScale; // For mouse pick
 	};
 }

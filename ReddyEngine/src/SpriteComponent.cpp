@@ -55,6 +55,47 @@ namespace Engine
         return changed;
     }
 
+    bool SpriteComponent::isMouseHover(const glm::vec2& mousePos) const
+    {
+        if (!pTexture) return Component::isMouseHover(mousePos);
+        
+        const auto& invTransform = m_pEntity->getInvWorldTransformWithScale();
+
+        glm::ivec2 textureSize = pTexture ? pTexture->getSize() : glm::ivec2{ 1, 1 };
+        glm::vec2 sizef = glm::vec2((float)textureSize.x, (float)textureSize.y) * m_pEntity->getTransform().scale * SPRITE_BASE_SCALE;
+        glm::vec2 invOrigin(1.f - origin.x, 1.f - origin.y);
+
+        glm::vec2 localMouse = invTransform * glm::vec4(mousePos, 0, 1);
+
+        return 
+            localMouse.x >= -sizef.x * origin.x &&
+            localMouse.x <= sizef.x * invOrigin.x &&
+            localMouse.y >= -sizef.y * origin.y &&
+            localMouse.y <= sizef.y * invOrigin.y;
+    }
+
+	void SpriteComponent::drawOutline(const glm::vec4& color, float zoomScale)
+    {
+		const auto& transform = m_pEntity->getWorldTransformWithScale();
+		auto sb = getSpriteBatch().get();
+
+        glm::ivec2 textureSize = pTexture ? pTexture->getSize() : glm::ivec2{ 1, 1 };
+        glm::vec2 sizef = glm::vec2((float)textureSize.x, (float)textureSize.y) * m_pEntity->getTransform().scale * SPRITE_BASE_SCALE;
+        glm::vec2 invOrigin(1.f - origin.x, 1.f - origin.y);
+
+        glm::vec2 points[4] = {
+            transform * glm::vec4(-sizef.x * origin.x, -sizef.y * origin.y, 0, 1),
+            transform * glm::vec4(-sizef.x * origin.x, sizef.y * invOrigin.y, 0, 1),
+            transform * glm::vec4(sizef.x * invOrigin.x, sizef.y * invOrigin.y, 0, 1),
+            transform * glm::vec4(sizef.x * invOrigin.x, -sizef.y * origin.y, 0, 1)
+        };
+
+		sb->drawLine(points[0], points[1], 2.0f * zoomScale, color);
+        sb->drawLine(points[1], points[2], 2.0f * zoomScale, color);
+        sb->drawLine(points[2], points[3], 2.0f * zoomScale, color);
+        sb->drawLine(points[3], points[0], 2.0f * zoomScale, color);
+    }
+
     void SpriteComponent::draw()
     {
         getSpriteBatch()->drawSprite(pTexture,

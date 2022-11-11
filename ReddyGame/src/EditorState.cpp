@@ -97,7 +97,7 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
     // Undo/Redo
     if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_Z) onUndo();
     if (ctrl && shift && !alt && scancode == SDL_SCANCODE_Z) onRedo();
-    
+
     // Document type specifics
     switch (m_editDocumentType)
     {
