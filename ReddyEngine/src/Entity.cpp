@@ -136,6 +136,12 @@ namespace Engine
 			getScene()->createEntityFromJson(shared_from_this(), childJson);
 		}
 	}
+
+	glm::vec2 Entity::getWorldPosition()
+	{
+		const auto& worldTransform = getWorldTransform();
+		return worldTransform[3];
+	}
 	
 	void Entity::setTransform(const Transform transform)
 	{

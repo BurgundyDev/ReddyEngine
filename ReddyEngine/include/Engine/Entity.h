@@ -118,6 +118,7 @@ namespace Engine
 
 		const Transform& getTransform() const { return m_transform; }
 		const glm::vec2& getPosition() const { return m_transform.position; }
+		glm::vec2 getWorldPosition();
 		float getRotation() const { return m_transform.rotation; }
 		const glm::vec2& getScale() const { return m_transform.scale; }
 
