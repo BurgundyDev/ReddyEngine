@@ -7,6 +7,9 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui_internal.h>
 
+#include <tinyfiledialogs/tinyfiledialogs.h>
+
+#include <filesystem>
 
 namespace ImGui
 {
@@ -368,10 +371,35 @@ namespace Engine
                 *value = getResourceManager()->getTexture(buf);
                 ret = true;
             }
+            ImGui::SameLine();
+
+            if (!ret && ImGui::Button("...", { 25, 16 })) {
+                static const char *TEXTURE_FILE_PATTERNS[] = { "*.jpg;*.jpeg;*.png;*.bmp" };
+
+                const char* selectedFile = tinyfd_openFileDialog("Open", "./assets/textures/", 1, TEXTURE_FILE_PATTERNS, "Images", 0);
+                if (!selectedFile) {
+                    ret = false;
+                } else {
+                    const std::filesystem::path selectedPath(selectedFile);
+                    const std::filesystem::path filename = selectedPath.filename();
+                    const std::filesystem::path assetsPath = std::filesystem::current_path() / "assets";
+                    const std::filesystem::path destinationPath = assetsPath / "textures" / filename;
+
+                    if (!std::filesystem::copy_file(selectedPath, destinationPath)) {
+                        fprintf(stderr, "Failed to copy asset from %s to %s!\n", selectedPath.string().c_str(), destinationPath.string().c_str());
+                    } else {
+                        const std::filesystem::path relativePath = std::filesystem::relative(destinationPath, assetsPath);
+
+                        *value = getResourceManager()->getTexture(relativePath.string());
+
+                        ret = true;
+                    }
+                }
+            }
             showToolTip(tooltip);
 
             ImGui::PopID();
-            return false;
+            return ret;
         }
 
         bool boolProperty(const char* label, bool* value, const char* tooltip)
