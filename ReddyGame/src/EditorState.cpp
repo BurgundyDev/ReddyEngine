@@ -301,19 +301,9 @@ void EditorState::draw()
     auto sb = Engine::getSpriteBatch().get();
     sb->begin(transform);
 
-    // Draw faint cross in the middle so we know where's the center
-    //sb->drawRect(nullptr, glm::vec4(-10.0f, 0.0f, 20.0f, 1.0f / m_zoomf), glm::vec4(0.5f));
-    //sb->drawRect(nullptr, glm::vec4(0.0f, -10.0f, 1.0f / m_zoomf, 20.0f), glm::vec4(0.5f));
-
-	//for (int i = -10; i <= 10; ++i)
-	//{
-	//	sb->drawRect(nullptr, glm::vec4((float)i, -0.1f, 1.0f / m_zoomf, 0.2f), glm::vec4(0.5f));
-	//	sb->drawRect(nullptr, glm::vec4(-0.1f, (float)i, 0.2f, 1.0f / m_zoomf), glm::vec4(0.5f));
-	//}
 
     glm::vec2 resolution = Engine::getResolution();
     glm::vec2 resolutionRatio = glm::vec2(resolution.x / resolution.y, resolution.y / resolution.x);
-    
 
     if (m_isGridVisible && m_zoomf > m_gridHideZoomLevel)
     {
