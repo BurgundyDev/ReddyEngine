@@ -36,7 +36,8 @@ project "ReddyEngine"
 	  	"%{IncludeDir.lib_json}",
 	  	"%{IncludeDir.tinyxml2}",
 	  	"%{IncludeDir.box2d}",
-	  	"%{IncludeDir.box2d_source}"
+	  	"%{IncludeDir.box2d_source}",
+		"lua"
 	}
 
    links
@@ -46,6 +47,7 @@ project "ReddyEngine"
 	  	"jsoncpp",
 	  	"tinyxml2",
 	  	"box2d",
+		"lua",
 		"opengl32.lib"
 	}
 
