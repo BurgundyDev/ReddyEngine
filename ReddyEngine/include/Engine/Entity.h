@@ -63,10 +63,11 @@ namespace Engine
 	public:
 		~Entity();
 
-		bool addChild(EntityRef pChild); // True if was added, false if already child
+		bool addChild(EntityRef pChild, int insertAt = -1); // True if was added, false if already child
 		bool removeChild(const EntityRef& pChild); // True if was removed
 		EntityRef getParent() const { return m_pParent ? m_pParent->shared_from_this() : nullptr; }
 		const std::vector<EntityRef>& getChildren() const { return m_children; }
+		int getChildIndex(const EntityRef& pChild) const; // -1 if not child
 
 		const std::vector<ComponentRef>& getComponents() const { return m_components; }
 		
