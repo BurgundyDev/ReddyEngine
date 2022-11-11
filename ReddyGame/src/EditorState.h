@@ -121,7 +121,7 @@ private:
     // Grid stuff
     bool m_isGridVisible = true;
     glm::vec2 m_gridStep = { 8.0f, 8.0f };
-    glm::vec4 m_gridColor = glm::vec4(0.3f);
+    glm::vec4 m_gridColor = glm::vec4(0.35f);
 
     // Particle editor stuff
     Json::Value m_pfxJson; // Last serialized since last modification

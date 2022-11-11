@@ -288,6 +288,8 @@ void EditorState::draw()
     glm::vec2 resolution = Engine::getResolution();
     glm::vec2 resolutionRatio = glm::vec2(resolution.x / resolution.y, resolution.y / resolution.x);
 
+    const glm::vec4 MID_GRID_COLOR(0.7f);
+
     if (m_isGridVisible && m_zoomf >= m_gridHideZoomLevel)
     {
         glm::vec2 realGridOffset = glm::vec2( fmod(m_position.x, 1.0f), fmod(m_position.y, 1.0f));
@@ -301,14 +303,14 @@ void EditorState::draw()
         {
             const glm::vec2 cell = glm::vec2(m_position.x + i - realGridOffset.x , m_position.y + gridStart / 2 - realGridOffset.y);
 
-            sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, 1.0f / m_zoomf, gridEnd), m_gridColor);
+            sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, 1.0f / m_zoomf, gridEnd), (i == 0) ? MID_GRID_COLOR : m_gridColor);
         }
 
 		for (int i = (int) gridStart; i < gridEnd; i++)
 		{
 	        const glm::vec2 cell = glm::vec2(m_position.x + gridStart / 2 - realGridOffset.x, m_position.y + i - realGridOffset.y);
 
-		    sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, gridEnd, 1.0f / m_zoomf), m_gridColor);
+		    sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, gridEnd, 1.0f / m_zoomf), (i == 0) ? MID_GRID_COLOR : m_gridColor);
 		}
     }
     
