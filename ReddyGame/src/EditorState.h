@@ -96,6 +96,8 @@ private:
     void onMouseDown(Engine::IEvent* pEvent);
     void onMouseUp(Engine::IEvent* pEvent);
 
+    void pushUndo(const char* actionName);
+
     EditDocumentType m_editDocumentType = EditDocumentType::Scene;
     ActionManagerRef m_pActionManager;
     std::string m_filename = "untitled";
@@ -127,6 +129,9 @@ private:
     Engine::PFXInstanceRef m_pPfxInstance;
 
     // Scene editor stuff
+    Json::Value m_prevJson;
+    std::vector<uint64_t> m_selectedIds;
+
     std::vector<Engine::EntityRef> m_selected;
     std::vector<glm::vec2> m_worldPositionsOnDown;
     TransformType m_transformType = TransformType::None;

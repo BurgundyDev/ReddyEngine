@@ -136,33 +136,7 @@ void EditorState::onMouseUp(Engine::IEvent* pEvent)
         }
         case TransformType::Translate:
         {
-            auto entities = m_selected;
-            std::vector<Json::Value> jsonsBefore;
-            std::vector<Json::Value> jsonsAfter;
-            for (const auto& pEntity : entities)
-            {
-                jsonsBefore.push_back(pEntity->undoJson);
-                pEntity->undoJson = pEntity->serialize(false);
-                jsonsAfter.push_back(pEntity->undoJson);
-            }
-
-            m_pActionManager->addAction("Move", [this, entities, jsonsAfter]()
-            {
-                for (int i = 0, len = (int)entities.size(); i < len; ++i)
-                {
-                    const auto& pEntity = entities[i];
-                    pEntity->deserialize(jsonsAfter[i], false);
-                }
-                setDirty(true);
-            },[this, entities, jsonsBefore]
-            {
-                for (int i = 0, len = (int)entities.size(); i < len; ++i)
-                {
-                    const auto& pEntity = entities[i];
-                    pEntity->deserialize(jsonsBefore[i], false);
-                }
-                setDirty(true);
-            });
+            pushUndo("Move");
             break;
         }
     }
@@ -231,18 +205,7 @@ void EditorState::drawSceneUI() // This is also kind of update
             auto pEntity = m_selected.front();
             if (pEntity->edit())
             {
-                auto prevJson = pEntity->undoJson;
-                auto newJson = pEntity->serialize();
-                setDirty(true);
-                m_pActionManager->addAction("Edit Entity", [this, pEntity, newJson]()
-                {
-                    pEntity->deserialize(newJson);
-                    setDirty(true);
-                }, [this, pEntity, prevJson]()
-                {
-                    pEntity->deserialize(prevJson);
-                    setDirty(true);
-                });
+                pushUndo("Edit Entity");
             }
         }
     }

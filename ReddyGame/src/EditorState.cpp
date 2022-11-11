@@ -53,15 +53,12 @@ void EditorState::enter(const GameStateRef& previousState)
 {
     Engine::getScene()->setEditorScene(true);
 
+    clear();
+
     // Load last recently open
     if (!Engine::Config::recentEditorFiles.empty())
     {
         open(Engine::Config::recentEditorFiles[0]);
-    }
-    else
-    {
-        m_filename = "untitled";
-        m_pActionManager->clear();
     }
 
     // Register events
@@ -367,18 +364,8 @@ void EditorState::changeSelection(const std::vector<Engine::EntityRef>& in_newSe
 
 void EditorState::changeSelectionAction(const std::vector<Engine::EntityRef>& in_newSelection)
 {
-    auto prevSelection = m_selected;
-    auto newSelection = in_newSelection;
-    
-    m_pActionManager->doAction("Select",
-                               [this, newSelection]() // Redo
-    {
-        changeSelection(newSelection);
-    },
-                               [this, prevSelection]() // Undo
-    {
-        changeSelection(prevSelection);
-    });
+    changeSelection(in_newSelection);
+    pushUndo("Select");
 }
 
 
@@ -453,12 +440,68 @@ void EditorState::onDuplicate()
 {
 }
 
+void EditorState::pushUndo(const char* actionName)
+{
+    std::vector<uint64_t> ids;
+    for (const auto& pEntity : m_selected)
+    {
+        ids.push_back(pEntity->id);
+    }
+
+    const auto& pRoot = Engine::getScene()->getRoot();
+
+    auto jsonBefore = m_prevJson;
+    auto jsonAfter = pRoot->serialize(true);
+
+    auto selectedBefore = m_selectedIds;
+    auto selectedAfter = ids;
+
+    m_selectedIds = ids;
+    m_prevJson = jsonAfter;
+    setDirty(true);
+
+    m_pActionManager->addAction(actionName,
+        [this, jsonAfter, selectedAfter]() // Redo
+        {
+            Engine::getScene()->getRoot()->deserialize(jsonAfter, true);
+
+            std::vector<Engine::EntityRef> newSelection;
+            for (auto id : selectedAfter)
+            {
+                auto pEntity = Engine::getScene()->findEntity(id);
+                if (pEntity)
+                    newSelection.push_back(pEntity);
+            }
+            changeSelection(newSelection);
+
+            m_selectedIds = selectedAfter;
+
+            setDirty(true);
+        },
+        [this, jsonBefore, selectedBefore]() // Undo
+        {
+            Engine::getScene()->getRoot()->deserialize(jsonBefore, true);
+
+            std::vector<Engine::EntityRef> newSelection;
+            for (auto id : selectedBefore)
+            {
+                auto pEntity = Engine::getScene()->findEntity(id);
+                if (pEntity)
+                    newSelection.push_back(pEntity);
+            }
+            changeSelection(newSelection);
+
+            m_selectedIds = selectedBefore;
+
+            setDirty(true);
+        });
+}
+
 void EditorState::onDelete()
 {
     if (m_selected.empty()) return;
 
     std::vector<uint64_t> ids;
-
     const auto& pRoot = Engine::getScene()->getRoot();
     for (const auto& pEntity : m_selected)
     {
@@ -470,46 +513,17 @@ void EditorState::onDelete()
         ids.push_back(pEntity->id);
     }
 
-    // Keeping track or parent id and position and such is too complicated here. Lets serialize the whole thing
-    Json::Value rootJson = pRoot->serialize(true);
+    for (auto id : ids)
+        Engine::getScene()->destroyEntity(id);
+    changeSelection({});
 
-    m_pActionManager->doAction("Delete", [this, ids]()
-    {
-        for (auto id : ids)
-            Engine::getScene()->destroyEntity(id);
-        changeSelection({});
-    }, [this, ids, rootJson]()
-    {
-        Engine::getScene()->getRoot()->deserialize(rootJson, true);
-
-        std::vector<Engine::EntityRef> newSelection;
-        for (auto id : ids)
-        {
-            auto pEntity = Engine::getScene()->findEntity(id);
-            if (pEntity)
-                newSelection.push_back(pEntity);
-        }
-        changeSelection(newSelection);
-    });
+    pushUndo("Delete");
 }
 
 void EditorState::createEntityAction(Engine::EntityRef pEntity)
 {
-    auto selectionBefore = m_selected;
-    auto entityJson = pEntity->serialize(false /* It shouldn't have children */);
     changeSelection({pEntity});
-    auto entityId = pEntity->id;
-
-    m_pActionManager->addAction("Create Entity", [this, entityJson]()
-    {
-        auto pEntity = Engine::getScene()->createEntity();
-        pEntity->deserialize(entityJson);
-        changeSelection({pEntity});
-    }, [this, entityId, selectionBefore]()
-    {
-        Engine::getScene()->destroyEntity(entityId);
-        changeSelection(selectionBefore);
-    });
+    pushUndo("Create Entity");
 }
 
 void EditorState::onCreateEmptyEntity()
@@ -565,6 +579,7 @@ void EditorState::open(const std::string& filename)
     {
         m_editDocumentType = EditDocumentType::Scene;
         Engine::getScene()->deserialize(json);
+        m_prevJson = json["root"];
     }
     else if (type == "pfx")
     {
@@ -674,4 +689,7 @@ void EditorState::clear()
     m_position = {0, 0};
     m_zoom = 2;
     m_zoomf = ZOOM_LEVELS[2];
+    m_prevJson = Json::Value();
+    m_selectedIds.clear();
+    m_selected.clear();
 }
