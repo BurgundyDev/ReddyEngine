@@ -9,6 +9,7 @@
 #include <Engine/Input.h>
 #include <Engine/ResourceManager.h>
 #include <Engine/Texture.h>
+#include <Engine/SpriteComponent.h>
 
 #include <filesystem>
 
@@ -320,8 +321,8 @@ void EditorState::drawSceneUI() // This is also kind of update
     }
     Engine::GUI::endEditorWindow();
 
-
     // Inspector (For selected entity/entities)
+    bool showCreateComponentPopup = false;
     if (Engine::GUI::beginEditorWindow("Entity Inspector"))
     {
         // For now, we only do 1 entity at a time
@@ -333,10 +334,14 @@ void EditorState::drawSceneUI() // This is also kind of update
                 pushUndo("Edit Entity");
             }
         }
+
+        // Add component
+        if (Engine::GUI::statusBarButton("+", "Add Component"))
+            showCreateComponentPopup = true;
     }
     Engine::GUI::endEditorWindow();
 
-    // Context menu
+    // Context menus
     if (m_openCreateEntityMenu)
     {
         ImGui::OpenPopup("CreateEntityContext");
@@ -349,6 +354,20 @@ void EditorState::drawSceneUI() // This is also kind of update
         if (ImGui::Selectable("Text")) onCreateTextEntity();
         if (ImGui::Selectable("Sound")) onCreateSoundEntity();
         if (ImGui::Selectable("Particle")) onCreateParticleEntity();
+        ImGui::EndPopup();
+    }
+
+    if (showCreateComponentPopup)
+    {
+        ImGui::OpenPopup("CreateComponentContext");
+        m_openCreateEntityMenu = false;
+    }
+    if (ImGui::BeginPopupContextWindow("CreateComponentContext"))
+    {
+        if (ImGui::Selectable("Sprite")) onAddComponent<Engine::SpriteComponent>();
+        //if (ImGui::Selectable("Text")) onAddTextComponent();
+        //if (ImGui::Selectable("Sound")) onAddSoundComponent();
+        //if (ImGui::Selectable("Particle")) onCreateParticleEntity();
         ImGui::EndPopup();
     }
 }

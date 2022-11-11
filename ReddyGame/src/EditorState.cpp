@@ -90,6 +90,8 @@ void EditorState::setDirty(bool dirty)
 
 void EditorState::onKeyDown(Engine::IEvent* pEvent)
 {
+    if (ImGui::GetIO().WantCaptureKeyboard) return;
+
     // Handle editor shortcuts
     auto pKeyEvent = (Engine::KeyDownEvent*)pEvent;
     if (pKeyEvent->key.repeat) return; // Ignore repeats

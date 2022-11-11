@@ -427,14 +427,52 @@ namespace Engine
 		}
 		GUI::endGroup();
 
-		for (auto it = m_components.begin(); it != m_components.end(); ++it)
+		ComponentRef pComponentToRemove = nullptr;
+		int moveUpIndex = -1;
+		int moveDownIndex = -1;
+		int i = 0;
+		for (auto it = m_components.begin(); it != m_components.end(); ++it, ++i)
 		{
 			const auto& pComponent = *it;
 
-			if (GUI::beginSection(pComponent->getType()) == GUI::SectionState::Open)
+			GUI::SectionState sectionState = GUI::beginSection(pComponent->getType());
+			switch (sectionState)
 			{
-				changed |= pComponent->edit();
-				GUI::endSection();
+				case GUI::SectionState::Open:
+					changed |= pComponent->edit();
+					GUI::endSection();
+					break;
+				case GUI::SectionState::Delete:
+					pComponentToRemove = pComponent;
+					break;
+				case GUI::SectionState::MoveUp:
+					moveUpIndex = i;
+					break;
+				case GUI::SectionState::MoveDown:
+					moveDownIndex = i;
+					break;
+			}
+		}
+
+		if (pComponentToRemove)
+		{
+			removeComponent(pComponentToRemove);
+			changed = true;
+		}
+		else if (moveUpIndex != -1)
+		{
+			if (moveUpIndex > 0)
+			{
+				std::swap(m_components[moveUpIndex], m_components[moveUpIndex - 1]);
+				changed = true;
+			}
+		}
+		else if (moveDownIndex != -1)
+		{
+			if (moveDownIndex + 1 < (int)m_components.size())
+			{
+				std::swap(m_components[moveDownIndex], m_components[moveDownIndex + 1]);
+				changed = true;
 			}
 		}
 		

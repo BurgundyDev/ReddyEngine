@@ -112,7 +112,14 @@ namespace Engine
 		template<typename T>
 		bool removeComponent() const
 		{
-			return removeComponent(getComponent<T>());
+			for (auto it = m_components.begin(); it != m_components.end(); ++it)
+			{
+				auto pComponent = std::dynamic_pointer_cast<T>(*it);
+				getScene()->getComponentManager()->removeComponent(pComponent);
+				m_components.erase(it);
+				return true;
+			}
+			return false;
 		}
 
 		bool removeComponent(const ComponentRef& pComponent);

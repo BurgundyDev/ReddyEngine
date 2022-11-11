@@ -74,6 +74,15 @@ private:
     void onCreateSoundEntity();
     void onCreateParticleEntity();
 
+    template<typename T>
+    void onAddComponent()
+    {
+        if (m_selected.size() != 1) return;
+        if (m_selected.front()->hasComponent<T>()) return; // Do nothing
+        m_selected.front()->addComponent<T>();
+        pushUndo("Add Component");
+    }
+
     void open(const std::string& filename);
     bool openAs(); // Returns false if user cancelled
     void save();
