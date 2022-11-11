@@ -383,10 +383,23 @@ namespace Engine
                     const std::filesystem::path selectedPath(selectedFile);
                     const std::filesystem::path filename = selectedPath.filename();
                     const std::filesystem::path assetsPath = std::filesystem::current_path() / "assets";
-                    const std::filesystem::path destinationPath = assetsPath / "textures" / filename;
+                    const std::filesystem::path destinationDirectory = assetsPath / "textures";
+                    const std::filesystem::path destinationPath = destinationDirectory / filename;
 
-                    if (!std::filesystem::copy_file(selectedPath, destinationPath)) {
-                        fprintf(stderr, "Failed to copy asset from %s to %s!\n", selectedPath.string().c_str(), destinationPath.string().c_str());
+                    if (selectedPath != destinationPath) {
+                        try {
+                            if (!std::filesystem::copy_file(selectedPath, destinationPath)) {
+                                fprintf(stderr, "Failed to copy asset from %s to %s!\n", selectedPath.string().c_str(), destinationPath.string().c_str());
+                            } else {
+                                const std::filesystem::path relativePath = std::filesystem::relative(destinationPath, assetsPath);
+
+                                *value = getResourceManager()->getTexture(relativePath.string());
+
+                                ret = true;
+                            }
+                        } catch (...) {
+                            fprintf(stderr, "Failed to copy asset from %s to %s!\n", selectedPath.string().c_str(), destinationPath.string().c_str());
+                        }
                     } else {
                         const std::filesystem::path relativePath = std::filesystem::relative(destinationPath, assetsPath);
 
