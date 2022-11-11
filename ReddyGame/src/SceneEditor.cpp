@@ -8,6 +8,8 @@
 #include <Engine/GUI.h>
 #include <Engine/Input.h>
 
+#include <cmath>
+
 #include <imgui.h>
 
 
@@ -173,7 +175,13 @@ void EditorState::updateTransform()
                 const auto& pEntity = m_selected[i];
                 const auto& posOnDown = m_worldPositionsOnDown[i];
 
-                pEntity->setWorldPosition(posOnDown + diff);
+                const float snapScale = std::max(m_snapScale, 0.001f);
+
+                if (m_ctrlHeld) {
+                    pEntity->setWorldPosition(snapScale * glm::round((posOnDown + diff) * (1.0f / snapScale)));
+                } else {
+                    pEntity->setWorldPosition(posOnDown + diff);
+                }
             }
             break;
         }

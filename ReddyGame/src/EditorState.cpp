@@ -63,6 +63,7 @@ void EditorState::enter(const GameStateRef& previousState)
 
     // Register events
     Engine::getEventSystem()->registerListener<Engine::KeyDownEvent>(this, std::bind(&EditorState::onKeyDown, this, _1));
+    Engine::getEventSystem()->registerListener<Engine::KeyUpEvent>(this, std::bind(&EditorState::onKeyUp, this, _1));
     Engine::getEventSystem()->registerListener<Engine::MouseButtonDownEvent>(this, std::bind(&EditorState::onMouseDown, this, _1));
     Engine::getEventSystem()->registerListener<Engine::MouseButtonUpEvent>(this, std::bind(&EditorState::onMouseUp, this, _1));
 }
@@ -70,6 +71,8 @@ void EditorState::enter(const GameStateRef& previousState)
 void EditorState::leave(const GameStateRef& newsState)
 {
     Engine::getEventSystem()->deregisterListener<Engine::KeyDownEvent>(this);
+    Engine::getEventSystem()->deregisterListener<Engine::KeyUpEvent>(this);
+    Engine::getEventSystem()->deregisterListener<Engine::MouseButtonDownEvent>(this);
     Engine::getEventSystem()->deregisterListener<Engine::MouseButtonUpEvent>(this);
     Engine::getScene()->setEditorScene(false);
 }
@@ -93,6 +96,10 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
     auto alt = (pKeyEvent->key.keysym.mod & KMOD_LALT) ? true : false;
     auto scancode = pKeyEvent->key.keysym.scancode;
 
+    m_shiftHeld |= shift;
+    m_altHeld |= alt;
+    m_ctrlHeld |= ctrl;
+
     // Undo/Redo
     if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_Z) onUndo();
     if (ctrl && shift && !alt && scancode == SDL_SCANCODE_Z) onRedo();
@@ -115,6 +122,21 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
             break;
         }
     }
+}
+
+void EditorState::onKeyUp(Engine::IEvent* pEvent)
+{
+    // Handle editor shortcuts
+    auto pKeyEvent = (Engine::KeyUpEvent*)pEvent;
+    if (pKeyEvent->key.repeat) return; // Ignore repeats
+
+    auto ctrl = (pKeyEvent->key.keysym.mod & KMOD_LCTRL) ? true : false;
+    auto shift = (pKeyEvent->key.keysym.mod & KMOD_LSHIFT) ? true : false;
+    auto alt = (pKeyEvent->key.keysym.mod & KMOD_LALT) ? true : false;
+    
+    m_shiftHeld = shift;
+    m_altHeld = alt;
+    m_ctrlHeld = ctrl;
 }
 
 void EditorState::update(float dt)
