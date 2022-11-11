@@ -112,7 +112,7 @@ private:
     const float ZOOM_LEVELS[8] = {256.0f, 192.0f, 128.0f, 96.0f, 64.0f, 32.0f, 16.0f, 8.0f};
     int m_zoom = 2; // Maps to a zoom level
     float m_zoomf = ZOOM_LEVELS[2];
-    float m_gridHideZoomLevel = ZOOM_LEVELS[6];
+    float m_gridHideZoomLevel = ZOOM_LEVELS[5];
 
     // Grid stuff
     bool m_isGridVisible = true;
