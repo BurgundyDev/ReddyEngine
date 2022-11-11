@@ -13,6 +13,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <filesystem>
 
 namespace Engine
 {
@@ -39,5 +40,35 @@ namespace Engine
     FontRef ResourceManager::getFont(const std::string& name, int height)
     {
         return getResource<Font>(name, height);
+    }
+
+    bool ResourceManager::copyFileToAssets(const std::string &path, const std::string& subDir, std::string& resultPath)
+    {
+        const std::filesystem::path selectedPath(path);
+        const std::filesystem::path filename = selectedPath.filename();
+        const std::filesystem::path assetsPath = std::filesystem::current_path() / "assets";
+        const std::filesystem::path destinationPath = assetsPath / subDir / filename;
+
+        if (selectedPath != destinationPath) {
+            try {
+                if (std::filesystem::copy_file(selectedPath, destinationPath)) {
+                    const std::filesystem::path relativePath = std::filesystem::relative(destinationPath, assetsPath);
+
+                    resultPath = relativePath.string();
+
+                    return true;
+                }
+            } catch (...) {
+                return false;
+            }
+        } else {
+            const std::filesystem::path relativePath = std::filesystem::relative(destinationPath, assetsPath);
+
+            resultPath = relativePath.string();
+
+            return true;
+        }
+
+        return false;
     }
 }

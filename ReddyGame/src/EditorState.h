@@ -96,6 +96,7 @@ private:
     void onKeyUp(Engine::IEvent* pEvent);
     void onMouseDown(Engine::IEvent* pEvent);
     void onMouseUp(Engine::IEvent* pEvent);
+    void onDropEvent(Engine::IEvent* pEvent);
 
     void pushUndo(const char* actionName);
 

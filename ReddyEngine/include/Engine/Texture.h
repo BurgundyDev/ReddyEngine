@@ -25,6 +25,8 @@ namespace Engine
     class Texture : public Resource
     {
     public:
+        static constexpr char* SUPPORTED_FORMATS[] = { "jpg", "jpeg", "png", "bmp", "tga", "psd" };
+
         // Data is interleaved RGBA
         static TextureRef createFromData(const glm::ivec2& size, const uint8_t* pData);
         static TextureRef createFromFile(const std::string& filename);

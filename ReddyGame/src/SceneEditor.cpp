@@ -7,6 +7,10 @@
 #include <Engine/SpriteComponent.h>
 #include <Engine/GUI.h>
 #include <Engine/Input.h>
+#include <Engine/ResourceManager.h>
+#include <Engine/Texture.h>
+
+#include <filesystem>
 
 #include <cmath>
 
@@ -200,6 +204,58 @@ void EditorState::onMouseUp(Engine::IEvent* pEvent)
     }
 
     m_transformType = TransformType::None;
+}
+
+
+void EditorState::onDropEvent(Engine::IEvent* pEvent)
+{
+    auto pDropEvent = (Engine::DropEvent*)pEvent;
+    if (!pDropEvent) return;
+
+    const char* file = pDropEvent->drop.file;
+    if (!file) return;
+
+    const std::filesystem::path filePath(file);
+
+    std::string extension = filePath.extension().string();
+
+    // remove '.' from extension
+    if (!extension.empty() && extension.front() == '.') {
+        extension.erase(extension.begin());
+    }
+
+    bool isTextureExtension = false;
+
+    for (const char* ext : Engine::Texture::SUPPORTED_FORMATS) {
+        if (std::strcmp(ext, extension.c_str()) == 0) {
+            isTextureExtension = true;
+            break;
+        }
+    }
+
+    if (!isTextureExtension) {
+        fprintf(stderr, "Failed to load dropped file: %s\n\tFile is not a texture.\n", file);
+
+        return;
+    }
+    
+    std::string resultPath;
+
+    if (!Engine::getResourceManager()->copyFileToAssets(file, "textures", resultPath)) {
+        fprintf(stderr, "Failed to copy asset from %s to assets!\n", file);
+
+        return;
+    }
+
+    Engine::TextureRef texture = Engine::getResourceManager()->getTexture(resultPath);
+    if (!texture) return;
+
+    auto pEntity = Engine::getScene()->createEntity();
+
+    auto spriteComponent = pEntity->addComponent<Engine::SpriteComponent>();
+    spriteComponent->pTexture = std::move(texture);
+
+    createEntityAction(pEntity);
 }
 
 void EditorState::updateTransform()

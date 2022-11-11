@@ -19,6 +19,13 @@ namespace Engine
         TextureRef getTexture(const std::string& name);
         PFXRef getPFX(const std::string& name);
         FontRef getFont(const std::string& name, int height);
+
+        /*! \brief Copy the file from \ref{path} to the assets directory, with \ref{subDir} 
+            being one of textures, fonts, etc. to copy to. resultPath gets set to the resulting path
+            @returns true if success, false otherwise
+        */
+        bool copyFileToAssets(const std::string& path, const std::string& subDir, std::string& resultPath);
+
     private:
         std::unordered_map<std::string, ResourceRef> loadedResources;
 

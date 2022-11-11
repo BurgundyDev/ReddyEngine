@@ -68,6 +68,10 @@ namespace Engine
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
         SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
         pWindow = SDL_CreateWindow("Reddy", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Config::resolution.x, Config::resolution.y, window_flags);
+        
+        // enable file drop events
+        SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
+
         SDL_GLContext gl_context = SDL_GL_CreateContext(pWindow);
         SDL_GL_MakeCurrent(pWindow, gl_context);
         SDL_GL_SetSwapInterval(Config::vsync ? 1 : 0);

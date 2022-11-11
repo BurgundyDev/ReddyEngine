@@ -374,38 +374,33 @@ namespace Engine
             ImGui::SameLine();
 
             if (!ret && ImGui::Button("...", { 25, 16 })) {
-                static const char *TEXTURE_FILE_PATTERNS[] = { "*.jpg;*.jpeg;*.png;*.bmp" };
+                std::string filePatternMask;
 
-                const char* selectedFile = tinyfd_openFileDialog("Open", "./assets/textures/", 1, TEXTURE_FILE_PATTERNS, "Images", 0);
+                for (size_t i = 0; i < std::size(Texture::SUPPORTED_FORMATS); i++) {
+                    filePatternMask += "*." + std::string(Texture::SUPPORTED_FORMATS[i]);
+
+                    if (i != std::size(Texture::SUPPORTED_FORMATS) - 1) {
+                        filePatternMask += ";";
+                    }
+                }
+
+                // because we need to take the address of it
+                const char* maskCString = filePatternMask.c_str();
+
+                const char* selectedFile = tinyfd_openFileDialog("Open", "./assets/textures/", 1, &maskCString, "Images", 0);
                 if (!selectedFile) {
                     ret = false;
                 } else {
-                    const std::filesystem::path selectedPath(selectedFile);
-                    const std::filesystem::path filename = selectedPath.filename();
-                    const std::filesystem::path assetsPath = std::filesystem::current_path() / "assets";
-                    const std::filesystem::path destinationDirectory = assetsPath / "textures";
-                    const std::filesystem::path destinationPath = destinationDirectory / filename;
+                    std::string resultPath;
 
-                    if (selectedPath != destinationPath) {
-                        try {
-                            if (!std::filesystem::copy_file(selectedPath, destinationPath)) {
-                                fprintf(stderr, "Failed to copy asset from %s to %s!\n", selectedPath.string().c_str(), destinationPath.string().c_str());
-                            } else {
-                                const std::filesystem::path relativePath = std::filesystem::relative(destinationPath, assetsPath);
-
-                                *value = getResourceManager()->getTexture(relativePath.string());
-
-                                ret = true;
-                            }
-                        } catch (...) {
-                            fprintf(stderr, "Failed to copy asset from %s to %s!\n", selectedPath.string().c_str(), destinationPath.string().c_str());
-                        }
-                    } else {
-                        const std::filesystem::path relativePath = std::filesystem::relative(destinationPath, assetsPath);
-
-                        *value = getResourceManager()->getTexture(relativePath.string());
+                    if (getResourceManager()->copyFileToAssets(selectedFile, "textures", resultPath)) {
+                        *value = getResourceManager()->getTexture(resultPath);
 
                         ret = true;
+                    } else {
+                        fprintf(stderr, "Failed to copy asset from %s to assets!\n", selectedFile);
+
+                        ret = false;
                     }
                 }
             }

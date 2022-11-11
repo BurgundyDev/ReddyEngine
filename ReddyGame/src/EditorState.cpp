@@ -66,6 +66,7 @@ void EditorState::enter(const GameStateRef& previousState)
     Engine::getEventSystem()->registerListener<Engine::KeyUpEvent>(this, std::bind(&EditorState::onKeyUp, this, _1));
     Engine::getEventSystem()->registerListener<Engine::MouseButtonDownEvent>(this, std::bind(&EditorState::onMouseDown, this, _1));
     Engine::getEventSystem()->registerListener<Engine::MouseButtonUpEvent>(this, std::bind(&EditorState::onMouseUp, this, _1));
+    Engine::getEventSystem()->registerListener<Engine::DropEvent>(this, std::bind(&EditorState::onDropEvent, this, _1));
 }
 
 void EditorState::leave(const GameStateRef& newsState)
@@ -74,6 +75,7 @@ void EditorState::leave(const GameStateRef& newsState)
     Engine::getEventSystem()->deregisterListener<Engine::KeyUpEvent>(this);
     Engine::getEventSystem()->deregisterListener<Engine::MouseButtonDownEvent>(this);
     Engine::getEventSystem()->deregisterListener<Engine::MouseButtonUpEvent>(this);
+    Engine::getEventSystem()->deregisterListener<Engine::DropEvent>(this);
     Engine::getScene()->setEditorScene(false);
 }
 

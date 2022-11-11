@@ -11,6 +11,9 @@ namespace Engine
 	{
 	public:
 		IEvent() {};
+		IEvent(const IEvent &other) = delete;
+		IEvent &operator=(const IEvent &other) = delete;
+		virtual ~IEvent() = default;
 	};
 
 	class WindowEvent : public IEvent
@@ -121,6 +124,17 @@ namespace Engine
 	{
 	public:
 		DropEvent(SDL_DropEvent event) : drop(event) {};
+
+		DropEvent(const DropEvent &other) = delete;
+		DropEvent &operator=(const DropEvent &other) = delete;
+
+		// make sure to use SDL_free on file name ptr!
+		virtual ~DropEvent() override
+		{
+			if (drop.file) {
+				SDL_free(drop.file);
+			}
+		}
 
 		SDL_DropEvent drop;
 	};
