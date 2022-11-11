@@ -52,13 +52,19 @@ project "ReddyEngine"
 	filter "system:Windows"
 		characterset ("MBCS")
 
-   filter "configurations:Debug"
-	  defines { "DEBUG" }
-	  runtime "Release"
-	  runtime "Debug"
-	  symbols "On"
-
-   filter "configurations:Release"
-	  defines { "RELEASE" }
-	  symbols "Off"
-	  optimize "On"
+	filter "configurations:Debug"
+		defines { "DEBUG", "REDDY_DEBUG" }
+		runtime "Debug"
+		symbols "On"
+  
+	filter "configurations:Release"
+		defines { "RELEASE", "REDDY_RELEASE" }
+		runtime "Release"
+		symbols "Off"
+		optimize "On"
+	 
+	filter "configurations:Final"
+		defines { "FINAL", "REDDY_FINAL" }
+		runtime "Release"
+		symbols "Off"
+		optimize "On"

@@ -45,12 +45,18 @@ project "ReddyGame"
       characterset ("MBCS")
 
    filter "configurations:Debug"
-      defines { "DEBUG" }
-      runtime "Release"
+      defines { "DEBUG", "REDDY_DEBUG" }
       runtime "Debug"
       symbols "On"
 
    filter "configurations:Release"
-      defines { "RELEASE" }
+      defines { "RELEASE", "REDDY_RELEASE" }
+      runtime "Release"
+      symbols "Off"
+      optimize "On"
+   
+   filter "configurations:Final"
+      defines { "FINAL", "REDDY_FINAL" }
+      runtime "Release"
       symbols "Off"
       optimize "On"
