@@ -3,114 +3,90 @@
 
 namespace Engine
 {
-	void EventSystem::sendEvent(SDL_Event* e)
+	void EventSystem::sendSDLEvent(SDL_Event* e)
 	{
 		switch (e->type)
 		{
 			case SDL_WINDOWEVENT:
-			{
-				WindowEvent* event = new WindowEvent(e->window);
-				pushEventToQueue<WindowEvent>(event);
+				sendEvent(new WindowEvent(e->window));
 				break;
-			}
+
 			case SDL_KEYUP:
-			{
-				KeyUpEvent* event = new KeyUpEvent(e->key);
-				pushEventToQueue<KeyUpEvent>(event);
+				sendEvent(new KeyUpEvent(e->key));
 				break;
-			}
+
 			case SDL_KEYDOWN:
-			{
-				KeyDownEvent* event = new KeyDownEvent(e->key);
-				pushEventToQueue<KeyDownEvent>(event);
+				sendEvent(new KeyDownEvent(e->key));
 				break;
-			}
+
 			case SDL_MOUSEBUTTONDOWN:
+				sendEvent(new MouseButtonDownEvent(e->button));
+				break;
+
 			case SDL_MOUSEBUTTONUP:
-			{
-				MouseButtonEvent* event = new MouseButtonEvent(e->button);
-				pushEventToQueue<MouseButtonEvent>(event);
+				sendEvent<MouseButtonUpEvent>(new MouseButtonUpEvent(e->button));
 				break;
-			}
+
 			case SDL_MOUSEMOTION:
-			{
-				MouseMovedEvent* event = new MouseMovedEvent(e->motion);
-				pushEventToQueue<MouseMovedEvent>(event);
+				sendEvent(new MouseMovedEvent(e->motion));
 				break;
-			}
+
 			case SDL_MOUSEWHEEL:
-			{
-				MouseScrolledEvent* event = new MouseScrolledEvent(e->wheel);
-				pushEventToQueue<MouseScrolledEvent>(event);
+				sendEvent(new MouseScrolledEvent(e->wheel));
 				break;
-			}
+
 			case SDL_JOYAXISMOTION:
-			{
-				JoyAxisEvent* event = new JoyAxisEvent(e->jaxis);
-				pushEventToQueue<JoyAxisEvent>(event);
+				sendEvent(new JoyAxisEvent(e->jaxis));
 				break;
-			}
+
 			case SDL_JOYBUTTONDOWN:
 			case SDL_JOYBUTTONUP:
-			{
-				JoyButtonEvent* event = new JoyButtonEvent(e->jbutton);
-				pushEventToQueue<JoyButtonEvent>(event);
+				sendEvent(new JoyButtonEvent(e->jbutton));
 				break;
-			}
+
 			case SDL_JOYDEVICEADDED:
 			case SDL_JOYDEVICEREMOVED:
-			{
-				JoyDeviceEvent* event = new JoyDeviceEvent(e->jdevice);
-				pushEventToQueue<JoyDeviceEvent>(event);
+				sendEvent(new JoyDeviceEvent(e->jdevice));
 				break;
-			}
+
 			case SDL_CONTROLLERAXISMOTION:
-			{
-				ControllerAxisEvent* event = new ControllerAxisEvent(e->caxis);
-				pushEventToQueue<ControllerAxisEvent>(event);
+				sendEvent(new ControllerAxisEvent(e->caxis));
 				break;
-			}
+
 			case SDL_CONTROLLERBUTTONDOWN:
 			case SDL_CONTROLLERBUTTONUP:
-			{
-				ControllerButtonEvent* event = new ControllerButtonEvent(e->cbutton);
-				pushEventToQueue<ControllerButtonEvent>(event);
+				sendEvent(new ControllerButtonEvent(e->cbutton));
 				break;
-			}
+
 			case SDL_CONTROLLERDEVICEADDED:
 			case SDL_CONTROLLERDEVICEREMOVED:
-			{
-				ControllerDeviceEvent* event = new ControllerDeviceEvent(e->cdevice);
-				pushEventToQueue<ControllerDeviceEvent>(event);
+				sendEvent(new ControllerDeviceEvent(e->cdevice));
 				break;
-			}
+
 			case SDL_DROPFILE:
 			case SDL_DROPTEXT:
 			case SDL_DROPBEGIN:
 			case SDL_DROPCOMPLETE:
-			{
-				DropEvent* event = new DropEvent(e->drop);
-				pushEventToQueue<DropEvent>(event);
+				sendEvent(new DropEvent(e->drop));
 				break;
-			}
 		}
 	}
 
 	void EventSystem::dispatchEvents()
 	{
-		while (!m_pEventQueue.empty())
+		while (!m_eventQueue.empty())
 		{
-			IEvent* e = m_pEventQueue.front()->event;
-			EventType type = m_pEventQueue.front()->type;
+			auto eventStructure = m_eventQueue.front();
+			m_eventQueue.pop();
 
-			const auto& listeners = m_pEventHandlersMap[type];
-			for (auto kv : listeners)
+			m_listenerCache = m_eventHandlersMap[eventStructure.type]; // There's a risk here that an event adds/removes to the listeners while we're iterating it
+			for (auto kv : m_listenerCache)
 			{
-				kv.callback(e);
+				kv.callback(eventStructure.event);
 			}
+			m_listenerCache.clear();
 
-			delete e;
-			m_pEventQueue.pop();
+			delete eventStructure.event;
 		}
 	}
 }

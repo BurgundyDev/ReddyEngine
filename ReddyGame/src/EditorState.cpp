@@ -65,11 +65,13 @@ void EditorState::enter(const GameStateRef& previousState)
 
     // Register events
     Engine::getEventSystem()->registerListener<Engine::KeyDownEvent>(this, std::bind(&EditorState::onKeyDown, this, _1));
+    Engine::getEventSystem()->registerListener<Engine::MouseButtonDownEvent>(this, std::bind(&EditorState::onMouseDown, this, _1));
 }
 
 void EditorState::leave(const GameStateRef& newsState)
 {
     Engine::getEventSystem()->deregisterListener<Engine::KeyDownEvent>(this);
+    Engine::getEventSystem()->deregisterListener<Engine::MouseButtonDownEvent>(this);
     Engine::getScene()->setEditorScene(false);
 }
 
@@ -83,6 +85,7 @@ void EditorState::setDirty(bool dirty)
 
 void EditorState::onKeyDown(Engine::IEvent* pEvent)
 {
+    // Handle editor shortcuts
     auto pKeyEvent = (Engine::KeyDownEvent*)pEvent;
     if (pKeyEvent->key.repeat) return; // Ignore repeats
 
@@ -106,6 +109,45 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
         {
             if (!ctrl && !shift && !alt && scancode == SDL_SCANCODE_SPACE)
                 m_pPfxInstance = std::make_shared<Engine::PFXInstance>(m_pPfx);
+            break;
+        }
+    }
+}
+
+void EditorState::onMouseDown(Engine::IEvent* pEvent)
+{
+    auto pDownEvent = (Engine::MouseButtonDownEvent*)pEvent;
+
+    auto ctrl = Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
+    auto shift = Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT);
+    auto alt = Engine::getInput()->isKeyDown(SDL_SCANCODE_LALT);
+
+    switch (m_editDocumentType)
+    {
+        case EditDocumentType::Scene:
+        {
+            const auto& pHoveredEntity = Engine::getScene()->getHoveredEntity();
+
+            if (!pHoveredEntity && !ctrl && !m_selected.empty())
+                changeSelection({}); // Deselect
+
+            if (pHoveredEntity)
+            {
+                if (!ctrl)
+                {
+                    changeSelection({pHoveredEntity});
+                }
+                else
+                {
+                    auto newSelection = m_selected;
+                    newSelection.push_back(pHoveredEntity);
+                    changeSelection(newSelection);
+                }
+            }
+            break;
+        }
+        case EditDocumentType::PFX:
+        {
             break;
         }
     }

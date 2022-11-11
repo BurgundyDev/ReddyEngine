@@ -8,22 +8,23 @@
 #include <map>
 #include <typeindex>
 
+
 using namespace std::placeholders;
+
 
 namespace Engine
 {
-	struct EventStructure
-	{
-		IEvent* event;
-		EventType type;
-	};
-
-
 	class EventSystem
 	{
 	public:
 		using EventListenerInstance = void*;
 	
+		struct EventStructure
+		{
+			IEvent* event;
+			std::type_index type;
+		};
+
 		struct Listener
 		{
 			EventListenerInstance pListener;
@@ -39,28 +40,27 @@ namespace Engine
 
 		// Event registration
 
+		void sendSDLEvent(SDL_Event* e);
+
 		template<typename T>
 		void sendEvent(T* e)
 		{
-			m_pEventQueue.push(std::map(e, T::GetType()));
+			m_eventQueue.push({e, typeid(T)});
 		}
-
-		void sendEvent(SDL_Event* e);
-
 
 		// Listener registration and deregistration
 
 		template<class T>
 		void registerListener(EventListenerInstance instance, const std::function<void (IEvent*)>& callback)
 		{
-			EventType id = T::GetStaticEventType();
-			m_pEventHandlersMap[id].push_back({instance, callback});
+
+			m_eventHandlersMap[typeid(T)].push_back({instance, callback});
 		}
 
 		template<typename T>
 		void deregisterListener(EventListenerInstance instance)
 		{
-			auto& callbacks = m_pEventHandlersMap[T::GetStaticEventType()];
+			auto& callbacks = m_eventHandlersMap[typeid(T)];
 
 			for (auto it = callbacks.begin(); it != callbacks.end();)
 			{
@@ -74,28 +74,9 @@ namespace Engine
 		}
 
 	private:
-		std::queue<EventStructure*> m_pEventQueue;
-		std::map<EventType, std::vector<Listener>> m_pEventHandlersMap;
-
-		template<typename T>
-		void callEvent(T* e)
-		{
-			auto handlerList = m_pEventHandlersMap[typeid(T)];
-			for (auto callback : handlerList)
-			{
-				callback(e);
-			}
-		}
-
-		template <typename T>
-		void pushEventToQueue(T* e)
-		{
-			EventStructure* eventStruct = new EventStructure();
-			eventStruct->event = e;
-			eventStruct->type = e->GetEventType();
-
-			m_pEventQueue.push(eventStruct);
-		}
+		std::queue<EventStructure> m_eventQueue;
+		std::map<std::type_index, std::vector<Listener>> m_eventHandlersMap;
+		std::vector<Listener> m_listenerCache;
 	};
 }
 

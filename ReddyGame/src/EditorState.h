@@ -81,6 +81,7 @@ private:
     const char* getEntityFriendlyName(const Engine::EntityRef& pEntity);
 
     void onKeyDown(Engine::IEvent* pEvent);
+    void onMouseDown(Engine::IEvent* pEvent);
 
     EditDocumentType m_editDocumentType = EditDocumentType::Scene;
     ActionManagerRef m_pActionManager;
