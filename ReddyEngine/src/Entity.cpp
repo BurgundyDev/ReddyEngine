@@ -62,6 +62,45 @@ namespace Engine
 		getScene()->getComponentManager()->addComponent(pComponent);
 	}
 
+	EntityRef Entity::getChildByName(const std::string& name, bool recursive)
+	{
+		for (auto it = m_children.begin(); it != m_children.end(); ++it) {
+			const EntityRef &ref = *it;
+
+			if (ref->name == name) {
+				return ref;
+			}
+
+			if (recursive) {
+				if (auto found_child = ref->getChildByName(name, true)) {
+					return found_child;
+				}
+			}
+		}
+
+		return nullptr;
+	}
+
+	EntityRef Entity::getChildByName(const std::string& name, const EntitySearchParams& searchParams, bool recursive)
+	{
+		for (auto it = m_children.begin(); it != m_children.end(); ++it) {
+			const EntityRef &ref = *it;
+
+			if (ref->name == name && (searchParams.radius < FLT_EPSILON || ref->isInRadius(searchParams.pointInWorld, searchParams.radius)))
+			{
+				return ref;
+			}
+
+			if (recursive) {
+				if (auto found_child = ref->getChildByName(name, searchParams, true)) {
+					return found_child;
+				}
+			}
+		}
+
+		return nullptr;
+	}
+
 	Json::Value Entity::serialize(bool includeChildren)
 	{
 		Json::Value json;
@@ -247,6 +286,13 @@ namespace Engine
 	{
 		updateDirtyTransforms();
 		return m_invWorldTransformWithScale;
+	}
+
+	bool Entity::isInRadius(const glm::vec2 &pointInWorld, float radius, bool inclusive)
+	{
+		return inclusive
+			? glm::distance(getWorldPosition(), pointInWorld) <= radius
+			: glm::distance(getWorldPosition(), pointInWorld) < radius;
 	}
 
 	// Pretty slow, now partitionning, we basically check every entity/components :derp:

@@ -41,6 +41,14 @@ namespace Engine
 		}
 	};
 
+	struct EntitySearchParams
+	{
+		// 0 signifies no impact
+		float radius = 0.0f;
+		// if searching with radius, use this to signify the point to search from in the world
+		glm::vec2 pointInWorld;
+	};
+
 
 	class Entity final : public std::enable_shared_from_this<Entity>
 	{
@@ -109,6 +117,59 @@ namespace Engine
 
 		Json::Value serialize(bool includeChildren = true);
 		void deserialize(const Json::Value json, bool includeChildren = true);
+
+		EntityRef getChildByName(const std::string& name, bool recursive = false);
+		EntityRef getChildByName(const std::string& name, const EntitySearchParams &searchParams, bool recursive = false);
+
+		template <class T>
+		EntityRef getChildByComponent(const EntitySearchParams& searchParams, bool recursive)
+		{
+			for (auto it = m_children.begin(); it != m_children.end(); ++it) {
+				const EntityRef &ref = *it;
+
+				if (ref->hasComponent<T>() && (searchParams.radius < FLT_EPSILON || ref->isInRadius(searchParams.pointInWorld, searchParams.radius)))
+				{
+					return ref;
+				}
+
+				if (recursive) {
+					if (auto found_child = ref->getChildByComponent<T>(searchParams, true)) {
+						return found_child;
+					}
+				}
+			}
+
+			return nullptr;
+		}
+
+		template <class T>
+		EntityRef getChildByComponent(bool recursive = false)
+		{
+			return getChildByComponent<T>(EntitySearchParams { }, recursive);
+		}
+
+		template <class T>
+		void getChildrenByComponent(std::vector<EntityRef>& outRefs, const EntitySearchParams& searchParams, bool recursive = false)
+		{
+			for (auto it = m_children.begin(); it != m_children.end(); ++it) {
+				const EntityRef &ref = *it;
+
+				if (ref->hasComponent<T>() && (searchParams.radius < FLT_EPSILON || ref->isInRadius(searchParams.pointInWorld, searchParams.radius)))
+				{
+					outRefs.push_back(ref);
+				}
+
+				if (recursive) {
+					ref->getChildrenByComponent<T>(outRefs, searchParams, true);
+				}
+			}
+		}
+
+		template <class T>
+		void getChildrenByComponent(std::vector<EntityRef>& outRefs, bool recursive = false)
+		{
+			getChildrenByComponent(outRefs, EntitySearchParams { }, recursive);
+		}
 		
 		friend bool operator==(const Entity& lhs, const Entity& rhs)
 		{
@@ -133,6 +194,8 @@ namespace Engine
 		const glm::mat4& getWorldTransformWithScale();
 		const glm::mat4& getInvWorldTransform();
 		const glm::mat4& getInvWorldTransformWithScale();
+
+		bool isInRadius(const glm::vec2& pointInWorld, float radius, bool inclusive = true);
 
 		EntityRef getMouseHover(const glm::vec2& mousePos, bool ignoreMouseFlags = false);
 
