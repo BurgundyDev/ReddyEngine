@@ -29,9 +29,6 @@ namespace Engine
         int getMouseWheel() const { return m_mouseWheel; }
 
         bool isCustomCursorSet() const { return m_isCursorCustomSet;  }
-
-        void keyEventCallback(IEvent* e);
-
         
         bool isKeyDown(SDL_Scancode scancode) const;
         bool isKeyUp(SDL_Scancode scancode) const;
@@ -52,7 +49,7 @@ namespace Engine
         void setMouseMotion(const glm::ivec2& delta);
         void setMouseWheelMotion(int vel);
 
-        void setMouseCursor(const std::string& path, glm::vec2 hotSpot);
+        void setMouseCursor(const std::string& path, glm::ivec2 hotSpot);
         void setSystemMouseCursor(SDL_SystemCursor pSysCursor);
         void setDefaultCursor(); // also brings back ImGui cursor
 

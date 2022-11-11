@@ -24,6 +24,8 @@ namespace Engine
 
     class Entity;
     using EntityRef = std::shared_ptr<Entity>;
+
+    class IEvent;
 }
 
 
@@ -40,6 +42,7 @@ public:
     EditorState();
 
     void enter(const GameStateRef& previousState) override;
+    void leave(const GameStateRef& newsState) override;
     void update(float dt) override;
     void draw() override;
 
@@ -76,6 +79,8 @@ private:
     void changeSelection(const std::vector<Engine::EntityRef>& newSelection);
     void drawEntitySceneTree(const Engine::EntityRef& pEntity);
     const char* getEntityFriendlyName(const Engine::EntityRef& pEntity);
+
+    void onKeyDown(Engine::IEvent* pEvent);
 
     EditDocumentType m_editDocumentType = EditDocumentType::Scene;
     ActionManagerRef m_pActionManager;

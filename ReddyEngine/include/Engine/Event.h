@@ -16,7 +16,8 @@ namespace Engine
 {
 	enum EventType {
 		Window = 0,
-		Key,
+		KeyDown,
+		KeyUp,
 		MouseButton,
 		MouseMoved,
 		MouseScrolled,
@@ -46,15 +47,24 @@ namespace Engine
 		EVENT_TYPE(Window)
 	};
 
-	class KeyEvent : public IEvent
+	class KeyDownEvent : public IEvent
 	{
 	public:
-		KeyEvent(SDL_KeyboardEvent event) : key(event) {};
+		KeyDownEvent(SDL_KeyboardEvent event) : key(event) {};
 
 		SDL_KeyboardEvent key;
 		
-		EVENT_TYPE(Key)
+		EVENT_TYPE(KeyDown)
+	};
 
+	class KeyUpEvent : public IEvent
+	{
+	public:
+		KeyUpEvent(SDL_KeyboardEvent event) : key(event) {};
+
+		SDL_KeyboardEvent key;
+		
+		EVENT_TYPE(KeyUp)
 	};
 
 	class MouseButtonEvent : public IEvent

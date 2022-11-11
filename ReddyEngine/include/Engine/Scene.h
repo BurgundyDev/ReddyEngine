@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/vec2.hpp>
 #include <json/json.h>
 
 #include <memory>
@@ -11,17 +12,18 @@ namespace Engine
 	class ComponentManager;
 	using ComponentManagerRef = std::shared_ptr<ComponentManager>;
 
-
-	// Forward declarations
 	class Entity;
-
 	using EntityRef = std::shared_ptr<Entity>;
+
 
 	class Scene final
 	{
 	public:
 		Scene();
 		~Scene();
+
+		bool isEditorScene() const { return m_isEditorScene; }
+		void setEditorScene(bool editorScene) { m_isEditorScene = editorScene; }
 
 		void clear();
 
@@ -39,12 +41,20 @@ namespace Engine
 		void fixedUpdate(float dt);
 		void draw();
 
+		const glm::vec2& getMousePos() const { return m_mousePos; }
+		void setMousePos(const glm::vec2& mousePos) { m_mousePos = mousePos; } // In World coordinates
+
+		const EntityRef& getHoveredEntity() const { return m_pMouseHoverEntity; }
+
 	public:
 		// Engine use only
 		const ComponentManagerRef& getComponentManager() const;
 
 	private:
+		bool m_isEditorScene = false;
+		glm::vec2 m_mousePos; // In World coordinates
 		EntityRef m_pRoot;
+		EntityRef m_pMouseHoverEntity;
 		uint64_t m_id;
 		ComponentManagerRef m_pComponentManager;
 		std::vector<EntityRef> m_entitiesToDestroy;

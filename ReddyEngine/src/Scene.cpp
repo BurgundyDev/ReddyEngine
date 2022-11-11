@@ -13,6 +13,7 @@ namespace Engine
 		, m_pComponentManager(std::make_shared<ComponentManager>())
 	{
 		m_pRoot->name = "Root";
+		m_pRoot->clickThrough = true; // We cannot select the root
 	}
 
 	Scene::~Scene()
@@ -30,6 +31,7 @@ namespace Engine
 	{
 		clear();
 		m_pRoot->deserialize(json["root"]);
+		m_pRoot->clickThrough = true; // We cannot select the root
 	}
 
 	void Scene::clear()
@@ -37,6 +39,7 @@ namespace Engine
 		m_pRoot.reset();
 		m_pRoot = std::make_shared<Entity>();
 		m_pRoot->name = "Root";
+		m_pRoot->clickThrough = true; // We cannot select the root
 	}
 
 	EntityRef Scene::createEntity()
@@ -88,6 +91,11 @@ namespace Engine
 	{
 		m_pComponentManager->update(dt);
 		m_entitiesToDestroy.clear();
+
+		// Get the current mouse hover entity (Used by editor, but also gameplay when clicking stuff in UI, or in the world)
+		auto pPreviousHoverEntity = m_pMouseHoverEntity;
+		m_pMouseHoverEntity = m_pRoot->getMouseHover(m_mousePos, isEditorScene());
+		if (m_pMouseHoverEntity == m_pRoot) m_pMouseHoverEntity = nullptr; // We ignore root (In case we're in editor)
 	}
 
 	void Scene::fixedUpdate(float dt)

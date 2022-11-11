@@ -1,5 +1,7 @@
 #include "ComponentManager.h"
 #include "Engine/Component.h"
+#include "Engine/Scene.h"
+#include "Engine/ReddyEngine.h"
 
 
 namespace Engine
@@ -55,6 +57,12 @@ namespace Engine
 
     void ComponentManager::update(float dt)
     {
+        if (getScene()->isEditorScene()) // Editor doesn't update entities or fire their events
+        {
+            m_commandsCopy.clear();
+            return;
+        }
+
         processCommands();
 
         for (const auto& pComponent : m_components)
@@ -65,6 +73,12 @@ namespace Engine
 
     void ComponentManager::fixedUpdate(float dt)
     {
+        if (getScene()->isEditorScene())  // Editor doesn't update entities or fire their events
+        {
+            m_commandsCopy.clear();
+            return;
+        }
+
         processCommands();
 
         for (const auto& pComponent : m_components)

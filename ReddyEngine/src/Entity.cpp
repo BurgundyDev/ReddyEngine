@@ -70,6 +70,7 @@ namespace Engine
 		json["name"] = name;
 		json["sortChildren"] = sortChildren;
 		json["mouseChildren"] = mouseChildren;
+		json["clickThrough"] = clickThrough;
 		json["uiRoot"] = uiRoot;
 		json["transform"]["position"] = Utils::serializeJsonValue(m_transform.position);
 		json["transform"]["rotation"] = Utils::serializeJsonValue(m_transform.rotation);
@@ -102,6 +103,7 @@ namespace Engine
 		name = Utils::deserializeString(json["name"]);
 		sortChildren = Utils::deserializeBool(json["sortChildren"], false);
 		mouseChildren = Utils::deserializeBool(json["mouseChildren"], true);
+		clickThrough = Utils::deserializeBool(json["clickThrough"], false);
 		uiRoot = Utils::deserializeBool(json["uiRoot"], false);
 
 		// Transform
@@ -208,20 +210,72 @@ namespace Engine
 		return m_worldTransformWithScale;
 	}
 
+	// Pretty slow, now partitionning, we basically check every entity/components :derp:
+	EntityRef Entity::getMouseHover(const glm::vec2& mousePos, bool ignoreMouseFlags)
+	{
+		// We start with leaves first
+		if (ignoreMouseFlags || mouseChildren)
+		{
+			for (const auto& pChild : m_children)
+			{
+				auto pRet = pChild->getMouseHover(mousePos, ignoreMouseFlags);
+				if (pRet) return pRet;
+			}
+		}
+
+		// Then self
+		if (ignoreMouseFlags || !clickThrough)
+			if (isMouseHover(mousePos))
+				return shared_from_this();
+
+		return nullptr;
+	}
+
+	bool Entity::isMouseHover(const glm::vec2& mousePos) const
+	{
+		for (const auto& pComponent : m_components)
+		{
+			if (pComponent->isEnabled())
+				if (pComponent->isMouseHover(mousePos))
+					return true;
+		}
+		return false;
+	}
+
+	void Entity::onMouseEnter()
+	{
+		for (const auto& pComponent : m_components)
+			if (pComponent->isEnabled())
+				pComponent->onMouseEnter();
+	}
+
+	void Entity::onMouseLeave()
+	{
+		for (const auto& pComponent : m_components)
+			if (pComponent->isEnabled())
+				pComponent->onMouseLeave();
+	}
+
+	void Entity::drawOutline(const glm::vec4& color, float zoomScale)
+	{
+		for (const auto& pComponent : m_components)
+			pComponent->drawOutline(color, zoomScale);
+	}
+
 	bool Entity::edit()
 	{
 		bool changed = false;
+		auto transformBefore = m_transform;
 
 		GUI::idProperty("ID", id);
 		changed |= GUI::stringProperty("Name", &name);
 		changed |= GUI::boolProperty("Sort Children", &sortChildren, "Immediate children will be sorted Top to Bottom on the Y axis.");
 		changed |= GUI::boolProperty("Mouse Children", &mouseChildren, "Allow mouse to interact with children.");
+		changed |= GUI::boolProperty("Click Through", &clickThrough, "Mouse interaction will ignore this entity, but not its children.");
 		changed |= GUI::boolProperty("UI Root", &uiRoot, "This entity will ignore world camera position, will act as root for UI.");
 
 		GUI::beginGroup("Transform");
 		{
-			auto transformBefore = m_transform;
-
 			changed |= GUI::vec2Property("Position", &m_transform.position);
 			changed |= GUI::angleProperty("Rotation", &m_transform.rotation);
 			
@@ -234,8 +288,6 @@ namespace Engine
 			else
 				changed |= GUI::vec2Property("Scale", &m_transform.scale);
 			changed |= GUI::boolProperty("Lock Scale", &lockScale);
-
-			if (transformBefore != m_transform) setDirtyTransform(); // Just dirty our transform whatever something changed
 		}
 		GUI::endGroup();
 
@@ -250,6 +302,7 @@ namespace Engine
 			}
 		}
 		
+		if (changed || transformBefore != m_transform) setDirtyTransform(); // Just dirty our transform whatever something changed
 		return changed;
 	}
 

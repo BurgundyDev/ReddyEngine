@@ -52,13 +52,6 @@ void EditorState::drawSceneUI()
     Engine::GUI::endEditorWindow();
 
 
-    // Layers
-    if (Engine::GUI::beginEditorWindow("Layers"))
-    {
-    }
-    Engine::GUI::endEditorWindow();
-
-
     // Inspector (For selected entity/entities)
     if (Engine::GUI::beginEditorWindow("Entity Inspector"))
     {

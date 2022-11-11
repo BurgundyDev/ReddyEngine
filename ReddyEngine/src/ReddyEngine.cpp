@@ -134,7 +134,7 @@ namespace Engine
             SDL_Event event;
             while (SDL_PollEvent(&event))
             {
-				g_pEventSystem->registerEvent(&event);
+				g_pEventSystem->sendEvent(&event);
 
                 ImGui_ImplSDL2_ProcessEvent(&event);
 

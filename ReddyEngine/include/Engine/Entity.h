@@ -49,6 +49,7 @@ namespace Engine
 		std::string name;
 		bool sortChildren = false;
 		bool mouseChildren = true;
+		bool clickThrough = false;
 		bool uiRoot = false;
 
 	public:
@@ -130,15 +131,22 @@ namespace Engine
 		const glm::mat4& getWorldTransform();
 		const glm::mat4& getWorldTransformWithScale();
 
+		EntityRef getMouseHover(const glm::vec2& mousePos, bool ignoreMouseFlags = false);
+
+		void onMouseEnter();
+		void onMouseLeave();
+
 	public:
 		// Editor stuff (We could #ifdef this in final version?)
 		bool edit();
 		bool isSelected = false;
+		void drawOutline(const glm::vec4& color, float zoomScale);
 
 	private:
 		void componentAdded(const ComponentRef& pComponent);
 		void updateDirtyTransforms();
 		void setDirtyTransform();
+		bool isMouseHover(const glm::vec2& mousePos) const;
 
 		bool m_transformDirty = true;
 		Transform m_transform;

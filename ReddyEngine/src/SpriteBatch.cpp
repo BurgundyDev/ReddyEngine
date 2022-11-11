@@ -333,7 +333,7 @@ namespace Engine
         dir /= len;
         auto angle = glm::degrees(std::atan2f(dir.y, dir.x));
 
-        drawSprite(m_pDefaultWhiteTexture, mid, color, angle, {len * 0.5f, size * 0.5f});
+        drawSprite(m_pDefaultWhiteTexture, mid, color, angle, {len, size});
     }
 
     void SpriteBatch::drawRect(const TextureRef& pTexture,

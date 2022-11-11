@@ -26,21 +26,6 @@ namespace Engine
     {
     }
 
-	void Input::keyEventCallback(IEvent* e)
-	{
-        KeyEvent* ke = (KeyEvent*) e;
-
-        switch (ke->key.type)
-        {
-		case SDL_KEYDOWN:
-            onKeyDown(ke->key.keysym.scancode);
-            break;
-		case SDL_KEYUP:
-            onKeyUp(ke->key.keysym.scancode);
-			break;
-		}
-	}
-
 	bool Input::isKeyDown(SDL_Scancode scancode) const
     {
         return m_keyboardState[(int)scancode];
@@ -123,7 +108,7 @@ namespace Engine
         m_mouseWheel = vel;
     }
 
-	void Input::setMouseCursor(const std::string& path, glm::vec2 hotSpot)
+	void Input::setMouseCursor(const std::string& path, glm::ivec2 hotSpot)
 	{
         ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 

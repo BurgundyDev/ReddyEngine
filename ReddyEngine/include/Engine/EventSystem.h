@@ -4,7 +4,7 @@
 
 #include <functional>
 #include <queue>
-#include <set>
+#include <vector>
 #include <map>
 #include <typeindex>
 
@@ -22,11 +22,17 @@ namespace Engine
 	class EventSystem
 	{
 	public:
+		using EventListenerInstance = void*;
+	
+		struct Listener
+		{
+			EventListenerInstance pListener;
+			std::function<void (IEvent*)> callback;
+		};
+
 		EventSystem() {};
 		~EventSystem() {};
 		
-		using EventListenerInstance = void*;
-	
 		// Events dispatch
 
 		void dispatchEvents();
@@ -34,38 +40,42 @@ namespace Engine
 		// Event registration
 
 		template<typename T>
-		void registerEvent(T* e)
+		void sendEvent(T* e)
 		{
 			m_pEventQueue.push(std::map(e, T::GetType()));
 		}
 
-		void registerEvent(SDL_Event* e);
+		void sendEvent(SDL_Event* e);
 
 
 		// Listener registration and deregistration
 
 		template<class T>
-		void registerListener(EventListenerInstance instance,  std::function<void (IEvent*)>& callback)
+		void registerListener(EventListenerInstance instance, const std::function<void (IEvent*)>& callback)
 		{
 			EventType id = T::GetStaticEventType();
-			m_pEventHandlersMap[id].push_back(callback);
+			m_pEventHandlersMap[id].push_back({instance, callback});
 		}
 
 		template<typename T>
 		void deregisterListener(EventListenerInstance instance)
 		{
-			std::vector<std::function<void(IEvent*)>>& callbacks = m_pEventHandlersMap[T::GetStaticEventType()];
+			auto& callbacks = m_pEventHandlersMap[T::GetStaticEventType()];
 
-			for (auto it = callbacks.begin(); it < it->end(); it++)
+			for (auto it = callbacks.begin(); it != callbacks.end();)
 			{
-				if (it->target == instance)
-					callbacks.erase(it);
+				if (it->pListener == instance)
+				{
+					it = callbacks.erase(it);
+					continue;
+				}
+				++it;
 			}
 		}
 
 	private:
 		std::queue<EventStructure*> m_pEventQueue;
-		std::map<EventType, std::vector<std::function<void(IEvent*)>>> m_pEventHandlersMap;
+		std::map<EventType, std::vector<Listener>> m_pEventHandlersMap;
 
 		template<typename T>
 		void callEvent(T* e)

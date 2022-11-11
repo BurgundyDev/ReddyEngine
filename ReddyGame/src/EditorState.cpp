@@ -50,6 +50,8 @@ EditorState::EditorState()
 
 void EditorState::enter(const GameStateRef& previousState)
 {
+    Engine::getScene()->setEditorScene(true);
+
     // Load last recently open
     if (!Engine::Config::recentEditorFiles.empty())
     {
@@ -60,6 +62,15 @@ void EditorState::enter(const GameStateRef& previousState)
         m_filename = "untitled";
         m_pActionManager->clear();
     }
+
+    // Register events
+    Engine::getEventSystem()->registerListener<Engine::KeyDownEvent>(this, std::bind(&EditorState::onKeyDown, this, _1));
+}
+
+void EditorState::leave(const GameStateRef& newsState)
+{
+    Engine::getEventSystem()->deregisterListener<Engine::KeyDownEvent>(this);
+    Engine::getScene()->setEditorScene(false);
 }
 
 void EditorState::setDirty(bool dirty)
@@ -70,27 +81,38 @@ void EditorState::setDirty(bool dirty)
     Engine::setWindowCaption(caption);
 }
 
-void EditorState::update(float dt)
+void EditorState::onKeyDown(Engine::IEvent* pEvent)
 {
-    // Shortcut (Hack, we should use events)
-    if (!ImGui::GetIO().WantCaptureKeyboard)
-    {
-        if (Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL) && Engine::getInput()->isKeyJustDown(SDL_SCANCODE_Z))
-        {
-            if (Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT)) onRedo();
-            else onUndo();
-        }
+    auto pKeyEvent = (Engine::KeyDownEvent*)pEvent;
+    if (pKeyEvent->key.repeat) return; // Ignore repeats
 
-        // Document type specifics
-        switch (m_editDocumentType)
+    auto ctrl = (pKeyEvent->key.keysym.mod & KMOD_LCTRL) ? true : false;
+    auto shift = (pKeyEvent->key.keysym.mod & KMOD_LSHIFT) ? true : false;
+    auto alt = (pKeyEvent->key.keysym.mod & KMOD_LALT) ? true : false;
+    auto scancode = pKeyEvent->key.keysym.scancode;
+
+    // Undo/Redo
+    if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_Z) onUndo();
+    if (ctrl && shift && !alt && scancode == SDL_SCANCODE_Z) onRedo();
+    
+    // Document type specifics
+    switch (m_editDocumentType)
+    {
+        case EditDocumentType::Scene:
         {
-            case EditDocumentType::PFX:
-                if (Engine::getInput()->isKeyJustDown(SDL_SCANCODE_SPACE))
-                    m_pPfxInstance = std::make_shared<Engine::PFXInstance>(m_pPfx);
-                break;
+            break;
+        }
+        case EditDocumentType::PFX:
+        {
+            if (!ctrl && !shift && !alt && scancode == SDL_SCANCODE_SPACE)
+                m_pPfxInstance = std::make_shared<Engine::PFXInstance>(m_pPfx);
+            break;
         }
     }
+}
 
+void EditorState::update(float dt)
+{
     // Menu bar
     bool quit = false;
     if (ImGui::BeginMainMenuBar())
@@ -254,6 +276,7 @@ void EditorState::update(float dt)
     switch (m_editDocumentType)
     {
         case EditDocumentType::Scene:
+            Engine::getScene()->setMousePos(m_mouseWorldPos);
             Engine::getScene()->update(dt);
             break;
         case EditDocumentType::PFX:
@@ -284,15 +307,26 @@ void EditorState::draw()
     switch (m_editDocumentType)
     {
         case EditDocumentType::Scene:
+        {
             Engine::getScene()->draw();
+
+            // Draw gizmos (Selection boxes)
+            const glm::vec4 SELECTED_COLOR = { 1, 0, 0, 1 };
+            const glm::vec4 HOVER_COLOR = { 1, 1, 0, 1 };
+
+            for (const auto& pEntity : m_selected)
+                pEntity->drawOutline(SELECTED_COLOR, 1.0f / m_zoomf);
+
+            auto pHovered = Engine::getScene()->getHoveredEntity();
+            if (pHovered && !pHovered->isSelected)
+                pHovered->drawOutline(HOVER_COLOR, 1.0f / m_zoomf);
+
             break;
+        }
         case EditDocumentType::PFX:
             if (m_pPfxInstance) m_pPfxInstance->draw({0, 0});
             break;
     }
-
-    // Draw gizmos (Selection boxes)
-    sb->drawLine({0, 0}, {5.0f, 5.0f}, 3.0f / m_zoomf);
 
     sb->end();
 }
@@ -552,6 +586,7 @@ void EditorState::clear()
 {
     m_filename = "untitled";
     setDirty(true);
+    Engine::getScene()->clear();
     m_pActionManager->clear();
     m_pPfxInstance.reset();
     m_pPfx.reset();
