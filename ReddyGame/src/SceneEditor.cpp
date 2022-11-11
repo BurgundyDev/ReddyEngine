@@ -110,6 +110,7 @@ void EditorState::onMouseUp(Engine::IEvent* pEvent)
                         if (*it == pHoveredEntity)
                         {
                             newSelected.erase(it);
+                            break;
                         }
                     }
                     changeSelection(newSelected);
