@@ -352,7 +352,7 @@ void EditorState::draw()
     glm::vec2 resolutionRatio = glm::vec2(resolution.x / resolution.y, resolution.y / resolution.x);
     
 
-    if (m_isGridVisible)
+    if (m_isGridVisible && m_zoomf > m_gridHideZoomLevel)
     {
         glm::vec2 realGridOffset = glm::vec2( fmod(m_position.x, 1.0f), fmod(m_position.y, 1.0f));
 
