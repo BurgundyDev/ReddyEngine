@@ -325,14 +325,14 @@ void EditorState::draw()
         {
             const glm::vec2 cell = glm::vec2(m_position.x + i - realGridOffset.x , m_position.y + gridStart / 2 - realGridOffset.y);
 
-            sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, 1.0f / m_zoomf, gridEnd), (i == 0) ? MID_GRID_COLOR : m_gridColor);
+            sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, 1.0f / m_zoomf, gridEnd), (cell.x == 0) ? MID_GRID_COLOR : m_gridColor);
         }
 
 		for (int i = (int) gridStart; i < gridEnd; i++)
 		{
 	        const glm::vec2 cell = glm::vec2(m_position.x + gridStart / 2 - realGridOffset.x, m_position.y + i - realGridOffset.y);
 
-		    sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, gridEnd, 1.0f / m_zoomf), (i == 0) ? MID_GRID_COLOR : m_gridColor);
+		    sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, gridEnd, 1.0f / m_zoomf), (cell.y == 0) ? MID_GRID_COLOR : m_gridColor);
 		}
     }
     
