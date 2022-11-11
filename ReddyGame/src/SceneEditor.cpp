@@ -26,7 +26,8 @@ const char* EditorState::getEntityFriendlyName(const Engine::EntityRef& pEntity)
 
 void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
 {
-    const auto& children = pEntity->getChildren();
+    static std::vector<Engine::EntityRef> children;
+    children = pEntity->getChildren(); // We copy on purpose here...
 
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
     if (children.empty()) flags |= ImGuiTreeNodeFlags_Leaf;

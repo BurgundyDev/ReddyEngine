@@ -58,12 +58,15 @@ namespace Engine
 		return pNewEntity;
 	}
 
-	EntityRef Scene::createEntityFromJson(const EntityRef& pParent, const Json::Value& json)
+	EntityRef Scene::createEntityFromJson(const EntityRef& pParent, const Json::Value& json, bool generateNewIds)
 	{
 		EntityRef pNewEntity = std::make_shared<Entity>();
-		pNewEntity->deserialize(json);
+		pNewEntity->deserialize(json, true, generateNewIds);
 		pParent->addChild(pNewEntity);
-		m_id = std::max(m_id, pNewEntity->id + 1); // If we're loading a file, make sure next id is at least higher than this one
+		if (generateNewIds)
+			m_id = ++m_id;
+		else
+			m_id = std::max(m_id, pNewEntity->id + 1); // If we're loading a file, make sure next id is at least higher than this one
 		return pNewEntity;
 	}
 

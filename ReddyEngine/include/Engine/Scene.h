@@ -30,7 +30,7 @@ namespace Engine
 
 		EntityRef createEntity(); // Adds to root
 		EntityRef createEntity(const EntityRef& pParent);
-		EntityRef createEntityFromJson(const EntityRef& pParent, const Json::Value& json);
+		EntityRef createEntityFromJson(const EntityRef& pParent, const Json::Value& json, bool generateNewIds = false);
 		void destroyEntity(EntityRef pEntity);
 		void destroyEntity(uint64_t id);
 
@@ -55,6 +55,8 @@ namespace Engine
 		void setMousePos(const glm::vec2& mousePos) { m_mousePos = mousePos; } // In World coordinates
 
 		const EntityRef& getHoveredEntity() const { return m_pMouseHoverEntity; }
+
+		uint64_t generateEntityId() { return ++m_id; }
 
 	public:
 		// Engine use only

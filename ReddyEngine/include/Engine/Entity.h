@@ -117,7 +117,7 @@ namespace Engine
 		bool removeComponent(const ComponentRef& pComponent);
 
 		Json::Value serialize(bool includeChildren = true);
-		void deserialize(const Json::Value json, bool includeChildren = true);
+		void deserialize(const Json::Value json, bool includeChildren = true, bool generateNewIds = false);
 
 		EntityRef getChildByName(const std::string& name, bool recursive = false);
 		EntityRef getChildByName(const std::string& name, const EntitySearchParams &searchParams, bool recursive = false);

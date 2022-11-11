@@ -23,6 +23,7 @@
 #include <glm/gtx/transform.hpp>
 
 #include <SDL_events.h>
+#include <SDL.h>
 
 static const char *FILE_PATTERNS[] = { "*.json" };
 
@@ -105,16 +106,22 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
     // Undo/Redo
     if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_Z) onUndo();
     if (ctrl && shift && !alt && scancode == SDL_SCANCODE_Z) onRedo();
+
+    if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_O) onOpen();
+    if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_S) onSave();
+    if (ctrl && shift && !alt && scancode == SDL_SCANCODE_S) onSaveAs();
     
     // Document type specifics
     switch (m_editDocumentType)
     {
         case EditDocumentType::Scene:
         {
-            if (!ctrl && shift && !alt && scancode == SDL_SCANCODE_A)
-                m_openCreateEntityMenu = true;
-            if (!ctrl && !shift && !alt && scancode == SDL_SCANCODE_DELETE)
-                onDelete();
+            if (!ctrl && shift && !alt && scancode == SDL_SCANCODE_A) m_openCreateEntityMenu = true;
+            if (!ctrl && !shift && !alt && scancode == SDL_SCANCODE_DELETE) onDelete();
+            if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_X) onCut();
+            if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_C) onCopy();
+            if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_V) onPaste();
+            if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_D) onDuplicate();
             break;
         }
         case EditDocumentType::PFX:
@@ -452,18 +459,122 @@ void EditorState::onRedo()
 
 void EditorState::onCut()
 {
+    onCopy();
+    onDelete();
 }
 
 void EditorState::onCopy()
 {
+    Json::Value json;
+    json["version"] = Engine::FILES_VERSION;
+    json["type"] = "REDDY Scene Clipboard";
+
+    auto entities = m_selected;
+
+    // Remove any entities that is child of already a selected one. It will deep copy anyway
+    for (auto it = m_selected.begin(); it != m_selected.end(); ++it)
+    {
+        const auto& pParent = *it;
+        for (auto it2 = entities.begin(); it2 != entities.end();)
+        {
+            const auto& pEntity = *it2;
+            if (pParent->hasChild(pEntity, true))
+            {
+                it2 = entities.erase(it2);
+                continue;
+            }
+            ++it2;
+        }
+    }
+
+    Json::Value jsonEntities(Json::arrayValue);
+    for (const auto& pEntity : entities)
+    {
+        if (!pEntity->getParent()) continue; // Ignore Root
+        jsonEntities.append(pEntity->serialize(true));
+    }
+
+    Json::Value jsonParents(Json::arrayValue);
+    for (const auto& pEntity : entities)
+    {
+        if (!pEntity->getParent()) continue; // Ignore Root
+        jsonParents.append(pEntity->getParent()->id);
+    }
+
+    json["entities"] = jsonEntities;
+    json["parentIds"] = jsonParents;
+    
+    Json::StyledWriter styledWriter;
+    auto str = styledWriter.write(json);
+    SDL_SetClipboardText(str.c_str());
 }
 
 void EditorState::onPaste()
 {
+    auto clipboard = SDL_GetClipboardText();
+    if (!clipboard) return;
+    
+    std::stringstream ss(clipboard);
+    Json::Value json;
+    try
+    {
+        ss >> json;
+    }
+    catch (...)
+    {
+        CORE_WARN("Paste: Invalid clipboard data");
+        return;
+    }
+
+    if (json["type"] != "REDDY Scene Clipboard")
+    {
+        CORE_WARN("Paste: Invalid clipboard data, wrong type");
+        return;
+    }
+
+    const auto& entitiesJson = json["entities"];
+    const auto& parentIdsJson = json["parentIds"];
+    if (entitiesJson.size() != parentIdsJson.size())
+    {
+        CORE_WARN("Paste: Invalid clipboard data, invalid parent ids");
+        return;
+    }
+    if (entitiesJson.empty()) return; // Nothing to paste
+
+    decltype(m_selected) newSelection;
+    for (int i = 0, len = (int)entitiesJson.size(); i < len; ++i)
+    {
+        const auto& entityJson = entitiesJson[i];
+        auto pParent = Engine::getScene()->findEntity(parentIdsJson[i].asUInt64());
+        auto pNewEntity = Engine::getScene()->createEntityFromJson(pParent, entityJson, true);
+        newSelection.push_back(pNewEntity);
+    }
+
+    // Find median, then adjust entities' position to where the mouse is
+    glm::vec2 bbmin = newSelection.front()->getWorldPosition();
+    glm::vec2 bbmax = newSelection.front()->getWorldPosition();
+    for (int i = 1, len = (int)newSelection.size(); i < len; ++i)
+    {
+        const auto& pEntity = newSelection[i];
+        bbmin = glm::min(bbmin, pEntity->getWorldPosition());
+        bbmax = glm::max(bbmax, pEntity->getWorldPosition());
+    }
+    auto mid = (bbmin + bbmax) * 0.5f;
+    auto diff = m_mouseWorldPos - mid;
+    for (const auto& pEntity : newSelection)
+    {
+        pEntity->setWorldPosition(pEntity->getWorldPosition() + diff);
+    }
+
+    changeSelection(newSelection);
+    pushUndo("Paste");
 }
 
 void EditorState::onDuplicate()
 {
+    // C'est magique
+    onCopy();
+    onPaste();
 }
 
 void EditorState::pushUndo(const char* actionName)
@@ -548,6 +659,7 @@ void EditorState::onDelete()
 
 void EditorState::createEntityAction(Engine::EntityRef pEntity)
 {
+    pEntity->setWorldPosition(m_mouseWorldPos);
     changeSelection({pEntity});
     pushUndo("Create Entity");
 }

@@ -161,7 +161,7 @@ namespace Engine
 		return json;
 	}
 
-	void Entity::deserialize(const Json::Value json, bool includeChildren)
+	void Entity::deserialize(const Json::Value json, bool includeChildren, bool generateNewIds)
 	{
 		for (const auto& pComponent : m_components)
 		{
@@ -169,7 +169,10 @@ namespace Engine
 		}
 		m_components.clear();
 
-		id = Utils::deserializeUInt64(json["id"]);
+		if (generateNewIds)
+			id = getScene()->generateEntityId();
+		else
+			id = Utils::deserializeUInt64(json["id"]);
 		name = Utils::deserializeString(json["name"]);
 		sortChildren = Utils::deserializeBool(json["sortChildren"], false);
 		mouseChildren = Utils::deserializeBool(json["mouseChildren"], true);
