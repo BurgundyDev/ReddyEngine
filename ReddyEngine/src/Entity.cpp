@@ -19,11 +19,16 @@ namespace Engine
 	{
 	}
 
-	bool Entity::addChild(EntityRef pChild)
+	bool Entity::addChild(EntityRef pChild, int insertAt)
 	{
 		if (pChild->m_pParent) pChild->m_pParent->removeChild(pChild); // This could potentially make the pChild shared_ptr const reference invalid, that's why we pass by value
 		for (const auto& pMyChild : m_children) if (pMyChild == pChild) return false;
-		m_children.push_back(pChild);
+
+		if (insertAt < 0 || insertAt > (int)m_children.size())
+			m_children.push_back(pChild);
+		else
+			m_children.insert(m_children.begin() + insertAt, pChild);
+
 		pChild->m_pParent = this;
 		return true;
 	}
@@ -41,6 +46,16 @@ namespace Engine
 			}
 		}
 		return false;
+	}
+
+	int Entity::getChildIndex(const EntityRef& pChild) const
+	{
+		for (int i = 0, len = (int)m_children.size(); i < len; ++i)
+		{
+			if (m_children[i] == pChild)
+				return i;
+		}
+		return -1;
 	}
 
 	bool Entity::removeComponent(const ComponentRef& pComponent)
@@ -179,6 +194,7 @@ namespace Engine
 		// Children
 		if (includeChildren)
 		{
+			m_children.clear();
 			const auto& childrenJson = json["children"];
 			for (const auto& childJson : childrenJson)
 			{

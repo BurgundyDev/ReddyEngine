@@ -97,6 +97,11 @@ namespace Engine
 		return m_pRoot->getChildByName(name, searchParams, recursive);
     }
     
+	EntityRef Scene::findEntity(uint64_t id)
+	{
+		return findEntity(m_pRoot, id);
+	}
+    
 	EntityRef Scene::findEntity(const EntityRef& pEntity, uint64_t id)
 	{
 		if (pEntity->id == id) return pEntity;

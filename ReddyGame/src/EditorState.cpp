@@ -458,18 +458,39 @@ void EditorState::onDelete()
     if (m_selected.empty()) return;
 
     std::vector<uint64_t> ids;
-    std::vector<Json::Value> jsons;
 
-    //m_pActionManager->addAction("Create Entity", [this, entityJson]()
-    //{
-    //    auto pEntity = Engine::getScene()->createEntity();
-    //    pEntity->deserialize(entityJson);
-    //    changeSelection({pEntity});
-    //}, [this, entityId, selectionBefore]()
-    //{
-    //    Engine::getScene()->destroyEntity(entityId);
-    //    changeSelection(selectionBefore);
-    //});
+    const auto& pRoot = Engine::getScene()->getRoot();
+    for (const auto& pEntity : m_selected)
+    {
+        if (pEntity == pRoot)
+        {
+            CORE_ERROR_POPUP("Cannot delete Root Entity. Make sure it's not selected before deleting.");
+            return;
+        }
+        ids.push_back(pEntity->id);
+    }
+
+    // Keeping track or parent id and position and such is too complicated here. Lets serialize the whole thing
+    Json::Value rootJson = pRoot->serialize(true);
+
+    m_pActionManager->doAction("Delete", [this, ids]()
+    {
+        for (auto id : ids)
+            Engine::getScene()->destroyEntity(id);
+        changeSelection({});
+    }, [this, ids, rootJson]()
+    {
+        Engine::getScene()->getRoot()->deserialize(rootJson, true);
+
+        std::vector<Engine::EntityRef> newSelection;
+        for (auto id : ids)
+        {
+            auto pEntity = Engine::getScene()->findEntity(id);
+            if (pEntity)
+                newSelection.push_back(pEntity);
+        }
+        changeSelection(newSelection);
+    });
 }
 
 void EditorState::createEntityAction(Engine::EntityRef pEntity)
