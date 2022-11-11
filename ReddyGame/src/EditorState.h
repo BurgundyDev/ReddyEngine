@@ -93,6 +93,7 @@ private:
     void createEntityAction(Engine::EntityRef pEntity);
 
     void onKeyDown(Engine::IEvent* pEvent);
+    void onKeyUp(Engine::IEvent* pEvent);
     void onMouseDown(Engine::IEvent* pEvent);
     void onMouseUp(Engine::IEvent* pEvent);
 
@@ -104,6 +105,10 @@ private:
     bool m_dirty = true;
     bool m_openCreateEntityMenu = false;
     Uint8 m_mouseButton = 0;
+
+    bool m_shiftHeld = false;
+    bool m_altHeld = false;
+    bool m_ctrlHeld = false;
 
     // Mouse stuff
     glm::vec2 m_mouseWorldPos;
@@ -137,4 +142,6 @@ private:
     TransformType m_transformType = TransformType::None;
     bool m_isMouseDownInWorld = false;
     bool m_wasAddedToSelection = false; // Another gross hack
+
+    float m_snapScale = 1.0f;
 };
