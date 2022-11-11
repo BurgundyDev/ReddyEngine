@@ -99,12 +99,14 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
     // Undo/Redo
     if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_Z) onUndo();
     if (ctrl && shift && !alt && scancode == SDL_SCANCODE_Z) onRedo();
-
+    
     // Document type specifics
     switch (m_editDocumentType)
     {
         case EditDocumentType::Scene:
         {
+            if (!ctrl && shift && !alt && scancode == SDL_SCANCODE_A)
+                m_openCreateEntityMenu = true;
             break;
         }
         case EditDocumentType::PFX:
@@ -221,14 +223,11 @@ void EditorState::update(float dt)
     }
 
     // Context menu
-    if (m_editDocumentType == EditDocumentType::Scene)
+    if (m_openCreateEntityMenu)
     {
-        if (Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT) && Engine::getInput()->isKeyJustDown(SDL_SCANCODE_A))
-        {
-            ImGui::OpenPopup("CreateEntityContext");
-        }
+        ImGui::OpenPopup("CreateEntityContext");
+        m_openCreateEntityMenu = false;
     }
-
     if (ImGui::BeginPopupContextWindow("CreateEntityContext"))
     {
         if (ImGui::Selectable("Empty")) onCreateEmptyEntity();

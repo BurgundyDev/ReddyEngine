@@ -46,48 +46,59 @@ void EditorState::onMouseDown(Engine::IEvent* pEvent)
     if (ImGui::GetIO().WantCaptureMouse || m_editDocumentType != EditDocumentType::Scene) return;
 
     auto pDownEvent = (Engine::MouseButtonDownEvent*)pEvent;
-    if (pDownEvent->button.button != SDL_BUTTON_LEFT) return;
-
+    m_mouseButton = pDownEvent->button.button;
+    m_mouseScreenOnDown = Engine::getInput()->getMousePos();
     m_isMouseDownInWorld = true;
+    m_wasAddedToSelection = false;
 
-    auto ctrl = Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
-    auto shift = Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT);
-    auto alt = Engine::getInput()->isKeyDown(SDL_SCANCODE_LALT);
-
-    const auto& pHoveredEntity = Engine::getScene()->getHoveredEntity();
-
-    if (!pHoveredEntity && !ctrl && !m_selected.empty())
-        changeSelection({}); // Deselect
-
-    if (pHoveredEntity)
+    if (m_mouseButton == SDL_BUTTON_LEFT)
     {
-        if (!pHoveredEntity->isSelected)
-        {
-            if (!ctrl)
-            {
-                changeSelection({pHoveredEntity});
-            }
-            else
-            {
-                auto newSelection = m_selected;
-                newSelection.push_back(pHoveredEntity);
-                changeSelection(newSelection);
-            }
-        }
+        auto ctrl = Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
+        auto shift = Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT);
+        auto alt = Engine::getInput()->isKeyDown(SDL_SCANCODE_LALT);
 
-        m_isMouseDownInWorld = true;
-        m_mouseOnDown = m_mouseWorldPos;
+        const auto& pHoveredEntity = Engine::getScene()->getHoveredEntity();
+
+        if (!pHoveredEntity && !ctrl && !shift && !m_selected.empty())
+            changeSelection({}); // Deselect
+
+        if (pHoveredEntity)
+        {
+            if (!pHoveredEntity->isSelected)
+            {
+                if (!ctrl && !shift)
+                {
+                    changeSelection({pHoveredEntity});
+                }
+                else
+                {
+                    auto newSelection = m_selected;
+                    newSelection.push_back(pHoveredEntity);
+                    changeSelection(newSelection);
+                    m_wasAddedToSelection = true;
+                }
+            }
+
+            m_isMouseDownInWorld = true;
+            m_mouseOnDown = m_mouseWorldPos;
+        }
     }
 }
 
 void EditorState::onMouseUp(Engine::IEvent* pEvent)
 {
     if (!m_isMouseDownInWorld) return;
+    m_isMouseDownInWorld = false;
 
     auto pDownEvent = (Engine::MouseButtonDownEvent*)pEvent;
+    if (pDownEvent->button.button == SDL_BUTTON_RIGHT)
+    {
+        if (m_mouseScreenOnDown == Engine::getInput()->getMousePos())
+            m_openCreateEntityMenu = true;
+        return;
+    }
     if (pDownEvent->button.button != SDL_BUTTON_LEFT) return;
 
-    m_isMouseDownInWorld = false;
 
     auto ctrl = Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
     auto shift = Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT);
@@ -102,18 +113,21 @@ void EditorState::onMouseUp(Engine::IEvent* pEvent)
         {
             if (pHoveredEntity && pHoveredEntity->isSelected) // We clicked an item without draging the mouse, we select/deselect it
             {
-                if (ctrl)
+                if (ctrl || shift)
                 {
-                    auto newSelected = m_selected;
-                    for (auto it = newSelected.begin(); it != newSelected.end(); ++it)
+                    if (!m_wasAddedToSelection)
                     {
-                        if (*it == pHoveredEntity)
+                        auto newSelected = m_selected;
+                        for (auto it = newSelected.begin(); it != newSelected.end(); ++it)
                         {
-                            newSelected.erase(it);
-                            break;
+                            if (*it == pHoveredEntity)
+                            {
+                                newSelected.erase(it);
+                                break;
+                            }
                         }
+                        changeSelection(newSelected);
                     }
-                    changeSelection(newSelected);
                 }
                 else
                     changeSelection({pHoveredEntity});
@@ -159,6 +173,7 @@ void EditorState::onMouseUp(Engine::IEvent* pEvent)
 void EditorState::updateTransform()
 {
     if (!m_isMouseDownInWorld) return;
+    if (m_mouseButton != SDL_BUTTON_LEFT) return; // So much hacks
 
     switch (m_transformType)
     {
@@ -200,6 +215,9 @@ void EditorState::drawSceneUI() // This is also kind of update
         //for (const auto& pChild : children)
         //    drawEntitySceneTree(pChild);
         drawEntitySceneTree(Engine::getScene()->getRoot());
+
+        if (Engine::GUI::statusBarButton("+", "Create Entity"))
+            m_openCreateEntityMenu = true;
     }
     Engine::GUI::endEditorWindow();
 

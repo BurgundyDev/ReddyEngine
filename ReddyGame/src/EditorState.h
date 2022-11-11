@@ -97,12 +97,15 @@ private:
     ActionManagerRef m_pActionManager;
     std::string m_filename = "untitled";
     bool m_dirty = true;
+    bool m_openCreateEntityMenu = false;
+    Uint8 m_mouseButton = 0;
 
     // Mouse stuff
     glm::vec2 m_mouseWorldPos;
 
     // Camera stuff
     glm::vec2 m_mouseOnDown;
+    glm::vec2 m_mouseScreenOnDown;
     glm::vec2 m_positionOnDown;
     glm::vec2 m_position = {0, 0};
     const float ZOOM_LEVELS[8] = {256.0f, 192.0f, 128.0f, 96.0f, 64.0f, 32.0f, 16.0f, 8.0f};
@@ -119,4 +122,5 @@ private:
     std::vector<glm::vec2> m_worldPositionsOnDown;
     TransformType m_transformType = TransformType::None;
     bool m_isMouseDownInWorld = false;
+    bool m_wasAddedToSelection = false; // Another gross hack
 };
