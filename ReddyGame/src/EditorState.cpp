@@ -107,6 +107,8 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
         {
             if (!ctrl && shift && !alt && scancode == SDL_SCANCODE_A)
                 m_openCreateEntityMenu = true;
+            if (!ctrl && !shift && !alt && scancode == SDL_SCANCODE_DELETE)
+                onDelete();
             break;
         }
         case EditDocumentType::PFX:
@@ -220,22 +222,6 @@ void EditorState::update(float dt)
             drawPFXUI();
             if (m_pPfxInstance) m_pPfxInstance->update(dt);
             break;
-    }
-
-    // Context menu
-    if (m_openCreateEntityMenu)
-    {
-        ImGui::OpenPopup("CreateEntityContext");
-        m_openCreateEntityMenu = false;
-    }
-    if (ImGui::BeginPopupContextWindow("CreateEntityContext"))
-    {
-        if (ImGui::Selectable("Empty")) onCreateEmptyEntity();
-        if (ImGui::Selectable("Sprite")) onCreateSpriteEntity();
-        if (ImGui::Selectable("Text")) onCreateTextEntity();
-        if (ImGui::Selectable("Sound")) onCreateSoundEntity();
-        if (ImGui::Selectable("Particle")) onCreateParticleEntity();
-        ImGui::EndPopup();
     }
 
     // Camera stuff
@@ -368,27 +354,30 @@ void EditorState::serializeSelectionState()
 
 void EditorState::changeSelection(const std::vector<Engine::EntityRef>& in_newSelection)
 {
+    for (const auto& pEntity : m_selected)
+        pEntity->isSelected = false;
+
+    m_selected = in_newSelection;
+
+    for (const auto& pEntity : m_selected)
+        pEntity->isSelected = true;
+
+    serializeSelectionState();
+}
+
+void EditorState::changeSelectionAction(const std::vector<Engine::EntityRef>& in_newSelection)
+{
     auto prevSelection = m_selected;
     auto newSelection = in_newSelection;
-
+    
     m_pActionManager->doAction("Select",
                                [this, newSelection]() // Redo
     {
-        for (const auto& pEntity : m_selected)
-            pEntity->isSelected = false;
-        m_selected = newSelection;
-        for (const auto& pEntity : m_selected)
-            pEntity->isSelected = true;
-        serializeSelectionState();
+        changeSelection(newSelection);
     },
                                [this, prevSelection]() // Undo
     {
-        for (const auto& pEntity : m_selected)
-            pEntity->isSelected = false;
-        m_selected = prevSelection;
-        for (const auto& pEntity : m_selected)
-            pEntity->isSelected = true;
-        serializeSelectionState();
+        changeSelection(prevSelection);
     });
 }
 
@@ -466,19 +455,53 @@ void EditorState::onDuplicate()
 
 void EditorState::onDelete()
 {
+    if (m_selected.empty()) return;
+
+    std::vector<uint64_t> ids;
+    std::vector<Json::Value> jsons;
+
+    //m_pActionManager->addAction("Create Entity", [this, entityJson]()
+    //{
+    //    auto pEntity = Engine::getScene()->createEntity();
+    //    pEntity->deserialize(entityJson);
+    //    changeSelection({pEntity});
+    //}, [this, entityId, selectionBefore]()
+    //{
+    //    Engine::getScene()->destroyEntity(entityId);
+    //    changeSelection(selectionBefore);
+    //});
+}
+
+void EditorState::createEntityAction(Engine::EntityRef pEntity)
+{
+    auto selectionBefore = m_selected;
+    auto entityJson = pEntity->serialize(false /* It shouldn't have children */);
+    changeSelection({pEntity});
+    auto entityId = pEntity->id;
+
+    m_pActionManager->addAction("Create Entity", [this, entityJson]()
+    {
+        auto pEntity = Engine::getScene()->createEntity();
+        pEntity->deserialize(entityJson);
+        changeSelection({pEntity});
+    }, [this, entityId, selectionBefore]()
+    {
+        Engine::getScene()->destroyEntity(entityId);
+        changeSelection(selectionBefore);
+    });
 }
 
 void EditorState::onCreateEmptyEntity()
 {
     auto pEntity = Engine::getScene()->createEntity();
-    changeSelection({pEntity});
+    createEntityAction(pEntity);
 }
 
 void EditorState::onCreateSpriteEntity()
 {
     auto pEntity = Engine::getScene()->createEntity();
     pEntity->addComponent<Engine::SpriteComponent>();
-    changeSelection({pEntity});
+    createEntityAction(pEntity);
 }
 
 void EditorState::onCreateTextEntity()

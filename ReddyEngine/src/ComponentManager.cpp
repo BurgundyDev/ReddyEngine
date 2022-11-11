@@ -45,9 +45,13 @@ namespace Engine
                             command.pComponent->onDisable();
                         command.pComponent->onDestroy();
                         for (auto it = m_components.begin(); it != m_components.end(); ++it)
+                        {
                             if (*it == command.pComponent)
-                                m_components.erase(it);
-                        break;
+                            {
+                                it = m_components.erase(it);
+                                break;
+                            }
+                        }
                 }
             }
         }

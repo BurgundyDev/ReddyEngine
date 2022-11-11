@@ -85,10 +85,12 @@ private:
     void setDirty(bool dirty);
     void clear();
     void changeSelection(const std::vector<Engine::EntityRef>& newSelection);
+    void changeSelectionAction(const std::vector<Engine::EntityRef>& newSelection);
     void drawEntitySceneTree(const Engine::EntityRef& pEntity);
     const char* getEntityFriendlyName(const Engine::EntityRef& pEntity);
     void serializeSelectionState();
     void updateTransform();
+    void createEntityAction(Engine::EntityRef pEntity);
 
     void onKeyDown(Engine::IEvent* pEvent);
     void onMouseDown(Engine::IEvent* pEvent);

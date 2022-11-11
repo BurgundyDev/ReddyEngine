@@ -95,6 +95,24 @@ namespace Engine
 	EntityRef Scene::getEntityByName(const std::string& name, const EntitySearchParams& searchParams, bool recursive) const
 	{
 		return m_pRoot->getChildByName(name, searchParams, recursive);
+    }
+    
+	EntityRef Scene::findEntity(const EntityRef& pEntity, uint64_t id)
+	{
+		if (pEntity->id == id) return pEntity;
+		for (const auto& pChild : pEntity->getChildren())
+		{
+			auto pRet = findEntity(pChild, id);
+			if (pRet) return pRet;
+		}
+		return nullptr;
+	}
+
+	void Scene::destroyEntity(uint64_t id)
+	{
+		auto pEntity = findEntity(m_pRoot, id);
+		if (!pEntity) return;
+		destroyEntity(pEntity);
 	}
 
 	void Scene::update(float dt)

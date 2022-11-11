@@ -32,6 +32,9 @@ namespace Engine
 		EntityRef createEntity(const EntityRef& pParent);
 		EntityRef createEntityFromJson(const EntityRef& pParent, const Json::Value& json);
 		void destroyEntity(EntityRef pEntity);
+		void destroyEntity(uint64_t id);
+
+		EntityRef findEntity(const EntityRef& pEntity, uint64_t id);
 
 		/*! \brief Search the root for an entity with the given name */
 		EntityRef getEntityByName(const std::string& name, bool recursive = false) const;

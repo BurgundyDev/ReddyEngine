@@ -29,7 +29,7 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
     if (ImGui::TreeNodeEx(pEntity.get(), flags, getEntityFriendlyName(pEntity)))
     {
         if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
-            changeSelection({pEntity});
+            changeSelectionAction({pEntity});
         for (const auto& pChild : children)
             drawEntitySceneTree(pChild);
         ImGui::TreePop();
@@ -37,7 +37,7 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
     else
     {
         if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
-            changeSelection({pEntity});
+            changeSelectionAction({pEntity});
     }
 }
 
@@ -60,7 +60,7 @@ void EditorState::onMouseDown(Engine::IEvent* pEvent)
         const auto& pHoveredEntity = Engine::getScene()->getHoveredEntity();
 
         if (!pHoveredEntity && !ctrl && !shift && !m_selected.empty())
-            changeSelection({}); // Deselect
+            changeSelectionAction({}); // Deselect
 
         if (pHoveredEntity)
         {
@@ -68,13 +68,13 @@ void EditorState::onMouseDown(Engine::IEvent* pEvent)
             {
                 if (!ctrl && !shift)
                 {
-                    changeSelection({pHoveredEntity});
+                    changeSelectionAction({pHoveredEntity});
                 }
                 else
                 {
                     auto newSelection = m_selected;
                     newSelection.push_back(pHoveredEntity);
-                    changeSelection(newSelection);
+                    changeSelectionAction(newSelection);
                     m_wasAddedToSelection = true;
                 }
             }
@@ -126,11 +126,11 @@ void EditorState::onMouseUp(Engine::IEvent* pEvent)
                                 break;
                             }
                         }
-                        changeSelection(newSelected);
+                        changeSelectionAction(newSelected);
                     }
                 }
                 else
-                    changeSelection({pHoveredEntity});
+                    changeSelectionAction({pHoveredEntity});
             }
             break;
         }
@@ -247,4 +247,20 @@ void EditorState::drawSceneUI() // This is also kind of update
         }
     }
     Engine::GUI::endEditorWindow();
+
+    // Context menu
+    if (m_openCreateEntityMenu)
+    {
+        ImGui::OpenPopup("CreateEntityContext");
+        m_openCreateEntityMenu = false;
+    }
+    if (ImGui::BeginPopupContextWindow("CreateEntityContext"))
+    {
+        if (ImGui::Selectable("Empty")) onCreateEmptyEntity();
+        if (ImGui::Selectable("Sprite")) onCreateSpriteEntity();
+        if (ImGui::Selectable("Text")) onCreateTextEntity();
+        if (ImGui::Selectable("Sound")) onCreateSoundEntity();
+        if (ImGui::Selectable("Particle")) onCreateParticleEntity();
+        ImGui::EndPopup();
+    }
 }
