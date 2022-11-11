@@ -317,10 +317,30 @@ namespace Engine
 		// We start with leaves first
 		if (ignoreMouseFlags || mouseChildren)
 		{
-			for (const auto& pChild : m_children)
+			if (sortChildren)
 			{
-				auto pRet = pChild->getMouseHover(mousePos, ignoreMouseFlags);
-				if (pRet) return pRet;
+				auto sorted = m_children;
+
+				std::sort(sorted.begin(), sorted.end(), [](const EntityRef& a, const EntityRef& b)
+				{
+					return a->getWorldPosition().y < b->getWorldPosition().y;
+				});
+
+				for (auto rit = sorted.rbegin(); rit != sorted.rend(); ++rit)
+				{
+					const auto& pChild = *rit;
+					auto pRet = pChild->getMouseHover(mousePos, ignoreMouseFlags);
+					if (pRet) return pRet;
+				}
+			}
+			else
+			{
+				for (auto rit = m_children.rbegin(); rit != m_children.rend(); ++rit)
+				{
+					const auto& pChild = *rit;
+					auto pRet = pChild->getMouseHover(mousePos, ignoreMouseFlags);
+					if (pRet) return pRet;
+				}
 			}
 		}
 
@@ -412,7 +432,22 @@ namespace Engine
 		for (const auto& pComponent : m_components)
 			pComponent->draw();
 
-		for (const auto& pChild : m_children)
-			pChild->draw();
+		if (sortChildren)
+		{
+			auto sorted = m_children;
+
+			std::sort(sorted.begin(), sorted.end(), [](const EntityRef& a, const EntityRef& b)
+			{
+				return a->getWorldPosition().y < b->getWorldPosition().y;
+			});
+
+			for (const auto& pChild : sorted)
+				pChild->draw();
+		}
+		else
+		{
+			for (const auto& pChild : m_children)
+				pChild->draw();
+		}
 	}
 }
