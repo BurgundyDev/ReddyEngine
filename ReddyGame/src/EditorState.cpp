@@ -314,14 +314,14 @@ void EditorState::draw()
         float gridStart = maxVal / -m_zoomf - 2.0f;
         float gridEnd = maxVal / m_zoomf + 2.0f;
 
-        for (int i = gridStart; i < gridEnd; i++)
+        for (int i = (int) gridStart; i < gridEnd; i++)
         {
             const glm::vec2 cell = glm::vec2(m_position.x + i - realGridOffset.x , m_position.y + gridStart / 2 - realGridOffset.y);
 
             sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, 1.0f / m_zoomf, gridEnd), m_gridColor);
         }
 
-		for (int i = gridStart; i < gridEnd; i++)
+		for (int i = (int) gridStart; i < gridEnd; i++)
 		{
 	        const glm::vec2 cell = glm::vec2(m_position.x + gridStart / 2 - realGridOffset.x, m_position.y + i - realGridOffset.y);
 
