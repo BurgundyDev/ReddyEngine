@@ -7,6 +7,7 @@
 #include "Engine/SpriteBatch.h"
 #include "Engine/SpriteComponent.h"
 #include "Engine/TextComponent.h"
+#include "Engine/ScriptComponent.h"
 
 
 namespace Engine
@@ -15,6 +16,8 @@ namespace Engine
 	{
 		if (className == "Sprite") return std::make_shared<SpriteComponent>();
 		if (className == "Text") return std::make_shared<TextComponent>();
+		if (className == "Script") return std::make_shared<ScriptComponent>();
+
 		CORE_ERROR("Unrecognized Component Type: {}", className);
 		return nullptr;
 	}

@@ -43,6 +43,7 @@ namespace Engine
 		virtual void deserialize(const Json::Value& json);
 
 		virtual std::string getType() const = 0;
+		virtual std::string getEditName() const { return getType(); }
 
 		virtual bool isMouseHover(const glm::vec2& mousePos) const;
 		virtual void drawOutline(const glm::vec4& color, float zoomScale); // For editor

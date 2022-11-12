@@ -70,7 +70,11 @@ namespace Engine
         LuaComponentDef* getComponentDef(const std::string& name) const;
 
         int funcRegisterComponent(lua_State* L);
+        int funcSetIntProperty(lua_State* L);
         int funcSetFloatProperty(lua_State* L);
+        int funcSetVec2Property(lua_State* L);
+        int funcSetColorProperty(lua_State* L);
+        int funcSetStringProperty(lua_State* L);
 
     private:
         void createBindings();

@@ -21,7 +21,8 @@ namespace Engine
 		Json::Value serialize() override;
 		void deserialize(const Json::Value& json) override;
 		bool edit() override;
-		std::string getType() const override { return name.empty() ? "Script" : "Script - " + name; }
+		std::string getType() const override { return "Script"; }
+		std::string getEditName() const override { return name.empty() ? "Script" : "Script - " + name; }
 
 
 		void onCreate() override;
@@ -41,5 +42,6 @@ namespace Engine
 	private:
 		LuaComponentDef* m_pLuaComponentDef = nullptr;
 		std::vector<Engine::LuaProperty> m_luaProperties; // This is for lua mostly
+		std::string m_luaName;
     };
 }

@@ -11,6 +11,7 @@
 #include <Engine/Texture.h>
 #include <Engine/SpriteComponent.h>
 #include <Engine/TextComponent.h>
+#include <Engine/ScriptComponent.h>
 
 #include <filesystem>
 
@@ -355,6 +356,7 @@ void EditorState::drawSceneUI() // This is also kind of update
         if (ImGui::Selectable("Text")) onCreateTextEntity();
         if (ImGui::Selectable("Sound")) onCreateSoundEntity();
         if (ImGui::Selectable("Particle")) onCreateParticleEntity();
+        if (ImGui::Selectable("Script")) onCreateScriptEntity();
         ImGui::EndPopup();
     }
 
@@ -367,8 +369,7 @@ void EditorState::drawSceneUI() // This is also kind of update
     {
         if (ImGui::Selectable("Sprite")) onAddComponent<Engine::SpriteComponent>();
         if (ImGui::Selectable("Text")) onAddComponent<Engine::TextComponent>();
-        //if (ImGui::Selectable("Sound")) onAddSoundComponent();
-        //if (ImGui::Selectable("Particle")) onCreateParticleEntity();
+        if (ImGui::Selectable("Script")) onAddComponent<Engine::ScriptComponent>();
         ImGui::EndPopup();
     }
 }

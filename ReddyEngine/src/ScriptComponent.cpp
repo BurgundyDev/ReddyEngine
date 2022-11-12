@@ -3,6 +3,7 @@
 #include "Engine/ReddyEngine.h"
 #include "Engine/GUI.h"
 #include "Engine/Utils.h"
+#include "Engine/Scene.h"
 
 
 static uint64_t g_nextRuntimeId = 1;
@@ -60,28 +61,35 @@ namespace Engine
         name = json["name"].asString();
 
         m_pLuaComponentDef = getLuaBindings()->getComponentDef(name);
-        m_luaProperties = m_pLuaComponentDef->properties; // Copy default properties
-
-        const auto& propertiesJson = json["properties"];
-        for (auto& luaProperty : m_luaProperties)
+        if (!m_pLuaComponentDef)
         {
-            switch (luaProperty.type)
+            m_luaProperties.clear();
+        }
+        else
+        {
+            m_luaProperties = m_pLuaComponentDef->properties; // Copy default properties
+
+            const auto& propertiesJson = json["properties"];
+            for (auto& luaProperty : m_luaProperties)
             {
-                case LuaPropertyType::Int:
-                    luaProperty.intValue = Utils::deserializeInt32(propertiesJson[luaProperty.name], luaProperty.intValue);
-                    break;
-                case LuaPropertyType::Float:
-                    luaProperty.floatValue = Utils::deserializeFloat(propertiesJson[luaProperty.name], luaProperty.floatValue);
-                    break;
-                case LuaPropertyType::Vec2:
-                    Utils::deserializeFloat2(&luaProperty.vec2Value.x, propertiesJson[luaProperty.name], &luaProperty.vec2Value.x);
-                    break;
-                case LuaPropertyType::Color:
-                    Utils::deserializeFloat4(&luaProperty.colorValue.x, propertiesJson[luaProperty.name], &luaProperty.colorValue.x);
-                    break;
-                case LuaPropertyType::String:
-                    luaProperty.stringValue = Utils::deserializeString(propertiesJson[luaProperty.name], luaProperty.stringValue);
-                    break;
+                switch (luaProperty.type)
+                {
+                    case LuaPropertyType::Int:
+                        luaProperty.intValue = Utils::deserializeInt32(propertiesJson[luaProperty.name], luaProperty.intValue);
+                        break;
+                    case LuaPropertyType::Float:
+                        luaProperty.floatValue = Utils::deserializeFloat(propertiesJson[luaProperty.name], luaProperty.floatValue);
+                        break;
+                    case LuaPropertyType::Vec2:
+                        Utils::deserializeFloat2(&luaProperty.vec2Value.x, propertiesJson[luaProperty.name], &luaProperty.vec2Value.x);
+                        break;
+                    case LuaPropertyType::Color:
+                        Utils::deserializeFloat4(&luaProperty.colorValue.x, propertiesJson[luaProperty.name], &luaProperty.colorValue.x);
+                        break;
+                    case LuaPropertyType::String:
+                        luaProperty.stringValue = Utils::deserializeString(propertiesJson[luaProperty.name], luaProperty.stringValue);
+                        break;
+                }
             }
         }
     }
@@ -90,13 +98,14 @@ namespace Engine
     {
         bool changed = false;
 
-        if (GUI::stringProperty("Component Name", &name, "Changing this will reset all properties values. Lua scripts should call RegisterComopnent(\"name\")."))
+        if (GUI::stringProperty("Component Name", &name, "Changing this will reset all properties values. Lua scripts should call RegisterComponent(\"name\")."))
         {
             changed = true;
             m_pLuaComponentDef = getLuaBindings()->getComponentDef(name);
             m_luaProperties = m_pLuaComponentDef->properties;
         }
 
+        GUI::beginGroup("Properties");
         for (auto& luaProperty : m_luaProperties)
         {
             switch (luaProperty.type)
@@ -118,6 +127,7 @@ namespace Engine
                     break;
             }
         }
+        GUI::endGroup();
 
         return changed;
     }

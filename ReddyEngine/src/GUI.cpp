@@ -295,7 +295,7 @@ namespace Engine
             showToolTip(tooltip);
 
             ImGui::PopID();
-            return false;
+            return ret;
         }
 
         bool enumProperty(const char* label, int* choice, const char* items_separated_by_zeros, const char* tooltip)

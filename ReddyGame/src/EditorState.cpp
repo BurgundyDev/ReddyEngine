@@ -17,6 +17,7 @@
 #include <Engine/Scene.h>
 #include <Engine/SpriteComponent.h>
 #include <Engine/TextComponent.h>
+#include <Engine/ScriptComponent.h>
 
 #include <imgui.h>
 #include <tinyfiledialogs/tinyfiledialogs.h>
@@ -219,6 +220,7 @@ void EditorState::update(float dt)
                     if (ImGui::MenuItem("Text")) onCreateTextEntity();
                     if (ImGui::MenuItem("Sound")) onCreateSoundEntity();
                     if (ImGui::MenuItem("Particle")) onCreateParticleEntity();
+                    if (ImGui::MenuItem("Script")) onCreateScriptEntity();
                     ImGui::EndMenu();
                 }
                 ImGui::EndMenu();
@@ -694,6 +696,13 @@ void EditorState::onCreateSoundEntity()
 void EditorState::onCreateParticleEntity()
 {
     CORE_ERROR_POPUP("Unsupported PFX Entity yet!");
+}
+
+void EditorState::onCreateScriptEntity()
+{
+    auto pEntity = Engine::getScene()->createEntity();
+    pEntity->addComponent<Engine::ScriptComponent>();
+    createEntityAction(pEntity);
 }
 
 

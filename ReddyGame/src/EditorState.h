@@ -25,6 +25,7 @@ namespace Engine
     using PFXInstanceRef = std::shared_ptr<PFXInstance>;
 
     class IEvent;
+    class ScriptComponent;
 }
 
 
@@ -73,12 +74,12 @@ private:
     void onCreateTextEntity();
     void onCreateSoundEntity();
     void onCreateParticleEntity();
+    void onCreateScriptEntity();
 
     template<typename T>
     void onAddComponent()
     {
         if (m_selected.size() != 1) return;
-        if (m_selected.front()->hasComponent<T>()) return; // Do nothing
         m_selected.front()->addComponent<T>();
         pushUndo("Add Component");
     }

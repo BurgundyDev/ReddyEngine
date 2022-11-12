@@ -5,6 +5,7 @@
 #include "Engine/Scene.h"
 #include "Engine/ReddyEngine.h"
 #include "Engine/GUI.h"
+#include "Engine/ScriptComponent.h"
 #include "ComponentManager.h"
 
 #include <imgui.h>
@@ -435,7 +436,7 @@ namespace Engine
 		{
 			const auto& pComponent = *it;
 
-			GUI::SectionState sectionState = GUI::beginSection(pComponent->getType());
+			GUI::SectionState sectionState = GUI::beginSection(pComponent->getEditName());
 			switch (sectionState)
 			{
 				case GUI::SectionState::Open:

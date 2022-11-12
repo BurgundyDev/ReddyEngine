@@ -93,6 +93,14 @@
                   "origin" : [ 0.5, 0.5 ],
                   "text" : "Hello World!",
                   "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "TimeMgr",
+                  "properties" : {
+                     "timeScale" : 60.0
+                  },
+                  "type" : "Script"
                }
             ],
             "id" : 6,
