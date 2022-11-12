@@ -28,13 +28,16 @@ namespace Engine
 		virtual void update(float deltaTime) {}
 		virtual void fixedUpdate(float deltaTime) {}
 		virtual void draw() {}
-
+		
 		virtual void onCreate() {};
 		virtual void onDestroy() {};
 		virtual void onEnable() {};
 		virtual void onDisable() {};
 		virtual void onMouseEnter() {}
 		virtual void onMouseLeave() {}
+		virtual void onMouseDown() {} // Was down inside
+		virtual void onMouseUp() {} // Was up if previously downed inside (Not necessarly up inside!, Use onMouseClick for that)
+		virtual void onMouseClick() {} // Was Down and Up inside
 
 		virtual Json::Value serialize();
 		virtual void deserialize(const Json::Value& json);

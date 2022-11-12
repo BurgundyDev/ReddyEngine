@@ -7,6 +7,7 @@
 #include "Engine/ResourceManager.h"
 #include "Engine/Scene.h"
 #include "Engine/EventSystem.h"
+#include "Engine/LuaBindings.h"
 
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -24,6 +25,7 @@ namespace Engine
     static ResourceManagerRef g_pResourceManager;
     static SceneRef g_pScene;
 	static EventSystemRef g_pEventSystem;
+	static LuaBindingsRef g_pLuaBindings;
 
     static int g_fixedUpdateFPS = 60;
     static bool g_done = false;
@@ -114,6 +116,8 @@ namespace Engine
         g_pResourceManager = std::make_shared<ResourceManager>();
         g_pScene = std::make_shared<Scene>();
         g_pEventSystem = std::make_shared<EventSystem>();
+        g_pLuaBindings = std::make_shared<LuaBindings>();
+        g_pLuaBindings->init();
 
         // Once everything is setup, the game can load stuff
         pGame->loadContent();
@@ -225,6 +229,7 @@ namespace Engine
 
                 g_pScene->fixedUpdate(fixedUpdateTime);
                 pGame->fixedUpdate(fixedUpdateTime);
+                g_pLuaBindings->fixedUpdate(fixedUpdateTime);
                 
                 fixedUpdateProgress -= 1.0f / (float)g_fixedUpdateFPS;
                 ++fixedUpdated;
@@ -236,13 +241,15 @@ namespace Engine
                 }
             }
 
-            g_pEventSystem->dispatchEvents();
-
             // Update
+            g_pEventSystem->dispatchEvents();
             g_pScene->update(deltaTime);
+
+            g_pEventSystem->dispatchEvents();
             pGame->update(deltaTime);
 
             g_pEventSystem->dispatchEvents();
+            g_pLuaBindings->update(deltaTime);
 
             // Generate imgui final render data
             ImGui::Render();
@@ -253,9 +260,8 @@ namespace Engine
             glClear(GL_COLOR_BUFFER_BIT);
             g_pSpriteBatch->beginFrame();
 
-            g_pEventSystem->dispatchEvents();
-
             // Draw game
+            g_pEventSystem->dispatchEvents();
             pGame->draw();
             
             // Draw ImGui on top
@@ -269,6 +275,7 @@ namespace Engine
         Config::save();
 
         // Cleanup
+        g_pLuaBindings.reset();
         g_pScene.reset();
         g_pResourceManager.reset();
         g_pSpriteBatch.reset();
@@ -317,6 +324,11 @@ namespace Engine
 	const Engine::EventSystemRef& getEventSystem()
 	{
         return g_pEventSystem;
+	}
+
+	const Engine::LuaBindingsRef& getLuaBindings()
+	{
+        return g_pLuaBindings;
 	}
 
 	glm::vec2 getResolution()
