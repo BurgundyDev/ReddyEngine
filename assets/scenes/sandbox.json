@@ -1,7 +1,7 @@
 {
    "camera" : {
-      "position" : [ 0.75390625, 0.093749985098838806 ],
-      "zoom" : 2
+      "position" : [ 1.4648441076278687, -1.0963542461395264 ],
+      "zoom" : 3
    },
    "root" : {
       "children" : [
@@ -76,9 +76,34 @@
             "name" : "Big One",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -1.0, -1.0 ],
+               "position" : [ -0.83333325386047363, -0.875 ],
                "rotation" : 0.0,
                "scale" : [ 1.3899999856948853, 1.3899999856948853 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 0.58362168073654175, 0.63287878036499023, 0.86274510622024536, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts\\defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "text" : "Hello World!",
+                  "type" : "Text"
+               }
+            ],
+            "id" : 6,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "Text",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 1.847583532333374, -1.6432290077209473 ],
+               "rotation" : 33.0,
+               "scale" : [ 2.8499999046325684, 2.8499999046325684 ]
             },
             "uiRoot" : false
          }

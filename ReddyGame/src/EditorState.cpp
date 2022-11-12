@@ -16,7 +16,7 @@
 #include <Engine/Entity.h>
 #include <Engine/Scene.h>
 #include <Engine/SpriteComponent.h>
-#include <Engine/Entity.h>
+#include <Engine/TextComponent.h>
 
 #include <imgui.h>
 #include <tinyfiledialogs/tinyfiledialogs.h>
@@ -681,7 +681,9 @@ void EditorState::onCreateSpriteEntity()
 
 void EditorState::onCreateTextEntity()
 {
-    CORE_ERROR_POPUP("Unsupported Text Entity yet!");
+    auto pEntity = Engine::getScene()->createEntity();
+    pEntity->addComponent<Engine::TextComponent>();
+    createEntityAction(pEntity);
 }
 
 void EditorState::onCreateSoundEntity()

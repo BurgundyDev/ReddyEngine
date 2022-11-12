@@ -10,6 +10,7 @@
 #include <Engine/ResourceManager.h>
 #include <Engine/Texture.h>
 #include <Engine/SpriteComponent.h>
+#include <Engine/TextComponent.h>
 
 #include <filesystem>
 
@@ -365,7 +366,7 @@ void EditorState::drawSceneUI() // This is also kind of update
     if (ImGui::BeginPopupContextWindow("CreateComponentContext"))
     {
         if (ImGui::Selectable("Sprite")) onAddComponent<Engine::SpriteComponent>();
-        //if (ImGui::Selectable("Text")) onAddTextComponent();
+        if (ImGui::Selectable("Text")) onAddComponent<Engine::TextComponent>();
         //if (ImGui::Selectable("Sound")) onAddSoundComponent();
         //if (ImGui::Selectable("Particle")) onCreateParticleEntity();
         ImGui::EndPopup();

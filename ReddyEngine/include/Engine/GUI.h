@@ -12,6 +12,9 @@ namespace Engine
     class Texture;
     using TextureRef = std::shared_ptr<Texture>;
 
+    class Font;
+    using FontRef = std::shared_ptr<Font>;
+
 
     namespace GUI
     {
@@ -44,11 +47,14 @@ namespace Engine
         bool angleProperty(const char* label, float* value, const char* tooltip = nullptr);
         bool floatSliderProperty(const char* label, float* value, float min, float max, const char* tooltip = nullptr);
         bool intProperty(const char* label, int* value, int min = -1000000, int max = 1000000, const char* tooltip = nullptr);
-        bool textureProperty(const char* label, TextureRef* value, const char* tooltip = nullptr);
         bool boolProperty(const char* label, bool* value, const char* tooltip = nullptr);
         bool colorProperty(const char* label, glm::vec4* color, const char* tooltip = nullptr);
         bool vec2Property(const char* label, glm::vec2* value, const char* tooltip = nullptr);
         bool originProperty(const char* label, glm::vec2* value, const char* tooltip = nullptr);
         void idProperty(const char* label, uint64_t id, const char* tooltip = nullptr); // Can't modify this
+
+        // Resources
+        bool textureProperty(const char* label, TextureRef* value, const char* tooltip = nullptr);
+        bool fontProperty(const char* label, FontRef* value, const char* tooltip = nullptr);
     }
 }

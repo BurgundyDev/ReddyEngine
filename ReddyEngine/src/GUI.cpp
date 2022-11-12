@@ -1,4 +1,5 @@
 #include "Engine/GUI.h"
+#include "Engine/Font.h"
 #include "Engine/Texture.h"
 #include "Engine/ResourceManager.h"
 #include "Engine/ReddyEngine.h"
@@ -395,6 +396,63 @@ namespace Engine
 
                     if (getResourceManager()->copyFileToAssets(selectedFile, "textures", resultPath)) {
                         *value = getResourceManager()->getTexture(resultPath);
+
+                        ret = true;
+                    } else {
+                        fprintf(stderr, "Failed to copy asset from %s to assets!\n", selectedFile);
+
+                        ret = false;
+                    }
+                }
+            }
+            showToolTip(tooltip);
+
+            ImGui::PopID();
+            return ret;
+        }
+
+        // Lot of duplicate code... should clean up, template? We're going to add more (Sound, PFX, etc)
+        bool fontProperty(const char* label, FontRef* value, const char* tooltip)
+        {
+            bool ret = false;
+            ImGui::PushID(++g_propertyCount);
+
+            char buf[260];
+            if (*value)
+                memcpy(buf, (*value)->getFilename().c_str(), (*value)->getFilename().size() + 1);
+            else
+                buf[0] = '\0';
+
+            ImGui::InputText(label, buf, 260);
+            if (ImGui::IsItemDeactivatedAfterEdit())
+            {
+                *value = getResourceManager()->getFont(buf);
+                ret = true;
+            }
+            ImGui::SameLine();
+
+            if (!ret && ImGui::Button("...", { 25, 16 })) {
+                std::string filePatternMask;
+
+                for (size_t i = 0; i < std::size(Font::SUPPORTED_FORMATS); i++) {
+                    filePatternMask += "*." + std::string(Font::SUPPORTED_FORMATS[i]);
+
+                    if (i != std::size(Font::SUPPORTED_FORMATS) - 1) {
+                        filePatternMask += ";";
+                    }
+                }
+
+                // because we need to take the address of it
+                const char* maskCString = filePatternMask.c_str();
+
+                const char* selectedFile = tinyfd_openFileDialog("Open", "./assets/fonts/", 1, &maskCString, "Json", 0);
+                if (!selectedFile) {
+                    ret = false;
+                } else {
+                    std::string resultPath;
+
+                    if (getResourceManager()->copyFileToAssets(selectedFile, "fonts", resultPath)) {
+                        *value = getResourceManager()->getFont(resultPath);
 
                         ret = true;
                     } else {

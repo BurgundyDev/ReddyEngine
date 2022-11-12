@@ -358,7 +358,7 @@ namespace Engine
             std::ifstream file(filename);
             if (!file.is_open())
             {
-                CORE_ERROR("Failed to load file: " + filename);
+                CORE_ERROR("Failed to load file: {}", filename);
                 return false;
             }
             try
@@ -367,7 +367,7 @@ namespace Engine
             }
             catch (...)
             {
-                CORE_ERROR("Failed to parse file: " + filename);
+                CORE_ERROR("Failed to parse file: {}", filename);
                 file.close();
                 return false;
             }

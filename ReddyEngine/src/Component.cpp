@@ -2,10 +2,11 @@
 #include "Engine/Log.h"
 #include "Engine/Entity.h"
 #include "Engine/Utils.h"
-#include "Engine/SpriteComponent.h"
 #include "Engine/Scene.h"
 #include "Engine/ReddyEngine.h"
 #include "Engine/SpriteBatch.h"
+#include "Engine/SpriteComponent.h"
+#include "Engine/TextComponent.h"
 
 
 namespace Engine
@@ -13,7 +14,8 @@ namespace Engine
 	ComponentRef Component::create(const std::string& className)
 	{
 		if (className == "Sprite") return std::make_shared<SpriteComponent>();
-		CORE_ERROR("Unrecognized Component Type: " + className);
+		if (className == "Text") return std::make_shared<TextComponent>();
+		CORE_ERROR("Unrecognized Component Type: {}", className);
 		return nullptr;
 	}
 

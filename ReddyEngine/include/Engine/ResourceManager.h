@@ -18,7 +18,7 @@ namespace Engine
         MusicRef getMusic(const std::string& name);
         TextureRef getTexture(const std::string& name);
         PFXRef getPFX(const std::string& name);
-        FontRef getFont(const std::string& name, int height);
+        FontRef getFont(const std::string& name);
 
         /*! \brief Copy the file from \ref{path} to the assets directory, with \ref{subDir} 
             being one of textures, fonts, etc. to copy to. resultPath gets set to the resulting path

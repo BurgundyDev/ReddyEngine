@@ -196,7 +196,6 @@ namespace Engine
 			auto pComponent = Component::create(type);
 			if (!pComponent)
 			{
-				CORE_ERROR("Unkonwn componentType: %s", type.c_str());
 				continue;
 			}
 

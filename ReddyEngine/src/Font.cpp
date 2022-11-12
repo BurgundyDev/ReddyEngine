@@ -3,8 +3,10 @@
 #include "Engine/ReddyEngine.h"
 #include "Engine/SpriteBatch.h"
 #include "Engine/Texture.h"
+#include "Engine/Utils.h"
 
 #include <glm/glm.hpp>
+#include <json/json.h>
 
 #define STB_RECT_PACK_IMPLEMENTATION
 #include <stb_rect_pack.h>
@@ -20,18 +22,22 @@ static const int PADDING = 2;
 
 namespace Engine
 {
-    FontRef Font::createFromFile(const std::string& filename, int height)
+    FontRef Font::createFromFile(const std::string& filename)
     {
+        Json::Value json;
+        Utils::loadJson(json, filename);
+
         auto pRet = std::shared_ptr<Font>(new Font());
-        pRet->m_height = height;
+        pRet->m_height = Utils::deserializeInt32(json["height"], 24);
         
         // load font file
         long size;
     
-        FILE* fontFile = fopen(filename.c_str(), "rb");
+        auto fontFilename = "assets/" + json["file"].asString();
+        FILE* fontFile = fopen(fontFilename.c_str(), "rb");
         if (!fontFile)
         {
-            CORE_ERROR("Failed to load Font: %s", filename.c_str());
+            CORE_ERROR("Failed to load Font: {}", fontFilename.c_str());
             return nullptr;
         }
 
@@ -53,7 +59,7 @@ namespace Engine
         // Prepare font
         if (!stbtt_InitFont(pRet->m_pInfo, pRet->m_pFontData, 0))
         {
-            CORE_ERROR("Failed to prepare Font: %s", filename.c_str());
+            CORE_ERROR("Failed to prepare Font: {}", fontFilename.c_str());
             return nullptr;
         }
 
@@ -189,6 +195,15 @@ namespace Engine
         size.x = std::max(size.x, x);
         return size;
     }
+    
+    //void Font::draw(const std::string& text,
+    //                const glm::mat4& transform, 
+    //                const glm::vec4& color,
+    //                float scale,
+    //                const glm::vec2& align)
+    //{
+    //    // no op
+    //}
 
     void Font::draw(const std::string& text,
                     const glm::vec2& position, 
