@@ -23,6 +23,7 @@ namespace Engine
         json["font"] = pFont ? pFont->getFilename() : "";
         json["color"] = Utils::serializeJsonValue(color);
         json["origin"] = Utils::serializeJsonValue(origin);
+        json["scale"] = Utils::serializeJsonValue(scale);
         json["text"] = Utils::serializeJsonValue(text);
 
         return json;
@@ -40,6 +41,9 @@ namespace Engine
         const float DEFAULT_ORIGIN[2] = {0.5f, 0.5f};
         Utils::deserializeFloat2(&origin.x, json["origin"], DEFAULT_ORIGIN);
 
+        const float DEFAULT_SCALE = 1.0f;
+        scale = Utils::deserializeFloat(json["scale"], DEFAULT_SCALE);
+
         text = Utils::deserializeString(json["text"], "Text");
     }
 
@@ -51,6 +55,7 @@ namespace Engine
         changed |= GUI::fontProperty("Font", &pFont);
         changed |= GUI::colorProperty("Color", &color);
         changed |= GUI::originProperty("Origin", &origin);
+        changed |= GUI::floatProperty("Scale", &scale);
 
         return changed;
     }
@@ -62,7 +67,7 @@ namespace Engine
         const auto& invTransform = m_pEntity->getInvWorldTransformWithScale();
 
         glm::ivec2 textSize = pFont->measure(text);
-        glm::vec2 sizef = glm::vec2((float)textSize.x, (float)textSize.y)/* * m_pEntity->getTransform().scale*/ * SPRITE_BASE_SCALE;
+        glm::vec2 sizef = glm::vec2((float)textSize.x, (float)textSize.y)/* * m_pEntity->getTransform().scale*/ * scale * SPRITE_BASE_SCALE;
         glm::vec2 invOrigin(1.f - origin.x, 1.f - origin.y);
 
         glm::vec2 localMouse = invTransform * glm::vec4(mousePos, 0, 1);
@@ -86,7 +91,7 @@ namespace Engine
 		auto sb = getSpriteBatch().get();
 
         glm::ivec2 textSize = pFont->measure(text);
-        glm::vec2 sizef = glm::vec2((float)textSize.x, (float)textSize.y)/* * m_pEntity->getTransform().scale*/ * SPRITE_BASE_SCALE;
+        glm::vec2 sizef = glm::vec2((float)textSize.x, (float)textSize.y)/* * m_pEntity->getTransform().scale*/ * scale * SPRITE_BASE_SCALE;
         glm::vec2 invOrigin(1.f - origin.x, 1.f - origin.y);
 
         glm::vec2 points[4] = {
@@ -110,7 +115,7 @@ namespace Engine
                     m_pEntity->getWorldPosition(),
                     color,
                     m_pEntity->getRotation(),
-                    m_pEntity->getTransform().scale.x * SPRITE_BASE_SCALE,
+                    m_pEntity->getTransform().scale.x * scale * SPRITE_BASE_SCALE,
                     origin);
         //getSpriteBatch()->drawSprite(pTexture,
         //                             m_pEntity->getWorldTransformWithScale(),

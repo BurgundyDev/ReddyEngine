@@ -31,6 +31,7 @@ namespace Engine
 		FontRef pFont;
 		glm::vec4 color = {1, 1, 1, 1};
 		glm::vec2 origin = {0.5f, 0.5f};
+		float scale = 1.0f;
 		std::string text;
     };
 }
