@@ -19,4 +19,5 @@ public:
     void enter(const GameStateRef& previousState) override;
 
 private:
+    bool m_saveExists = false;
 };

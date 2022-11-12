@@ -1,6 +1,6 @@
 {
    "camera" : {
-      "position" : [ 1.4648441076278687, -1.0963542461395264 ],
+      "position" : [ 1.059895396232605, -2.5520837306976318 ],
       "zoom" : 3
    },
    "root" : {
@@ -91,13 +91,18 @@
                   "enabled" : true,
                   "font" : "fonts\\defaultFont24.json",
                   "origin" : [ 0.5, 0.5 ],
-                  "text" : "Hello World!",
+                  "scale" : 3.3199999332427979,
+                  "text" : "TimeMgr",
                   "type" : "Text"
                },
                {
                   "enabled" : true,
                   "name" : "TimeMgr",
                   "properties" : {
+                     "daysPerSeason" : 28,
+                     "nightTint" : [ 0.5, 0.69999998807907104, 0.89999997615814209, 1.0 ],
+                     "rainDir" : [ -0.10000000149011612, -1.0 ],
+                     "season" : "Spring",
                      "timeScale" : 60.0
                   },
                   "type" : "Script"
@@ -109,9 +114,9 @@
             "name" : "Text",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 1.847583532333374, -1.6432290077209473 ],
-               "rotation" : 33.0,
-               "scale" : [ 2.8499999046325684, 2.8499999046325684 ]
+               "position" : [ -1.487051248550415, -3.3919267654418945 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
             },
             "uiRoot" : false
          }

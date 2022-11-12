@@ -1,0 +1,50 @@
+{
+   "camera" : {
+      "position" : [ 0.3203125, -0.1510416567325592 ],
+      "zoom" : 1
+   },
+   "root" : {
+      "children" : [
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures/defaultTexture.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               }
+            ],
+            "id" : 8,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 0.0, 0.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         }
+      ],
+      "clickThrough" : true,
+      "components" : [],
+      "id" : 0,
+      "lockScale" : true,
+      "mouseChildren" : true,
+      "name" : "Root",
+      "sortChildren" : false,
+      "transform" : {
+         "position" : [ 0.0, 0.0 ],
+         "rotation" : 0.0,
+         "scale" : [ 1.0, 1.0 ]
+      },
+      "uiRoot" : false
+   },
+   "type" : "scene",
+   "version" : 1
+}
