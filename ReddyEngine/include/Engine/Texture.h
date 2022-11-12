@@ -34,6 +34,8 @@ namespace Engine
 
         void setData(const uint8_t* data); // For dynamic textures only
 
+        GLuint getHandle() const { return m_handle; }
+
         const glm::ivec2& getSize() const { return m_size; }
 
         void bind(int slot = 0);

@@ -109,7 +109,11 @@ namespace Engine
 
     void TextComponent::draw()
     {
-        if (!pFont) return;
+        if (!pFont || text.empty()) {
+            Component::draw();
+
+            return;
+        }
 
         pFont->draw(text, 
                     m_pEntity->getWorldPosition(),

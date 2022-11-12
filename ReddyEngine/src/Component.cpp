@@ -8,10 +8,14 @@
 #include "Engine/SpriteComponent.h"
 #include "Engine/TextComponent.h"
 #include "Engine/ScriptComponent.h"
+#include "Engine/ResourceManager.h"
+#include "Engine/Constants.h"
 
 
 namespace Engine
 {
+	std::unordered_map<std::string, TextureRef> Component::cachedEditorIcons = { };
+
 	ComponentRef Component::create(const std::string& className)
 	{
 		if (className == "Sprite") return std::make_shared<SpriteComponent>();
@@ -20,6 +24,11 @@ namespace Engine
 
 		CORE_ERROR("Unrecognized Component Type: {}", className);
 		return nullptr;
+	}
+	
+	void Component::clearCachedEditorIcons()
+	{
+		cachedEditorIcons.clear();
 	}
 
 	Component::Component()
@@ -66,6 +75,38 @@ namespace Engine
 		m_isEnabled = Utils::deserializeBool(json["enabled"], true);
 	}
 
+	TextureRef Component::getEditorIcon() const
+	{
+		std::string name = getType();
+		
+		std::transform(
+			name.begin(),
+			name.end(),
+			name.begin(),
+			[](char ch) { return std::tolower(ch); }
+		);
+
+		const auto it = cachedEditorIcons.find(name);
+
+		if (it != cachedEditorIcons.end()) {
+			return it->second;
+		}
+
+		for (const char* extension : Texture::SUPPORTED_FORMATS) {
+			if (TextureRef icon = getResourceManager()->getTexture("textures/editorIcon_" + name + "." + extension)) {
+				cachedEditorIcons.insert({ name, icon });
+
+				return icon;
+			}
+		}
+
+		// note that we add to cachedEditorIcons anyway,
+		// don't want to keep trying to load every call even if a component has no editor icon
+		cachedEditorIcons.insert({ name, TextureRef() });
+
+		return nullptr;
+	}
+
 	bool Component::isMouseHover(const glm::vec2& mousePos) const
 	{
 		if (!getScene()->isEditorScene()) return false;
@@ -87,6 +128,21 @@ namespace Engine
 		sb->drawLine({worldPos.x - 0.2f, worldPos.y + 0.2f}, {worldPos.x + 0.2f, worldPos.y + 0.2f}, 2.0f * zoomScale, color);
 		sb->drawLine({worldPos.x + 0.2f, worldPos.y + 0.2f}, {worldPos.x + 0.2f, worldPos.y - 0.2f}, 2.0f * zoomScale, color);
 		sb->drawLine({worldPos.x + 0.2f, worldPos.y - 0.2f}, {worldPos.x - 0.2f, worldPos.y - 0.2f}, 2.0f * zoomScale, color);
+	}
+
+	void Component::draw()
+	{
+		if (!getScene()->isEditorScene()) return;
+
+		if (const TextureRef editorIcon = getEditorIcon()) {
+			
+			getSpriteBatch()->drawSprite(
+				editorIcon,
+				m_pEntity->getWorldTransformWithScale(),
+                glm::vec4(1.0f),
+                m_pEntity->getTransform().scale * SPRITE_BASE_SCALE
+			);
+		}
 	}
 }
 

@@ -1,5 +1,6 @@
 #include "Engine/Entity.h"
 #include "Engine/Component.h"
+#include "Engine/Texture.h"
 #include "Engine/Utils.h"
 #include "Engine/Log.h"
 #include "Engine/Scene.h"
@@ -439,10 +440,32 @@ namespace Engine
 			GUI::SectionState sectionState = GUI::beginSection(pComponent->getEditName());
 			switch (sectionState)
 			{
-				case GUI::SectionState::Open:
+				case GUI::SectionState::Open: {
+					bool hasEditorIcon = false;
+
+					if (auto componentEditorIcon = pComponent->getEditorIcon()) {
+						static const float iconScale = 0.5f;
+
+						ImGui::Columns(2, nullptr, false);
+						ImGui::SetColumnOffset(1, componentEditorIcon->getSize().x * iconScale + 32);
+						ImGui::Image(
+							(ImTextureID)componentEditorIcon->getHandle(),
+							ImVec2(float(componentEditorIcon->getSize().x) * iconScale, float(componentEditorIcon->getSize().y) * iconScale)
+						);
+						ImGui::NextColumn();
+
+						hasEditorIcon = true;
+					}
+
 					changed |= pComponent->edit();
+
+					if (hasEditorIcon) {
+						ImGui::Columns();
+					}
+
 					GUI::endSection();
 					break;
+				}
 				case GUI::SectionState::Delete:
 					pComponentToRemove = pComponent;
 					break;

@@ -79,6 +79,8 @@ void EditorState::leave(const GameStateRef& newsState)
     Engine::getEventSystem()->deregisterListener<Engine::MouseButtonUpEvent>(this);
     Engine::getEventSystem()->deregisterListener<Engine::DropEvent>(this);
     Engine::getScene()->setEditorScene(false);
+
+    Engine::Component::clearCachedEditorIcons();
 }
 
 void EditorState::setDirty(bool dirty)
