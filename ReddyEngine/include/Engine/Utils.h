@@ -46,6 +46,7 @@ namespace Engine
         bool createTextFile(const std::string& path, const std::string& content);
         void showInExplorer(const std::string& path);
         void openFile(const std::string& file);
+        bool fileExists(const std::string& file);
 
         // Config
         bool loadJson(Json::Value &out, const std::string& filename);

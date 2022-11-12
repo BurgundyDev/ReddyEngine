@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <fstream>
 #include <regex>
+#include <filesystem>
 
 #include <SDL.h>
 
@@ -976,6 +977,17 @@ namespace Engine
 #if defined(WIN32)
             ShellExecuteA(0, 0, file.c_str(), 0, 0 , SW_SHOW);
 #endif
+        }
+
+        bool fileExists(const std::string& file)
+        {
+            std::filesystem::path path(file);
+
+            if (path.empty()) {
+                return false;
+            }
+
+            return std::filesystem::exists(path) && (std::filesystem::is_regular_file(path) || std::filesystem::is_symlink(path));
         }
     }
 }
