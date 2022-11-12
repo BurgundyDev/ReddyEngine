@@ -31,7 +31,8 @@ project "ReddyGame"
       "%{IncludeDir.imgui}",
       "%{IncludeDir.jsoncpp}",
       "%{IncludeDir.lib_json}",
-      "%{IncludeDir.tinyxml2}"
+      "%{IncludeDir.tinyxml2}",
+      "%{IncludeDir.lua}"
 	}
 
    links

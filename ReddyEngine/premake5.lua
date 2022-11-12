@@ -37,7 +37,7 @@ project "ReddyEngine"
 	  	"%{IncludeDir.tinyxml2}",
 	  	"%{IncludeDir.box2d}",
 	  	"%{IncludeDir.box2d_source}",
-		"lua"
+		"%{IncludeDir.lua}"
 	}
 
    links
