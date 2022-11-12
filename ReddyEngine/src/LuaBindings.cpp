@@ -28,14 +28,24 @@ namespace Engine
     {
     }
 
-    void LuaBindings::init()
+    void LuaBindings::clear()
+    {
+        for (const auto& kv : m_componentDefs) delete kv.second;
+        m_componentDefs.clear();
+        lua_close(L);
+    }
+
+    void LuaBindings::init(bool doRunFiles)
     {
         L = luaL_newstate();
         luaL_openlibs(L);
 
         createBindings();
-        runFiles();
-        initComponents();
+        if (doRunFiles)
+        {
+            runFiles();
+            initComponents();
+        }
     }
 
     LuaBindings::~LuaBindings()
@@ -87,4 +97,24 @@ namespace Engine
 
         m_pCurrentComponentDef = nullptr;
     }
+}
+
+glm::vec2 LUA_GET_VEC2_impl(lua_State* L, int stackIndex)
+{
+    if (lua_gettop(L) < 1 || !lua_istable(L, stackIndex)) return  {0, 0};
+    glm::vec2 v;
+    lua_getfield(L, stackIndex, "x"); v.x = (float)lua_tonumber(L, -1); lua_pop(L, 1);
+    lua_getfield(L, stackIndex, "y"); v.y = (float)lua_tonumber(L, -1); lua_pop(L, 1);
+    return v;
+}
+
+glm::vec4 LUA_GET_COLOR_impl(lua_State* L, int stackIndex)
+{
+    if (lua_gettop(L) < 1 || !lua_istable(L, stackIndex)) return {1, 1, 1, 1};
+    glm::vec4 v;
+    lua_getfield(L, stackIndex, "r"); v.r = (float)lua_tonumber(L, -1); lua_pop(L, 1);
+    lua_getfield(L, stackIndex, "g"); v.g = (float)lua_tonumber(L, -1); lua_pop(L, 1);
+    lua_getfield(L, stackIndex, "b"); v.b = (float)lua_tonumber(L, -1); lua_pop(L, 1);
+    lua_getfield(L, stackIndex, "a"); v.a = (float)lua_tonumber(L, -1); lua_pop(L, 1);
+    return v;
 }

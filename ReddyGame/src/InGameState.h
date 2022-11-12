@@ -12,6 +12,10 @@ namespace Engine
     class IEvent;
 };
 
+extern "C" {
+    struct lua_State;
+}
+
 
 class InGameState final : public GameState
 {
@@ -23,6 +27,11 @@ public:
     void update(float dt) override;
     void fixedUpdate(float dt) override;
     void draw() override;
+
+    int funcGetCameraPosition(lua_State* L);
+    int funcSetCameraPosition(lua_State* L);
+    int funcGetCameraZoom(lua_State* L);
+    int funcSetCameraZoom(lua_State* L);
 
 private:
     void onKeyDown(Engine::IEvent* pEvent);

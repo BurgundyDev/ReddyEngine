@@ -66,11 +66,16 @@ namespace Engine
         LuaBindings();
         ~LuaBindings();
 
-        void init();
+        void init(bool doRunFiles = true);
+        void runFiles();
+        void initComponents();
+
         void update(float dt);
         void fixedUpdate(float dt);
+        void clear();
 
         LuaComponentDef* getComponentDef(const std::string& name) const;
+        lua_State* getState() const { return L; }
 
         int funcRegisterComponent(lua_State* L);
         int funcSetIntProperty(lua_State* L);
@@ -81,8 +86,6 @@ namespace Engine
 
     private:
         void createBindings();
-        void runFiles();
-        void initComponents();
 
         lua_State* L = nullptr;
 
@@ -90,3 +93,12 @@ namespace Engine
         LuaComponentDef* m_pCurrentComponentDef = nullptr;
     };
 }
+
+glm::vec2 LUA_GET_VEC2_impl(lua_State* L, int stackIndex);
+glm::vec4 LUA_GET_COLOR_impl(lua_State* L, int stackIndex);
+
+#define LUA_PUSH_VEC2(v) {lua_getglobal(L, "Vec2"); lua_pushnumber(L, v.x); lua_pushnumber(L, v.y); lua_pcall(L, 2, 1, 0);}
+#define LUA_PUSH_COLOR(c) {lua_getglobal(L, "Color"); lua_pushnumber(L, c.r); lua_pushnumber(L, c.g); lua_pushnumber(L, c.b); lua_pushnumber(L, c.a); lua_pcall(L, 4, 1, 0);}
+
+#define LUA_GET_VEC2(i) LUA_GET_VEC2_impl(L, i)
+#define LUA_GET_COLOR(i) LUA_GET_COLOR_impl(L, i)
