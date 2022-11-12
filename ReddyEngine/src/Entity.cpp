@@ -444,17 +444,22 @@ namespace Engine
 					bool hasEditorIcon = false;
 
 					if (auto componentEditorIcon = pComponent->getEditorIcon()) {
-						static const float iconScale = 0.5f;
+						static const float iconSize = 32.0f;
 
-						ImGui::Columns(2, nullptr, false);
-						ImGui::SetColumnOffset(1, componentEditorIcon->getSize().x * iconScale + 32);
-						ImGui::Image(
-							(ImTextureID)componentEditorIcon->getHandle(),
-							ImVec2(float(componentEditorIcon->getSize().x) * iconScale, float(componentEditorIcon->getSize().y) * iconScale)
-						);
-						ImGui::NextColumn();
+						// do not draw images with any zero dimension
+						if (glm::all(glm::bvec2(componentEditorIcon->getSize()))) {
+							const float aspectRatio = float(componentEditorIcon->getSize().x) / float(componentEditorIcon->getSize().y);
 
-						hasEditorIcon = true;
+							ImGui::Columns(2, nullptr, false);
+							ImGui::SetColumnOffset(1, iconSize + 32.0f);
+							ImGui::Image(
+								(ImTextureID)componentEditorIcon->getHandle(),
+								ImVec2(iconSize, std::min(iconSize / aspectRatio, 256.0f))
+							);
+							ImGui::NextColumn();
+
+							hasEditorIcon = true;
+						}
 					}
 
 					changed |= pComponent->edit();

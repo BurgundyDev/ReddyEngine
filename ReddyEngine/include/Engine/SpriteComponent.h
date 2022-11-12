@@ -25,6 +25,7 @@ namespace Engine
 
 		bool isMouseHover(const glm::vec2& mousePos) const override;
 		void drawOutline(const glm::vec4& color, float zoomScale) override; // For editor
+		virtual TextureRef getEditorIcon() const override;
 
 		std::string getType() const override { return "Sprite"; }
 

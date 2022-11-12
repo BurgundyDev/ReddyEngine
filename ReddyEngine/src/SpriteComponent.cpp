@@ -96,6 +96,11 @@ namespace Engine
         sb->drawLine(points[3], points[0], 2.0f * zoomScale, color);
     }
 
+    TextureRef SpriteComponent::getEditorIcon() const
+    {
+        return pTexture ? pTexture : Component::getEditorIcon();
+    }
+
     void SpriteComponent::draw()
     {
         getSpriteBatch()->drawSprite(pTexture,
