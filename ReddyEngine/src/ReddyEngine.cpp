@@ -226,9 +226,14 @@ namespace Engine
             while (fixedUpdateProgress > 0.0f)
             {
                 float fixedUpdateTime = 1.0f / (float)g_fixedUpdateFPS;
-
+                
+                g_pEventSystem->dispatchEvents();
                 g_pScene->fixedUpdate(fixedUpdateTime);
+                
+                g_pEventSystem->dispatchEvents();
                 pGame->fixedUpdate(fixedUpdateTime);
+                
+                g_pEventSystem->dispatchEvents();
                 g_pLuaBindings->fixedUpdate(fixedUpdateTime);
                 
                 fixedUpdateProgress -= 1.0f / (float)g_fixedUpdateFPS;

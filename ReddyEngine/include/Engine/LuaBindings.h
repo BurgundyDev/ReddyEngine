@@ -1,12 +1,15 @@
 #pragma once
 
-#include <lua.h>
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 
 #include <string>
 #include <vector>
 #include <map>
+
+extern "C" {
+    struct lua_State;
+}
 
 
 namespace Engine

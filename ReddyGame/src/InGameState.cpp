@@ -9,6 +9,10 @@
 #include <Engine/EventSystem.h>
 #include <Engine/Utils.h>
 #include <Engine/Log.h>
+#include <Engine/SpriteBatch.h>
+#include <Engine/LuaBindings.h>
+
+#include <glm/gtx/transform.hpp>
 
 
 InGameState::InGameState(const std::string& filename)
@@ -43,4 +47,27 @@ void InGameState::onKeyDown(Engine::IEvent* pEvent)
     auto keyEvent = (Engine::KeyDownEvent*)pEvent;
     if (keyEvent->key.keysym.scancode == SDL_SCANCODE_ESCAPE)
         g_pGame->pushState(std::make_shared<InGameMenuState>());
+}
+
+void InGameState::fixedUpdate(float dt)
+{
+}
+
+void InGameState::update(float dt)
+{
+}
+
+void InGameState::draw()
+{
+    glm::mat4 transform = 
+        glm::translate(glm::vec3(Engine::getResolution() * 0.5f, 0.0f)) *
+        glm::scale(glm::vec3(m_zoom)) * 
+        glm::translate(glm::vec3(-m_camera, 0.0f));
+
+    auto sb = Engine::getSpriteBatch().get();
+    sb->begin(transform);
+
+    Engine::getScene()->draw();
+
+    sb->end();
 }
