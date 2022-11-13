@@ -1,6 +1,6 @@
 {
    "camera" : {
-      "position" : [ 0.3203125, -0.1510416567325592 ],
+      "position" : [ 0.2630208432674408, -0.22395831346511841 ],
       "zoom" : 1
    },
    "root" : {
@@ -25,6 +25,31 @@
             "sortChildren" : false,
             "transform" : {
                "position" : [ 0.0, 0.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "enabled" : true,
+                  "name" : "InGame",
+                  "properties" : {
+                     "music" : "musics/8bitKnightMix.ogg"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 62,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 1.5546875, -1.421875 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
