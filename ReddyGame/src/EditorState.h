@@ -111,6 +111,7 @@ private:
     void onDropEvent(Engine::IEvent* pEvent);
 
     void pushUndo(const char* actionName);
+    void nudgeSelection(const glm::vec2& amount);
 
     EditDocumentType m_editDocumentType = EditDocumentType::Scene;
     ActionManagerRef m_pActionManager;

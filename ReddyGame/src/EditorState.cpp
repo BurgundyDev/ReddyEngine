@@ -149,6 +149,26 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
             break;
         }
     }
+
+    // Nudge selection
+    const float NUDGE_AMOUNT = 2.0f / 128.0f;
+    const float LARGE_NUDGE_AMOUNT = 16.0f / 128.0f;
+    if (!ctrl && !shift && !alt && scancode == SDL_SCANCODE_UP) nudgeSelection(glm::vec2(0, -NUDGE_AMOUNT));
+    if (!ctrl && !shift && !alt && scancode == SDL_SCANCODE_DOWN) nudgeSelection(glm::vec2(0, NUDGE_AMOUNT));
+    if (!ctrl && !shift && !alt && scancode == SDL_SCANCODE_LEFT) nudgeSelection(glm::vec2(-NUDGE_AMOUNT, 0.0f));
+    if (!ctrl && !shift && !alt && scancode == SDL_SCANCODE_RIGHT) nudgeSelection(glm::vec2(NUDGE_AMOUNT, 0.0f));
+    if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_UP) nudgeSelection(glm::vec2(0, -LARGE_NUDGE_AMOUNT));
+    if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_DOWN) nudgeSelection(glm::vec2(0, LARGE_NUDGE_AMOUNT));
+    if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_LEFT) nudgeSelection(glm::vec2(-LARGE_NUDGE_AMOUNT, 0.0f));
+    if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_RIGHT) nudgeSelection(glm::vec2(LARGE_NUDGE_AMOUNT, 0.0f));
+}
+
+void EditorState::nudgeSelection(const glm::vec2& amount)
+{
+    if (m_selected.empty()) return;
+    for (const auto& pEntity : m_selected)
+        pEntity->setWorldPosition(pEntity->getWorldPosition() + amount);
+    pushUndo("Nudge");
 }
 
 void EditorState::onKeyUp(Engine::IEvent* pEvent)
