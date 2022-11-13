@@ -54,20 +54,23 @@ function PlaySound(filename, vol, bal, pitch) end
 -- Component-Entity functions
 ---------------------------------------------------------------------
 
--- function GetEntity(c) end
+-- Any functions that takes an entity (e) can accept either:
+--   - Entity name
+--   - Entity object
+--   - Component object
+
+-- function GetEntity(c) end -- Pass in component or name of entity
 -- function GetComponent(obj, componentName) end
 
--- Following methods we can pass either a component or an entity.
-
 -- Transforms
-function GetPosition(obj) end
-function SetPosition(obj, pos) end
-function GetWorldPosition(obj) end
-function SetWorldPosition(obj, pos) end
-function GetRotation(obj) end
-function SetRotation(obj, degrees) end
-function GetScale(obj) end
-function SetScale(obj, scale) end
+function GetPosition(e) end
+function SetPosition(e, pos) end
+function GetWorldPosition(e) end
+function SetWorldPosition(e, pos) end
+function GetRotation(e) end
+function SetRotation(e, degrees) end
+function GetScale(e) end
+function SetScale(e, scale) end
 
 -- Parenting
 -- function GetParent(obj) end
@@ -76,7 +79,7 @@ function SetScale(obj, scale) end
 -- Lifecycle
 -- function Enable(obj) end
 -- function Disable(obj) end
--- function Destroy(obj) end -- Destroys the entity
+function Destroy(e) end -- Destroys the entity (Accepts: component, entity or entity name)
 -- function AddComponent(obj, componentName) end
 -- function RemoveComponent(obj, componentName) end
 

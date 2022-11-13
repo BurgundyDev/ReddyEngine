@@ -8,6 +8,9 @@ extern "C" {
 #include "Engine/Log.h"
 #include "Engine/Utils.h"
 #include "Engine/ScriptComponent.h"
+#include "Engine/Scene.h"
+#include "Engine/Entity.h"
+#include "Engine/ReddyEngine.h"
 
 #include <filesystem>
 
@@ -121,7 +124,7 @@ float LUA_GET_NUMBER_impl(lua_State* L, int stackIndex, float defaultValue)
 
 glm::vec2 LUA_GET_VEC2_impl(lua_State* L, int stackIndex, const glm::vec2& defaultValue)
 {
-    if (lua_gettop(L) < 1 || !lua_istable(L, stackIndex)) return  {0, 0};
+    if (lua_gettop(L) < stackIndex || !lua_istable(L, stackIndex)) return  {0, 0};
     glm::vec2 v = defaultValue;
     lua_getfield(L, stackIndex, "x"); v.x = (float)lua_tonumber(L, -1); lua_pop(L, 1);
     lua_getfield(L, stackIndex, "y"); v.y = (float)lua_tonumber(L, -1); lua_pop(L, 1);
@@ -130,7 +133,7 @@ glm::vec2 LUA_GET_VEC2_impl(lua_State* L, int stackIndex, const glm::vec2& defau
 
 glm::vec4 LUA_GET_COLOR_impl(lua_State* L, int stackIndex, const glm::vec4& defaultValue)
 {
-    if (lua_gettop(L) < 1 || !lua_istable(L, stackIndex)) return {1, 1, 1, 1};
+    if (lua_gettop(L) < stackIndex || !lua_istable(L, stackIndex)) return {1, 1, 1, 1};
     glm::vec4 v = defaultValue;
     lua_getfield(L, stackIndex, "r"); v.r = (float)lua_tonumber(L, -1); lua_pop(L, 1);
     lua_getfield(L, stackIndex, "g"); v.g = (float)lua_tonumber(L, -1); lua_pop(L, 1);
@@ -144,6 +147,22 @@ std::string LUA_GET_STRING_impl(lua_State* L, int stackIndex, const std::string&
     if (lua_gettop(L) >= stackIndex && lua_isstring(L, stackIndex))
         return lua_tostring(L, stackIndex);
     return defaultValue;
+}
+
+Engine::EntityRef LUA_GET_ENTITY_impl(lua_State* L, int stackIndex, const char* funcName)
+{
+    // This will be called a lot, we don't log errors. All silent
+
+    if (lua_gettop(L) < stackIndex) return nullptr;
+    if (lua_isstring(L, stackIndex)) return Engine::getScene()->getEntityByName(lua_tostring(L, stackIndex), true);
+    if (!lua_istable(L, stackIndex)) return nullptr;
+
+    lua_getfield(L, stackIndex, "COBJ");
+    if (!lua_islightuserdata(L, -1)) return nullptr;
+
+    auto pScriptComponent = (Engine::ScriptComponent*)lua_topointer(L, -1);
+    lua_pop(L, 1);
+    return pScriptComponent->getEntity();
 }
 
 Engine::ScriptComponent* LUA_GET_SCRIPT_COMPONENT_impl(lua_State* L, int stackIndex, const char* funcName)

@@ -43,6 +43,11 @@ namespace Engine
 	{
 		return m_pEntity ? m_pEntity->shared_from_this() : nullptr;
 	}
+	
+	Entity* Component::getEntityRaw()
+	{
+		return m_pEntity;
+	}
 
 	void Component::enable()
 	{

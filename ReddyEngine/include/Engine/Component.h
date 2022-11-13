@@ -54,6 +54,7 @@ namespace Engine
 		virtual void drawOutline(const glm::vec4& color, float zoomScale); // For editor
 
 		EntityRef getEntity();
+		Entity* getEntityRaw();
 		bool isEnabled() const { return m_isEnabled; }
 		
 		void enable();

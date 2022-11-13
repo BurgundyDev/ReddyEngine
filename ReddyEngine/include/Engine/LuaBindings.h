@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <memory>
+
 
 extern "C" {
     struct lua_State;
@@ -15,6 +17,9 @@ extern "C" {
 namespace Engine
 {
     class ScriptComponent;
+
+    class Entity;
+    using EntityRef = std::shared_ptr<Entity>;
 
 
     enum class LuaPropertyType
@@ -94,6 +99,8 @@ namespace Engine
 
         int funcPlaySound(lua_State* L);
 
+        int funcDestroy(lua_State* L);
+
     private:
         void createBindings();
 
@@ -114,6 +121,7 @@ namespace Engine
 #define LUA_GET_VEC2(i, defaultValue) LUA_GET_VEC2_impl(L, i, defaultValue)
 #define LUA_GET_COLOR(i, defaultValue) LUA_GET_COLOR_impl(L, i, defaultValue)
 #define LUA_GET_STRING(i, defaultValue) LUA_GET_STRING_impl(L, i, defaultValue)
+#define LUA_GET_ENTITY(i) LUA_GET_ENTITY_impl(L, i, __func__)
 #define LUA_GET_SCRIPT_COMPONENT(i) LUA_GET_SCRIPT_COMPONENT_impl(L, i, __func__)
 
 #define LUA_CLONE_TABLE(L, n) cloneLuaTable(L, n)
@@ -125,6 +133,7 @@ float LUA_GET_NUMBER_impl(lua_State* L, int stackIndex, float defaultValue);
 glm::vec2 LUA_GET_VEC2_impl(lua_State* L, int stackIndex, const glm::vec2& defaultValue);
 glm::vec4 LUA_GET_COLOR_impl(lua_State* L, int stackIndex, const glm::vec4& defaultValue);
 std::string LUA_GET_STRING_impl(lua_State* L, int stackIndex, const std::string& defaultValue);
+Engine::EntityRef LUA_GET_ENTITY_impl(lua_State* L, int stackIndex, const char* funcName);
 Engine::ScriptComponent* LUA_GET_SCRIPT_COMPONENT_impl(lua_State* L, int stackIndex, const char* funcName);
 
 int cloneLuaTable(lua_State* L, int n);

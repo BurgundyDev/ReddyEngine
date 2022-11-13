@@ -108,7 +108,7 @@ RegisterComponent("sandboxDestroyButton", {
     end,
 
     mouseClick = function(self)
-        -- Destroy(self.target)
+        Destroy(self.target)
     end
 })
 

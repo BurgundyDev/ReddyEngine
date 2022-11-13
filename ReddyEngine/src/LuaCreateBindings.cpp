@@ -10,6 +10,7 @@ extern "C" {
 #include "Engine/EventSystem.h"
 #include "Engine/ScriptComponent.h"
 #include "Engine/Entity.h"
+#include "Engine/Scene.h"
 #include "Engine/Input.h"
 #include "Engine/Audio.h"
 #include "Engine/Sound.h"
@@ -52,6 +53,8 @@ namespace Engine
         LUA_REGISTER(IsButtonDown);
 
         LUA_REGISTER(PlaySound);
+
+        LUA_REGISTER(Destroy);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -244,63 +247,76 @@ namespace Engine
 
     int LuaBindings::funcGetPosition(lua_State* L)
     {
-        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
-        auto v = pScriptComponent->getEntity()->getPosition();
+        auto pEntity = LUA_GET_ENTITY(1);
+        auto v = pEntity ? pEntity->getPosition() : glm::vec2(0);
         LUA_PUSH_VEC2(v);
         return 1;
     }
 
     int LuaBindings::funcSetPosition(lua_State* L)
     {
-        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
-        auto pos = LUA_GET_VEC2(2, glm::vec2(0));
-        pScriptComponent->getEntity()->setPosition(pos);
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (pEntity)
+        {
+            auto pos = LUA_GET_VEC2(2, glm::vec2(0));
+            pEntity->setPosition(pos);
+        }
         return 0;
     }
 
     int LuaBindings::funcGetWorldPosition(lua_State* L)
     {
-        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
-        auto v = pScriptComponent->getEntity()->getWorldPosition();
+        auto pEntity = LUA_GET_ENTITY(1);
+        auto v = pEntity ? pEntity->getWorldPosition() : glm::vec2(0);
         LUA_PUSH_VEC2(v);
         return 1;
     }
 
     int LuaBindings::funcSetWorldPosition(lua_State* L)
     {
-        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
-        auto pos = LUA_GET_VEC2(2, glm::vec2(0));
-        pScriptComponent->getEntity()->setWorldPosition(pos);
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (pEntity)
+        {
+            auto pos = LUA_GET_VEC2(2, glm::vec2(0));
+            pEntity->setWorldPosition(pos);
+        }
         return 0;
     }
 
     int LuaBindings::funcGetRotation(lua_State* L)
     {
-        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
-        lua_pushnumber(L, (lua_Number)pScriptComponent->getEntity()->getRotation());
+        auto pEntity = LUA_GET_ENTITY(1);
+        lua_pushnumber(L, (lua_Number)(pEntity ? pEntity->getRotation() : 0.0f));
         return 1;
     }
 
     int LuaBindings::funcSetRotation(lua_State* L)
     {
-        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
-        auto angle = LUA_GET_NUMBER(2, 0.0f);
-        pScriptComponent->getEntity()->setRotation(angle);
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (pEntity)
+        {
+            auto angle = LUA_GET_NUMBER(2, 0.0f);
+            pEntity->setRotation(angle);
+        }
         return 0;
     }
 
     int LuaBindings::funcGetScale(lua_State* L)
     {
-        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
-        LUA_PUSH_VEC2(pScriptComponent->getEntity()->getScale());
+        auto pEntity = LUA_GET_ENTITY(1);
+        auto v = pEntity ? pEntity->getScale() : glm::vec2(1);
+        LUA_PUSH_VEC2(v);
         return 1;
     }
 
     int LuaBindings::funcSetScale(lua_State* L)
     {
-        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
-        auto scale = LUA_GET_VEC2(2, glm::vec2(1));
-        pScriptComponent->getEntity()->setScale(scale);
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (pEntity)
+        {
+            auto scale = LUA_GET_VEC2(2, glm::vec2(1));
+            pEntity->setScale(scale);
+        }
         return 0;
     }
 
@@ -360,6 +376,13 @@ namespace Engine
         auto pSound = getResourceManager()->getSound(filename);
         if (pSound) pSound->play(vol, bal, pitch); 
 
+        return 0;
+    }
+
+    int LuaBindings::funcDestroy(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (pEntity) getScene()->destroyEntity(pEntity);
         return 0;
     }
 }
