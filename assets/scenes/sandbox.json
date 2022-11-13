@@ -1,64 +1,12 @@
 {
    "camera" : {
-      "position" : [ 1.059895396232605, -2.5520837306976318 ],
-      "zoom" : 3
+      "position" : [ 0.38150987029075623, -0.21875026822090149 ],
+      "zoom" : 1
    },
    "root" : {
       "children" : [
          {
-            "children" : [
-               {
-                  "children" : [
-                     {
-                        "children" : [],
-                        "clickThrough" : false,
-                        "components" : [
-                           {
-                              "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                              "enabled" : true,
-                              "origin" : [ 0.5, 0.5 ],
-                              "texture" : "textures/defaultTexture.png",
-                              "type" : "Sprite",
-                              "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-                           }
-                        ],
-                        "id" : 3,
-                        "lockScale" : true,
-                        "mouseChildren" : true,
-                        "name" : "Upside Down",
-                        "sortChildren" : false,
-                        "transform" : {
-                           "position" : [ 1.0, 1.0 ],
-                           "rotation" : 180.0,
-                           "scale" : [ 1.0, 1.0 ]
-                        },
-                        "uiRoot" : false
-                     }
-                  ],
-                  "clickThrough" : false,
-                  "components" : [
-                     {
-                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                        "enabled" : true,
-                        "origin" : [ 0.5, 0.5 ],
-                        "texture" : "textures/defaultTexture.png",
-                        "type" : "Sprite",
-                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-                     }
-                  ],
-                  "id" : 1,
-                  "lockScale" : false,
-                  "mouseChildren" : true,
-                  "name" : "Not Like This",
-                  "sortChildren" : false,
-                  "transform" : {
-                     "position" : [ 1.0, 1.0 ],
-                     "rotation" : 0.0,
-                     "scale" : [ 1.2799999713897705, 0.89999997615814209 ]
-                  },
-                  "uiRoot" : false
-               }
-            ],
+            "children" : [],
             "clickThrough" : false,
             "components" : [
                {
@@ -68,53 +16,21 @@
                   "texture" : "textures/defaultTexture.png",
                   "type" : "Sprite",
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-               }
-            ],
-            "id" : 4,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "Big One",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ -0.83333325386047363, -0.875 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.3899999856948853, 1.3899999856948853 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 0.58362168073654175, 0.63287878036499023, 0.86274510622024536, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts\\defaultFont24.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 3.3199999332427979,
-                  "text" : "TimeMgr",
-                  "type" : "Text"
                },
                {
                   "enabled" : true,
-                  "name" : "TimeMgr",
-                  "properties" : {
-                     "daysPerSeason" : 28,
-                     "nightTint" : [ 0.5, 0.69999998807907104, 0.89999997615814209, 1.0 ],
-                     "rainDir" : [ -0.10000000149011612, -1.0 ],
-                     "season" : "Spring",
-                     "timeScale" : 60.0
-                  },
+                  "name" : "sandboxA",
+                  "properties" : null,
                   "type" : "Script"
                }
             ],
-            "id" : 6,
+            "id" : 14,
             "lockScale" : true,
             "mouseChildren" : true,
-            "name" : "Text",
+            "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -1.487051248550415, -3.3919267654418945 ],
+               "position" : [ -1.0, -1.0 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },

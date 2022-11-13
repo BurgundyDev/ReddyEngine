@@ -32,6 +32,8 @@ void MainMenuState::update(float dt)
         if (ImGui::Button("Quit")) Engine::quit();
 
         ImGui::Separator();
+        if (ImGui::Button("Sandbox")) g_pGame->changeState(std::make_shared<InGameState>("assets/scenes/sandbox.json"));
+        ImGui::SameLine();
         if (ImGui::Button("Editor")) g_pGame->changeState(std::make_shared<EditorState>());
     }
 
