@@ -13,5 +13,9 @@ ReddyGame.exe
 **.vcxproj.filters
 **.vcxproj.user
 
+# XCode files
+**.pbxproj
+**.xcworkspacedata
+
 # Imgui generates this file. This is user/local config
 imgui.ini

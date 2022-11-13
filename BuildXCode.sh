@@ -1,0 +1,1 @@
+./premake/bin/premake5-mac xcode4
