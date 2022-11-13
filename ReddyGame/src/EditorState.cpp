@@ -115,6 +115,8 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
     if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_O) onOpen();
     if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_S) onSave();
     if (ctrl && shift && !alt && scancode == SDL_SCANCODE_S) onSaveAs();
+
+    if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_G) onDisableGrid();
     
     // Document type specifics
     switch (m_editDocumentType)
@@ -207,6 +209,14 @@ void EditorState::update(float dt)
             {
                 m_position = {0,0};
                 m_zoom = 2;
+            }
+
+            if(m_isGridVisible)
+            {
+                if (ImGui::MenuItem("Disable Grid", "Ctrl + G", nullptr, true)) onDisableGrid();
+            } else
+            {
+                if (ImGui::MenuItem("Enable Grid", "Ctrl + G", nullptr, true)) onDisableGrid();
             }
             ImGui::EndMenu();
         }
@@ -343,12 +353,12 @@ void EditorState::draw()
             sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, 1.0f / m_zoomf, gridEnd), (cell.x == 0) ? MID_GRID_COLOR : m_gridColor);
         }
 
-		for (int i = (int) gridStart; i < gridEnd; i++)
-		{
-	        const glm::vec2 cell = glm::vec2(m_position.x + gridStart / 2 - realGridOffset.x, m_position.y + i - realGridOffset.y);
+        for (int i = (int) gridStart; i < gridEnd; i++)
+        {
+            const glm::vec2 cell = glm::vec2(m_position.x + gridStart / 2 - realGridOffset.x, m_position.y + i - realGridOffset.y);
 
-		    sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, gridEnd, 1.0f / m_zoomf), (cell.y == 0) ? MID_GRID_COLOR : m_gridColor);
-		}
+            sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, gridEnd, 1.0f / m_zoomf), (cell.y == 0) ? MID_GRID_COLOR : m_gridColor);
+        }
     }
     
 
@@ -706,6 +716,30 @@ void EditorState::onCreateScriptEntity()
     pEntity->addComponent<Engine::ScriptComponent>();
     createEntityAction(pEntity);
 }
+
+void EditorState::onDisableGrid()
+{
+    switch (m_isGridVisible)
+    {
+    case true:
+        {
+            m_isGridVisible = false;
+            break;
+        }
+    case false:
+        {
+            m_isGridVisible = true;
+            break;
+        }
+    default:
+        {
+            m_isGridVisible = true;
+            break;
+        }
+    }
+    
+}
+
 
 
 //-----------------------------------------------------------------------

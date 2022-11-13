@@ -75,6 +75,7 @@ private:
     void onCreateSoundEntity();
     void onCreateParticleEntity();
     void onCreateScriptEntity();
+    void onDisableGrid();
 
     template<typename T>
     void onAddComponent()
