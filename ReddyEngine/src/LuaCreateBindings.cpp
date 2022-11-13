@@ -10,6 +10,7 @@ extern "C" {
 #include "Engine/EventSystem.h"
 #include "Engine/ScriptComponent.h"
 #include "Engine/Entity.h"
+#include "Engine/Input.h"
 
 
 namespace Engine
@@ -43,6 +44,9 @@ namespace Engine
         LUA_REGISTER(Distance);
         LUA_REGISTER(Normalize);
         LUA_REGISTER(Dot);
+
+        LUA_REGISTER(IsKeyDown);
+        LUA_REGISTER(IsButtonDown);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -322,6 +326,22 @@ namespace Engine
         auto a = LUA_GET_VEC2(1, glm::vec2(0));
         auto b = LUA_GET_VEC2(2, glm::vec2(0));
         lua_pushnumber(L, (lua_Number)(glm::dot(a, b)));
+        return 1;
+    }
+
+    int LuaBindings::funcIsKeyDown(lua_State* L)
+    {
+        auto key = LUA_GET_INT(1, 0);
+        auto isDown = getInput()->isKeyDown((SDL_Scancode)key);
+        lua_pushboolean(L, isDown ? 1 : 0);
+        return 1;
+    }
+
+    int LuaBindings::funcIsButtonDown(lua_State* L)
+    {
+        auto button = LUA_GET_INT(1, 0);
+        auto isDown = getInput()->isButtonDown(button);
+        lua_pushboolean(L, isDown ? 1 : 0);
         return 1;
     }
 }

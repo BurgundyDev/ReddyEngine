@@ -105,6 +105,20 @@ namespace Engine
     }
 }
 
+int LUA_GET_INT_impl(lua_State* L, int stackIndex, int defaultValue)
+{
+    if (lua_gettop(L) >= stackIndex && lua_isnumber(L, stackIndex))
+        defaultValue = (int)lua_tointeger(L, stackIndex);
+    return defaultValue;
+}
+
+float LUA_GET_NUMBER_impl(lua_State* L, int stackIndex, float defaultValue)
+{
+    if (lua_gettop(L) >= stackIndex && lua_isnumber(L, stackIndex))
+        defaultValue = (float)lua_tonumber(L, stackIndex);
+    return defaultValue;
+}
+
 glm::vec2 LUA_GET_VEC2_impl(lua_State* L, int stackIndex, const glm::vec2& defaultValue)
 {
     if (lua_gettop(L) < 1 || !lua_istable(L, stackIndex)) return  {0, 0};
@@ -123,13 +137,6 @@ glm::vec4 LUA_GET_COLOR_impl(lua_State* L, int stackIndex)
     lua_getfield(L, stackIndex, "b"); v.b = (float)lua_tonumber(L, -1); lua_pop(L, 1);
     lua_getfield(L, stackIndex, "a"); v.a = (float)lua_tonumber(L, -1); lua_pop(L, 1);
     return v;
-}
-
-float LUA_GET_NUMBER_impl(lua_State* L, int stackIndex, float defaultValue)
-{
-    if (lua_gettop(L) >= stackIndex && lua_isnumber(L, stackIndex))
-        defaultValue = (float)lua_tonumber(L, stackIndex);
-    return defaultValue;
 }
 
 Engine::ScriptComponent* LUA_GET_SCRIPT_COMPONENT_impl(lua_State* L, int stackIndex, const char* funcName)

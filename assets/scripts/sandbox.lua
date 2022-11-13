@@ -34,7 +34,6 @@ RegisterComponent("sandboxB", {
     end,
 
     create = function(self)
-        print("B:create")
         self.startPos = GetPosition(self)
     end,
 
@@ -43,6 +42,10 @@ RegisterComponent("sandboxB", {
         local pos = Vec2(self.startPos)
         pos.x = pos.x + math.sin(math.rad(self.move)) * 2
         SetPosition(self, pos)
+
+        if IsKeyDown(KEY_SPACE) then
+            print("Space Key Down")
+        end
     end,
 })
 
