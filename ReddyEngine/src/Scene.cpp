@@ -161,6 +161,11 @@ namespace Engine
 				{
 					m_pMouseDownEntity->onMouseClick();
 				}
+				else
+				{
+					if (m_pMouseHoverEntity)
+						m_pMouseHoverEntity->onMouseEnter();
+				}
 				m_pMouseDownEntity = nullptr;
 			}
 		}
