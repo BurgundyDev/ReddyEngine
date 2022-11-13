@@ -56,7 +56,7 @@ void InGameState::enter(const GameStateRef& previousState)
     if (!Engine::Utils::loadJson(json, m_filenameToLoad))
     {
         CORE_ERROR_POPUP("Failed to load level: {}", m_filenameToLoad);
-        g_pGame->changeState(std::make_shared<MainMenuState>());
+        std::dynamic_pointer_cast<Game>(Engine::getGame())->changeState(std::make_shared<MainMenuState>());
         return;
     }
     Engine::getScene()->deserialize(json);
@@ -76,7 +76,7 @@ void InGameState::onKeyDown(Engine::IEvent* pEvent)
 {
     auto keyEvent = (Engine::KeyDownEvent*)pEvent;
     if (keyEvent->key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-        g_pGame->pushState(std::make_shared<InGameMenuState>());
+        std::dynamic_pointer_cast<Game>(Engine::getGame())->pushState(std::make_shared<InGameMenuState>());
 }
 
 void InGameState::fixedUpdate(float dt)

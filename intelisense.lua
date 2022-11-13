@@ -110,6 +110,17 @@ function SetTextScale(e, scale) end
 
 ---------------------------------------------------------------------
 -- Entity searching
--------------------------------------------------------------------
+---------------------------------------------------------------------
 function FindEntityByName(entityName, pos, searchRadius) end -- Pass 0 for Radius for whole world
 -- function FindEntityByComponent(componentTypeName, pos, searchRadius) end -- Pass 0 for Radius for whole world
+
+
+---------------------------------------------------------------------
+-- State Management
+---------------------------------------------------------------------
+function ContinueGame() end -- Continue previously started game
+function NewGame(filename) end -- Start a new game
+function Quit() end -- Close the program
+function Editor() end -- Go to the Editor state
+function MainMenu() end -- Quit game back to main menu
+function Resume() end -- Resume game if we're in the ingame menu

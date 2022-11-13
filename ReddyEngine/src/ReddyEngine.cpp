@@ -26,6 +26,7 @@ namespace Engine
     static SceneRef g_pScene;
 	static EventSystemRef g_pEventSystem;
 	static LuaBindingsRef g_pLuaBindings;
+	static IGameRef g_pGame;
 
     static int g_fixedUpdateFPS = 60;
     static bool g_done = false;
@@ -34,6 +35,8 @@ namespace Engine
 
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv)
     {
+        g_pGame = pGame;
+
         // Don't use CORE_ERROR etc. before spdlog initialization 
         Log::Init();
         
@@ -296,11 +299,18 @@ namespace Engine
         SDL_GL_DeleteContext(gl_context);
         SDL_DestroyWindow(pWindow);
         SDL_Quit();
+
+        g_pGame = nullptr;
     }
 
     void setWindowCaption(const std::string& caption)
     {
         SDL_SetWindowTitle(pWindow, caption.c_str());
+    }
+
+    const IGameRef& getGame()
+    {
+        return g_pGame;
     }
 
     const SpriteBatchRef& getSpriteBatch()

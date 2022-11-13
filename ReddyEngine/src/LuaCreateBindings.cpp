@@ -73,6 +73,12 @@ namespace Engine
         LUA_REGISTER(GetName);
         LUA_REGISTER(SetName);
         LUA_REGISTER(FindEntityByName);
+        LUA_REGISTER(ContinueGame);
+        LUA_REGISTER(NewGame);
+        LUA_REGISTER(Quit);
+        LUA_REGISTER(Editor);
+        LUA_REGISTER(Resume);
+        LUA_REGISTER(MainMenu);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -651,6 +657,43 @@ namespace Engine
     int LuaBindings::funcFindEntityByComponent(lua_State* L)
     {
         //TODO:
+        return 0;
+    }
+
+    int LuaBindings::funcContinueGame(lua_State* L)
+    {
+        m_stateChangeRequest = StateChangeRequest::ContinueGame;
+        return 0;
+    }
+
+    int LuaBindings::funcNewGame(lua_State* L)
+    {
+        m_stateChangeRequest = StateChangeRequest::NewGame;
+        m_worldFilenameToLoad = LUA_GET_STRING(1, "assets/scenes/world.json");
+        return 0;
+    }
+
+    int LuaBindings::funcQuit(lua_State* L)
+    {
+        m_stateChangeRequest = StateChangeRequest::Quit;
+        return 0;
+    }
+
+    int LuaBindings::funcEditor(lua_State* L)
+    {
+        m_stateChangeRequest = StateChangeRequest::Editor;
+        return 0;
+    }
+
+    int LuaBindings::funcResume(lua_State* L)
+    {
+        m_stateChangeRequest = StateChangeRequest::Resume;
+        return 0;
+    }
+
+    int LuaBindings::funcMainMenu(lua_State* L)
+    {
+        m_stateChangeRequest = StateChangeRequest::MainMenu;
         return 0;
     }
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Engine/IGame.h>
+
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 
@@ -127,6 +129,13 @@ namespace Engine
         int funcFindEntityByName(lua_State* L);
         int funcFindEntityByComponent(lua_State* L);
 
+        int funcContinueGame(lua_State* L);
+        int funcNewGame(lua_State* L);
+        int funcQuit(lua_State* L);
+        int funcEditor(lua_State* L);
+        int funcResume(lua_State* L);
+        int funcMainMenu(lua_State* L);
+
     private:
         void createBindings();
 
@@ -134,6 +143,8 @@ namespace Engine
 
         std::map<std::string, LuaComponentDef*> m_componentDefs;
         LuaComponentDef* m_pCurrentComponentDef = nullptr;
+        StateChangeRequest m_stateChangeRequest = StateChangeRequest::None;
+        std::string m_worldFilenameToLoad;
     };
 }
 

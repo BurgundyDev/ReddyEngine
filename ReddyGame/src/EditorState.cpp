@@ -450,7 +450,7 @@ void EditorState::onQuit()
     if (!askSaveUnsavedChanges()) return;
 
     // Go back to main menu
-    g_pGame->changeState(std::make_shared<MainMenuState>());
+    std::dynamic_pointer_cast<Game>(Engine::getGame())->changeState(std::make_shared<MainMenuState>());
 }
 
 void EditorState::onUndo()

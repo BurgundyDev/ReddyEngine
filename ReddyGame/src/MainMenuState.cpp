@@ -27,14 +27,14 @@ void MainMenuState::update(float dt)
     if (ImGui::Begin("Main Menu", 0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
     {
         ImGui::Text("Using ImGui temporarly, we don't have UIs yet.");
-        if (ImGui::Button("Continue")) g_pGame->changeState(std::make_shared<InGameState>(Engine::Utils::getSavePath("Reddy") + "world.json"));
-        if (ImGui::Button("New Game")) g_pGame->changeState(std::make_shared<InGameState>("assets/scenes/world.json"));
+        if (ImGui::Button("Continue")) std::dynamic_pointer_cast<Game>(Engine::getGame())->changeState(std::make_shared<InGameState>(Engine::Utils::getSavePath("Reddy") + "world.json"));
+        if (ImGui::Button("New Game")) std::dynamic_pointer_cast<Game>(Engine::getGame())->changeState(std::make_shared<InGameState>("assets/scenes/world.json"));
         if (ImGui::Button("Quit")) Engine::quit();
 
         ImGui::Separator();
-        if (ImGui::Button("Sandbox")) g_pGame->changeState(std::make_shared<InGameState>("assets/scenes/sandbox.json"));
+        if (ImGui::Button("Sandbox")) std::dynamic_pointer_cast<Game>(Engine::getGame())->changeState(std::make_shared<InGameState>("assets/scenes/sandbox.json"));
         ImGui::SameLine();
-        if (ImGui::Button("Editor")) g_pGame->changeState(std::make_shared<EditorState>());
+        if (ImGui::Button("Editor")) std::dynamic_pointer_cast<Game>(Engine::getGame())->changeState(std::make_shared<EditorState>());
     }
 
     ImGui::End();

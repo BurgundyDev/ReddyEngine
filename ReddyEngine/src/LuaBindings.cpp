@@ -69,7 +69,12 @@ namespace Engine
 
     void LuaBindings::update(float dt)
     {
-        // Nothing to do here
+        if (m_stateChangeRequest != StateChangeRequest::None)
+        {
+            auto s = m_stateChangeRequest;
+            m_stateChangeRequest = StateChangeRequest::None;
+            getGame()->changeState(s, m_worldFilenameToLoad);
+        }
     }
 
     void LuaBindings::fixedUpdate(float dt)
@@ -80,6 +85,20 @@ namespace Engine
     void LuaBindings::runFiles()
     {
         auto luaFiles = Utils::findAllFiles("assets/scripts", "LUA", true);
+
+        // Put core.lua first, as other files will refer to it
+        for (auto it = luaFiles.begin(); it != luaFiles.end(); ++it)
+        {
+            if (Utils::getFilename(*it) == "core.lua")
+            {
+                auto file = *it;
+                luaFiles.erase(it);
+                luaFiles.insert(luaFiles.begin(), file);
+                break;
+            }
+        }
+
+        // Run them
         for (const auto& luaFile : luaFiles)
             checkLua(L, luaL_dofile(L, luaFile.c_str()));
     }

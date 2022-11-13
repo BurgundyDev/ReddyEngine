@@ -1,5 +1,7 @@
 #include "Game.h"
 #include "MainMenuState.h"
+#include "InGameState.h"
+#include "EditorState.h"
 
 #include <Engine/ReddyEngine.h>
 #include <Engine/SpriteBatch.h>
@@ -8,9 +10,6 @@
 #include <imgui.h>
 
 #include "Engine/ResourceManager.h"
-
-
-GameRef g_pGame;
 
 
 void Game::loadContent()
@@ -59,6 +58,31 @@ void Game::popState()
 
     if (prevState) prevState->leave(newState);
     if (newState) newState->enter(prevState);
+}
+
+
+void Game::changeState(Engine::StateChangeRequest stateChangeRequest, const std::string& filename)
+{
+    switch (stateChangeRequest)
+    {
+        case Engine::StateChangeRequest::ContinueGame:
+            changeState(std::make_shared<InGameState>(Engine::Utils::getSavePath("Reddy") + "world.json"));
+            break;
+        case Engine::StateChangeRequest::NewGame:
+            changeState(std::make_shared<InGameState>(filename));
+            break;
+        case Engine::StateChangeRequest::Quit:
+            Engine::quit();
+            break;
+        case Engine::StateChangeRequest::Resume:
+            break;
+        case Engine::StateChangeRequest::Editor:
+            changeState(std::make_shared<EditorState>());
+            break;
+        case Engine::StateChangeRequest::MainMenu:
+            changeState(std::make_shared<MainMenuState>());
+            break;
+    }
 }
 
 

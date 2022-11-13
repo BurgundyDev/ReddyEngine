@@ -35,7 +35,11 @@ namespace Engine
     class LuaBindings;
     using LuaBindingsRef = std::shared_ptr<LuaBindings>;
 
+    class IGame;
+    using IGameRef = std::shared_ptr<IGame>;
 
+    
+    const IGameRef& getGame();
     const SpriteBatchRef& getSpriteBatch();
     const InputRef& getInput();
     const AudioRef& getAudio();
