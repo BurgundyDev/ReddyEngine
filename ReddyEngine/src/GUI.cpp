@@ -245,7 +245,7 @@ namespace Engine
         {
             auto sectionId = ++g_sectionCount;
             bool visible = true;
-            auto ret = (SectionState)ImGui::CollapsingHeaderWithUpDown((text + "##section" + std::to_string(sectionId)).c_str(), &visible);
+            auto ret = (SectionState)ImGui::CollapsingHeaderWithUpDown((text + "##section" + std::to_string(sectionId)).c_str(), &visible, ImGuiTreeNodeFlags_DefaultOpen);
             if (!visible) ret = SectionState::Delete;
 
             if (ret == SectionState::Open)
