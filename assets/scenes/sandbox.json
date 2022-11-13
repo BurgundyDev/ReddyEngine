@@ -1,6 +1,6 @@
 {
    "camera" : {
-      "position" : [ 1.1184889078140259, -0.32552114129066467 ],
+      "position" : [ -0.46484440565109253, 0.21614550054073334 ],
       "zoom" : 3
    },
    "root" : {
@@ -131,7 +131,7 @@
             "id" : 22,
             "lockScale" : true,
             "mouseChildren" : true,
-            "name" : "",
+            "name" : "MoverFlame",
             "sortChildren" : false,
             "transform" : {
                "position" : [ 0.0, 0.0 ],
@@ -373,6 +373,96 @@
                "position" : [ 2.0214834213256836, -2.0000004768371582 ],
                "rotation" : 133.0,
                "scale" : [ 1.190000057220459, 1.190000057220459 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Stop Moving when close",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxButton",
+                  "properties" : null,
+                  "type" : "Script"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxStopMover",
+                  "properties" : {
+                     "target" : "MoverFlame"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 37,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -4.0, 0.0 ],
+               "rotation" : -90.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures\\arrow.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               }
+            ],
+            "id" : 40,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -2.8430995941162109, -4.76837158203125e-07 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.190000057220459, 1.190000057220459 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               }
+            ],
+            "id" : 42,
+            "lockScale" : false,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -1.0, 0.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.3600000143051147, 10.229999542236328 ]
             },
             "uiRoot" : false
          }

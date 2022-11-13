@@ -81,9 +81,11 @@ namespace Engine
         int funcSetVec2Property(lua_State* L);
         int funcSetColorProperty(lua_State* L);
         int funcSetStringProperty(lua_State* L);
+
         int funcGetComponent(lua_State* L);
         int funcGetEntity(lua_State* L);
-        int funcSendEvent(lua_State* L);
+        int funcDestroy(lua_State* L);
+
         int funcGetPosition(lua_State* L);
         int funcSetPosition(lua_State* L);
         int funcGetWorldPosition(lua_State* L);
@@ -92,14 +94,17 @@ namespace Engine
         int funcSetRotation(lua_State* L);
         int funcGetScale(lua_State* L);
         int funcSetScale(lua_State* L);
+
         int funcLength(lua_State* L);
         int funcDistance(lua_State* L);
         int funcNormalize(lua_State* L);
         int funcDot(lua_State* L);
+        
+        int funcSendEvent(lua_State* L);
         int funcIsKeyDown(lua_State* L);
         int funcIsButtonDown(lua_State* L);
         int funcPlaySound(lua_State* L);
-        int funcDestroy(lua_State* L);
+
         int funcGetSpriteTexture(lua_State* L);
         int funcSetSpriteTexture(lua_State* L);
         int funcGetSpriteColor(lua_State* L);
@@ -119,6 +124,9 @@ namespace Engine
         int funcGetName(lua_State* L);
         int funcSetName(lua_State* L);
 
+        int funcFindEntityByName(lua_State* L);
+        int funcFindEntityByComponent(lua_State* L);
+
     private:
         void createBindings();
 
@@ -133,6 +141,7 @@ namespace Engine
 // Helper macros
 #define LUA_PUSH_VEC2(v) {lua_getglobal(L, "Vec2"); lua_pushnumber(L, v.x); lua_pushnumber(L, v.y); lua_pcall(L, 2, 1, 0);}
 #define LUA_PUSH_COLOR(c) {lua_getglobal(L, "Color"); lua_pushnumber(L, c.r); lua_pushnumber(L, c.g); lua_pushnumber(L, c.b); lua_pushnumber(L, c.a); lua_pcall(L, 4, 1, 0);}
+#define LUA_PUSH_ENTITY(e) {lua_getglobal(L, "EINS_t"); if (e) lua_getfield(L, -1, e->luaName.c_str()); else lua_pushnil(L); }
 
 #define LUA_GET_INT(i, defaultValue) LUA_GET_INT_impl(L, i, defaultValue)
 #define LUA_GET_NUMBER(i, defaultValue) LUA_GET_NUMBER_impl(L, i, defaultValue)

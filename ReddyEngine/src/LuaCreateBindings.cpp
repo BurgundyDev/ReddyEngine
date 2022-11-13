@@ -72,6 +72,7 @@ namespace Engine
         LUA_REGISTER(SetTextScale);
         LUA_REGISTER(GetName);
         LUA_REGISTER(SetName);
+        LUA_REGISTER(FindEntityByName);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -616,6 +617,40 @@ namespace Engine
     {
         auto pEntity = LUA_GET_ENTITY(1);
         if (pEntity) pEntity->name = LUA_GET_STRING(2, "");
+        return 0;
+    }
+
+    int LuaBindings::funcFindEntityByName(lua_State* L)
+    {
+        auto searchName = LUA_GET_STRING(1, "");
+        if (searchName.empty())
+        {
+            lua_pushnil(L);
+            return 1;
+        }
+        glm::vec2 searchPos = LUA_GET_VEC2(2, glm::vec2(0));
+        auto searchRadius = LUA_GET_NUMBER(3, 0.0f);
+
+        if (searchRadius == 0.0f)
+        {
+            auto pEntity = getScene()->getEntityByName(searchName, true);
+            LUA_PUSH_ENTITY(pEntity);
+            return 1;
+        }
+        else
+        {
+            EntitySearchParams searchParams;
+            searchParams.pointInWorld = searchPos;
+            searchParams.radius = searchRadius;
+            auto pEntity = getScene()->getEntityByName(searchName, searchParams, true);
+            LUA_PUSH_ENTITY(pEntity);
+            return 1;
+        }
+    }
+
+    int LuaBindings::funcFindEntityByComponent(lua_State* L)
+    {
+        //TODO:
         return 0;
     }
 }

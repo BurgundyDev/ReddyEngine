@@ -17,10 +17,10 @@ RegisterComponent("sandboxRotator", {
         SetRotation(self, GetRotation(self) + self.rotSpeed * dt)
     end,
 
-    create = function(self) print("A:create") end,
-    destroy = function(self) print("A:destroy") end,
-    enable = function(self) print("A:enable") end,
-    disable = function(self) print("A:disable") end,
+    create = function(self) print("Rotator:create") end,
+    destroy = function(self) print("Rotator:destroy") end,
+    enable = function(self) print("Rotator:enable") end,
+    disable = function(self) print("Rotator:disable") end,
 })
 
 
@@ -71,7 +71,7 @@ RegisterComponent("sandboxButton", {
             if self.isDown then
                 self.scaleTarget = 0.8
             else
-                self.scaleTarget = 1.5
+                self.scaleTarget = 1.2
             end
         else
             self.scaleTarget = 1
@@ -153,6 +153,23 @@ RegisterComponent("sandboxStopRotationButton", {
         if c then
             c.rotSpeed = 0
             c.scaleSpeed = 0
+        end
+    end
+})
+
+
+RegisterComponent("sandboxStopMover", {
+    target = "",
+
+    initComponent = function()
+        SetStringProperty("target", "Entity name to stop moving, in a radius of 3")
+    end,
+
+    mouseClick = function(self)
+        local e = FindEntityByName(self.target, GetPosition(self), 3)
+        local c = GetComponent(e, "sandboxMover")
+        if c then
+            c.moveSpeed = 0
         end
     end
 })

@@ -110,6 +110,6 @@ function SetTextScale(e, scale) end
 
 ---------------------------------------------------------------------
 -- Entity searching
----------------------------------------------------------------------
--- function FindEntityByName(entityName, searchRadius) end -- Pass 0 for Radius for whole world
--- function FindEntityByComponent(componentTypeName, searchRadius) end -- Pass 0 for Radius for whole world
+-------------------------------------------------------------------
+function FindEntityByName(entityName, pos, searchRadius) end -- Pass 0 for Radius for whole world
+-- function FindEntityByComponent(componentTypeName, pos, searchRadius) end -- Pass 0 for Radius for whole world
