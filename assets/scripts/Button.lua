@@ -5,6 +5,11 @@ RegisterComponent("Button", {
     scaleTarget = 1,
     isDown = false,
     isHover = false,
+    codeToEval = "",
+
+    initComponent = function(self)
+        SetStringProperty("codeToEval", "Code to eval when clicked")
+    end,
 
     create = function(self)
         self.originalScale = GetScale(self)
@@ -45,5 +50,14 @@ RegisterComponent("Button", {
     mouseUp = function(self)
         self.isDown = false
         self.updateScale(self)
+    end,
+
+    mouseClick = function(self)
+        if self.codeToEval ~= "" then
+            local f = load(self.codeToEval)
+            if f then
+                f()
+            end
+        end
     end
 })

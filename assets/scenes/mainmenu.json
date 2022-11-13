@@ -1,0 +1,221 @@
+{
+   "camera" : {
+      "position" : [ 0.71354198455810547, -0.45052048563957214 ],
+      "zoom" : 3
+   },
+   "root" : {
+      "children" : [
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.0,
+                  "text" : "Continue Game",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : "ContinueGame()"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 44,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 0.0, -0.5 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.0,
+                  "text" : "New Game",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : "NewGame()"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 45,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 0.0, 0.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.0,
+                  "text" : "Quit",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : "Quit()"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 48,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 0.0, 0.5 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 0.33333331346511841, 0.33333331346511841, 0.33333331346511841, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.0,
+                  "text" : "Dev Corner",
+                  "type" : "Text"
+               }
+            ],
+            "id" : 50,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 3.0, 1.5 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.0,
+                  "text" : "Sandbox",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : "NewGame(\"assets/scenes/sandbox.json\")"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 53,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 3.0, 2.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.0,
+                  "text" : "Editor",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : "Editor()"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 56,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 3.0, 2.5 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         }
+      ],
+      "clickThrough" : true,
+      "components" : [],
+      "id" : 0,
+      "lockScale" : true,
+      "mouseChildren" : true,
+      "name" : "Root",
+      "sortChildren" : false,
+      "transform" : {
+         "position" : [ 0.0, 0.0 ],
+         "rotation" : 0.0,
+         "scale" : [ 1.0, 1.0 ]
+      },
+      "uiRoot" : false
+   },
+   "type" : "scene",
+   "version" : 1
+}

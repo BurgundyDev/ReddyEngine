@@ -18,6 +18,7 @@
 #include <Engine/SpriteComponent.h>
 #include <Engine/TextComponent.h>
 #include <Engine/ScriptComponent.h>
+#include <Engine/LuaBindings.h>
 
 #include <imgui.h>
 #include <tinyfiledialogs/tinyfiledialogs.h>
@@ -47,6 +48,7 @@ static void addRecentFile(const std::string& filename)
 
 
 EditorState::EditorState()
+    : GameState("")
 {
     m_pActionManager = std::make_shared<ActionManager>();
 }
@@ -56,6 +58,7 @@ void EditorState::enter(const GameStateRef& previousState)
     Engine::getScene()->setEditorScene(true);
 
     clear();
+    Engine::getLuaBindings()->init();
 
     // Load last recently open
     if (!Engine::Config::recentEditorFiles.empty())
@@ -81,6 +84,8 @@ void EditorState::leave(const GameStateRef& newsState)
     Engine::getScene()->setEditorScene(false);
 
     Engine::Component::clearCachedEditorIcons();
+
+    clear();
 }
 
 void EditorState::setDirty(bool dirty)
@@ -836,6 +841,7 @@ void EditorState::clear()
     m_filename = "untitled";
     setDirty(true);
     Engine::getScene()->clear();
+    Engine::getLuaBindings()->clear();
     m_pActionManager->clear();
     m_pPfxInstance.reset();
     m_pPfx.reset();

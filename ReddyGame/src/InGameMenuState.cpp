@@ -9,6 +9,7 @@
 
 
 InGameMenuState::InGameMenuState()
+    : GameState("")
 {
     m_seeThrough = true;
 }

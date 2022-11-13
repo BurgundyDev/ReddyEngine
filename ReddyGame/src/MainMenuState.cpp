@@ -1,17 +1,11 @@
 #include "MainMenuState.h"
-#include "EditorState.h"
-#include "Game.h"
-#include "InGameState.h"
 
 #include <Engine/ReddyEngine.h>
 #include <Engine/Input.h>
-#include <Engine/Utils.h>
-
-#include <imgui.h>
-#include <functional>
 
 
 MainMenuState::MainMenuState()
+    : GameState("assets/scenes/mainmenu.json")
 {
 }
 
@@ -19,33 +13,8 @@ MainMenuState::~MainMenuState()
 {
 }
 
-void MainMenuState::update(float dt)
-{
-    auto res = Engine::getResolution();
-    ImGui::SetNextWindowPos({res.x * 0.5f - 200, res.y * 0.5f - 100});
-
-    if (ImGui::Begin("Main Menu", 0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
-    {
-        ImGui::Text("Using ImGui temporarly, we don't have UIs yet.");
-        if (ImGui::Button("Continue")) std::dynamic_pointer_cast<Game>(Engine::getGame())->changeState(std::make_shared<InGameState>(Engine::Utils::getSavePath("Reddy") + "world.json"));
-        if (ImGui::Button("New Game")) std::dynamic_pointer_cast<Game>(Engine::getGame())->changeState(std::make_shared<InGameState>("assets/scenes/world.json"));
-        if (ImGui::Button("Quit")) Engine::quit();
-
-        ImGui::Separator();
-        if (ImGui::Button("Sandbox")) std::dynamic_pointer_cast<Game>(Engine::getGame())->changeState(std::make_shared<InGameState>("assets/scenes/sandbox.json"));
-        ImGui::SameLine();
-        if (ImGui::Button("Editor")) std::dynamic_pointer_cast<Game>(Engine::getGame())->changeState(std::make_shared<EditorState>());
-    }
-
-    ImGui::End();
-}
-
-void MainMenuState::draw()
-{
-}
-
 void MainMenuState::enter(const GameStateRef& previousState)
 {
-    //m_saveExists = Utils::fileExist(Engine::Utils::getSavePath("Reddy") + "world.json");
+    GameState::enter(previousState);
     Engine::getInput()->setDefaultCursor();
 }

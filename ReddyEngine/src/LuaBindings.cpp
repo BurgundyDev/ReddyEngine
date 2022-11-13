@@ -36,7 +36,8 @@ namespace Engine
     {
         for (const auto& kv : m_componentDefs) delete kv.second;
         m_componentDefs.clear();
-        lua_close(L);
+        if (L) lua_close(L);
+        L = nullptr;
     }
 
     void LuaBindings::init(bool doRunFiles)

@@ -35,6 +35,7 @@ namespace Engine
 		if (!getScene()->isEditorScene())
 		{
 			auto L = getLuaBindings()->getState();
+			if (!L) return;
 
 			lua_getglobal(L, "EINS_t");
 			lua_newtable(L);
@@ -50,11 +51,13 @@ namespace Engine
 		if (!getScene()->isEditorScene())
 		{
 			auto L = getLuaBindings()->getState();
-
-			lua_getglobal(L, "EINS_t");
-			lua_pushnil(L);
-			lua_setfield(L, -2, luaName.c_str());
-			lua_pop(L, lua_gettop(L));
+			if (L)
+			{
+				lua_getglobal(L, "EINS_t");
+				lua_pushnil(L);
+				lua_setfield(L, -2, luaName.c_str());
+				lua_pop(L, lua_gettop(L));
+			}
 		}
 	}
 
