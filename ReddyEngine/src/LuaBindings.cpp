@@ -45,7 +45,11 @@ namespace Engine
         luaL_openlibs(L);
 
         lua_newtable(L);
+        lua_setglobal(L, "EINS_t"); // Active entities
+
+        lua_newtable(L);
         lua_setglobal(L, "CINS_t"); // Active components
+
         lua_newtable(L);
         lua_setglobal(L, "EVTS_t"); // Active event data
 

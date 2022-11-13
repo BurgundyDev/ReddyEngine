@@ -69,6 +69,8 @@ namespace Engine
         LUA_REGISTER(GetTextScale);
         LUA_REGISTER(SetTextScale);
         LUA_REGISTER(GetComponent);
+        LUA_REGISTER(GetName);
+        LUA_REGISTER(SetName);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -585,5 +587,21 @@ namespace Engine
         }
         lua_pushnil(L);
         return 1;
+    }
+
+    int LuaBindings::funcGetName(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        std::string ret = "";
+        if (pEntity) ret = pEntity->name.c_str();
+        lua_pushstring(L, ret.c_str());
+        return 1;
+    }
+
+    int LuaBindings::funcSetName(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (pEntity) pEntity->name = LUA_GET_STRING(2, "");
+        return 0;
     }
 }

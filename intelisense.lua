@@ -61,6 +61,8 @@ function PlaySound(filename, vol, bal, pitch) end
 ---------------------------------------------------------------------
 -- function GetEntity(c) end -- Pass in component or name of entity
 function GetComponent(e, componentName) end -- Returns the LUA component. You cannot get Built-in components.
+function GetName(e) end
+function SetName(e, name) end
 
 -- Transforms
 function GetPosition(e) end
