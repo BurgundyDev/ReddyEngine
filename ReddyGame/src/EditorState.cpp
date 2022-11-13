@@ -26,6 +26,8 @@
 #include <SDL_events.h>
 #include <SDL.h>
 
+#include "Engine/Constants.h"
+
 static const char *FILE_PATTERNS[] = { "*.json" };
 
 
@@ -117,6 +119,7 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
     if (ctrl && shift && !alt && scancode == SDL_SCANCODE_S) onSaveAs();
 
     if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_G) onDisableGrid();
+    if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_H) onDisableViewportOutline();
     
     // Document type specifics
     switch (m_editDocumentType)
@@ -217,6 +220,15 @@ void EditorState::update(float dt)
             } else
             {
                 if (ImGui::MenuItem("Enable Grid", "Ctrl + G", nullptr, true)) onDisableGrid();
+            }
+
+            if (m_isViewportOutlined)
+            {
+                if (ImGui::MenuItem("Disable Viewport Outline", "Ctrl + H", nullptr, true)) onDisableViewportOutline();
+            }
+            else
+            {
+                if (ImGui::MenuItem("Enable Viewport Outline", "Ctrl + H", nullptr, true)) onDisableViewportOutline();
             }
             ImGui::EndMenu();
         }
@@ -383,6 +395,17 @@ void EditorState::draw()
 
             sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, gridEnd, 1.0f / m_zoomf), (cell.y == 0) ? MID_GRID_COLOR : m_gridColor);
         }
+    }
+
+    const glm::vec4 VIEWPORT_BOUNDS_COLOR(255, 0, 155, 155);
+    const float VIEWPORT_BOUNDS_SIZE = 0.05f;
+
+    if(m_isViewportOutlined && m_zoomf >= m_gridHideZoomLevel)
+    {
+        sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * -1280, Engine::SPRITE_BASE_SCALE * -720), glm::vec2(Engine::SPRITE_BASE_SCALE * -1280, Engine::SPRITE_BASE_SCALE * 720 + VIEWPORT_BOUNDS_SIZE/2), VIEWPORT_BOUNDS_SIZE, VIEWPORT_BOUNDS_COLOR);
+        sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * -1280, Engine::SPRITE_BASE_SCALE * 720), glm::vec2(Engine::SPRITE_BASE_SCALE * 1280 + VIEWPORT_BOUNDS_SIZE/2, Engine::SPRITE_BASE_SCALE * 720), VIEWPORT_BOUNDS_SIZE, VIEWPORT_BOUNDS_COLOR);
+        sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * 1280, Engine::SPRITE_BASE_SCALE * 720), glm::vec2(Engine::SPRITE_BASE_SCALE * 1280, Engine::SPRITE_BASE_SCALE * -720 - VIEWPORT_BOUNDS_SIZE/2), VIEWPORT_BOUNDS_SIZE, VIEWPORT_BOUNDS_COLOR);
+        sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * 1280, Engine::SPRITE_BASE_SCALE * -720), glm::vec2(Engine::SPRITE_BASE_SCALE * -1280 - VIEWPORT_BOUNDS_SIZE/2, Engine::SPRITE_BASE_SCALE * -720), VIEWPORT_BOUNDS_SIZE, VIEWPORT_BOUNDS_COLOR);
     }
 
     sb->end();
@@ -720,22 +743,33 @@ void EditorState::onDisableGrid()
     switch (m_isGridVisible)
     {
     case true:
-        {
-            m_isGridVisible = false;
-            break;
-        }
-    case false:
-        {
-            m_isGridVisible = true;
-            break;
-        }
-    default:
-        {
-            m_isGridVisible = true;
-            break;
-        }
+    {
+        m_isGridVisible = false;
+        break;
     }
-    
+    case false:
+    {
+        m_isGridVisible = true;
+        break;
+    }
+    }
+}
+
+void EditorState::onDisableViewportOutline()
+{
+    switch (m_isViewportOutlined)
+    {
+    case true:
+    {
+        m_isViewportOutlined = false;
+        break;
+    }
+    case false:
+    {
+        m_isViewportOutlined = true;
+        break;
+    }
+    }
 }
 
 
