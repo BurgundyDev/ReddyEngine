@@ -14,9 +14,12 @@ extern "C" {
 
 namespace Engine
 {
+    LuaBindings* g_pLuaBindings = nullptr;
+
     void LuaBindings::createBindings()
     {
-#define LUA_REGISTER(name) lua_register(L, #name, [](lua_State* L){return Engine::getLuaBindings()->func ## name(L);})
+        g_pLuaBindings = this; // We cache is so we don't go through getLuaBindings and dereference a shared_ptr.
+#define LUA_REGISTER(name) lua_register(L, #name, [](lua_State* L){return g_pLuaBindings->func ## name(L);})
 
         LUA_REGISTER(RegisterComponent);
         LUA_REGISTER(SetIntProperty);
@@ -35,6 +38,11 @@ namespace Engine
         LUA_REGISTER(SetRotation);
         LUA_REGISTER(GetScale);
         LUA_REGISTER(SetScale);
+
+        LUA_REGISTER(Length);
+        LUA_REGISTER(Distance);
+        LUA_REGISTER(Normalize);
+        LUA_REGISTER(Dot);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -228,7 +236,8 @@ namespace Engine
     int LuaBindings::funcGetPosition(lua_State* L)
     {
         auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
-        LUA_PUSH_VEC2(pScriptComponent->getEntity()->getPosition());
+        auto v = pScriptComponent->getEntity()->getPosition();
+        LUA_PUSH_VEC2(v);
         return 1;
     }
 
@@ -243,7 +252,8 @@ namespace Engine
     int LuaBindings::funcGetWorldPosition(lua_State* L)
     {
         auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
-        LUA_PUSH_VEC2(pScriptComponent->getEntity()->getWorldPosition());
+        auto v = pScriptComponent->getEntity()->getWorldPosition();
+        LUA_PUSH_VEC2(v);
         return 1;
     }
 
@@ -283,5 +293,35 @@ namespace Engine
         auto scale = LUA_GET_VEC2(2, glm::vec2(1));
         pScriptComponent->getEntity()->setScale(scale);
         return 0;
+    }
+
+    int LuaBindings::funcLength(lua_State* L)
+    {
+        auto v = LUA_GET_VEC2(1, glm::vec2(0));
+        lua_pushnumber(L, (lua_Number)v.length());
+        return 1;
+    }
+
+    int LuaBindings::funcDistance(lua_State* L)
+    {
+        auto a = LUA_GET_VEC2(1, glm::vec2(0));
+        auto b = LUA_GET_VEC2(2, glm::vec2(0));
+        lua_pushnumber(L, (lua_Number)(glm::distance(a, b)));
+        return 1;
+    }
+
+    int LuaBindings::funcNormalize(lua_State* L)
+    {
+        auto v = glm::normalize(LUA_GET_VEC2(1, glm::vec2(0)));
+        LUA_PUSH_VEC2(v);
+        return 1;
+    }
+
+    int LuaBindings::funcDot(lua_State* L)
+    {
+        auto a = LUA_GET_VEC2(1, glm::vec2(0));
+        auto b = LUA_GET_VEC2(2, glm::vec2(0));
+        lua_pushnumber(L, (lua_Number)(glm::dot(a, b)));
+        return 1;
     }
 }

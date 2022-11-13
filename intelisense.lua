@@ -14,8 +14,9 @@ function SetStringProperty(name, tooltip) end
 ---------------------------------------------------------------------
 -- Math functions
 ---------------------------------------------------------------------
+function Length(v) end
 function Distance(a, b) end
-function Normalize(a) end
+function Normalize(v) end
 function Dot(a, b) end
 
 
@@ -31,16 +32,17 @@ function SetCameraZoom(zoom) end
 ---------------------------------------------------------------------
 -- Events
 ---------------------------------------------------------------------
-function SendEvent(eventName, data) end
-function RegisterEvent(eventName, c, callback) end
-function DeregisterEvent(eventName, c) end
+-- function SendEvent(eventName, data) end
+-- function RegisterEvent(eventName, c, callback) end
+-- function DeregisterEvent(eventName, c) end
 
 
 ---------------------------------------------------------------------
 -- Component-Entity functions
 ---------------------------------------------------------------------
 
-function GetEntity(c) end
+-- function GetEntity(c) end
+-- function GetComponent(obj, componentName) end
 
 -- Following methods we can pass either a component or an entity.
 
@@ -55,20 +57,20 @@ function GetScale(obj) end
 function SetScale(obj, scale) end
 
 -- Parenting
-function GetParent(obj) end
-function AddChild(obj) end
+-- function GetParent(obj) end
+-- function AddChild(obj) end
 
 -- Lifecycle
-function Enable(obj) end
-function Disable(obj) end
-function Destroy(obj) end -- Destroys the entity
-function AddComponent(obj, componentName) end
-function RemoveComponent(obj, componentName) end
+-- function Enable(obj) end
+-- function Disable(obj) end
+-- function Destroy(obj) end -- Destroys the entity
+-- function AddComponent(obj, componentName) end
+-- function RemoveComponent(obj, componentName) end
 
 
 ---------------------------------------------------------------------
 -- Entity searching
 ---------------------------------------------------------------------
 
-function FindEntityByName(entityName, searchRadius) end -- Pass 0 for Radius for whole world
-function FindEntityByComponent(componentTypeName, searchRadius) end -- Pass 0 for Radius for whole world
+-- function FindEntityByName(entityName, searchRadius) end -- Pass 0 for Radius for whole world
+-- function FindEntityByComponent(componentTypeName, searchRadius) end -- Pass 0 for Radius for whole world

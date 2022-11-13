@@ -84,6 +84,11 @@ namespace Engine
         int funcGetScale(lua_State* L);
         int funcSetScale(lua_State* L);
 
+        int funcLength(lua_State* L);
+        int funcDistance(lua_State* L);
+        int funcNormalize(lua_State* L);
+        int funcDot(lua_State* L);
+
     private:
         void createBindings();
 
