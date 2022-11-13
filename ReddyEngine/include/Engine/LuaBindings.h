@@ -98,6 +98,22 @@ namespace Engine
         int funcIsButtonDown(lua_State* L);
         int funcPlaySound(lua_State* L);
         int funcDestroy(lua_State* L);
+        int funcGetSpriteTexture(lua_State* L);
+        int funcSetSpriteTexture(lua_State* L);
+        int funcGetSpriteColor(lua_State* L);
+        int funcSetSpriteColor(lua_State* L);
+        int funcGetSpriteOrigin(lua_State* L);
+        int funcSetSpriteOrigin(lua_State* L);
+        int funcGetFont(lua_State* L);
+        int funcSetFont(lua_State* L);
+        int funcGetText(lua_State* L);
+        int funcSetText(lua_State* L);
+        int funcGetTextColor(lua_State* L);
+        int funcSetTextColor(lua_State* L);
+        int funcGetTextOrigin(lua_State* L);
+        int funcSetTextOrigin(lua_State* L);
+        int funcGetTextScale(lua_State* L);
+        int funcSetTextScale(lua_State* L);
 
     private:
         void createBindings();
@@ -120,6 +136,8 @@ namespace Engine
 #define LUA_GET_COLOR(i, defaultValue) LUA_GET_COLOR_impl(L, i, defaultValue)
 #define LUA_GET_STRING(i, defaultValue) LUA_GET_STRING_impl(L, i, defaultValue)
 #define LUA_GET_ENTITY(i) LUA_GET_ENTITY_impl(L, i, __func__)
+#define LUA_GET_COMPONENT(i, component) LUA_GET_COMPONENT_impl<component>(L, i, __func__)
+
 #define LUA_GET_SCRIPT_COMPONENT(i) LUA_GET_SCRIPT_COMPONENT_impl(L, i, __func__)
 
 #define LUA_CLONE_TABLE(L, n) cloneLuaTable(L, n)
@@ -132,7 +150,16 @@ glm::vec2 LUA_GET_VEC2_impl(lua_State* L, int stackIndex, const glm::vec2& defau
 glm::vec4 LUA_GET_COLOR_impl(lua_State* L, int stackIndex, const glm::vec4& defaultValue);
 std::string LUA_GET_STRING_impl(lua_State* L, int stackIndex, const std::string& defaultValue);
 Engine::EntityRef LUA_GET_ENTITY_impl(lua_State* L, int stackIndex, const char* funcName);
+template<typename T>
+std::shared_ptr<T> LUA_GET_COMPONENT_impl(lua_State* L, int stackIndex, const char* funcName)
+{
+    auto pEntity = LUA_GET_ENTITY(stackIndex);
+    if (pEntity) return pEntity->getComponent<T>();
+    return nullptr;
+}
+
 Engine::ScriptComponent* LUA_GET_SCRIPT_COMPONENT_impl(lua_State* L, int stackIndex, const char* funcName);
+
 
 int cloneLuaTable(lua_State* L, int n);
 bool checkLua(lua_State* L, int r);

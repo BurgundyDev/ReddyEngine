@@ -174,6 +174,7 @@ namespace Engine
         {
             changed = true;
             m_pLuaComponentDef = getLuaBindings()->getComponentDef(name);
+            m_luaProperties.clear();
             if (m_pLuaComponentDef)
                 m_luaProperties = m_pLuaComponentDef->properties;
         }

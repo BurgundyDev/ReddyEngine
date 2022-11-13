@@ -1,7 +1,7 @@
 {
    "camera" : {
-      "position" : [ 0.52213490009307861, -0.3359377384185791 ],
-      "zoom" : 2
+      "position" : [ 0.73307228088378906, -0.34635448455810547 ],
+      "zoom" : 3
    },
    "root" : {
       "children" : [
@@ -30,7 +30,7 @@
             "id" : 14,
             "lockScale" : true,
             "mouseChildren" : true,
-            "name" : "Orange",
+            "name" : "LeftFlame",
             "sortChildren" : false,
             "transform" : {
                "position" : [ -1.0, -1.0 ],
@@ -44,12 +44,7 @@
             "clickThrough" : false,
             "components" : [
                {
-                  "color" : [
-                     0.99019604921340942,
-                     0.0097078336402773857,
-                     0.0097078336402773857,
-                     1.0
-                  ],
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "origin" : [ 0.5, 0.5 ],
                   "texture" : "textures/defaultTexture.png",
@@ -69,7 +64,7 @@
             "id" : 16,
             "lockScale" : true,
             "mouseChildren" : true,
-            "name" : "",
+            "name" : "MiddleFlame",
             "sortChildren" : false,
             "transform" : {
                "position" : [ 0.0, -1.0 ],
@@ -117,7 +112,7 @@
             "clickThrough" : false,
             "components" : [
                {
-                  "color" : [ 0.34717413783073425, 0.35556185245513916, 0.63235294818878174, 1.0 ],
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "origin" : [ 0.5, 0.5 ],
                   "texture" : "textures/defaultTexture.png",
@@ -155,7 +150,7 @@
                   "font" : "fonts/defaultFont24.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.7200000286102295,
-                  "text" : "Destroy Orange Flame",
+                  "text" : "Destroy Left Flame",
                   "type" : "Text"
                },
                {
@@ -168,7 +163,7 @@
                   "enabled" : true,
                   "name" : "sandboxDestroyButton",
                   "properties" : {
-                     "target" : "Orange"
+                     "target" : "LeftFlame"
                   },
                   "type" : "Script"
                }
@@ -179,7 +174,7 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 0.0, -2.0 ],
+               "position" : [ -3.2109375, -2.640625 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -224,6 +219,97 @@
                "scale" : [ 1.0, 1.0 ]
             },
             "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Change Color",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxButton",
+                  "properties" : null,
+                  "type" : "Script"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxColorButton",
+                  "properties" : {
+                     "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                     "target" : "MiddleFlame"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 27,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -0.015625, -3.3671875 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures\\arrow.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               }
+            ],
+            "id" : 29,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -1.9856777191162109, -1.9218752384185791 ],
+               "rotation" : 42.0,
+               "scale" : [ 1.190000057220459, 1.190000057220459 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures\\arrow.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               }
+            ],
+            "id" : 30,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -0.0013027191162109375, -2.3203127384185791 ],
+               "rotation" : 90.0,
+               "scale" : [ 1.190000057220459, 1.190000057220459 ]
+            },
+            "uiRoot" : false
          }
       ],
       "clickThrough" : true,
@@ -234,7 +320,7 @@
       "name" : "Root",
       "sortChildren" : false,
       "transform" : {
-         "position" : [ 0.0, 0.0 ],
+         "position" : [ 0.0, 1.0 ],
          "rotation" : 0.0,
          "scale" : [ 1.0, 1.0 ]
       },

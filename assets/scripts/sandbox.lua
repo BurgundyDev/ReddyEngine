@@ -124,3 +124,18 @@ RegisterComponent("sandboxSoundButton", {
         PlaySound(self.sound)
     end
 })
+
+
+RegisterComponent("sandboxColorButton", {
+    target = "",
+    color = Color(1),
+
+    initComponent = function()
+        SetStringProperty("target", "Entity name to change sprite color")
+        SetColorProperty("color", "Color to change to")
+    end,
+
+    mouseClick = function(self)
+        SetSpriteColor(self.target, self.color)
+    end
+})

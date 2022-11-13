@@ -1,5 +1,11 @@
 -- This file is not loaded by the engine, only purpose is for intelisense
 
+-- Any functions that takes an entity (e) can accept either:
+--   - Entity name
+--   - Entity object
+--   - Component object
+
+
 ---------------------------------------------------------------------
 -- Defining a component
 ---------------------------------------------------------------------
@@ -51,14 +57,8 @@ function PlaySound(filename, vol, bal, pitch) end
 
 
 ---------------------------------------------------------------------
--- Component-Entity functions
+-- Entity functions
 ---------------------------------------------------------------------
-
--- Any functions that takes an entity (e) can accept either:
---   - Entity name
---   - Entity object
---   - Component object
-
 -- function GetEntity(c) end -- Pass in component or name of entity
 -- function GetComponent(obj, componentName) end
 
@@ -85,8 +85,29 @@ function Destroy(e) end -- Destroys the entity (Accepts: component, entity or en
 
 
 ---------------------------------------------------------------------
+-- Components functions
+---------------------------------------------------------------------
+function GetSpriteTexture(e) end
+function SetSpriteTexture(e, filename) end
+function GetSpriteColor(e) end
+function SetSpriteColor(e, color) end
+function GetSpriteOrigin(e) end
+function SetSpriteOrigin(e, origin) end
+
+function GetFont(e) end
+function SetFont(e, filename) end
+function GetText(e) end
+function SetText(e, text) end
+function GetTextColor(e) end
+function SetTextColor(e, color) end
+function GetTextOrigin(e) end
+function SetTextOrigin(e, origin) end
+function GetTextScale(e) end
+function SetTextScale(e, scale) end
+
+
+---------------------------------------------------------------------
 -- Entity searching
 ---------------------------------------------------------------------
-
 -- function FindEntityByName(entityName, searchRadius) end -- Pass 0 for Radius for whole world
 -- function FindEntityByComponent(componentTypeName, searchRadius) end -- Pass 0 for Radius for whole world

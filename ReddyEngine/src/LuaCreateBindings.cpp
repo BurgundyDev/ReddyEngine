@@ -15,6 +15,8 @@ extern "C" {
 #include "Engine/Audio.h"
 #include "Engine/Sound.h"
 #include "Engine/ResourceManager.h"
+#include "Engine/SpriteComponent.h"
+#include "Engine/TextComponent.h"
 
 
 namespace Engine
@@ -50,6 +52,22 @@ namespace Engine
         LUA_REGISTER(IsButtonDown);
         LUA_REGISTER(PlaySound);
         LUA_REGISTER(Destroy);
+        LUA_REGISTER(GetSpriteTexture);
+        LUA_REGISTER(SetSpriteTexture);
+        LUA_REGISTER(GetSpriteColor);
+        LUA_REGISTER(SetSpriteColor);
+        LUA_REGISTER(GetSpriteOrigin);
+        LUA_REGISTER(SetSpriteOrigin);
+        LUA_REGISTER(GetFont);
+        LUA_REGISTER(SetFont);
+        LUA_REGISTER(GetText);
+        LUA_REGISTER(SetText);
+        LUA_REGISTER(GetTextColor);
+        LUA_REGISTER(SetTextColor);
+        LUA_REGISTER(GetTextOrigin);
+        LUA_REGISTER(SetTextOrigin);
+        LUA_REGISTER(GetTextScale);
+        LUA_REGISTER(SetTextScale);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -405,6 +423,138 @@ namespace Engine
     {
         auto pEntity = LUA_GET_ENTITY(1);
         if (pEntity) getScene()->destroyEntity(pEntity);
+        return 0;
+    }
+
+    int LuaBindings::funcGetSpriteTexture(lua_State* L)
+    {
+        auto pSprite = LUA_GET_COMPONENT(1, SpriteComponent);
+        std::string ret = "";
+        if (pSprite)
+            if (pSprite->pTexture)
+                ret = pSprite->pTexture->getFilename();
+        lua_pushstring(L, ret.c_str());
+        return 1;
+    }
+
+    int LuaBindings::funcSetSpriteTexture(lua_State* L)
+    {
+        auto pSprite = LUA_GET_COMPONENT(1, SpriteComponent);
+        if (pSprite) pSprite->pTexture = getResourceManager()->getTexture(LUA_GET_STRING(2, ""));
+        return 0;
+    }
+
+    int LuaBindings::funcGetSpriteColor(lua_State* L)
+    {
+        auto pSprite = LUA_GET_COMPONENT(1, SpriteComponent);
+        glm::vec4 color(1);
+        if (pSprite) color = pSprite->color;
+        LUA_PUSH_COLOR(color);
+        return 1;
+    }
+
+    int LuaBindings::funcSetSpriteColor(lua_State* L)
+    {
+        auto pSprite = LUA_GET_COMPONENT(1, SpriteComponent);
+        if (pSprite) pSprite->color = LUA_GET_COLOR(2, glm::vec4(1, 1, 1, 1));
+        return 0;
+    }
+
+    int LuaBindings::funcGetSpriteOrigin(lua_State* L)
+    {
+        auto pSprite = LUA_GET_COMPONENT(1, SpriteComponent);
+        glm::vec2 origin(0.5f);
+        if (pSprite) origin = pSprite->origin;
+        LUA_PUSH_VEC2(origin);
+        return 1;
+    }
+
+    int LuaBindings::funcSetSpriteOrigin(lua_State* L)
+    {
+        auto pSprite = LUA_GET_COMPONENT(1, SpriteComponent);
+        if (pSprite) pSprite->origin = LUA_GET_VEC2(2, glm::vec2(0.5f));
+        return 0;
+    }
+
+    int LuaBindings::funcGetFont(lua_State* L)
+    {
+        auto pText = LUA_GET_COMPONENT(1, TextComponent);
+        std::string ret = "";
+        if (pText)
+            if (pText->pFont)
+                ret = pText->pFont->getFilename();
+        lua_pushstring(L, ret.c_str());
+        return 1;
+    }
+
+    int LuaBindings::funcSetFont(lua_State* L)
+    {
+        auto pText = LUA_GET_COMPONENT(1, TextComponent);
+        if (pText) pText->pFont = getResourceManager()->getFont(LUA_GET_STRING(2, ""));
+        return 0;
+    }
+
+    int LuaBindings::funcGetText(lua_State* L)
+    {
+        auto pText = LUA_GET_COMPONENT(1, TextComponent);
+        std::string ret;
+        if (pText) ret = pText->text;
+        lua_pushstring(L, ret.c_str());
+        return 1;
+    }
+
+    int LuaBindings::funcSetText(lua_State* L)
+    {
+        auto pText = LUA_GET_COMPONENT(1, TextComponent);
+        if (pText) pText->text = LUA_GET_STRING(2, "");
+        return 0;
+    }
+
+    int LuaBindings::funcGetTextColor(lua_State* L)
+    {
+        auto pText = LUA_GET_COMPONENT(1, TextComponent);
+        glm::vec4 color(1);
+        if (pText) color = pText->color;
+        LUA_PUSH_COLOR(color);
+        return 1;
+    }
+
+    int LuaBindings::funcSetTextColor(lua_State* L)
+    {
+        auto pText = LUA_GET_COMPONENT(1, TextComponent);
+        if (pText) pText->color = LUA_GET_COLOR(2, glm::vec4(1, 1, 1, 1));
+        return 0;
+    }
+
+    int LuaBindings::funcGetTextOrigin(lua_State* L)
+    {
+        auto pText = LUA_GET_COMPONENT(1, TextComponent);
+        glm::vec2 origin(0.5f);
+        if (pText) origin = pText->origin;
+        LUA_PUSH_VEC2(origin);
+        return 1;
+    }
+
+    int LuaBindings::funcSetTextOrigin(lua_State* L)
+    {
+        auto pText = LUA_GET_COMPONENT(1, TextComponent);
+        if (pText) pText->origin = LUA_GET_VEC2(2, glm::vec2(0.5f));
+        return 0;
+    }
+
+    int LuaBindings::funcGetTextScale(lua_State* L)
+    {
+        auto pText = LUA_GET_COMPONENT(1, TextComponent);
+        float ret = 1.0f;
+        if (pText) ret = pText->scale;
+        lua_pushnumber(L, (lua_Number)ret);
+        return 1;
+    }
+
+    int LuaBindings::funcSetTextScale(lua_State* L)
+    {
+        auto pText = LUA_GET_COMPONENT(1, TextComponent);
+        if (pText) pText->scale = LUA_GET_NUMBER(2, 1.0f);
         return 0;
     }
 }
