@@ -1,7 +1,9 @@
+# Binary, intermediate and executable files
 **/bin/
 **/obj/
 !premake/bin
 bin-int/
+ReddyGame.exe
 
 # Visual Studio files and folder
 .vscode/

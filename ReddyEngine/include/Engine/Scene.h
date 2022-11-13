@@ -17,10 +17,14 @@ namespace Engine
 
 	struct EntitySearchParams;
 
+	class IEvent;
+
+
 	class Scene final
 	{
 	public:
 		Scene();
+		void init();
 		~Scene();
 
 		bool isEditorScene() const { return m_isEditorScene; }
@@ -59,16 +63,21 @@ namespace Engine
 		uint64_t generateEntityId() { return ++m_id; }
 		void updateMaxId(uint64_t id) { m_id = std::max(m_id, id + 1); } // Such hacks
 
+		void onMouseDown(IEvent* pEvent);
+		void onMouseUp(IEvent* pEvent);
+
 	public:
 		// Engine use only
 		const ComponentManagerRef& getComponentManager() const;
 
 	private:
 		bool m_isEditorScene = false;
-		glm::vec2 m_mousePos; // In World coordinates
+		bool m_isMouseDown = false;
+		glm::vec2 m_mousePos = glm::vec2(0.0f); // In World coordinates
 		EntityRef m_pRoot;
 		EntityRef m_pMouseHoverEntity;
-		uint64_t m_id;
+		EntityRef m_pMouseDownEntity;
+		uint64_t m_id = 0;
 		ComponentManagerRef m_pComponentManager;
 		std::vector<EntityRef> m_entitiesToDestroy;
 	};

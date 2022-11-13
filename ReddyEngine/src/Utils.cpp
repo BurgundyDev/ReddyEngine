@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <fstream>
 #include <regex>
+#include <filesystem>
 
 #include <SDL.h>
 
@@ -264,6 +265,53 @@ namespace Engine
             }
             return "";
         }
+        
+        std::vector<std::string> findAllFiles(const std::string& lookIn, const std::string& extension, bool deepSearch)
+        {
+            std::vector<std::string> ret;
+
+            bool all = extension == "*";
+            auto upExt = toUpper(extension);
+            DIR* dir;
+            struct dirent* ent;
+            if ((dir = opendir(lookIn.c_str())) != NULL)
+            {
+                while ((ent = readdir(dir)) != NULL)
+                {
+                    if (!strcmp(ent->d_name, "."))
+                    {
+                        continue;
+                    }
+                    else if (!strcmp(ent->d_name, ".."))
+                    {
+                        continue;
+                    }
+
+                    if (ent->d_type & DT_DIR)
+                    {
+                        if (deepSearch)
+                        {
+                            auto ret2 = findAllFiles(lookIn + "/" + ent->d_name, extension, deepSearch);
+                            ret.insert(ret.end(), ret2.begin(), ret2.end());
+                        }
+                    }
+                    else
+                    {
+                        if (all)
+                        {
+                            ret.push_back(lookIn + "/" + ent->d_name);
+                        }
+                        else if (toUpper(getExtension(ent->d_name)) == upExt)
+                        {
+                            ret.push_back(lookIn + "/" + ent->d_name);
+                        }
+                    }
+                }
+                closedir(dir);
+            }
+
+            return std::move(ret);
+        }
 
         std::string concatenateChars(const char* fmt, ...)
         {
@@ -358,7 +406,7 @@ namespace Engine
             std::ifstream file(filename);
             if (!file.is_open())
             {
-                CORE_ERROR("Failed to load file: " + filename);
+                CORE_ERROR("Failed to load file: {}", filename);
                 return false;
             }
             try
@@ -367,7 +415,7 @@ namespace Engine
             }
             catch (...)
             {
-                CORE_ERROR("Failed to parse file: " + filename);
+                CORE_ERROR("Failed to parse file: {}", filename);
                 file.close();
                 return false;
             }
@@ -929,6 +977,17 @@ namespace Engine
 #if defined(WIN32)
             ShellExecuteA(0, 0, file.c_str(), 0, 0 , SW_SHOW);
 #endif
+        }
+
+        bool fileExists(const std::string& file)
+        {
+            std::filesystem::path path(file);
+
+            if (path.empty()) {
+                return false;
+            }
+
+            return std::filesystem::exists(path) && (std::filesystem::is_regular_file(path) || std::filesystem::is_symlink(path));
         }
     }
 }

@@ -32,6 +32,9 @@ namespace Engine
     class EventSystem;
     using EventSystemRef = std::shared_ptr<EventSystem>;
 
+    class LuaBindings;
+    using LuaBindingsRef = std::shared_ptr<LuaBindings>;
+
 
     const SpriteBatchRef& getSpriteBatch();
     const InputRef& getInput();
@@ -39,6 +42,7 @@ namespace Engine
     const ResourceManagerRef& getResourceManager();
     const SceneRef& getScene();
 	const EventSystemRef& getEventSystem();
+	const LuaBindingsRef& getLuaBindings();
 
 
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv);

@@ -2,6 +2,7 @@
 
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
 
 #include <memory>
 #include <string>
@@ -27,7 +28,9 @@ namespace Engine
     class Font final : public Resource
     {
     public:
-        static FontRef createFromFile(const std::string& filename, int height);
+        static constexpr char* SUPPORTED_FORMATS[] = { "json" };
+
+        static FontRef createFromFile(const std::string& filename);
 
         ~Font();
 
@@ -37,6 +40,12 @@ namespace Engine
                   float rotation = 0.0f,
                   float scale = 1.0f,
                   const glm::vec2& align = {0.0f, 0.0f});
+
+        //void draw(const std::string& text,
+        //          const glm::mat4& transform, 
+        //          const glm::vec4& color = {1, 1, 1, 1},
+        //          float scale = 1.0f,
+        //          const glm::vec2& align = {0.0f, 0.0f});
 
         glm::vec2 measure(const std::string& text);
 

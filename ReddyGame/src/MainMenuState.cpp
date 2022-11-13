@@ -1,14 +1,11 @@
 #include "MainMenuState.h"
 #include "EditorState.h"
 #include "Game.h"
-#include "PickProfileState.h"
+#include "InGameState.h"
 
-#include <Engine/Font.h>
-#include <Engine/Music.h>
 #include <Engine/ReddyEngine.h>
-#include <Engine/Sound.h>
-#include <Engine/SpriteBatch.h>
 #include <Engine/Input.h>
+#include <Engine/Utils.h>
 
 #include <imgui.h>
 #include <functional>
@@ -30,10 +27,13 @@ void MainMenuState::update(float dt)
     if (ImGui::Begin("Main Menu", 0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
     {
         ImGui::Text("Using ImGui temporarly, we don't have UIs yet.");
-        if (ImGui::Button("Play")) g_pGame->changeState(std::make_shared<PickProfileState>());
+        if (ImGui::Button("Continue")) g_pGame->changeState(std::make_shared<InGameState>(Engine::Utils::getSavePath("Reddy") + "world.json"));
+        if (ImGui::Button("New Game")) g_pGame->changeState(std::make_shared<InGameState>("assets/scenes/world.json"));
         if (ImGui::Button("Quit")) Engine::quit();
 
         ImGui::Separator();
+        if (ImGui::Button("Sandbox")) g_pGame->changeState(std::make_shared<InGameState>("assets/scenes/sandbox.json"));
+        ImGui::SameLine();
         if (ImGui::Button("Editor")) g_pGame->changeState(std::make_shared<EditorState>());
     }
 
@@ -46,6 +46,6 @@ void MainMenuState::draw()
 
 void MainMenuState::enter(const GameStateRef& previousState)
 {
+    //m_saveExists = Utils::fileExist(Engine::Utils::getSavePath("Reddy") + "world.json");
     Engine::getInput()->setDefaultCursor();
 }
-

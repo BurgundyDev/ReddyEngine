@@ -1,64 +1,12 @@
 {
    "camera" : {
-      "position" : [ 0.75390625, 0.093749985098838806 ],
-      "zoom" : 2
+      "position" : [ -0.46484440565109253, 0.21614550054073334 ],
+      "zoom" : 3
    },
    "root" : {
       "children" : [
          {
-            "children" : [
-               {
-                  "children" : [
-                     {
-                        "children" : [],
-                        "clickThrough" : false,
-                        "components" : [
-                           {
-                              "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                              "enabled" : true,
-                              "origin" : [ 0.5, 0.5 ],
-                              "texture" : "textures/defaultTexture.png",
-                              "type" : "Sprite",
-                              "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-                           }
-                        ],
-                        "id" : 3,
-                        "lockScale" : true,
-                        "mouseChildren" : true,
-                        "name" : "Upside Down",
-                        "sortChildren" : false,
-                        "transform" : {
-                           "position" : [ 1.0, 1.0 ],
-                           "rotation" : 180.0,
-                           "scale" : [ 1.0, 1.0 ]
-                        },
-                        "uiRoot" : false
-                     }
-                  ],
-                  "clickThrough" : false,
-                  "components" : [
-                     {
-                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                        "enabled" : true,
-                        "origin" : [ 0.5, 0.5 ],
-                        "texture" : "textures/defaultTexture.png",
-                        "type" : "Sprite",
-                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-                     }
-                  ],
-                  "id" : 1,
-                  "lockScale" : false,
-                  "mouseChildren" : true,
-                  "name" : "Not Like This",
-                  "sortChildren" : false,
-                  "transform" : {
-                     "position" : [ 1.0, 1.0 ],
-                     "rotation" : 0.0,
-                     "scale" : [ 1.2799999713897705, 0.89999997615814209 ]
-                  },
-                  "uiRoot" : false
-               }
-            ],
+            "children" : [],
             "clickThrough" : false,
             "components" : [
                {
@@ -68,17 +16,453 @@
                   "texture" : "textures/defaultTexture.png",
                   "type" : "Sprite",
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxRotator",
+                  "properties" : {
+                     "rotSpeed" : 90.0,
+                     "scaleSpeed" : 45.0
+                  },
+                  "type" : "Script"
                }
             ],
-            "id" : 4,
+            "id" : 14,
             "lockScale" : true,
             "mouseChildren" : true,
-            "name" : "Big One",
+            "name" : "LeftFlame",
             "sortChildren" : false,
             "transform" : {
                "position" : [ -1.0, -1.0 ],
                "rotation" : 0.0,
-               "scale" : [ 1.3899999856948853, 1.3899999856948853 ]
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures/defaultTexture.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxRotator",
+                  "properties" : {
+                     "rotSpeed" : 45.0,
+                     "scaleSpeed" : 90.0
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 16,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "MiddleFlame",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 0.0, -1.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 0.41176462173461914, 1.0, 0.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures/defaultTexture.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxRotator",
+                  "properties" : {
+                     "rotSpeed" : -180.0,
+                     "scaleSpeed" : 135.0
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 19,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "RightFlame",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 1.0, -1.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures/defaultTexture.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxMover",
+                  "properties" : {
+                     "moveSpeed" : 100.0
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 22,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "MoverFlame",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 0.0, 0.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Destroy",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxButton",
+                  "properties" : null,
+                  "type" : "Script"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxDestroyButton",
+                  "properties" : {
+                     "target" : "LeftFlame"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 24,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -2.7734375, -2.5572915077209473 ],
+               "rotation" : -46.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Play Sound",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxButton",
+                  "properties" : null,
+                  "type" : "Script"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxSoundButton",
+                  "properties" : {
+                     "sound" : "sounds/test_quick_sound.wav"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 25,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 0.0, 1.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Change Color",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxButton",
+                  "properties" : null,
+                  "type" : "Script"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxColorButton",
+                  "properties" : {
+                     "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                     "target" : "MiddleFlame"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 27,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 0.026041626930236816, -3.2838540077209473 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures\\arrow.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               }
+            ],
+            "id" : 29,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -1.9856777191162109, -1.9218752384185791 ],
+               "rotation" : 42.0,
+               "scale" : [ 1.190000057220459, 1.190000057220459 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures\\arrow.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               }
+            ],
+            "id" : 30,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -0.0013027191162109375, -2.3203127384185791 ],
+               "rotation" : 90.0,
+               "scale" : [ 1.190000057220459, 1.190000057220459 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Stop",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxButton",
+                  "properties" : null,
+                  "type" : "Script"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxStopRotationButton",
+                  "properties" : {
+                     "target" : "RightFlame"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 32,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 2.7050774097442627, -2.7239584922790527 ],
+               "rotation" : 39.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures\\arrow.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               }
+            ],
+            "id" : 35,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 2.0214834213256836, -2.0000004768371582 ],
+               "rotation" : 133.0,
+               "scale" : [ 1.190000057220459, 1.190000057220459 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Stop Moving when close",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxButton",
+                  "properties" : null,
+                  "type" : "Script"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxStopMover",
+                  "properties" : {
+                     "target" : "MoverFlame"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 37,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -4.0, 0.0 ],
+               "rotation" : -90.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures\\arrow.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               }
+            ],
+            "id" : 40,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -2.8430995941162109, -4.76837158203125e-07 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.190000057220459, 1.190000057220459 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               }
+            ],
+            "id" : 42,
+            "lockScale" : false,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -1.0, 0.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.3600000143051147, 10.229999542236328 ]
             },
             "uiRoot" : false
          }
@@ -91,7 +475,7 @@
       "name" : "Root",
       "sortChildren" : false,
       "transform" : {
-         "position" : [ 0.0, 0.0 ],
+         "position" : [ 0.0, 1.0 ],
          "rotation" : 0.0,
          "scale" : [ 1.0, 1.0 ]
       },

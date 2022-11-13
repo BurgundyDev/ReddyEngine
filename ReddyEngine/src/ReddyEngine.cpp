@@ -7,6 +7,7 @@
 #include "Engine/ResourceManager.h"
 #include "Engine/Scene.h"
 #include "Engine/EventSystem.h"
+#include "Engine/LuaBindings.h"
 
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -24,6 +25,7 @@ namespace Engine
     static ResourceManagerRef g_pResourceManager;
     static SceneRef g_pScene;
 	static EventSystemRef g_pEventSystem;
+	static LuaBindingsRef g_pLuaBindings;
 
     static int g_fixedUpdateFPS = 60;
     static bool g_done = false;
@@ -108,12 +110,15 @@ namespace Engine
         //IM_ASSERT(font != NULL);
 
         // Initialize Engine's systems
+        g_pEventSystem = std::make_shared<EventSystem>();
         g_pInput = std::make_shared<Input>();
         g_pAudio = std::make_shared<Audio>();
         g_pSpriteBatch = std::make_shared<SpriteBatch>();
         g_pResourceManager = std::make_shared<ResourceManager>();
         g_pScene = std::make_shared<Scene>();
-        g_pEventSystem = std::make_shared<EventSystem>();
+        g_pLuaBindings = std::make_shared<LuaBindings>();
+        g_pLuaBindings->init();
+        g_pScene->init();
 
         // Once everything is setup, the game can load stuff
         pGame->loadContent();
@@ -222,9 +227,15 @@ namespace Engine
             while (fixedUpdateProgress > 0.0f)
             {
                 float fixedUpdateTime = 1.0f / (float)g_fixedUpdateFPS;
-
-                g_pScene->fixedUpdate(fixedUpdateTime);
+                
+                //g_pEventSystem->dispatchEvents();
+                //g_pScene->fixedUpdate(fixedUpdateTime);
+                
+                g_pEventSystem->dispatchEvents();
                 pGame->fixedUpdate(fixedUpdateTime);
+                
+                g_pEventSystem->dispatchEvents();
+                g_pLuaBindings->fixedUpdate(fixedUpdateTime);
                 
                 fixedUpdateProgress -= 1.0f / (float)g_fixedUpdateFPS;
                 ++fixedUpdated;
@@ -236,13 +247,15 @@ namespace Engine
                 }
             }
 
-            g_pEventSystem->dispatchEvents();
-
             // Update
-            g_pScene->update(deltaTime);
+            //g_pEventSystem->dispatchEvents();
+            //g_pScene->update(deltaTime);
+
+            g_pEventSystem->dispatchEvents();
             pGame->update(deltaTime);
 
             g_pEventSystem->dispatchEvents();
+            g_pLuaBindings->update(deltaTime);
 
             // Generate imgui final render data
             ImGui::Render();
@@ -253,9 +266,8 @@ namespace Engine
             glClear(GL_COLOR_BUFFER_BIT);
             g_pSpriteBatch->beginFrame();
 
-            g_pEventSystem->dispatchEvents();
-
             // Draw game
+            g_pEventSystem->dispatchEvents();
             pGame->draw();
             
             // Draw ImGui on top
@@ -269,11 +281,13 @@ namespace Engine
         Config::save();
 
         // Cleanup
+        g_pLuaBindings.reset();
         g_pScene.reset();
         g_pResourceManager.reset();
         g_pSpriteBatch.reset();
         g_pAudio.reset();
         g_pInput.reset();
+        g_pEventSystem.reset();
 
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplSDL2_Shutdown();
@@ -317,6 +331,11 @@ namespace Engine
 	const Engine::EventSystemRef& getEventSystem()
 	{
         return g_pEventSystem;
+	}
+
+	const Engine::LuaBindingsRef& getLuaBindings()
+	{
+        return g_pLuaBindings;
 	}
 
 	glm::vec2 getResolution()

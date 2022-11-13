@@ -1,6 +1,8 @@
 #include "Engine/Scene.h"
 #include "Engine/Entity.h"
 #include "Engine/Log.h"
+#include "Engine/EventSystem.h"
+#include "Engine/ReddyEngine.h"
 #include "ComponentManager.h"
 
 #include <algorithm>
@@ -8,16 +10,26 @@
 namespace Engine
 {
 	Scene::Scene()
-		: m_pRoot(std::make_shared<Entity>())
-		, m_id(0)
-		, m_pComponentManager(std::make_shared<ComponentManager>())
 	{
+	}
+
+	void Scene::init()
+	{
+		m_pRoot = (std::make_shared<Entity>());
+		m_id = 0;
+		m_pComponentManager = std::make_shared<ComponentManager>();
+
 		m_pRoot->name = "Root";
 		m_pRoot->clickThrough = true; // We cannot select the root
+
+		REGISTER_EVENT(MouseButtonDownEvent, Scene::onMouseDown);
+		REGISTER_EVENT(MouseButtonUpEvent, Scene::onMouseUp);
 	}
 
 	Scene::~Scene()
 	{
+		DEREGISTER_EVENT(MouseButtonDownEvent);
+		DEREGISTER_EVENT(MouseButtonUpEvent);
 	}
 
 	Json::Value Scene::serialize()
@@ -36,6 +48,10 @@ namespace Engine
 
 	void Scene::clear()
 	{
+		m_isMouseDown = false;
+		m_pMouseDownEntity.reset();
+		m_pMouseHoverEntity.reset();
+
 		m_pRoot.reset();
 		m_pRoot = std::make_shared<Entity>();
 		m_pRoot->name = "Root";
@@ -123,6 +139,43 @@ namespace Engine
 		destroyEntity(pEntity);
 	}
 
+	void Scene::onMouseDown(IEvent* pEvent)
+	{
+		auto pMouseDown = (MouseButtonDownEvent*)pEvent;
+		if (pMouseDown->button.button == SDL_BUTTON_LEFT)
+		{
+			m_isMouseDown = true;
+			if (m_pMouseHoverEntity)
+			{
+				m_pMouseDownEntity = m_pMouseHoverEntity;
+				m_pMouseDownEntity->onMouseDown();
+			}
+		}
+	}
+
+	void Scene::onMouseUp(IEvent* pEvent)
+	{
+		auto pMouseUp = (MouseButtonUpEvent*)pEvent;
+		if (pMouseUp->button.button == SDL_BUTTON_LEFT)
+		{
+			m_isMouseDown = false;
+			if (m_pMouseDownEntity)
+			{
+				m_pMouseDownEntity->onMouseUp();
+				if (m_pMouseDownEntity == m_pMouseHoverEntity)
+				{
+					m_pMouseDownEntity->onMouseClick();
+				}
+				else
+				{
+					if (m_pMouseHoverEntity)
+						m_pMouseHoverEntity->onMouseEnter();
+				}
+				m_pMouseDownEntity = nullptr;
+			}
+		}
+	}
+
 	void Scene::update(float dt)
 	{
 		m_pComponentManager->update(dt);
@@ -132,6 +185,25 @@ namespace Engine
 		auto pPreviousHoverEntity = m_pMouseHoverEntity;
 		m_pMouseHoverEntity = m_pRoot->getMouseHover(m_mousePos, isEditorScene());
 		if (m_pMouseHoverEntity == m_pRoot) m_pMouseHoverEntity = nullptr; // We ignore root (In case we're in editor)
+
+		if (!m_isEditorScene)
+		{
+			if (pPreviousHoverEntity != m_pMouseHoverEntity)
+			{
+				if (m_pMouseDownEntity)
+				{
+					if (m_pMouseHoverEntity == m_pMouseDownEntity)
+						m_pMouseDownEntity->onMouseEnter();
+					else if (pPreviousHoverEntity == m_pMouseDownEntity)
+						m_pMouseDownEntity->onMouseLeave();
+				}
+				else
+				{
+					if (pPreviousHoverEntity) pPreviousHoverEntity->onMouseLeave();
+					if (m_pMouseHoverEntity) m_pMouseHoverEntity->onMouseEnter();
+				}
+			}
+		}
 	}
 
 	void Scene::fixedUpdate(float dt)

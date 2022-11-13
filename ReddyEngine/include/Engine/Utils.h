@@ -39,12 +39,14 @@ namespace Engine
         std::string getSavePath(const std::string& appName); // On Windows, this returns the Roaming App Data path. On other platforms, it returns local directory "./"
         std::string makeRelativePath(const std::string& path, const std::string& relativeTo);
         std::string findFile(const std::string& filename, const std::string& lookIn, bool deepSearch, bool ignoreCase);
+        std::vector<std::string> findAllFiles(const std::string& lookIn = ".", const std::string& extension = "*", bool deepSearch = true);
         
         bool createFolder(const std::string& fullPath);
         bool copyFile(const std::string& from, const std::string& to);
         bool createTextFile(const std::string& path, const std::string& content);
         void showInExplorer(const std::string& path);
         void openFile(const std::string& file);
+        bool fileExists(const std::string& file);
 
         // Config
         bool loadJson(Json::Value &out, const std::string& filename);

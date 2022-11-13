@@ -17,6 +17,8 @@ namespace Engine
 	class Entity;
 	using EntityRef = std::shared_ptr<Entity>;
 
+	class ScriptComponent;
+
 
 	struct Transform 
 	{
@@ -62,6 +64,7 @@ namespace Engine
 		bool lockScale = true;
 
 	public:
+		Entity();
 		~Entity();
 
 		bool addChild(EntityRef pChild, int insertAt = -1); // True if was added, false if already child
@@ -98,7 +101,7 @@ namespace Engine
 		std::shared_ptr<T> addComponent()
 		{
 			auto pComponent = getComponent<T>();
-			if (pComponent) return pComponent;
+			if (pComponent && !std::dynamic_pointer_cast<ScriptComponent>(pComponent)) return pComponent;
 
 			pComponent = std::make_shared<T>();
 			
@@ -213,6 +216,12 @@ namespace Engine
 
 		void onMouseEnter();
 		void onMouseLeave();
+		void onMouseDown();
+		void onMouseUp();
+		void onMouseClick();
+
+		uint64_t runtimeId = 0; // This has nothing to do with entity Id. Its for Lua
+		std::string luaName;
 
 	public:
 		// Editor stuff (We could #ifdef this in final version?)

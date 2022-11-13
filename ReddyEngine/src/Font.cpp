@@ -3,8 +3,10 @@
 #include "Engine/ReddyEngine.h"
 #include "Engine/SpriteBatch.h"
 #include "Engine/Texture.h"
+#include "Engine/Utils.h"
 
 #include <glm/glm.hpp>
+#include <json/json.h>
 
 #define STB_RECT_PACK_IMPLEMENTATION
 #include <stb_rect_pack.h>
@@ -20,18 +22,22 @@ static const int PADDING = 2;
 
 namespace Engine
 {
-    FontRef Font::createFromFile(const std::string& filename, int height)
+    FontRef Font::createFromFile(const std::string& filename)
     {
+        Json::Value json;
+        Utils::loadJson(json, filename);
+
         auto pRet = std::shared_ptr<Font>(new Font());
-        pRet->m_height = height;
+        pRet->m_height = Utils::deserializeInt32(json["height"], 24);
         
         // load font file
         long size;
     
-        FILE* fontFile = fopen(filename.c_str(), "rb");
+        auto fontFilename = "assets/" + json["file"].asString();
+        FILE* fontFile = fopen(fontFilename.c_str(), "rb");
         if (!fontFile)
         {
-            CORE_ERROR("Failed to load Font: %s", filename.c_str());
+            CORE_ERROR("Failed to load Font: {}", fontFilename.c_str());
             return nullptr;
         }
 
@@ -43,7 +49,7 @@ namespace Engine
         fclose(fontFile);
 
         // Create dynamic texture where we will put in the glyphs
-        pRet->m_pAtlas = Texture::createDynamic({ATLAS_SIZE, ATLAS_SIZE}, TextureFormat::R8);
+        pRet->m_pAtlas = Texture::createDynamic({ATLAS_SIZE, ATLAS_SIZE});
 
         // Init packing
         pRet->m_pRectContext = new stbrp_context();
@@ -53,7 +59,7 @@ namespace Engine
         // Prepare font
         if (!stbtt_InitFont(pRet->m_pInfo, pRet->m_pFontData, 0))
         {
-            CORE_ERROR("Failed to prepare Font: %s", filename.c_str());
+            CORE_ERROR("Failed to prepare Font: {}", fontFilename.c_str());
             return nullptr;
         }
 
@@ -75,8 +81,8 @@ namespace Engine
     
     Font::Font()
     {
-        m_pAtlasData = new uint8_t[ATLAS_SIZE * ATLAS_SIZE];
-        memset(m_pAtlasData, 0, ATLAS_SIZE * ATLAS_SIZE);
+        m_pAtlasData = new uint8_t[ATLAS_SIZE * ATLAS_SIZE * 4];
+        memset(m_pAtlasData, 0, ATLAS_SIZE * ATLAS_SIZE * 4);
         m_pInfo = new stbtt_fontinfo();
     }
 
@@ -99,12 +105,14 @@ namespace Engine
         // get bounding box for character
         int c_x1, c_y1, c_x2, c_y2;
         stbtt_GetCodepointBitmapBox(m_pInfo, codepoint, m_scale, m_scale, &c_x1, &c_y1, &c_x2, &c_y2);
+        int w = c_x2 - c_x1;
+        int h = c_y2 - c_y1;
 
         // Find space in our atlas
         stbrp_rect rect;
         rect.id = codepoint;
-        rect.w = (c_x2 - c_x1) + PADDING * 2;
-        rect.h = (c_y2 - c_y1) + PADDING * 2;
+        rect.w = w + PADDING * 2;
+        rect.h = h + PADDING * 2;
         stbrp_pack_rects(m_pRectContext, &rect, 1);
 
         if (!rect.was_packed)
@@ -114,8 +122,29 @@ namespace Engine
         }
         
         // render character (stride and offset is important here)
-        int byteOffset = (rect.x + PADDING) + ((rect.y + PADDING) * ATLAS_SIZE);
-        stbtt_MakeCodepointBitmap(m_pInfo, m_pAtlasData + byteOffset, c_x2 - c_x1, c_y2 - c_y1, ATLAS_SIZE, m_scale, m_scale, codepoint);
+        //int byteOffset = (rect.x + PADDING) + ((rect.y + PADDING) * ATLAS_SIZE);
+        //stbtt_MakeCodepointBitmap(m_pInfo, m_pAtlasData + byteOffset, w, h, ATLAS_SIZE, m_scale, m_scale, codepoint);
+        static std::vector<uint8_t> charData;
+        charData.resize(w * h);
+        stbtt_MakeCodepointBitmap(m_pInfo, charData.data(), w, h, w, m_scale, m_scale, codepoint);
+
+        for (int srcy = 0; srcy < h; ++srcy)
+        {
+            int dsty = rect.y + PADDING + srcy;
+            for (int srcx = 0; srcx < w; ++srcx)
+            {
+                int dstx = rect.x + PADDING + srcx;
+                int srck = srcy * w + srcx;
+                int dstk = ((dsty * ATLAS_SIZE) + dstx) * 4;
+                uint8_t c = charData[srck];
+
+                // Premultiplied
+                m_pAtlasData[dstk + 0] = c;
+                m_pAtlasData[dstk + 1] = c;
+                m_pAtlasData[dstk + 2] = c;
+                m_pAtlasData[dstk + 3] = c;
+            }
+        }
 
         // Create the character
         Char* chr = new Char();
@@ -189,6 +218,15 @@ namespace Engine
         size.x = std::max(size.x, x);
         return size;
     }
+    
+    //void Font::draw(const std::string& text,
+    //                const glm::mat4& transform, 
+    //                const glm::vec4& color,
+    //                float scale,
+    //                const glm::vec2& align)
+    //{
+    //    // no op
+    //}
 
     void Font::draw(const std::string& text,
                     const glm::vec2& position, 

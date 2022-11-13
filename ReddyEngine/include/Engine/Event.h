@@ -1,8 +1,9 @@
 #pragma once
 
-#include<SDL_events.h>
+#include <SDL_events.h>
 
 #include <typeindex>
+#include <string>
 
 
 namespace Engine
@@ -137,5 +138,15 @@ namespace Engine
 		}
 
 		SDL_DropEvent drop;
+	};
+
+	class LuaEvent : public IEvent
+	{
+	public:
+		LuaEvent(const std::string& in_name, const std::string& in_dataLuaName) : name(in_name), dataLuaName(in_dataLuaName) {}
+		virtual ~LuaEvent();
+
+		std::string name;
+		std::string dataLuaName;
 	};
 };

@@ -80,3 +80,6 @@ namespace Engine
 	};
 }
 
+// Shortcuts to make life easier
+#define REGISTER_EVENT(eventType, function) Engine::getEventSystem()->registerListener<Engine::eventType>(this, std::bind(&function, this, _1))
+#define DEREGISTER_EVENT(eventType) Engine::getEventSystem()->deregisterListener<Engine::eventType>(this)

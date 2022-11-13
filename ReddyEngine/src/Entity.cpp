@@ -1,10 +1,19 @@
+extern "C" {
+	#include <../lua/lua.h>
+	#include <../lua/lauxlib.h>
+	#include <../lua/lualib.h>
+}
+
 #include "Engine/Entity.h"
 #include "Engine/Component.h"
+#include "Engine/Texture.h"
 #include "Engine/Utils.h"
 #include "Engine/Log.h"
 #include "Engine/Scene.h"
 #include "Engine/ReddyEngine.h"
 #include "Engine/GUI.h"
+#include "Engine/ScriptComponent.h"
+#include "Engine/LuaBindings.h"
 #include "ComponentManager.h"
 
 #include <imgui.h>
@@ -13,10 +22,40 @@
 #include <functional>
 
 
+static uint64_t g_nextRuntimeId = 1;
+
+
 namespace Engine
 {
+	Entity::Entity()
+	{
+        runtimeId = g_nextRuntimeId++;
+        luaName = "EINS_" + std::to_string(runtimeId);
+
+		if (!getScene()->isEditorScene())
+		{
+			auto L = getLuaBindings()->getState();
+
+			lua_getglobal(L, "EINS_t");
+			lua_newtable(L);
+			lua_pushlightuserdata(L, this);
+			lua_setfield(L, -2, "EOBJ");
+			lua_setfield(L, -2, luaName.c_str());
+			lua_pop(L, lua_gettop(L));
+		}
+	}
+
 	Entity::~Entity()
 	{
+		if (!getScene()->isEditorScene())
+		{
+			auto L = getLuaBindings()->getState();
+
+			lua_getglobal(L, "EINS_t");
+			lua_pushnil(L);
+			lua_setfield(L, -2, luaName.c_str());
+			lua_pop(L, lua_gettop(L));
+		}
 	}
 
 	bool Entity::addChild(EntityRef pChild, int insertAt)
@@ -196,7 +235,6 @@ namespace Engine
 			auto pComponent = Component::create(type);
 			if (!pComponent)
 			{
-				CORE_ERROR("Unkonwn componentType: %s", type.c_str());
 				continue;
 			}
 
@@ -394,6 +432,27 @@ namespace Engine
 				pComponent->onMouseLeave();
 	}
 
+	void Entity::onMouseDown()
+	{
+		for (const auto& pComponent : m_components)
+			if (pComponent->isEnabled())
+				pComponent->onMouseDown();
+	}
+
+	void Entity::onMouseUp()
+	{
+		for (const auto& pComponent : m_components)
+			if (pComponent->isEnabled())
+				pComponent->onMouseUp();
+	}
+
+	void Entity::onMouseClick()
+	{
+		for (const auto& pComponent : m_components)
+			if (pComponent->isEnabled())
+				pComponent->onMouseClick();
+	}
+
 	void Entity::drawOutline(const glm::vec4& color, float zoomScale)
 	{
 		for (const auto& pComponent : m_components)
@@ -436,13 +495,40 @@ namespace Engine
 		{
 			const auto& pComponent = *it;
 
-			GUI::SectionState sectionState = GUI::beginSection(pComponent->getType());
+			GUI::SectionState sectionState = GUI::beginSection(pComponent->getEditName());
 			switch (sectionState)
 			{
-				case GUI::SectionState::Open:
+				case GUI::SectionState::Open: {
+					bool hasEditorIcon = false;
+
+					if (auto componentEditorIcon = pComponent->getEditorIcon()) {
+						static const float iconSize = 32.0f;
+
+						// do not draw images with any zero dimension
+						if (glm::all(glm::bvec2(componentEditorIcon->getSize()))) {
+							const float aspectRatio = float(componentEditorIcon->getSize().x) / float(componentEditorIcon->getSize().y);
+
+							ImGui::Columns(2, nullptr, false);
+							ImGui::SetColumnOffset(1, iconSize + 32.0f);
+							ImGui::Image(
+								(ImTextureID)componentEditorIcon->getHandle(),
+								ImVec2(iconSize, std::min(iconSize / aspectRatio, 256.0f))
+							);
+							ImGui::NextColumn();
+
+							hasEditorIcon = true;
+						}
+					}
+
 					changed |= pComponent->edit();
+
+					if (hasEditorIcon) {
+						ImGui::Columns();
+					}
+
 					GUI::endSection();
 					break;
+				}
 				case GUI::SectionState::Delete:
 					pComponentToRemove = pComponent;
 					break;

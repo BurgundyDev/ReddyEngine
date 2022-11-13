@@ -37,9 +37,9 @@ namespace Engine
         return getResource<PFX>(name);
     }
 
-    FontRef ResourceManager::getFont(const std::string& name, int height)
+    FontRef ResourceManager::getFont(const std::string& name)
     {
-        return getResource<Font>(name, height);
+        return getResource<Font>(name);
     }
 
     bool ResourceManager::copyFileToAssets(const std::string &path, const std::string& subDir, std::string& resultPath)
