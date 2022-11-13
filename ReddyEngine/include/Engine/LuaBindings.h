@@ -81,6 +81,8 @@ namespace Engine
         int funcSetVec2Property(lua_State* L);
         int funcSetColorProperty(lua_State* L);
         int funcSetStringProperty(lua_State* L);
+        int funcGetComponent(lua_State* L);
+        int funcGetEntity(lua_State* L);
         int funcSendEvent(lua_State* L);
         int funcGetPosition(lua_State* L);
         int funcSetPosition(lua_State* L);
@@ -114,7 +116,6 @@ namespace Engine
         int funcSetTextOrigin(lua_State* L);
         int funcGetTextScale(lua_State* L);
         int funcSetTextScale(lua_State* L);
-        int funcGetComponent(lua_State* L);
         int funcGetName(lua_State* L);
         int funcSetName(lua_State* L);
 

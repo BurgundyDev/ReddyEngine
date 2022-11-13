@@ -155,14 +155,25 @@ std::string LUA_GET_STRING_impl(lua_State* L, int stackIndex, const std::string&
 
 Engine::EntityRef LUA_GET_ENTITY_impl(lua_State* L, int stackIndex, const char* funcName)
 {
-    // This will be called a lot, we don't log errors. All silent
-
     if (lua_gettop(L) < stackIndex) return nullptr;
     if (lua_isstring(L, stackIndex)) return Engine::getScene()->getEntityByName(lua_tostring(L, stackIndex), true);
     if (!lua_istable(L, stackIndex)) return nullptr;
 
+    lua_getfield(L, stackIndex, "EOBJ");
+    if (lua_islightuserdata(L, -1))
+    {
+        auto pEntity = ((Engine::Entity*)lua_topointer(L, -1))->shared_from_this();
+        lua_pop(L, 1);
+        return pEntity;
+    }
+    lua_pop(L, 1);
+
     lua_getfield(L, stackIndex, "COBJ");
-    if (!lua_islightuserdata(L, -1)) return nullptr;
+    if (!lua_islightuserdata(L, -1))
+    {
+        lua_pop(L, 1);
+        return nullptr;
+    }
 
     auto pScriptComponent = (Engine::ScriptComponent*)lua_topointer(L, -1);
     lua_pop(L, 1);

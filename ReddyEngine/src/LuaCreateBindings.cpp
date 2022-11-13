@@ -35,6 +35,8 @@ namespace Engine
         LUA_REGISTER(SetVec2Property);
         LUA_REGISTER(SetColorProperty);
         LUA_REGISTER(SetStringProperty);
+        LUA_REGISTER(GetComponent);
+        LUA_REGISTER(GetEntity);
         LUA_REGISTER(SendEvent);
         LUA_REGISTER(GetPosition);
         LUA_REGISTER(SetPosition);
@@ -68,7 +70,6 @@ namespace Engine
         LUA_REGISTER(SetTextOrigin);
         LUA_REGISTER(GetTextScale);
         LUA_REGISTER(SetTextScale);
-        LUA_REGISTER(GetComponent);
         LUA_REGISTER(GetName);
         LUA_REGISTER(SetName);
     }
@@ -259,6 +260,47 @@ namespace Engine
 
         m_pCurrentComponentDef->properties.push_back(p);
         return 0;
+    }
+
+    int LuaBindings::funcGetComponent(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (pEntity)
+        {
+            auto scriptComponentName = LUA_GET_STRING(2, "");
+            if (!scriptComponentName.empty())
+            {
+                auto pComponents = pEntity->getComponents();
+                for (const auto& pComponent : pComponents)
+                {
+                    auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+                    if (pScriptComponent)
+                    {
+                        if (pScriptComponent->name == scriptComponentName)
+                        {
+                            lua_getglobal(L, "CINS_t");
+                            lua_getfield(L, -1, pScriptComponent->luaName.c_str());
+                            return 1;
+                        }
+                    }
+                }
+            }
+        }
+        lua_pushnil(L);
+        return 1;
+    }
+
+    int LuaBindings::funcGetEntity(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (pEntity)
+        {
+            lua_getglobal(L, "EINS_t");
+            lua_getfield(L, -1, pEntity->luaName.c_str());
+            return 1;
+        }
+        lua_pushnil(L);
+        return 1;
     }
 
     int LuaBindings::funcSendEvent(lua_State* L)
@@ -559,34 +601,6 @@ namespace Engine
         auto pText = LUA_GET_COMPONENT(1, TextComponent);
         if (pText) pText->scale = LUA_GET_NUMBER(2, 1.0f);
         return 0;
-    }
-
-    int LuaBindings::funcGetComponent(lua_State* L)
-    {
-        auto pEntity = LUA_GET_ENTITY(1);
-        if (pEntity)
-        {
-            auto scriptComponentName = LUA_GET_STRING(2, "");
-            if (!scriptComponentName.empty())
-            {
-                auto pComponents = pEntity->getComponents();
-                for (const auto& pComponent : pComponents)
-                {
-                    auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
-                    if (pScriptComponent)
-                    {
-                        if (pScriptComponent->name == scriptComponentName)
-                        {
-                            lua_getglobal(L, "CINS_t");
-                            lua_getfield(L, -1, pScriptComponent->luaName.c_str());
-                            return 1;
-                        }
-                    }
-                }
-            }
-        }
-        lua_pushnil(L);
-        return 1;
     }
 
     int LuaBindings::funcGetName(lua_State* L)

@@ -64,6 +64,7 @@ namespace Engine
 		bool lockScale = true;
 
 	public:
+		Entity();
 		~Entity();
 
 		bool addChild(EntityRef pChild, int insertAt = -1); // True if was added, false if already child
@@ -218,6 +219,9 @@ namespace Engine
 		void onMouseDown();
 		void onMouseUp();
 		void onMouseClick();
+
+		uint64_t runtimeId = 0; // This has nothing to do with entity Id. Its for Lua
+		std::string luaName;
 
 	public:
 		// Editor stuff (We could #ifdef this in final version?)

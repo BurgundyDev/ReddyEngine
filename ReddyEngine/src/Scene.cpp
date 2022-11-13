@@ -10,10 +10,15 @@
 namespace Engine
 {
 	Scene::Scene()
-		: m_pRoot(std::make_shared<Entity>())
-		, m_id(0)
-		, m_pComponentManager(std::make_shared<ComponentManager>())
 	{
+	}
+
+	void Scene::init()
+	{
+		m_pRoot = (std::make_shared<Entity>());
+		m_id = 0;
+		m_pComponentManager = std::make_shared<ComponentManager>();
+
 		m_pRoot->name = "Root";
 		m_pRoot->clickThrough = true; // We cannot select the root
 

@@ -24,6 +24,7 @@ namespace Engine
 	{
 	public:
 		Scene();
+		void init();
 		~Scene();
 
 		bool isEditorScene() const { return m_isEditorScene; }
@@ -72,11 +73,11 @@ namespace Engine
 	private:
 		bool m_isEditorScene = false;
 		bool m_isMouseDown = false;
-		glm::vec2 m_mousePos; // In World coordinates
+		glm::vec2 m_mousePos = glm::vec2(0.0f); // In World coordinates
 		EntityRef m_pRoot;
 		EntityRef m_pMouseHoverEntity;
 		EntityRef m_pMouseDownEntity;
-		uint64_t m_id;
+		uint64_t m_id = 0;
 		ComponentManagerRef m_pComponentManager;
 		std::vector<EntityRef> m_entitiesToDestroy;
 	};

@@ -118,6 +118,7 @@ namespace Engine
         g_pScene = std::make_shared<Scene>();
         g_pLuaBindings = std::make_shared<LuaBindings>();
         g_pLuaBindings->init();
+        g_pScene->init();
 
         // Once everything is setup, the game can load stuff
         pGame->loadContent();
