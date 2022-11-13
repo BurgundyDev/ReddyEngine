@@ -1,6 +1,6 @@
 {
    "camera" : {
-      "position" : [ 0.38150987029075623, -0.21875026822090149 ],
+      "position" : [ 0.014322399161756039, -0.60416692495346069 ],
       "zoom" : 1
    },
    "root" : {
@@ -20,7 +20,10 @@
                {
                   "enabled" : true,
                   "name" : "sandboxA",
-                  "properties" : null,
+                  "properties" : {
+                     "rotSpeed" : 45.0,
+                     "scaleSpeed" : 90.0
+                  },
                   "type" : "Script"
                }
             ],
@@ -31,6 +34,112 @@
             "sortChildren" : false,
             "transform" : {
                "position" : [ -1.0, -1.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [
+                     0.99019604921340942,
+                     0.0097078336402773857,
+                     0.0097078336402773857,
+                     1.0
+                  ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures/defaultTexture.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxA",
+                  "properties" : {
+                     "rotSpeed" : -45.0,
+                     "scaleSpeed" : 180.0
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 16,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 0.0, -1.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 0.41176462173461914, 1.0, 0.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures/defaultTexture.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxA",
+                  "properties" : {
+                     "rotSpeed" : 90.0,
+                     "scaleSpeed" : -45.0
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 19,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 1.0, -1.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 0.34717413783073425, 0.35556185245513916, 0.63235294818878174, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures/defaultTexture.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxB",
+                  "properties" : {
+                     "moveSpeed" : 180.0
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 22,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 0.0, 0.0 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },

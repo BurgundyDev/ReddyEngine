@@ -218,7 +218,11 @@ namespace Engine
         lua_getfield(L, -1, "mouseUp"); if (lua_isfunction(L, -1)) m_implLuaCallsMask |= LUA_FLAG_MOUSEUP; lua_pop(L, 1);
         lua_getfield(L, -1, "mouseClick"); if (lua_isfunction(L, -1)) m_implLuaCallsMask |= LUA_FLAG_MOUSECLICK; lua_pop(L, 1);
 
-        LUA_CLONE_TABLE(L, 2);
+        LUA_CLONE_TABLE(L, lua_gettop(L));
+
+        // Add pointer to our script component
+        lua_pushlightuserdata(L, this);
+        lua_setfield(L, -2, "COBJ");
 
         lua_setfield(L, -3, luaName.c_str());
         lua_pop(L, lua_gettop(L));

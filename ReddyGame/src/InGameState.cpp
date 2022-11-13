@@ -110,7 +110,7 @@ int InGameState::funcGetCameraPosition(lua_State* L)
 
 int InGameState::funcSetCameraPosition(lua_State* L)
 {
-    m_camera = LUA_GET_VEC2(1);
+    m_camera = LUA_GET_VEC2(1, glm::vec2(0));
     return 0;
 }
 

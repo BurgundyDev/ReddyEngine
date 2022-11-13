@@ -8,6 +8,8 @@ extern "C" {
 #include "Engine/Log.h"
 #include "Engine/ReddyEngine.h"
 #include "Engine/EventSystem.h"
+#include "Engine/ScriptComponent.h"
+#include "Engine/Entity.h"
 
 
 namespace Engine
@@ -24,6 +26,15 @@ namespace Engine
         LUA_REGISTER(SetStringProperty);
 
         LUA_REGISTER(SendEvent);
+
+        LUA_REGISTER(GetPosition);
+        LUA_REGISTER(SetPosition);
+        LUA_REGISTER(GetWorldPosition);
+        LUA_REGISTER(SetWorldPosition);
+        LUA_REGISTER(GetRotation);
+        LUA_REGISTER(SetRotation);
+        LUA_REGISTER(GetScale);
+        LUA_REGISTER(SetScale);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -211,6 +222,66 @@ namespace Engine
 
         getEventSystem()->sendEvent(new LuaEvent(eventName, dataName));
 
+        return 0;
+    }
+
+    int LuaBindings::funcGetPosition(lua_State* L)
+    {
+        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
+        LUA_PUSH_VEC2(pScriptComponent->getEntity()->getPosition());
+        return 1;
+    }
+
+    int LuaBindings::funcSetPosition(lua_State* L)
+    {
+        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
+        auto pos = LUA_GET_VEC2(2, glm::vec2(0));
+        pScriptComponent->getEntity()->setPosition(pos);
+        return 0;
+    }
+
+    int LuaBindings::funcGetWorldPosition(lua_State* L)
+    {
+        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
+        LUA_PUSH_VEC2(pScriptComponent->getEntity()->getWorldPosition());
+        return 1;
+    }
+
+    int LuaBindings::funcSetWorldPosition(lua_State* L)
+    {
+        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
+        auto pos = LUA_GET_VEC2(2, glm::vec2(0));
+        pScriptComponent->getEntity()->setWorldPosition(pos);
+        return 0;
+    }
+
+    int LuaBindings::funcGetRotation(lua_State* L)
+    {
+        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
+        lua_pushnumber(L, (lua_Number)pScriptComponent->getEntity()->getRotation());
+        return 1;
+    }
+
+    int LuaBindings::funcSetRotation(lua_State* L)
+    {
+        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
+        auto angle = LUA_GET_NUMBER(2, 0.0f);
+        pScriptComponent->getEntity()->setRotation(angle);
+        return 0;
+    }
+
+    int LuaBindings::funcGetScale(lua_State* L)
+    {
+        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
+        LUA_PUSH_VEC2(pScriptComponent->getEntity()->getScale());
+        return 1;
+    }
+
+    int LuaBindings::funcSetScale(lua_State* L)
+    {
+        auto pScriptComponent = LUA_GET_SCRIPT_COMPONENT(1);
+        auto scale = LUA_GET_VEC2(2, glm::vec2(1));
+        pScriptComponent->getEntity()->setScale(scale);
         return 0;
     }
 }
