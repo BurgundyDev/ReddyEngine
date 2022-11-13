@@ -221,7 +221,7 @@ namespace Engine
         LUA_CLONE_TABLE(L, 2);
 
         lua_setfield(L, -3, luaName.c_str());
-        lua_pop(L, 2);
+        lua_pop(L, lua_gettop(L));
     }
 
 	void ScriptComponent::destroyLuaObj()
@@ -233,7 +233,7 @@ namespace Engine
         lua_getglobal(L, "CINS_t");
         lua_pushnil(L);
         lua_setfield(L, -2, luaName.c_str());
-        lua_pop(L, 1);
+        lua_pop(L, lua_gettop(L));
     }
     
 	void ScriptComponent::onCreate()

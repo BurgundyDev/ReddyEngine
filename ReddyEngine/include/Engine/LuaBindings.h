@@ -37,27 +37,10 @@ namespace Engine
         std::string tooltip;
     };
 
-    struct LuaMethodDef
-    {
-        bool available = false;
-        std::string name;
-    };
-
     struct LuaComponentDef
     {
         std::string luaName;
         std::vector<LuaProperty> properties;
-        LuaMethodDef onInit;
-        LuaMethodDef onCreate;
-        LuaMethodDef onUpdate;
-        LuaMethodDef onFixedUpdate;
-        LuaMethodDef onDestroy;
-        LuaMethodDef onMouseEnter;
-        LuaMethodDef onMouseLeave;
-        LuaMethodDef onMouseDown;
-        LuaMethodDef onMouseUp;
-        LuaMethodDef onMouseClick;
-        LuaMethodDef onEvent;
     };
 
     class LuaBindings final

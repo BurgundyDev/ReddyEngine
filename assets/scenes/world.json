@@ -53,7 +53,30 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 1.0755208730697632, -0.75520837306976318 ],
+               "position" : [ 1.0, -1.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "enabled" : true,
+                  "name" : "MonsterMgr",
+                  "properties" : null,
+                  "type" : "Script"
+               }
+            ],
+            "id" : 12,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -1.0, -1.0 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
