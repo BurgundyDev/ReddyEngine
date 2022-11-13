@@ -1,7 +1,21 @@
 #pragma once
 
+#include <string>
+
+
 namespace Engine
 {
+    enum StateChangeRequest
+    {
+        None,
+        ContinueGame,
+        NewGame,
+        Quit,
+        Resume,
+        Editor,
+        MainMenu
+    };
+
     class IGame
     {
     public:
@@ -11,5 +25,6 @@ namespace Engine
         virtual void update(float deltatime) = 0;
         virtual void fixedUpdate(float deltatime) = 0;
         virtual void draw() = 0;
+        virtual void changeState(StateChangeRequest stateChangeRequest, const std::string& filename) = 0; // Called from Lua
     };
 }

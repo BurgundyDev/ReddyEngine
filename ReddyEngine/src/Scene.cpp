@@ -28,6 +28,7 @@ namespace Engine
 
 	Scene::~Scene()
 	{
+		clear();
 		DEREGISTER_EVENT(MouseButtonDownEvent);
 		DEREGISTER_EVENT(MouseButtonUpEvent);
 	}
@@ -51,6 +52,7 @@ namespace Engine
 		m_isMouseDown = false;
 		m_pMouseDownEntity.reset();
 		m_pMouseHoverEntity.reset();
+		m_pComponentManager->clear();
 
 		m_pRoot.reset();
 		m_pRoot = std::make_shared<Entity>();

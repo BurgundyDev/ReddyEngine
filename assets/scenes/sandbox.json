@@ -1,7 +1,7 @@
 {
    "camera" : {
-      "position" : [ -0.46484440565109253, 0.21614550054073334 ],
-      "zoom" : 3
+      "position" : [ 3.1601552963256836, 1.4244787693023682 ],
+      "zoom" : 1
    },
    "root" : {
       "children" : [
@@ -155,8 +155,10 @@
                },
                {
                   "enabled" : true,
-                  "name" : "sandboxButton",
-                  "properties" : null,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : ""
+                  },
                   "type" : "Script"
                },
                {
@@ -195,15 +197,9 @@
                },
                {
                   "enabled" : true,
-                  "name" : "sandboxButton",
-                  "properties" : null,
-                  "type" : "Script"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "sandboxSoundButton",
+                  "name" : "Button",
                   "properties" : {
-                     "sound" : "sounds/test_quick_sound.wav"
+                     "codeToEval" : "PlaySound(\"sounds/test_quick_sound.wav\")"
                   },
                   "type" : "Script"
                }
@@ -235,8 +231,10 @@
                },
                {
                   "enabled" : true,
-                  "name" : "sandboxButton",
-                  "properties" : null,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : ""
+                  },
                   "type" : "Script"
                },
                {
@@ -326,8 +324,10 @@
                },
                {
                   "enabled" : true,
-                  "name" : "sandboxButton",
-                  "properties" : null,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : ""
+                  },
                   "type" : "Script"
                },
                {
@@ -391,8 +391,10 @@
                },
                {
                   "enabled" : true,
-                  "name" : "sandboxButton",
-                  "properties" : null,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : ""
+                  },
                   "type" : "Script"
                },
                {
@@ -463,6 +465,40 @@
                "position" : [ -1.0, 0.0 ],
                "rotation" : 0.0,
                "scale" : [ 1.3600000143051147, 10.229999542236328 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Play Music",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : "PlayMusic(\"musics/Everyday368.ogg\")"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 58,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 3.0, 1.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
             },
             "uiRoot" : false
          }

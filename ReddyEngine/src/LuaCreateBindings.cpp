@@ -17,6 +17,7 @@ extern "C" {
 #include "Engine/ResourceManager.h"
 #include "Engine/SpriteComponent.h"
 #include "Engine/TextComponent.h"
+#include "Engine/MusicManager.h"
 
 
 namespace Engine
@@ -73,6 +74,16 @@ namespace Engine
         LUA_REGISTER(GetName);
         LUA_REGISTER(SetName);
         LUA_REGISTER(FindEntityByName);
+        LUA_REGISTER(ContinueGame);
+        LUA_REGISTER(NewGame);
+        LUA_REGISTER(Quit);
+        LUA_REGISTER(Editor);
+        LUA_REGISTER(Resume);
+        LUA_REGISTER(MainMenu);
+        LUA_REGISTER(PlayMusic);
+        LUA_REGISTER(StopMusic);
+        LUA_REGISTER(PauseMusic);
+        LUA_REGISTER(ResumeMusic);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -651,6 +662,67 @@ namespace Engine
     int LuaBindings::funcFindEntityByComponent(lua_State* L)
     {
         //TODO:
+        return 0;
+    }
+
+    int LuaBindings::funcContinueGame(lua_State* L)
+    {
+        m_stateChangeRequest = StateChangeRequest::ContinueGame;
+        return 0;
+    }
+
+    int LuaBindings::funcNewGame(lua_State* L)
+    {
+        m_stateChangeRequest = StateChangeRequest::NewGame;
+        m_worldFilenameToLoad = LUA_GET_STRING(1, "assets/scenes/world.json");
+        return 0;
+    }
+
+    int LuaBindings::funcQuit(lua_State* L)
+    {
+        m_stateChangeRequest = StateChangeRequest::Quit;
+        return 0;
+    }
+
+    int LuaBindings::funcEditor(lua_State* L)
+    {
+        m_stateChangeRequest = StateChangeRequest::Editor;
+        return 0;
+    }
+
+    int LuaBindings::funcResume(lua_State* L)
+    {
+        m_stateChangeRequest = StateChangeRequest::Resume;
+        return 0;
+    }
+
+    int LuaBindings::funcMainMenu(lua_State* L)
+    {
+        m_stateChangeRequest = StateChangeRequest::MainMenu;
+        return 0;
+    }
+
+    int LuaBindings::funcPlayMusic(lua_State* L)
+    {
+        getMusicManager()->play(LUA_GET_STRING(1, ""));
+        return 0;
+    }
+
+    int LuaBindings::funcStopMusic(lua_State* L)
+    {
+        getMusicManager()->stop();
+        return 0;
+    }
+
+    int LuaBindings::funcPauseMusic(lua_State* L)
+    {
+        getMusicManager()->pause();
+        return 0;
+    }
+
+    int LuaBindings::funcResumeMusic(lua_State* L)
+    {
+        getMusicManager()->resume();
         return 0;
     }
 }

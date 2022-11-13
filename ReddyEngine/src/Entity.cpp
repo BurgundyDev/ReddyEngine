@@ -32,9 +32,10 @@ namespace Engine
         runtimeId = g_nextRuntimeId++;
         luaName = "EINS_" + std::to_string(runtimeId);
 
-		if (!getScene()->isEditorScene())
+		if (getScene() && !getScene()->isEditorScene())
 		{
 			auto L = getLuaBindings()->getState();
+			if (!L) return;
 
 			lua_getglobal(L, "EINS_t");
 			lua_newtable(L);
@@ -47,14 +48,16 @@ namespace Engine
 
 	Entity::~Entity()
 	{
-		if (!getScene()->isEditorScene())
+		if (getScene() && !getScene()->isEditorScene())
 		{
 			auto L = getLuaBindings()->getState();
-
-			lua_getglobal(L, "EINS_t");
-			lua_pushnil(L);
-			lua_setfield(L, -2, luaName.c_str());
-			lua_pop(L, lua_gettop(L));
+			if (L)
+			{
+				lua_getglobal(L, "EINS_t");
+				lua_pushnil(L);
+				lua_setfield(L, -2, luaName.c_str());
+				lua_pop(L, lua_gettop(L));
+			}
 		}
 	}
 
@@ -409,8 +412,9 @@ namespace Engine
 
 	bool Entity::isMouseHover(const glm::vec2& mousePos) const
 	{
-		for (const auto& pComponent : m_components)
+		for (auto rit = m_components.rbegin(); rit != m_components.rend(); ++rit)
 		{
+			const auto& pComponent = *rit;
 			if (pComponent->isEnabled())
 				if (pComponent->isMouseHover(mousePos))
 					return true;
@@ -511,7 +515,7 @@ namespace Engine
 							ImGui::Columns(2, nullptr, false);
 							ImGui::SetColumnOffset(1, iconSize + 32.0f);
 							ImGui::Image(
-								(ImTextureID)componentEditorIcon->getHandle(),
+								(ImTextureID)(uintptr_t)componentEditorIcon->getHandle(),
 								ImVec2(iconSize, std::min(iconSize / aspectRatio, 256.0f))
 							);
 							ImGui::NextColumn();
@@ -569,8 +573,8 @@ namespace Engine
 
 	void Entity::draw()
 	{
-		for (const auto& pComponent : m_components)
-			pComponent->draw();
+		for (auto rit = m_components.rbegin(); rit != m_components.rend(); ++rit)
+			(*rit)->draw();
 
 		if (sortChildren)
 		{

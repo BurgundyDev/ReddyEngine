@@ -35,7 +35,14 @@ namespace Engine
     class LuaBindings;
     using LuaBindingsRef = std::shared_ptr<LuaBindings>;
 
+    class IGame;
+    using IGameRef = std::shared_ptr<IGame>;
 
+    class MusicManager;
+    using MusicManagerRef = std::shared_ptr<MusicManager>;
+
+    
+    const IGameRef& getGame();
     const SpriteBatchRef& getSpriteBatch();
     const InputRef& getInput();
     const AudioRef& getAudio();
@@ -43,6 +50,7 @@ namespace Engine
     const SceneRef& getScene();
 	const EventSystemRef& getEventSystem();
 	const LuaBindingsRef& getLuaBindings();
+    const MusicManagerRef& getMusicManager();
 
 
     void Run(const std::shared_ptr<IGame>& pGame, int argc, const char** argv);

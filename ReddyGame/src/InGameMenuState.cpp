@@ -9,6 +9,7 @@
 
 
 InGameMenuState::InGameMenuState()
+    : GameState("")
 {
     m_seeThrough = true;
 }
@@ -18,7 +19,7 @@ void InGameMenuState::update(float dt)
 {
     if (Engine::getInput()->isKeyJustDown(SDL_SCANCODE_ESCAPE))
     {
-        g_pGame->popState();
+        std::dynamic_pointer_cast<Game>(Engine::getGame())->popState();
         return;
     }
 
@@ -28,8 +29,8 @@ void InGameMenuState::update(float dt)
 
     if (ImGui::Begin("In Game Menu", 0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
     {
-        if (ImGui::Button("Resume")) g_pGame->popState();
-        if (ImGui::Button("Quit")) g_pGame->changeState(std::make_shared<MainMenuState>());
+        if (ImGui::Button("Resume")) std::dynamic_pointer_cast<Game>(Engine::getGame())->popState();
+        if (ImGui::Button("Quit")) std::dynamic_pointer_cast<Game>(Engine::getGame())->changeState(std::make_shared<MainMenuState>());
     }
 
     ImGui::End();

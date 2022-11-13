@@ -16,11 +16,6 @@ RegisterComponent("sandboxRotator", {
     update = function(self, dt)
         SetRotation(self, GetRotation(self) + self.rotSpeed * dt)
     end,
-
-    create = function(self) print("Rotator:create") end,
-    destroy = function(self) print("Rotator:destroy") end,
-    enable = function(self) print("Rotator:enable") end,
-    disable = function(self) print("Rotator:disable") end,
 })
 
 
@@ -50,56 +45,6 @@ RegisterComponent("sandboxMover", {
 })
 
 
-RegisterComponent("sandboxButton", {
-    originalScale = Vec2(1),
-    scale = 1,
-    scaleTarget = 1,
-    isDown = false,
-    isHover = false,
-
-    create = function(self)
-        self.originalScale = GetScale(self)
-    end,
-
-    update = function(self, dt)
-        self.scale = self.scale + (self.scaleTarget - self.scale) * dt * 50;
-        SetScale(self, self.originalScale * self.scale)
-    end,
-
-    updateScale = function(self)
-        if self.isHover then
-            if self.isDown then
-                self.scaleTarget = 0.8
-            else
-                self.scaleTarget = 1.2
-            end
-        else
-            self.scaleTarget = 1
-        end
-    end,
-
-    mouseEnter = function(self)
-        self.isHover = true
-        self.updateScale(self)
-    end,
-
-    mouseLeave = function(self)
-        self.isHover = false
-        self.updateScale(self)
-    end,
-
-    mouseDown = function(self)
-        self.isDown = true
-        self.updateScale(self)
-    end,
-
-    mouseUp = function(self)
-        self.isDown = false
-        self.updateScale(self)
-    end
-})
-
-
 RegisterComponent("sandboxDestroyButton", {
     target = "",
 
@@ -109,19 +54,6 @@ RegisterComponent("sandboxDestroyButton", {
 
     mouseClick = function(self)
         Destroy(self.target)
-    end
-})
-
-
-RegisterComponent("sandboxSoundButton", {
-    sound = "",
-
-    initComponent = function()
-        SetStringProperty("sound", "Sound to play")
-    end,
-
-    mouseClick = function(self)
-        PlaySound(self.sound)
     end
 })
 

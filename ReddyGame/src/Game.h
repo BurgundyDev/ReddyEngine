@@ -20,6 +20,7 @@ public:
     void update(float deltatime) override;
     void fixedUpdate(float deltatime) override;
     void draw() override;
+    void changeState(Engine::StateChangeRequest stateChangeRequest, const std::string& filename) override;
 
     void changeState(const GameStateRef& newState);
     void pushState(const GameStateRef& newState);
@@ -28,7 +29,3 @@ public:
 private:
     std::vector<GameStateRef> m_pGameStates;
 };
-
-
-using GameRef = std::shared_ptr<Game>;
-extern GameRef g_pGame;
