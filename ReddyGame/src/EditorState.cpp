@@ -18,6 +18,7 @@
 #include <Engine/SpriteComponent.h>
 #include <Engine/TextComponent.h>
 #include <Engine/ScriptComponent.h>
+#include <Engine/MusicManager.h>
 #include <Engine/LuaBindings.h>
 
 #include <imgui.h>
@@ -57,6 +58,7 @@ EditorState::EditorState()
 
 void EditorState::enter(const GameStateRef& previousState)
 {
+    Engine::getMusicManager()->stop();
     Engine::getScene()->setEditorScene(true);
 
     clear();

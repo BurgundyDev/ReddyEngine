@@ -2,6 +2,7 @@
 #include "Engine/Config.h"
 #include "Engine/ReddyEngine.h"
 #include "Engine/Utils.h"
+#include "Engine/Log.h"
 
 #include <functional>
 
@@ -66,7 +67,11 @@ namespace Engine
         m_bufferCount = 0;
 
         m_pStream = stb_vorbis_open_filename((char*)m_filename.c_str(), NULL, NULL);
-        if (!m_pStream) return;
+        if (!m_pStream)
+        {
+            CORE_ERROR("Failed to open file: {}", m_filename);
+            return;
+        }
 
         auto info = stb_vorbis_get_info(m_pStream);
         m_sampleCount = stb_vorbis_stream_length_in_samples(m_pStream);

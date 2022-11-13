@@ -136,6 +136,11 @@ namespace Engine
         int funcResume(lua_State* L);
         int funcMainMenu(lua_State* L);
 
+        int funcPlayMusic(lua_State* L);
+        int funcStopMusic(lua_State* L);
+        int funcPauseMusic(lua_State* L);
+        int funcResumeMusic(lua_State* L);
+
     private:
         void createBindings();
 

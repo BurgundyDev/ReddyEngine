@@ -1,6 +1,6 @@
 {
    "camera" : {
-      "position" : [ 0.71354198455810547, -0.45052048563957214 ],
+      "position" : [ 1.0052087306976318, -0.27343714237213135 ],
       "zoom" : 3
    },
    "root" : {
@@ -196,6 +196,31 @@
             "sortChildren" : false,
             "transform" : {
                "position" : [ 3.0, 2.5 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "enabled" : true,
+                  "name" : "MainMenu",
+                  "properties" : {
+                     "music" : "musics/MedievalTavern.ogg"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 60,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "MainMenu",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 2.0677084922790527, -1.9713537693023682 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },

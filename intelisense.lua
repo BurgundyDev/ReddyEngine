@@ -46,6 +46,10 @@ function IsButtonDown(button) end
 -- Audio
 ---------------------------------------------------------------------
 function PlaySound(filename, vol, bal, pitch) end
+function PlayMusic(filename) end
+function StopMusic() end
+function PauseMusic() end
+function ResumeMusic() end
 
 
 ---------------------------------------------------------------------

@@ -515,7 +515,7 @@ namespace Engine
 							ImGui::Columns(2, nullptr, false);
 							ImGui::SetColumnOffset(1, iconSize + 32.0f);
 							ImGui::Image(
-								(ImTextureID)componentEditorIcon->getHandle(),
+								(ImTextureID)(uintptr_t)componentEditorIcon->getHandle(),
 								ImVec2(iconSize, std::min(iconSize / aspectRatio, 256.0f))
 							);
 							ImGui::NextColumn();

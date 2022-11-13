@@ -8,6 +8,7 @@
 #include "Engine/Scene.h"
 #include "Engine/EventSystem.h"
 #include "Engine/LuaBindings.h"
+#include "Engine/MusicManager.h"
 
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -27,6 +28,7 @@ namespace Engine
 	static EventSystemRef g_pEventSystem;
 	static LuaBindingsRef g_pLuaBindings;
 	static IGameRef g_pGame;
+	static MusicManagerRef g_pMusicManager;
 
     static int g_fixedUpdateFPS = 60;
     static bool g_done = false;
@@ -118,6 +120,7 @@ namespace Engine
         g_pAudio = std::make_shared<Audio>();
         g_pSpriteBatch = std::make_shared<SpriteBatch>();
         g_pResourceManager = std::make_shared<ResourceManager>();
+        g_pMusicManager = std::make_shared<MusicManager>();
         g_pScene = std::make_shared<Scene>();
         g_pLuaBindings = std::make_shared<LuaBindings>();
         g_pLuaBindings->init();
@@ -286,6 +289,7 @@ namespace Engine
         // Cleanup
         g_pLuaBindings.reset();
         g_pScene.reset();
+        g_pMusicManager.reset();
         g_pResourceManager.reset();
         g_pSpriteBatch.reset();
         g_pAudio.reset();
@@ -347,6 +351,11 @@ namespace Engine
 	{
         return g_pLuaBindings;
 	}
+
+    const MusicManagerRef& getMusicManager()
+    {
+        return g_pMusicManager;
+    }
 
 	glm::vec2 getResolution()
     {

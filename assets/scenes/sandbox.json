@@ -1,7 +1,7 @@
 {
    "camera" : {
-      "position" : [ 0.49348890781402588, 0.25781217217445374 ],
-      "zoom" : 3
+      "position" : [ 3.1601552963256836, 1.4244787693023682 ],
+      "zoom" : 1
    },
    "root" : {
       "children" : [
@@ -478,14 +478,14 @@
                   "font" : "fonts/defaultFont24.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.7200000286102295,
-                  "text" : "",
+                  "text" : "Play Music",
                   "type" : "Text"
                },
                {
                   "enabled" : true,
                   "name" : "Button",
                   "properties" : {
-                     "codeToEval" : ""
+                     "codeToEval" : "PlayMusic(\"musics/Everyday368.ogg\")"
                   },
                   "type" : "Script"
                }
