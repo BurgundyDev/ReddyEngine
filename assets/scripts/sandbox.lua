@@ -16,11 +16,6 @@ RegisterComponent("sandboxRotator", {
     update = function(self, dt)
         SetRotation(self, GetRotation(self) + self.rotSpeed * dt)
     end,
-
-    create = function(self) print("Rotator:create") end,
-    destroy = function(self) print("Rotator:destroy") end,
-    enable = function(self) print("Rotator:enable") end,
-    disable = function(self) print("Rotator:disable") end,
 })
 
 

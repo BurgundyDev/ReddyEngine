@@ -249,8 +249,10 @@ namespace Engine
 	void ScriptComponent::destroyLuaObj()
     {
         if (!m_pLuaComponentDef) return;
+        const auto& pLuaBindings = getLuaBindings();
+        if (!pLuaBindings) return;
 
-        auto L = getLuaBindings()->getState();
+        auto L = pLuaBindings->getState();
 
         lua_getglobal(L, "CINS_t");
         lua_pushnil(L);

@@ -32,7 +32,7 @@ namespace Engine
         runtimeId = g_nextRuntimeId++;
         luaName = "EINS_" + std::to_string(runtimeId);
 
-		if (!getScene()->isEditorScene())
+		if (getScene() && !getScene()->isEditorScene())
 		{
 			auto L = getLuaBindings()->getState();
 			if (!L) return;
@@ -48,7 +48,7 @@ namespace Engine
 
 	Entity::~Entity()
 	{
-		if (!getScene()->isEditorScene())
+		if (getScene() && !getScene()->isEditorScene())
 		{
 			auto L = getLuaBindings()->getState();
 			if (L)
