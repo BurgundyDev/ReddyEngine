@@ -19,12 +19,14 @@ RegisterComponent("TimeMgr", {
         local prevTime = self.time
         self.time = self.time + (1.0 / self.timeScale) * deltatime
 
+        print(self.time)
+
         if prevTime < 20 and self.time >= 20 then
-            SendEvent("SunSet")
+            SendEvent("SunSet", {someExtraData=5})
         end
 
         -- Check if player been up passed 2am, then we should passout
-        if self.time >= 2 then
+        if self.time >= 26 then -- 2am
             -- TODO: Pass out
             self.time = 7 -- wakeup time, 7am
 

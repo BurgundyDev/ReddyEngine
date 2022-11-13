@@ -122,6 +122,6 @@ int InGameState::funcGetCameraZoom(lua_State* L)
 
 int InGameState::funcSetCameraZoom(lua_State* L)
 {
-    m_zoom = lua_tonumber(L, -1);
+    m_zoom = (float)lua_tonumber(L, -1);
     return 0;
 }

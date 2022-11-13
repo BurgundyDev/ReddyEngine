@@ -280,12 +280,12 @@ namespace Engine
         Config::save();
 
         // Cleanup
-        g_pLuaBindings.reset();
         g_pScene.reset();
         g_pResourceManager.reset();
         g_pSpriteBatch.reset();
         g_pAudio.reset();
         g_pInput.reset();
+        g_pLuaBindings.reset();
 
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplSDL2_Shutdown();

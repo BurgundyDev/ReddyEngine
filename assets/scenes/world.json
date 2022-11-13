@@ -29,6 +29,35 @@
                "scale" : [ 1.0, 1.0 ]
             },
             "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "enabled" : true,
+                  "name" : "TimeMgr",
+                  "properties" : {
+                     "daysPerSeason" : 28,
+                     "nightTint" : [ 0.5, 0.69999998807907104, 0.89999997615814209, 1.0 ],
+                     "rainDir" : [ -0.10000000149011612, -1.0 ],
+                     "season" : "Spring",
+                     "timeScale" : 1.0
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 10,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 1.0755208730697632, -0.75520837306976318 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
          }
       ],
       "clickThrough" : true,

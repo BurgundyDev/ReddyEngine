@@ -7,6 +7,7 @@ extern "C" {
 #include "Engine/LuaBindings.h"
 #include "Engine/Log.h"
 #include "Engine/ReddyEngine.h"
+#include "Engine/EventSystem.h"
 
 
 namespace Engine
@@ -21,6 +22,8 @@ namespace Engine
         LUA_REGISTER(SetVec2Property);
         LUA_REGISTER(SetColorProperty);
         LUA_REGISTER(SetStringProperty);
+
+        LUA_REGISTER(SendEvent);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -181,6 +184,33 @@ namespace Engine
         lua_pop(L, 2);
 
         m_pCurrentComponentDef->properties.push_back(p);
+        return 0;
+    }
+
+    int LuaBindings::funcSendEvent(lua_State* L)
+    {
+        if (lua_gettop(L) < 1 || !lua_isstring(L, 1))
+        {
+            CORE_ERROR_POPUP("Lua: SendEvent expected (string, table{optional})");
+            return 0;
+        }
+
+        static uint64_t nextEventDataId = 1;
+
+        std::string eventName = lua_tostring(L, 1);
+        std::string dataName = "";
+
+        if (lua_gettop(L) >= 2)
+        {
+            dataName = "EDAT_" + std::to_string(nextEventDataId++);
+            lua_getglobal(L, "EVTS_t");
+            lua_pushvalue(L, 2);
+            lua_setfield(L, -2, dataName.c_str());
+            lua_pop(L, 1);
+        }
+
+        getEventSystem()->sendEvent(new LuaEvent(eventName, dataName));
+
         return 0;
     }
 }

@@ -86,7 +86,7 @@ namespace Engine
         processCommands();
 
         for (const auto& pComponent : m_components)
-            pComponent->update(dt);
+            pComponent->fixedUpdate(dt);
 
         processCommands();
     }

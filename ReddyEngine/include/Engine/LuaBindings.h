@@ -84,6 +84,8 @@ namespace Engine
         int funcSetColorProperty(lua_State* L);
         int funcSetStringProperty(lua_State* L);
 
+        int funcSendEvent(lua_State* L);
+
     private:
         void createBindings();
 
@@ -96,9 +98,13 @@ namespace Engine
 
 glm::vec2 LUA_GET_VEC2_impl(lua_State* L, int stackIndex);
 glm::vec4 LUA_GET_COLOR_impl(lua_State* L, int stackIndex);
+int cloneLuaTable(lua_State* L, int n);
+bool checkLua(lua_State* L, int r);
 
 #define LUA_PUSH_VEC2(v) {lua_getglobal(L, "Vec2"); lua_pushnumber(L, v.x); lua_pushnumber(L, v.y); lua_pcall(L, 2, 1, 0);}
 #define LUA_PUSH_COLOR(c) {lua_getglobal(L, "Color"); lua_pushnumber(L, c.r); lua_pushnumber(L, c.g); lua_pushnumber(L, c.b); lua_pushnumber(L, c.a); lua_pcall(L, 4, 1, 0);}
 
 #define LUA_GET_VEC2(i) LUA_GET_VEC2_impl(L, i)
 #define LUA_GET_COLOR(i) LUA_GET_COLOR_impl(L, i)
+
+#define LUA_CLONE_TABLE(L, n) cloneLuaTable(L, n)

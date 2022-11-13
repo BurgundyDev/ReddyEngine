@@ -1,9 +1,28 @@
+extern "C" {
+	#include <../lua/lua.h>
+	#include <../lua/lauxlib.h>
+	#include <../lua/lualib.h>
+}
+
 #include "Engine/ScriptComponent.h"
 #include "Engine/LuaBindings.h"
 #include "Engine/ReddyEngine.h"
 #include "Engine/GUI.h"
 #include "Engine/Utils.h"
 #include "Engine/Scene.h"
+
+
+#define LUA_FLAG_CREATE         0b1
+#define LUA_FLAG_DESTROY        0b10
+#define LUA_FLAG_ENABLE         0b100
+#define LUA_FLAG_DISABLE        0b1000
+#define LUA_FLAG_FIXEDUPDATE    0b10000
+#define LUA_FLAG_UPDATE         0b100000
+#define LUA_FLAG_MOUSEENTER     0b1000000
+#define LUA_FLAG_MOUSELEAVE     0b10000000
+#define LUA_FLAG_MOUSEDOWN      0b100000000
+#define LUA_FLAG_MOUSEUP        0b1000000000
+#define LUA_FLAG_MOUSECLICK     0b10000000000
 
 
 static uint64_t g_nextRuntimeId = 1;
@@ -14,10 +33,12 @@ namespace Engine
     ScriptComponent::ScriptComponent()
     {
         runtimeId = g_nextRuntimeId++;
+        luaName = "CINS_" + std::to_string(runtimeId);
     }
 
     ScriptComponent::~ScriptComponent()
     {
+        destroyLuaObj();
     }
 
     Json::Value ScriptComponent::serialize()
@@ -69,6 +90,10 @@ namespace Engine
         {
             m_luaProperties = m_pLuaComponentDef->properties; // Copy default properties
 
+            auto isEditor = getScene()->isEditorScene();
+            if (!isEditor) createLuaObj();
+            auto L = getLuaBindings()->getState();
+
             const auto& propertiesJson = json["properties"];
             for (auto& luaProperty : m_luaProperties)
             {
@@ -76,18 +101,58 @@ namespace Engine
                 {
                     case LuaPropertyType::Int:
                         luaProperty.intValue = Utils::deserializeInt32(propertiesJson[luaProperty.name], luaProperty.intValue);
+                        if (!isEditor)
+                        {
+                            lua_getglobal(L, "CINS_t");
+                            lua_getfield(L, -1, luaName.c_str());
+                            lua_pushinteger(L, luaProperty.intValue);
+                            lua_setfield(L, -2, luaProperty.name.c_str());
+                            lua_pop(L, lua_gettop(L));
+                        }
                         break;
                     case LuaPropertyType::Float:
                         luaProperty.floatValue = Utils::deserializeFloat(propertiesJson[luaProperty.name], luaProperty.floatValue);
+                        if (!isEditor)
+                        {
+                            lua_getglobal(L, "CINS_t");
+                            lua_getfield(L, -1, luaName.c_str());
+                            lua_pushnumber(L, (lua_Number)luaProperty.floatValue);
+                            lua_setfield(L, -2, luaProperty.name.c_str());
+                            lua_pop(L, lua_gettop(L));
+                        }
                         break;
                     case LuaPropertyType::Vec2:
                         Utils::deserializeFloat2(&luaProperty.vec2Value.x, propertiesJson[luaProperty.name], &luaProperty.vec2Value.x);
+                        if (!isEditor)
+                        {
+                            lua_getglobal(L, "CINS_t");
+                            lua_getfield(L, -1, luaName.c_str());
+                            LUA_PUSH_VEC2(luaProperty.vec2Value);
+                            lua_setfield(L, -2, luaProperty.name.c_str());
+                            lua_pop(L, lua_gettop(L));
+                        }
                         break;
                     case LuaPropertyType::Color:
                         Utils::deserializeFloat4(&luaProperty.colorValue.x, propertiesJson[luaProperty.name], &luaProperty.colorValue.x);
+                        if (!isEditor)
+                        {
+                            lua_getglobal(L, "CINS_t");
+                            lua_getfield(L, -1, luaName.c_str());
+                            LUA_PUSH_COLOR(luaProperty.colorValue);
+                            lua_setfield(L, -2, luaProperty.name.c_str());
+                            lua_pop(L, lua_gettop(L));
+                        }
                         break;
                     case LuaPropertyType::String:
                         luaProperty.stringValue = Utils::deserializeString(propertiesJson[luaProperty.name], luaProperty.stringValue);
+                        if (!isEditor)
+                        {
+                            lua_getglobal(L, "CINS_t");
+                            lua_getfield(L, -1, luaName.c_str());
+                            lua_pushstring(L, luaProperty.stringValue.c_str());
+                            lua_setfield(L, -2, luaProperty.name.c_str());
+                            lua_pop(L, lua_gettop(L));
+                        }
                         break;
                 }
             }
@@ -131,40 +196,243 @@ namespace Engine
 
         return changed;
     }
+
+    void ScriptComponent::createLuaObj()
+    {
+        if (!m_pLuaComponentDef) return;
+
+        auto L = getLuaBindings()->getState();
+
+        lua_getglobal(L, "CINS_t");
+        lua_getglobal(L, m_pLuaComponentDef->luaName.c_str());
+
+        lua_getfield(L, -1, "create"); if (lua_isfunction(L, -1)) m_implLuaCallsMask |= LUA_FLAG_CREATE; lua_pop(L, 1);
+        lua_getfield(L, -1, "destroy"); if (lua_isfunction(L, -1)) m_implLuaCallsMask |= LUA_FLAG_DESTROY; lua_pop(L, 1);
+        lua_getfield(L, -1, "enable"); if (lua_isfunction(L, -1)) m_implLuaCallsMask |= LUA_FLAG_ENABLE; lua_pop(L, 1);
+        lua_getfield(L, -1, "disable"); if (lua_isfunction(L, -1)) m_implLuaCallsMask |= LUA_FLAG_DISABLE; lua_pop(L, 1);
+        lua_getfield(L, -1, "fixedUpdate"); if (lua_isfunction(L, -1)) m_implLuaCallsMask |= LUA_FLAG_FIXEDUPDATE; lua_pop(L, 1);
+        lua_getfield(L, -1, "update"); if (lua_isfunction(L, -1)) m_implLuaCallsMask |= LUA_FLAG_UPDATE; lua_pop(L, 1);
+        lua_getfield(L, -1, "mouseEnter"); if (lua_isfunction(L, -1)) m_implLuaCallsMask |= LUA_FLAG_MOUSEENTER; lua_pop(L, 1);
+        lua_getfield(L, -1, "mouseLeave"); if (lua_isfunction(L, -1)) m_implLuaCallsMask |= LUA_FLAG_MOUSELEAVE; lua_pop(L, 1);
+        lua_getfield(L, -1, "mouseDown"); if (lua_isfunction(L, -1)) m_implLuaCallsMask |= LUA_FLAG_MOUSEDOWN; lua_pop(L, 1);
+        lua_getfield(L, -1, "mouseUp"); if (lua_isfunction(L, -1)) m_implLuaCallsMask |= LUA_FLAG_MOUSEUP; lua_pop(L, 1);
+        lua_getfield(L, -1, "mouseClick"); if (lua_isfunction(L, -1)) m_implLuaCallsMask |= LUA_FLAG_MOUSECLICK; lua_pop(L, 1);
+
+        LUA_CLONE_TABLE(L, 2);
+
+        lua_setfield(L, -3, luaName.c_str());
+        lua_pop(L, 2);
+    }
+
+	void ScriptComponent::destroyLuaObj()
+    {
+        if (!m_pLuaComponentDef) return;
+
+        auto L = getLuaBindings()->getState();
+
+        lua_getglobal(L, "CINS_t");
+        lua_pushnil(L);
+        lua_setfield(L, -2, luaName.c_str());
+        lua_pop(L, 1);
+    }
     
 	void ScriptComponent::onCreate()
     {
+        if (!(m_implLuaCallsMask & LUA_FLAG_CREATE)) return;
+
+        auto L = getLuaBindings()->getState();
+
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, luaName.c_str());
+        lua_getfield(L, -1, "create");
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            checkLua(L, lua_pcall(L, 1, 0, 0));
+        }
+        lua_pop(L, lua_gettop(L));
     }
 
 	void ScriptComponent::onDestroy()
     {
+        if (!(m_implLuaCallsMask & LUA_FLAG_DESTROY)) return;
+
+        auto L = getLuaBindings()->getState();
+
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, luaName.c_str());
+        lua_getfield(L, -1, "destroy");
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            checkLua(L, lua_pcall(L, 1, 0, 0));
+        }
+        lua_pop(L, lua_gettop(L));
     }
 
 	void ScriptComponent::onEnable()
     {
+        if (!(m_implLuaCallsMask & LUA_FLAG_ENABLE)) return;
+
+        auto L = getLuaBindings()->getState();
+
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, luaName.c_str());
+        lua_getfield(L, -1, "enable");
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            checkLua(L, lua_pcall(L, 1, 0, 0));
+        }
+        lua_pop(L, lua_gettop(L));
     }
 
 	void ScriptComponent::onDisable()
     {
+        if (!(m_implLuaCallsMask & LUA_FLAG_DISABLE)) return;
+
+        auto L = getLuaBindings()->getState();
+
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, luaName.c_str());
+        lua_getfield(L, -1, "disable");
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            checkLua(L, lua_pcall(L, 1, 0, 0));
+        }
+        lua_pop(L, lua_gettop(L));
+    }
+
+    void ScriptComponent::fixedUpdate(float dt)
+    {
+        if (!(m_implLuaCallsMask & LUA_FLAG_FIXEDUPDATE)) return;
+
+        auto L = getLuaBindings()->getState();
+
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, luaName.c_str());
+        lua_getfield(L, -1, "fixedUpdate");
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            lua_pushnumber(L, (lua_Number)dt);
+            checkLua(L, lua_pcall(L, 2, 0, 0));
+        }
+        lua_pop(L, lua_gettop(L));
+    }
+
+	void ScriptComponent::update(float dt)
+    {
+        if (!(m_implLuaCallsMask & LUA_FLAG_UPDATE)) return;
+
+        auto L = getLuaBindings()->getState();
+
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, luaName.c_str());
+        lua_getfield(L, -1, "update");
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            lua_pushnumber(L, (lua_Number)dt);
+            checkLua(L, lua_pcall(L, 2, 0, 0));
+        }
+        lua_pop(L, lua_gettop(L));
     }
 
 	void ScriptComponent::onMouseEnter()
     {
+        if (!(m_implLuaCallsMask & LUA_FLAG_MOUSEENTER)) return;
+
+        auto L = getLuaBindings()->getState();
+
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, luaName.c_str());
+        lua_getfield(L, -1, "mouseEnter");
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            checkLua(L, lua_pcall(L, 1, 0, 0));
+        }
+        lua_pop(L, lua_gettop(L));
     }
 
 	void ScriptComponent::onMouseLeave()
     {
+        if (!(m_implLuaCallsMask & LUA_FLAG_MOUSELEAVE)) return;
+
+        auto L = getLuaBindings()->getState();
+
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, luaName.c_str());
+        lua_getfield(L, -1, "mouseLeave");
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            checkLua(L, lua_pcall(L, 1, 0, 0));
+        }
+        lua_pop(L, lua_gettop(L));
     }
 
 	void ScriptComponent::onMouseDown()
     {
+        if (!(m_implLuaCallsMask & LUA_FLAG_MOUSEDOWN)) return;
+
+        auto L = getLuaBindings()->getState();
+
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, luaName.c_str());
+        lua_getfield(L, -1, "mouseDown");
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            checkLua(L, lua_pcall(L, 1, 0, 0));
+        }
+        lua_pop(L, lua_gettop(L));
     }
 
 	void ScriptComponent::onMouseUp()
     {
+        if (!(m_implLuaCallsMask & LUA_FLAG_MOUSEUP)) return;
+
+        auto L = getLuaBindings()->getState();
+
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, luaName.c_str());
+        lua_getfield(L, -1, "mouseUp");
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            checkLua(L, lua_pcall(L, 1, 0, 0));
+        }
+        lua_pop(L, lua_gettop(L));
     }
 
 	void ScriptComponent::onMouseClick()
     {
+        if (!(m_implLuaCallsMask & LUA_FLAG_MOUSECLICK)) return;
+
+        auto L = getLuaBindings()->getState();
+
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, luaName.c_str());
+        lua_getfield(L, -1, "mouseClick");
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            checkLua(L, lua_pcall(L, 1, 0, 0));
+        }
+        lua_pop(L, lua_gettop(L));
     }
 }

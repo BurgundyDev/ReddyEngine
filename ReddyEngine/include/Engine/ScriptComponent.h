@@ -29,6 +29,8 @@ namespace Engine
 		void onDestroy() override;
 		void onEnable() override;
 		void onDisable() override;
+		void fixedUpdate(float dt) override;
+		void update(float dt) override;
 		void onMouseEnter() override;
 		void onMouseLeave() override;
 		void onMouseDown() override;
@@ -38,10 +40,15 @@ namespace Engine
 
 		std::string name;
 		uint64_t runtimeId = 0;
+		std::string luaName;
 
 	private:
+		void createLuaObj();
+		void destroyLuaObj();
+
 		LuaComponentDef* m_pLuaComponentDef = nullptr;
 		std::vector<Engine::LuaProperty> m_luaProperties; // This is for lua mostly
-		std::string m_luaName;
+
+		uint16_t m_implLuaCallsMask = 0;
     };
 }
