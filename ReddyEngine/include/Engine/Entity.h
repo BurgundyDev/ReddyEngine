@@ -215,6 +215,9 @@ namespace Engine
 
 		void onMouseEnter();
 		void onMouseLeave();
+		void onMouseDown();
+		void onMouseUp();
+		void onMouseClick();
 
 	public:
 		// Editor stuff (We could #ifdef this in final version?)

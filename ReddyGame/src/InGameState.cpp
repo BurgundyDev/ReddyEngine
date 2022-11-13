@@ -81,10 +81,21 @@ void InGameState::onKeyDown(Engine::IEvent* pEvent)
 
 void InGameState::fixedUpdate(float dt)
 {
+    Engine::getEventSystem()->dispatchEvents();
+    Engine::getScene()->fixedUpdate(dt);
 }
 
 void InGameState::update(float dt)
 {
+    Engine::getEventSystem()->dispatchEvents();
+
+    auto mousePos = Engine::getInput()->getMousePos();
+    mousePos -= Engine::getResolution() * 0.5f;
+    mousePos /= m_zoom;
+    m_mouseWorldPos = mousePos + m_camera;
+    Engine::getScene()->setMousePos(m_mouseWorldPos);
+
+    Engine::getScene()->update(dt);
 }
 
 void InGameState::draw()

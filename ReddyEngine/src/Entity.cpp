@@ -395,6 +395,27 @@ namespace Engine
 				pComponent->onMouseLeave();
 	}
 
+	void Entity::onMouseDown()
+	{
+		for (const auto& pComponent : m_components)
+			if (pComponent->isEnabled())
+				pComponent->onMouseDown();
+	}
+
+	void Entity::onMouseUp()
+	{
+		for (const auto& pComponent : m_components)
+			if (pComponent->isEnabled())
+				pComponent->onMouseUp();
+	}
+
+	void Entity::onMouseClick()
+	{
+		for (const auto& pComponent : m_components)
+			if (pComponent->isEnabled())
+				pComponent->onMouseClick();
+	}
+
 	void Entity::drawOutline(const glm::vec4& color, float zoomScale)
 	{
 		for (const auto& pComponent : m_components)

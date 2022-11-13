@@ -110,12 +110,12 @@ namespace Engine
         //IM_ASSERT(font != NULL);
 
         // Initialize Engine's systems
+        g_pEventSystem = std::make_shared<EventSystem>();
         g_pInput = std::make_shared<Input>();
         g_pAudio = std::make_shared<Audio>();
         g_pSpriteBatch = std::make_shared<SpriteBatch>();
         g_pResourceManager = std::make_shared<ResourceManager>();
         g_pScene = std::make_shared<Scene>();
-        g_pEventSystem = std::make_shared<EventSystem>();
         g_pLuaBindings = std::make_shared<LuaBindings>();
         g_pLuaBindings->init();
 
@@ -227,8 +227,8 @@ namespace Engine
             {
                 float fixedUpdateTime = 1.0f / (float)g_fixedUpdateFPS;
                 
-                g_pEventSystem->dispatchEvents();
-                g_pScene->fixedUpdate(fixedUpdateTime);
+                //g_pEventSystem->dispatchEvents();
+                //g_pScene->fixedUpdate(fixedUpdateTime);
                 
                 g_pEventSystem->dispatchEvents();
                 pGame->fixedUpdate(fixedUpdateTime);
@@ -247,8 +247,8 @@ namespace Engine
             }
 
             // Update
-            g_pEventSystem->dispatchEvents();
-            g_pScene->update(deltaTime);
+            //g_pEventSystem->dispatchEvents();
+            //g_pScene->update(deltaTime);
 
             g_pEventSystem->dispatchEvents();
             pGame->update(deltaTime);
@@ -280,12 +280,13 @@ namespace Engine
         Config::save();
 
         // Cleanup
+        g_pLuaBindings.reset();
         g_pScene.reset();
         g_pResourceManager.reset();
         g_pSpriteBatch.reset();
         g_pAudio.reset();
         g_pInput.reset();
-        g_pLuaBindings.reset();
+        g_pEventSystem.reset();
 
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplSDL2_Shutdown();

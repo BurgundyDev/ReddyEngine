@@ -42,4 +42,5 @@ private:
     glm::vec2 m_cameraTarget = {0,0};
     float m_zoom = 128.0f;
     float m_zoomTarget = 128.0f;
+    glm::vec2 m_mouseWorldPos;
 };

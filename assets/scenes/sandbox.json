@@ -1,7 +1,7 @@
 {
    "camera" : {
-      "position" : [ 0.014322399161756039, -0.60416692495346069 ],
-      "zoom" : 1
+      "position" : [ 0.49088490009307861, -0.054687738418579102 ],
+      "zoom" : 2
    },
    "root" : {
       "children" : [
@@ -140,6 +140,70 @@
             "sortChildren" : false,
             "transform" : {
                "position" : [ 0.0, 0.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Button A",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxC",
+                  "properties" : null,
+                  "type" : "Script"
+               }
+            ],
+            "id" : 24,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -1.0, 1.5 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Button B",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxC",
+                  "properties" : null,
+                  "type" : "Script"
+               }
+            ],
+            "id" : 25,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 1.0, 1.5 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },

@@ -17,6 +17,9 @@ namespace Engine
 
 	struct EntitySearchParams;
 
+	class IEvent;
+
+
 	class Scene final
 	{
 	public:
@@ -59,15 +62,20 @@ namespace Engine
 		uint64_t generateEntityId() { return ++m_id; }
 		void updateMaxId(uint64_t id) { m_id = std::max(m_id, id + 1); } // Such hacks
 
+		void onMouseDown(IEvent* pEvent);
+		void onMouseUp(IEvent* pEvent);
+
 	public:
 		// Engine use only
 		const ComponentManagerRef& getComponentManager() const;
 
 	private:
 		bool m_isEditorScene = false;
+		bool m_isMouseDown = false;
 		glm::vec2 m_mousePos; // In World coordinates
 		EntityRef m_pRoot;
 		EntityRef m_pMouseHoverEntity;
+		EntityRef m_pMouseDownEntity;
 		uint64_t m_id;
 		ComponentManagerRef m_pComponentManager;
 		std::vector<EntityRef> m_entitiesToDestroy;
