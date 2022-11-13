@@ -11,6 +11,8 @@ extern "C" {
 #include "Engine/Utils.h"
 #include "Engine/Scene.h"
 
+#include <imgui.h>
+
 
 #define LUA_FLAG_CREATE         0b1
 #define LUA_FLAG_DESTROY        0b10
@@ -52,6 +54,9 @@ namespace Engine
         {
             switch (luaProperty.type)
             {
+                case LuaPropertyType::Bool:
+                    propertiesJson[luaProperty.name] = Utils::serializeBool(luaProperty.boolValue);
+                    break;
                 case LuaPropertyType::Int:
                     propertiesJson[luaProperty.name] = Utils::serializeInt32(luaProperty.intValue);
                     break;
@@ -95,66 +100,68 @@ namespace Engine
             auto L = getLuaBindings()->getState();
 
             const auto& propertiesJson = json["properties"];
-            for (auto& luaProperty : m_luaProperties)
+            if (!m_luaProperties.empty())
             {
-                switch (luaProperty.type)
+                if (!isEditor)
                 {
-                    case LuaPropertyType::Int:
-                        luaProperty.intValue = Utils::deserializeInt32(propertiesJson[luaProperty.name], luaProperty.intValue);
-                        if (!isEditor)
-                        {
-                            lua_getglobal(L, "CINS_t");
-                            lua_getfield(L, -1, luaName.c_str());
-                            lua_pushinteger(L, luaProperty.intValue);
-                            lua_setfield(L, -2, luaProperty.name.c_str());
-                            lua_pop(L, lua_gettop(L));
-                        }
-                        break;
-                    case LuaPropertyType::Float:
-                        luaProperty.floatValue = Utils::deserializeFloat(propertiesJson[luaProperty.name], luaProperty.floatValue);
-                        if (!isEditor)
-                        {
-                            lua_getglobal(L, "CINS_t");
-                            lua_getfield(L, -1, luaName.c_str());
-                            lua_pushnumber(L, (lua_Number)luaProperty.floatValue);
-                            lua_setfield(L, -2, luaProperty.name.c_str());
-                            lua_pop(L, lua_gettop(L));
-                        }
-                        break;
-                    case LuaPropertyType::Vec2:
-                        Utils::deserializeFloat2(&luaProperty.vec2Value.x, propertiesJson[luaProperty.name], &luaProperty.vec2Value.x);
-                        if (!isEditor)
-                        {
-                            lua_getglobal(L, "CINS_t");
-                            lua_getfield(L, -1, luaName.c_str());
-                            LUA_PUSH_VEC2(luaProperty.vec2Value);
-                            lua_setfield(L, -2, luaProperty.name.c_str());
-                            lua_pop(L, lua_gettop(L));
-                        }
-                        break;
-                    case LuaPropertyType::Color:
-                        Utils::deserializeFloat4(&luaProperty.colorValue.x, propertiesJson[luaProperty.name], &luaProperty.colorValue.x);
-                        if (!isEditor)
-                        {
-                            lua_getglobal(L, "CINS_t");
-                            lua_getfield(L, -1, luaName.c_str());
-                            LUA_PUSH_COLOR(luaProperty.colorValue);
-                            lua_setfield(L, -2, luaProperty.name.c_str());
-                            lua_pop(L, lua_gettop(L));
-                        }
-                        break;
-                    case LuaPropertyType::String:
-                        luaProperty.stringValue = Utils::deserializeString(propertiesJson[luaProperty.name], luaProperty.stringValue);
-                        if (!isEditor)
-                        {
-                            lua_getglobal(L, "CINS_t");
-                            lua_getfield(L, -1, luaName.c_str());
-                            lua_pushstring(L, luaProperty.stringValue.c_str());
-                            lua_setfield(L, -2, luaProperty.name.c_str());
-                            lua_pop(L, lua_gettop(L));
-                        }
-                        break;
+                    lua_getglobal(L, "CINS_t");
+                    lua_getfield(L, -1, luaName.c_str());
                 }
+                for (auto& luaProperty : m_luaProperties)
+                {
+                    switch (luaProperty.type)
+                    {
+                        case LuaPropertyType::Bool:
+                            luaProperty.boolValue = Utils::deserializeBool(propertiesJson[luaProperty.name], luaProperty.boolValue);
+                            if (!isEditor)
+                            {
+                                lua_pushboolean(L, luaProperty.boolValue ? 1 : 0);
+                                lua_setfield(L, -2, luaProperty.name.c_str());
+                            }
+                            break;
+                        case LuaPropertyType::Int:
+                            luaProperty.intValue = Utils::deserializeInt32(propertiesJson[luaProperty.name], luaProperty.intValue);
+                            if (!isEditor)
+                            {
+                                lua_pushinteger(L, luaProperty.intValue);
+                                lua_setfield(L, -2, luaProperty.name.c_str());
+                            }
+                            break;
+                        case LuaPropertyType::Float:
+                            luaProperty.floatValue = Utils::deserializeFloat(propertiesJson[luaProperty.name], luaProperty.floatValue);
+                            if (!isEditor)
+                            {
+                                lua_pushnumber(L, (lua_Number)luaProperty.floatValue);
+                                lua_setfield(L, -2, luaProperty.name.c_str());
+                            }
+                            break;
+                        case LuaPropertyType::Vec2:
+                            Utils::deserializeFloat2(&luaProperty.vec2Value.x, propertiesJson[luaProperty.name], &luaProperty.vec2Value.x);
+                            if (!isEditor)
+                            {
+                                LUA_PUSH_VEC2(luaProperty.vec2Value);
+                                lua_setfield(L, -2, luaProperty.name.c_str());
+                            }
+                            break;
+                        case LuaPropertyType::Color:
+                            Utils::deserializeFloat4(&luaProperty.colorValue.x, propertiesJson[luaProperty.name], &luaProperty.colorValue.x);
+                            if (!isEditor)
+                            {
+                                LUA_PUSH_COLOR(luaProperty.colorValue);
+                                lua_setfield(L, -2, luaProperty.name.c_str());
+                            }
+                            break;
+                        case LuaPropertyType::String:
+                            luaProperty.stringValue = Utils::deserializeString(propertiesJson[luaProperty.name], luaProperty.stringValue);
+                            if (!isEditor)
+                            {
+                                lua_pushstring(L, luaProperty.stringValue.c_str());
+                                lua_setfield(L, -2, luaProperty.name.c_str());
+                            }
+                            break;
+                    }
+                }
+                if (!isEditor) lua_pop(L, lua_gettop(L));
             }
         }
     }
@@ -171,29 +178,38 @@ namespace Engine
                 m_luaProperties = m_pLuaComponentDef->properties;
         }
 
-        GUI::beginGroup("Properties");
-        for (auto& luaProperty : m_luaProperties)
+        if (!m_luaProperties.empty())
         {
-            switch (luaProperty.type)
+            ImGui::Dummy(ImVec2(0, 10)); // So we draw properties full span under icon
+            ImGui::Columns();
+            GUI::beginGroup("Properties");
+            for (auto& luaProperty : m_luaProperties)
             {
-                case LuaPropertyType::Int:
-                    changed |= GUI::intProperty(luaProperty.name.c_str(), &luaProperty.intValue, -1000000, 1000000, luaProperty.tooltip.c_str());
-                    break;
-                case LuaPropertyType::Float:
-                    changed |= GUI::floatProperty(luaProperty.name.c_str(), &luaProperty.floatValue, -1000000.0f, 1000000.0f, luaProperty.tooltip.c_str());
-                    break;
-                case LuaPropertyType::Vec2:
-                    changed |= GUI::vec2Property(luaProperty.name.c_str(), &luaProperty.vec2Value, luaProperty.tooltip.c_str());
-                    break;
-                case LuaPropertyType::Color:
-                    changed |= GUI::colorProperty(luaProperty.name.c_str(), &luaProperty.colorValue, luaProperty.tooltip.c_str());
-                    break;
-                case LuaPropertyType::String:
-                    changed |= GUI::stringProperty(luaProperty.name.c_str(), &luaProperty.stringValue, luaProperty.tooltip.c_str());
-                    break;
+                switch (luaProperty.type)
+                {
+                    case LuaPropertyType::Bool:
+                        changed |= GUI::boolProperty(luaProperty.name.c_str(), &luaProperty.boolValue, luaProperty.tooltip.c_str());
+                        break;
+                    case LuaPropertyType::Int:
+                        changed |= GUI::intProperty(luaProperty.name.c_str(), &luaProperty.intValue, -1000000, 1000000, luaProperty.tooltip.c_str());
+                        break;
+                    case LuaPropertyType::Float:
+                        changed |= GUI::floatProperty(luaProperty.name.c_str(), &luaProperty.floatValue, -1000000.0f, 1000000.0f, luaProperty.tooltip.c_str());
+                        break;
+                    case LuaPropertyType::Vec2:
+                        changed |= GUI::vec2Property(luaProperty.name.c_str(), &luaProperty.vec2Value, luaProperty.tooltip.c_str());
+                        break;
+                    case LuaPropertyType::Color:
+                        changed |= GUI::colorProperty(luaProperty.name.c_str(), &luaProperty.colorValue, luaProperty.tooltip.c_str());
+                        break;
+                    case LuaPropertyType::String:
+                        changed |= GUI::stringProperty(luaProperty.name.c_str(), &luaProperty.stringValue, luaProperty.tooltip.c_str());
+                        break;
+                }
             }
+            GUI::endGroup();
+            ImGui::Columns(2, nullptr, false);
         }
-        GUI::endGroup();
 
         return changed;
     }

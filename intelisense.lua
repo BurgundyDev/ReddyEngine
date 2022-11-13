@@ -77,8 +77,8 @@ function SetScale(e, scale) end
 -- function AddChild(obj) end
 
 -- Lifecycle
--- function Enable(obj) end
--- function Disable(obj) end
+-- function EnableComponent(obj) end
+-- function DisableComponent(obj) end
 function Destroy(e) end -- Destroys the entity (Accepts: component, entity or entity name)
 -- function AddComponent(obj, componentName) end
 -- function RemoveComponent(obj, componentName) end

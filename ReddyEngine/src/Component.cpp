@@ -97,13 +97,14 @@ namespace Engine
 			return it->second;
 		}
 
-		for (const char* extension : Texture::SUPPORTED_FORMATS) {
-			if (TextureRef icon = getResourceManager()->getTexture("textures/editorIcon_" + name + "." + extension)) {
+		// All our icons will be PNG
+		//for (const char* extension : Texture::SUPPORTED_FORMATS) {
+			if (TextureRef icon = getResourceManager()->getTexture("textures/editorIcon_" + name + ".png")) {
 				cachedEditorIcons.insert({ name, icon });
 
 				return icon;
 			}
-		}
+		//}
 
 		// note that we add to cachedEditorIcons anyway,
 		// don't want to keep trying to load every call even if a component has no editor icon

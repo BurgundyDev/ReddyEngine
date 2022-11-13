@@ -27,14 +27,13 @@ namespace Engine
 #define LUA_REGISTER(name) lua_register(L, #name, [](lua_State* L){return g_pLuaBindings->func ## name(L);})
 
         LUA_REGISTER(RegisterComponent);
+        LUA_REGISTER(SetBoolProperty);
         LUA_REGISTER(SetIntProperty);
         LUA_REGISTER(SetFloatProperty);
         LUA_REGISTER(SetVec2Property);
         LUA_REGISTER(SetColorProperty);
         LUA_REGISTER(SetStringProperty);
-
         LUA_REGISTER(SendEvent);
-
         LUA_REGISTER(GetPosition);
         LUA_REGISTER(SetPosition);
         LUA_REGISTER(GetWorldPosition);
@@ -43,17 +42,13 @@ namespace Engine
         LUA_REGISTER(SetRotation);
         LUA_REGISTER(GetScale);
         LUA_REGISTER(SetScale);
-
         LUA_REGISTER(Length);
         LUA_REGISTER(Distance);
         LUA_REGISTER(Normalize);
         LUA_REGISTER(Dot);
-
         LUA_REGISTER(IsKeyDown);
         LUA_REGISTER(IsButtonDown);
-
         LUA_REGISTER(PlaySound);
-
         LUA_REGISTER(Destroy);
     }
 
@@ -76,6 +71,33 @@ namespace Engine
 
         m_componentDefs[name] = pComponentDef;
 
+        return 0;
+    }
+
+    int LuaBindings::funcSetBoolProperty(lua_State* L)
+    {
+        if (lua_gettop(L) != 2 || !lua_isstring(L, 1) || !lua_isstring(L, 2))
+        {
+            CORE_ERROR_POPUP("Lua: SetBoolProperty expected (string, string)");
+            return 0;
+        }
+        if (!m_pCurrentComponentDef)
+        {
+            CORE_ERROR_POPUP("Lua: SetBoolProperty can only be called in initComponent()");
+            return 0;
+        }
+
+        LuaProperty p;
+        p.type = LuaPropertyType::Bool;
+        p.name = lua_tostring(L, 1);
+        p.tooltip = lua_tostring(L, 2);
+
+        lua_getglobal(L, m_pCurrentComponentDef->luaName.c_str());
+        lua_getfield(L, -1, p.name.c_str());
+        p.boolValue = lua_toboolean(L, -1) ? true : false;
+        lua_pop(L, 2);
+
+        m_pCurrentComponentDef->properties.push_back(p);
         return 0;
     }
     

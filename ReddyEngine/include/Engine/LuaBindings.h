@@ -24,6 +24,7 @@ namespace Engine
 
     enum class LuaPropertyType
     {
+        Bool,
         Int,
         Float,
         Vec2,
@@ -32,10 +33,12 @@ namespace Engine
     };
 
 
+    // And those are copied for each instances. Pretty much a waste of ram
     struct LuaProperty
     {
         LuaPropertyType type;
 
+        bool boolValue;
         int intValue;
         float floatValue;
         glm::vec2 vec2Value;
@@ -72,14 +75,13 @@ namespace Engine
         lua_State* getState() const { return L; }
 
         int funcRegisterComponent(lua_State* L);
+        int funcSetBoolProperty(lua_State* L);
         int funcSetIntProperty(lua_State* L);
         int funcSetFloatProperty(lua_State* L);
         int funcSetVec2Property(lua_State* L);
         int funcSetColorProperty(lua_State* L);
         int funcSetStringProperty(lua_State* L);
-
         int funcSendEvent(lua_State* L);
-        
         int funcGetPosition(lua_State* L);
         int funcSetPosition(lua_State* L);
         int funcGetWorldPosition(lua_State* L);
@@ -88,17 +90,13 @@ namespace Engine
         int funcSetRotation(lua_State* L);
         int funcGetScale(lua_State* L);
         int funcSetScale(lua_State* L);
-
         int funcLength(lua_State* L);
         int funcDistance(lua_State* L);
         int funcNormalize(lua_State* L);
         int funcDot(lua_State* L);
-
         int funcIsKeyDown(lua_State* L);
         int funcIsButtonDown(lua_State* L);
-
         int funcPlaySound(lua_State* L);
-
         int funcDestroy(lua_State* L);
 
     private:
