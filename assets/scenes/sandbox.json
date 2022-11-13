@@ -1,6 +1,6 @@
 {
    "camera" : {
-      "position" : [ 0.73307228088378906, -0.34635448455810547 ],
+      "position" : [ 1.1184889078140259, -0.32552114129066467 ],
       "zoom" : 3
    },
    "root" : {
@@ -98,7 +98,7 @@
             "id" : 19,
             "lockScale" : true,
             "mouseChildren" : true,
-            "name" : "",
+            "name" : "RightFlame",
             "sortChildren" : false,
             "transform" : {
                "position" : [ 1.0, -1.0 ],
@@ -150,7 +150,7 @@
                   "font" : "fonts/defaultFont24.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.7200000286102295,
-                  "text" : "Destroy Left Flame",
+                  "text" : "Destroy",
                   "type" : "Text"
                },
                {
@@ -174,8 +174,8 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -3.2109375, -2.640625 ],
-               "rotation" : 0.0,
+               "position" : [ -2.7734375, -2.5572915077209473 ],
+               "rotation" : -46.0,
                "scale" : [ 1.0, 1.0 ]
             },
             "uiRoot" : false
@@ -255,7 +255,7 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -0.015625, -3.3671875 ],
+               "position" : [ 0.026041626930236816, -3.2838540077209473 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -307,6 +307,71 @@
             "transform" : {
                "position" : [ -0.0013027191162109375, -2.3203127384185791 ],
                "rotation" : 90.0,
+               "scale" : [ 1.190000057220459, 1.190000057220459 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont24.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Stop",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxButton",
+                  "properties" : null,
+                  "type" : "Script"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxStopRotationButton",
+                  "properties" : {
+                     "target" : "RightFlame"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 32,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 2.7050774097442627, -2.7239584922790527 ],
+               "rotation" : 39.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures\\arrow.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               }
+            ],
+            "id" : 35,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 2.0214834213256836, -2.0000004768371582 ],
+               "rotation" : 133.0,
                "scale" : [ 1.190000057220459, 1.190000057220459 ]
             },
             "uiRoot" : false

@@ -114,6 +114,7 @@ namespace Engine
         int funcSetTextOrigin(lua_State* L);
         int funcGetTextScale(lua_State* L);
         int funcSetTextScale(lua_State* L);
+        int funcGetComponent(lua_State* L);
 
     private:
         void createBindings();

@@ -139,3 +139,20 @@ RegisterComponent("sandboxColorButton", {
         SetSpriteColor(self.target, self.color)
     end
 })
+
+
+RegisterComponent("sandboxStopRotationButton", {
+    target = "",
+
+    initComponent = function()
+        SetStringProperty("target", "Entity name to stop rotating/scaling")
+    end,
+
+    mouseClick = function(self)
+        local c = GetComponent(self.target, "sandboxRotator")
+        if c then
+            c.rotSpeed = 0
+            c.scaleSpeed = 0
+        end
+    end
+})
