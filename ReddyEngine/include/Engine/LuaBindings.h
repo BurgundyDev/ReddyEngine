@@ -92,6 +92,8 @@ namespace Engine
         int funcIsKeyDown(lua_State* L);
         int funcIsButtonDown(lua_State* L);
 
+        int funcPlaySound(lua_State* L);
+
     private:
         void createBindings();
 
@@ -110,7 +112,8 @@ namespace Engine
 #define LUA_GET_INT(i, defaultValue) LUA_GET_INT_impl(L, i, defaultValue)
 #define LUA_GET_NUMBER(i, defaultValue) LUA_GET_NUMBER_impl(L, i, defaultValue)
 #define LUA_GET_VEC2(i, defaultValue) LUA_GET_VEC2_impl(L, i, defaultValue)
-#define LUA_GET_COLOR(i) LUA_GET_COLOR_impl(L, i)
+#define LUA_GET_COLOR(i, defaultValue) LUA_GET_COLOR_impl(L, i, defaultValue)
+#define LUA_GET_STRING(i, defaultValue) LUA_GET_STRING_impl(L, i, defaultValue)
 #define LUA_GET_SCRIPT_COMPONENT(i) LUA_GET_SCRIPT_COMPONENT_impl(L, i, __func__)
 
 #define LUA_CLONE_TABLE(L, n) cloneLuaTable(L, n)
@@ -120,7 +123,8 @@ namespace Engine
 int LUA_GET_INT_impl(lua_State* L, int stackIndex, int defaultValue);
 float LUA_GET_NUMBER_impl(lua_State* L, int stackIndex, float defaultValue);
 glm::vec2 LUA_GET_VEC2_impl(lua_State* L, int stackIndex, const glm::vec2& defaultValue);
-glm::vec4 LUA_GET_COLOR_impl(lua_State* L, int stackIndex);
+glm::vec4 LUA_GET_COLOR_impl(lua_State* L, int stackIndex, const glm::vec4& defaultValue);
+std::string LUA_GET_STRING_impl(lua_State* L, int stackIndex, const std::string& defaultValue);
 Engine::ScriptComponent* LUA_GET_SCRIPT_COMPONENT_impl(lua_State* L, int stackIndex, const char* funcName);
 
 int cloneLuaTable(lua_State* L, int n);

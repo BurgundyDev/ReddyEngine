@@ -11,6 +11,9 @@ extern "C" {
 #include "Engine/ScriptComponent.h"
 #include "Engine/Entity.h"
 #include "Engine/Input.h"
+#include "Engine/Audio.h"
+#include "Engine/Sound.h"
+#include "Engine/ResourceManager.h"
 
 
 namespace Engine
@@ -47,6 +50,8 @@ namespace Engine
 
         LUA_REGISTER(IsKeyDown);
         LUA_REGISTER(IsButtonDown);
+
+        LUA_REGISTER(PlaySound);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -343,5 +348,18 @@ namespace Engine
         auto isDown = getInput()->isButtonDown(button);
         lua_pushboolean(L, isDown ? 1 : 0);
         return 1;
+    }
+
+    int LuaBindings::funcPlaySound(lua_State* L)
+    {
+        auto filename = LUA_GET_STRING(1, "");
+        auto vol = LUA_GET_NUMBER(2, 1.0f);
+        auto bal = LUA_GET_NUMBER(3, 0.0f);
+        auto pitch = LUA_GET_NUMBER(4, 1.0f);
+
+        auto pSound = getResourceManager()->getSound(filename);
+        if (pSound) pSound->play(vol, bal, pitch); 
+
+        return 0;
     }
 }

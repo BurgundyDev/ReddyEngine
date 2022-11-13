@@ -1,6 +1,6 @@
 {
    "camera" : {
-      "position" : [ 0.49088490009307861, -0.054687738418579102 ],
+      "position" : [ 0.52213490009307861, -0.3359377384185791 ],
       "zoom" : 2
    },
    "root" : {
@@ -19,10 +19,10 @@
                },
                {
                   "enabled" : true,
-                  "name" : "sandboxA",
+                  "name" : "sandboxRotator",
                   "properties" : {
-                     "rotSpeed" : 45.0,
-                     "scaleSpeed" : 90.0
+                     "rotSpeed" : 90.0,
+                     "scaleSpeed" : 45.0
                   },
                   "type" : "Script"
                }
@@ -30,7 +30,7 @@
             "id" : 14,
             "lockScale" : true,
             "mouseChildren" : true,
-            "name" : "",
+            "name" : "Orange",
             "sortChildren" : false,
             "transform" : {
                "position" : [ -1.0, -1.0 ],
@@ -58,10 +58,10 @@
                },
                {
                   "enabled" : true,
-                  "name" : "sandboxA",
+                  "name" : "sandboxRotator",
                   "properties" : {
-                     "rotSpeed" : -45.0,
-                     "scaleSpeed" : 180.0
+                     "rotSpeed" : 45.0,
+                     "scaleSpeed" : 90.0
                   },
                   "type" : "Script"
                }
@@ -92,10 +92,10 @@
                },
                {
                   "enabled" : true,
-                  "name" : "sandboxA",
+                  "name" : "sandboxRotator",
                   "properties" : {
-                     "rotSpeed" : 90.0,
-                     "scaleSpeed" : -45.0
+                     "rotSpeed" : -180.0,
+                     "scaleSpeed" : 135.0
                   },
                   "type" : "Script"
                }
@@ -126,9 +126,9 @@
                },
                {
                   "enabled" : true,
-                  "name" : "sandboxB",
+                  "name" : "sandboxMover",
                   "properties" : {
-                     "moveSpeed" : 180.0
+                     "moveSpeed" : 100.0
                   },
                   "type" : "Script"
                }
@@ -155,13 +155,21 @@
                   "font" : "fonts/defaultFont24.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.7200000286102295,
-                  "text" : "Button A",
+                  "text" : "Destroy Orange Flame",
                   "type" : "Text"
                },
                {
                   "enabled" : true,
-                  "name" : "sandboxC",
+                  "name" : "sandboxButton",
                   "properties" : null,
+                  "type" : "Script"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxDestroyButton",
+                  "properties" : {
+                     "target" : "Orange"
+                  },
                   "type" : "Script"
                }
             ],
@@ -171,7 +179,7 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -1.0, 1.5 ],
+               "position" : [ 0.0, -2.0 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -187,13 +195,21 @@
                   "font" : "fonts/defaultFont24.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.7200000286102295,
-                  "text" : "Button B",
+                  "text" : "Play Sound",
                   "type" : "Text"
                },
                {
                   "enabled" : true,
-                  "name" : "sandboxC",
+                  "name" : "sandboxButton",
                   "properties" : null,
+                  "type" : "Script"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxSoundButton",
+                  "properties" : {
+                     "sound" : "sounds/test_quick_sound.wav"
+                  },
                   "type" : "Script"
                }
             ],
@@ -203,7 +219,7 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 1.0, 1.5 ],
+               "position" : [ 0.0, 1.0 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },

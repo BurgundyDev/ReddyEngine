@@ -1,4 +1,4 @@
-RegisterComponent("sandboxA", {
+RegisterComponent("sandboxRotator", {
     rotSpeed = 0,
     scaleSpeed = 0,
     scale = 0,
@@ -24,7 +24,7 @@ RegisterComponent("sandboxA", {
 })
 
 
-RegisterComponent("sandboxB", {
+RegisterComponent("sandboxMover", {
     moveSpeed = 0,
     move = 0,
     startPos = Vec2(0),
@@ -50,7 +50,7 @@ RegisterComponent("sandboxB", {
 })
 
 
-RegisterComponent("sandboxC", {
+RegisterComponent("sandboxButton", {
     originalScale = Vec2(1),
     scale = 1,
     scaleTarget = 1,
@@ -96,9 +96,31 @@ RegisterComponent("sandboxC", {
     mouseUp = function(self)
         self.isDown = false
         self.updateScale(self)
+    end
+})
+
+
+RegisterComponent("sandboxDestroyButton", {
+    target = "",
+
+    initComponent = function()
+        SetStringProperty("target", "Entity name to destroy")
     end,
 
     mouseClick = function(self)
-        -- PlaySound("ding.wav")
+        -- Destroy(self.target)
+    end
+})
+
+
+RegisterComponent("sandboxSoundButton", {
+    sound = "",
+
+    initComponent = function()
+        SetStringProperty("sound", "Sound to play")
+    end,
+
+    mouseClick = function(self)
+        PlaySound(self.sound)
     end
 })

@@ -128,15 +128,22 @@ glm::vec2 LUA_GET_VEC2_impl(lua_State* L, int stackIndex, const glm::vec2& defau
     return v;
 }
 
-glm::vec4 LUA_GET_COLOR_impl(lua_State* L, int stackIndex)
+glm::vec4 LUA_GET_COLOR_impl(lua_State* L, int stackIndex, const glm::vec4& defaultValue)
 {
     if (lua_gettop(L) < 1 || !lua_istable(L, stackIndex)) return {1, 1, 1, 1};
-    glm::vec4 v;
+    glm::vec4 v = defaultValue;
     lua_getfield(L, stackIndex, "r"); v.r = (float)lua_tonumber(L, -1); lua_pop(L, 1);
     lua_getfield(L, stackIndex, "g"); v.g = (float)lua_tonumber(L, -1); lua_pop(L, 1);
     lua_getfield(L, stackIndex, "b"); v.b = (float)lua_tonumber(L, -1); lua_pop(L, 1);
     lua_getfield(L, stackIndex, "a"); v.a = (float)lua_tonumber(L, -1); lua_pop(L, 1);
     return v;
+}
+
+std::string LUA_GET_STRING_impl(lua_State* L, int stackIndex, const std::string& defaultValue)
+{
+    if (lua_gettop(L) >= stackIndex && lua_isstring(L, stackIndex))
+        return lua_tostring(L, stackIndex);
+    return defaultValue;
 }
 
 Engine::ScriptComponent* LUA_GET_SCRIPT_COMPONENT_impl(lua_State* L, int stackIndex, const char* funcName)
