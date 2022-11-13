@@ -27,6 +27,8 @@
 #include <SDL_events.h>
 #include <SDL.h>
 
+#include "Engine/Constants.h"
+
 static const char *FILE_PATTERNS[] = { "*.json" };
 
 
@@ -120,6 +122,9 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
     if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_O) onOpen();
     if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_S) onSave();
     if (ctrl && shift && !alt && scancode == SDL_SCANCODE_S) onSaveAs();
+
+    if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_G) onDisableGrid();
+    if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_H) onDisableViewportOutline();
     
     // Document type specifics
     switch (m_editDocumentType)
@@ -212,6 +217,23 @@ void EditorState::update(float dt)
             {
                 m_position = {0,0};
                 m_zoom = 2;
+            }
+
+            if(m_isGridVisible)
+            {
+                if (ImGui::MenuItem("Disable Grid", "Ctrl + G", nullptr, true)) onDisableGrid();
+            } else
+            {
+                if (ImGui::MenuItem("Enable Grid", "Ctrl + G", nullptr, true)) onDisableGrid();
+            }
+
+            if (m_isViewportOutlined)
+            {
+                if (ImGui::MenuItem("Disable Viewport Outline", "Ctrl + H", nullptr, true)) onDisableViewportOutline();
+            }
+            else
+            {
+                if (ImGui::MenuItem("Enable Viewport Outline", "Ctrl + H", nullptr, true)) onDisableViewportOutline();
             }
             ImGui::EndMenu();
         }
@@ -330,34 +352,6 @@ void EditorState::draw()
     glm::vec2 resolution = Engine::getResolution();
     glm::vec2 resolutionRatio = glm::vec2(resolution.x / resolution.y, resolution.y / resolution.x);
 
-    const glm::vec4 MID_GRID_COLOR(0.7f);
-
-    if (m_isGridVisible && m_zoomf >= m_gridHideZoomLevel)
-    {
-        glm::vec2 realGridOffset = glm::vec2( fmod(m_position.x, 1.0f), fmod(m_position.y, 1.0f));
-
-        float maxVal = resolution.x > resolution.y ? resolution.x : resolution.y;
-
-        float gridStart = maxVal / -m_zoomf - 2.0f;
-        float gridEnd = maxVal / m_zoomf + 2.0f;
-
-        for (int i = (int) gridStart; i < gridEnd; i++)
-        {
-            const glm::vec2 cell = glm::vec2(m_position.x + i - realGridOffset.x , m_position.y + gridStart / 2 - realGridOffset.y);
-
-            sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, 1.0f / m_zoomf, gridEnd), (cell.x == 0) ? MID_GRID_COLOR : m_gridColor);
-        }
-
-		for (int i = (int) gridStart; i < gridEnd; i++)
-		{
-	        const glm::vec2 cell = glm::vec2(m_position.x + gridStart / 2 - realGridOffset.x, m_position.y + i - realGridOffset.y);
-
-		    sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, gridEnd, 1.0f / m_zoomf), (cell.y == 0) ? MID_GRID_COLOR : m_gridColor);
-		}
-    }
-    
-
-
     switch (m_editDocumentType)
     {
         case EditDocumentType::Scene:
@@ -380,6 +374,43 @@ void EditorState::draw()
         case EditDocumentType::PFX:
             if (m_pPfxInstance) m_pPfxInstance->draw({0, 0});
             break;
+    }
+
+    const glm::vec4 MID_GRID_COLOR(0.7f);
+
+    if (m_isGridVisible && m_zoomf >= m_gridHideZoomLevel)
+    {
+        glm::vec2 realGridOffset = glm::vec2(fmod(m_position.x, 1.0f), fmod(m_position.y, 1.0f));
+
+        float maxVal = resolution.x > resolution.y ? resolution.x : resolution.y;
+
+        float gridStart = maxVal / -m_zoomf - 2.0f;
+        float gridEnd = maxVal / m_zoomf + 2.0f;
+
+        for (int i = (int)gridStart; i < gridEnd; i++)
+        {
+            const glm::vec2 cell = glm::vec2(m_position.x + i - realGridOffset.x, m_position.y + gridStart / 2 - realGridOffset.y);
+
+            sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, 1.0f / m_zoomf, gridEnd), (cell.x == 0) ? MID_GRID_COLOR : m_gridColor);
+        }
+
+        for (int i = (int)gridStart; i < gridEnd; i++)
+        {
+            const glm::vec2 cell = glm::vec2(m_position.x + gridStart / 2 - realGridOffset.x, m_position.y + i - realGridOffset.y);
+
+            sb->drawRect(nullptr, glm::vec4(cell.x, cell.y, gridEnd, 1.0f / m_zoomf), (cell.y == 0) ? MID_GRID_COLOR : m_gridColor);
+        }
+    }
+
+    const glm::vec4 VIEWPORT_BOUNDS_COLOR(255, 0, 155, 155);
+    const float VIEWPORT_BOUNDS_SIZE = 0.05f;
+
+    if(m_isViewportOutlined && m_zoomf >= m_gridHideZoomLevel)
+    {
+        sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * -1280, Engine::SPRITE_BASE_SCALE * -720), glm::vec2(Engine::SPRITE_BASE_SCALE * -1280, Engine::SPRITE_BASE_SCALE * 720 + VIEWPORT_BOUNDS_SIZE/2), VIEWPORT_BOUNDS_SIZE, VIEWPORT_BOUNDS_COLOR);
+        sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * -1280, Engine::SPRITE_BASE_SCALE * 720), glm::vec2(Engine::SPRITE_BASE_SCALE * 1280 + VIEWPORT_BOUNDS_SIZE/2, Engine::SPRITE_BASE_SCALE * 720), VIEWPORT_BOUNDS_SIZE, VIEWPORT_BOUNDS_COLOR);
+        sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * 1280, Engine::SPRITE_BASE_SCALE * 720), glm::vec2(Engine::SPRITE_BASE_SCALE * 1280, Engine::SPRITE_BASE_SCALE * -720 - VIEWPORT_BOUNDS_SIZE/2), VIEWPORT_BOUNDS_SIZE, VIEWPORT_BOUNDS_COLOR);
+        sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * 1280, Engine::SPRITE_BASE_SCALE * -720), glm::vec2(Engine::SPRITE_BASE_SCALE * -1280 - VIEWPORT_BOUNDS_SIZE/2, Engine::SPRITE_BASE_SCALE * -720), VIEWPORT_BOUNDS_SIZE, VIEWPORT_BOUNDS_COLOR);
     }
 
     sb->end();
@@ -711,6 +742,41 @@ void EditorState::onCreateScriptEntity()
     pEntity->addComponent<Engine::ScriptComponent>();
     createEntityAction(pEntity);
 }
+
+void EditorState::onDisableGrid()
+{
+    switch (m_isGridVisible)
+    {
+    case true:
+    {
+        m_isGridVisible = false;
+        break;
+    }
+    case false:
+    {
+        m_isGridVisible = true;
+        break;
+    }
+    }
+}
+
+void EditorState::onDisableViewportOutline()
+{
+    switch (m_isViewportOutlined)
+    {
+    case true:
+    {
+        m_isViewportOutlined = false;
+        break;
+    }
+    case false:
+    {
+        m_isViewportOutlined = true;
+        break;
+    }
+    }
+}
+
 
 
 //-----------------------------------------------------------------------

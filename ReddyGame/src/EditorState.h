@@ -75,6 +75,8 @@ private:
     void onCreateSoundEntity();
     void onCreateParticleEntity();
     void onCreateScriptEntity();
+    void onDisableGrid();
+    void onDisableViewportOutline();
 
     template<typename T>
     void onAddComponent()
@@ -138,6 +140,7 @@ private:
     bool m_isGridVisible = true;
     glm::vec2 m_gridStep = { 8.0f, 8.0f };
     glm::vec4 m_gridColor = glm::vec4(0.35f);
+    bool m_isViewportOutlined = true;
 
     // Particle editor stuff
     Json::Value m_pfxJson; // Last serialized since last modification
