@@ -88,6 +88,7 @@ void EditorState::leave(const GameStateRef& newsState)
     Engine::Component::clearCachedEditorIcons();
 
     clear();
+    Engine::getLuaBindings()->clear();
 }
 
 void EditorState::setDirty(bool dirty)
@@ -907,7 +908,6 @@ void EditorState::clear()
     m_filename = "untitled";
     setDirty(true);
     Engine::getScene()->clear();
-    Engine::getLuaBindings()->clear();
     m_pActionManager->clear();
     m_pPfxInstance.reset();
     m_pPfx.reset();

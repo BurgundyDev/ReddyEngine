@@ -412,8 +412,9 @@ namespace Engine
 
 	bool Entity::isMouseHover(const glm::vec2& mousePos) const
 	{
-		for (const auto& pComponent : m_components)
+		for (auto rit = m_components.rbegin(); rit != m_components.rend(); ++rit)
 		{
+			const auto& pComponent = *rit;
 			if (pComponent->isEnabled())
 				if (pComponent->isMouseHover(mousePos))
 					return true;
@@ -572,8 +573,8 @@ namespace Engine
 
 	void Entity::draw()
 	{
-		for (const auto& pComponent : m_components)
-			pComponent->draw();
+		for (auto rit = m_components.rbegin(); rit != m_components.rend(); ++rit)
+			(*rit)->draw();
 
 		if (sortChildren)
 		{
