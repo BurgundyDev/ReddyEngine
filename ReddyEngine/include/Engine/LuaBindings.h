@@ -86,7 +86,11 @@ namespace Engine
 
         int funcGetComponent(lua_State* L);
         int funcGetEntity(lua_State* L);
+        int funcGetRoot(lua_State* L);
+        int funcCreateEntity(lua_State* L);
         int funcDestroy(lua_State* L);
+        int funcAddComponent(lua_State* L);
+        int funcRemoveComponent(lua_State* L);
 
         int funcGetPosition(lua_State* L);
         int funcSetPosition(lua_State* L);

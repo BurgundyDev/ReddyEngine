@@ -47,13 +47,34 @@ RegisterComponent("sandboxMover", {
 
 RegisterComponent("sandboxDestroyButton", {
     target = "",
+    targetPosition = Vec2(0),
+    destroyed = false,
 
     initComponent = function()
         SetStringProperty("target", "Entity name to destroy")
     end,
 
     mouseClick = function(self)
-        Destroy(self.target)
+        if not self.destroyed then
+            self.targetPosition = GetPosition(self.target)
+            Destroy(self.target)
+            SetText(self, "Create")
+            self.destroyed = true
+        else
+            -- Recreate it
+            local e = CreateEntity(GetRoot())
+            SetPosition(e, self.targetPosition)
+            SetName(e, self.target)
+            
+            AddComponent(e, "Sprite")
+            SetSpriteTexture(e, "textures/defaultTexture.png")
+
+            local c = AddComponent(e, "sandboxRotator")
+            c.scaleSpeed = 360
+
+            SetText(self, "Destroy")
+            self.destroyed = false
+        end
     end
 })
 

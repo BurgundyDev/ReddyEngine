@@ -264,6 +264,13 @@ namespace Engine
 		}
 	}
 
+	void Entity::addComponent(const ComponentRef& pComponent)
+	{
+		pComponent->m_pEntity = this;
+		m_components.push_back(pComponent);
+		componentAdded(pComponent);
+	}
+
 	glm::vec2 Entity::getWorldPosition()
 	{
 		const auto& worldTransform = getWorldTransform();

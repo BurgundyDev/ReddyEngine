@@ -24,6 +24,8 @@ namespace Engine
 		std::string getType() const override { return "Script"; }
 		std::string getEditName() const override { return name.empty() ? "Script" : "Script - " + name; }
 
+		void loadDef(LuaComponentDef* pDef);
+
 
 		void onCreate() override;
 		void onDestroy() override;

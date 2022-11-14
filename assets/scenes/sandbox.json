@@ -1,7 +1,7 @@
 {
    "camera" : {
-      "position" : [ 3.1601552963256836, 1.4244787693023682 ],
-      "zoom" : 1
+      "position" : [ 0.28775930404663086, 0.64583289623260498 ],
+      "zoom" : 4
    },
    "root" : {
       "children" : [
@@ -451,7 +451,7 @@
                   "color" : [ 1.0, 0.0, 0.0, 1.0 ],
                   "enabled" : true,
                   "origin" : [ 0.5, 0.5 ],
-                  "texture" : "",
+                  "texture" : "textures\\white.png",
                   "type" : "Sprite",
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                }
@@ -462,9 +462,9 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -1.0, 0.0 ],
+               "position" : [ -1.0, 0.0625 ],
                "rotation" : 0.0,
-               "scale" : [ 1.3600000143051147, 10.229999542236328 ]
+               "scale" : [ 0.12999999523162842, 0.5899999737739563 ]
             },
             "uiRoot" : false
          },

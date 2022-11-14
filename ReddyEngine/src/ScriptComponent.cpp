@@ -10,6 +10,7 @@ extern "C" {
 #include "Engine/GUI.h"
 #include "Engine/Utils.h"
 #include "Engine/Scene.h"
+#include "Engine/Log.h"
 
 #include <imgui.h>
 
@@ -166,6 +167,18 @@ namespace Engine
         }
     }
 
+	void ScriptComponent::loadDef(LuaComponentDef* pDef)
+    {
+        CORE_ASSERT(!m_pLuaComponentDef, "We can only call loadDef once on a ScriptComponent");
+        if (m_pLuaComponentDef) return;
+
+        m_pLuaComponentDef = pDef;
+        createLuaObj();
+        m_luaProperties.clear();
+        if (m_pLuaComponentDef)
+            m_luaProperties = m_pLuaComponentDef->properties;
+    }
+
     bool ScriptComponent::edit()
     {
         bool changed = false;
@@ -173,10 +186,7 @@ namespace Engine
         if (GUI::stringProperty("Component Name", &name, "Changing this will reset all properties values. Lua scripts should call RegisterComponent(\"name\")."))
         {
             changed = true;
-            m_pLuaComponentDef = getLuaBindings()->getComponentDef(name);
-            m_luaProperties.clear();
-            if (m_pLuaComponentDef)
-                m_luaProperties = m_pLuaComponentDef->properties;
+            loadDef(getLuaBindings()->getComponentDef(name));
         }
 
         if (!m_luaProperties.empty())
