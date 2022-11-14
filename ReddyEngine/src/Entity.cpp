@@ -63,6 +63,8 @@ namespace Engine
 
 	bool Entity::addChild(EntityRef pChild, int insertAt)
 	{
+		auto worldPos = pChild->getWorldPosition();
+
 		if (pChild->m_pParent) pChild->m_pParent->removeChild(pChild); // This could potentially make the pChild shared_ptr const reference invalid, that's why we pass by value
 		for (const auto& pMyChild : m_children) if (pMyChild == pChild) return false;
 
@@ -72,6 +74,8 @@ namespace Engine
 			m_children.insert(m_children.begin() + insertAt, pChild);
 
 		pChild->m_pParent = this;
+
+		pChild->setWorldPosition(worldPos);
 		return true;
 	}
 

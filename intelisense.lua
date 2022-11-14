@@ -80,16 +80,16 @@ function GetScale(e) end
 function SetScale(e, scale) end
 
 -- Parenting
--- function GetParent(obj) end
--- function AddChild(obj) end
+function GetParent(e) end
+function AddChild(parent, e) end
 
 -- Lifecycle
 -- function EnableComponent(obj) end
 -- function DisableComponent(obj) end
 function CreateEntity(parent) end
 function Destroy(e) end -- Destroys the entity (Accepts: component, entity or entity name)
-function AddComponent(obj, componentName) end -- Lua name, or built-ins: Sprite, Text, etc.
-function RemoveComponent(obj, componentName) end
+function AddComponent(e, componentName) end -- Lua name, or built-ins: Sprite, Text, etc.
+function RemoveComponent(e, componentName) end
 
 
 ---------------------------------------------------------------------

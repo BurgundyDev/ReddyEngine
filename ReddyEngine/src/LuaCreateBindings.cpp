@@ -39,6 +39,8 @@ namespace Engine
         LUA_REGISTER(GetComponent);
         LUA_REGISTER(GetEntity);
         LUA_REGISTER(GetRoot);
+        LUA_REGISTER(GetParent);
+        LUA_REGISTER(AddChild);
         LUA_REGISTER(CreateEntity);
         LUA_REGISTER(Destroy);
         LUA_REGISTER(AddComponent);
@@ -821,6 +823,39 @@ namespace Engine
             }
         }
 
+        return 0;
+    }
+
+    int LuaBindings::funcGetParent(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (!pEntity)
+        {
+            lua_pushnil(L);
+            return 1;
+        }
+
+        LUA_PUSH_ENTITY(pEntity->getParent());
+        return 1;
+    }
+
+    int LuaBindings::funcAddChild(lua_State* L)
+    {
+        auto pParent = LUA_GET_ENTITY(1);
+        if (!pParent)
+        {
+            CORE_WARN("Lua: AddChild, invalid parent");
+            return 0;
+        }
+
+        auto pChild = LUA_GET_ENTITY(2);
+        if (!pChild)
+        {
+            CORE_WARN("Lua: AddChild, invalid child");
+            return 0;
+        }
+
+        pParent->addChild(pChild);
         return 0;
     }
 }
