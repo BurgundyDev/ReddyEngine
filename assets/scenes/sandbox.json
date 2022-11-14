@@ -1,7 +1,7 @@
 {
    "camera" : {
-      "position" : [ 0.22525763511657715, -1.0768228769302368 ],
-      "zoom" : 2
+      "position" : [ 0.019528418779373169, -0.38151043653488159 ],
+      "zoom" : 3
    },
    "root" : {
       "children" : [
@@ -176,8 +176,8 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -2.4348957538604736, -2.9791665077209473 ],
-               "rotation" : -46.0,
+               "position" : [ -1.9817708730697632, -3.4244790077209473 ],
+               "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
             "uiRoot" : false
@@ -304,8 +304,8 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -2.0338542461395264, -2.6171875 ],
-               "rotation" : 45.0,
+               "position" : [ -1.6041668653488159, -2.875 ],
+               "rotation" : 90.0,
                "scale" : [ 1.0900000333786011, 1.0900000333786011 ]
             },
             "uiRoot" : false
@@ -440,7 +440,7 @@
             "transform" : {
                "position" : [ -3.0, 0.0 ],
                "rotation" : -90.0,
-               "scale" : [ 1.0, 1.0 ]
+               "scale" : [ 0.70999997854232788, 0.70999997854232788 ]
             },
             "uiRoot" : false
          },
@@ -551,6 +551,65 @@
                "position" : [ 3.3125, 1.40625 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont48.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Remove Component",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : "RemoveComponent(\"LeftFlame\", \"Sprite\")"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 66,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -3.8007838726043701, -2.2721352577209473 ],
+               "rotation" : -71.0,
+               "scale" : [ 0.69999998807907104, 0.69999998807907104 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures\\arrow.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               }
+            ],
+            "id" : 69,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -2.9362006187438965, -2.4908852577209473 ],
+               "rotation" : 24.0,
+               "scale" : [ 1.5499999523162842, 1.5499999523162842 ]
             },
             "uiRoot" : false
          }

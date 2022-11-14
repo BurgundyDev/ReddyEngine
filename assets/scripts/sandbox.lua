@@ -119,7 +119,7 @@ RegisterComponent("sandboxStopMover", {
     end,
 
     mouseClick = function(self)
-        local e = FindEntityByName(self.target, GetPosition(self), 3)
+        local e = FindEntityByName(self.target, GetPosition(self), 2)
         local c = GetComponent(e, "sandboxMover")
         if c then
             c.moveSpeed = 0

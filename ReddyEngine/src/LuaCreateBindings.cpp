@@ -799,6 +799,28 @@ namespace Engine
 
     int LuaBindings::funcRemoveComponent(lua_State* L)
     {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (!pEntity) return 0;
+
+        auto componentName = LUA_GET_STRING(2, "");
+        for (const auto& pComponent : pEntity->getComponents())
+        {
+            if (pComponent->getType() == "Script")
+            {
+                auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+                if (pScriptComponent->name == componentName)
+                {
+                    pEntity->removeComponent(pComponent);
+                    return 0;
+                }
+            }
+            if (pComponent->getType() == componentName)
+            {
+                pEntity->removeComponent(pComponent);
+                return 0;
+            }
+        }
+
         return 0;
     }
 }
