@@ -102,7 +102,7 @@ void EditorState::onMouseDown(Engine::IEvent* pEvent)
 
     if (m_mouseButton == SDL_BUTTON_LEFT)
     {
-        auto ctrl = Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
+        auto ctrl = false;//Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
         auto shift = Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT);
         auto alt = Engine::getInput()->isKeyDown(SDL_SCANCODE_LALT);
 
@@ -149,7 +149,7 @@ void EditorState::onMouseUp(Engine::IEvent* pEvent)
     if (pDownEvent->button.button != SDL_BUTTON_LEFT) return;
 
 
-    auto ctrl = Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
+    auto ctrl = false;//Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
     auto shift = Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT);
     auto alt = Engine::getInput()->isKeyDown(SDL_SCANCODE_LALT);
 
