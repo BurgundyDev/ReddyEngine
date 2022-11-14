@@ -1,7 +1,7 @@
 {
    "camera" : {
-      "position" : [ 1.0052087306976318, -0.27343714237213135 ],
-      "zoom" : 3
+      "position" : [ 0.33723932504653931, 0.2148442417383194 ],
+      "zoom" : 2
    },
    "root" : {
       "children" : [
@@ -12,7 +12,7 @@
                {
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
-                  "font" : "fonts/defaultFont24.json",
+                  "font" : "fonts/defaultFont48.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.0,
                   "text" : "Continue Game",
@@ -46,7 +46,7 @@
                {
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
-                  "font" : "fonts/defaultFont24.json",
+                  "font" : "fonts/defaultFont48.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.0,
                   "text" : "New Game",
@@ -80,7 +80,7 @@
                {
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
-                  "font" : "fonts/defaultFont24.json",
+                  "font" : "fonts/defaultFont48.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.0,
                   "text" : "Quit",
@@ -108,13 +108,82 @@
             "uiRoot" : false
          },
          {
-            "children" : [],
+            "children" : [
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "color" : [ 0.54411768913269043, 0.54411768913269043, 0.54411768913269043, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont48.json",
+                        "origin" : [ 0.5, 0.5 ],
+                        "scale" : 1.0,
+                        "text" : "Sandbox",
+                        "type" : "Text"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "Button",
+                        "properties" : {
+                           "codeToEval" : "NewGame(\"assets/scenes/sandbox.json\")"
+                        },
+                        "type" : "Script"
+                     }
+                  ],
+                  "id" : 53,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.0, 0.359375 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "color" : [ 0.54509806632995605, 0.54509806632995605, 0.54509806632995605, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont48.json",
+                        "origin" : [ 0.5, 0.5 ],
+                        "scale" : 1.0,
+                        "text" : "Editor",
+                        "type" : "Text"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "Button",
+                        "properties" : {
+                           "codeToEval" : "Editor()"
+                        },
+                        "type" : "Script"
+                     }
+                  ],
+                  "id" : 56,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.0078125, 0.65624988079071045 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               }
+            ],
             "clickThrough" : false,
             "components" : [
                {
-                  "color" : [ 0.33333331346511841, 0.33333331346511841, 0.33333331346511841, 1.0 ],
+                  "color" : [ 0.16378314793109894, 0.33599632978439331, 0.69607841968536377, 1.0 ],
                   "enabled" : true,
-                  "font" : "fonts/defaultFont24.json",
+                  "font" : "fonts/defaultFont48.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.0,
                   "text" : "Dev Corner",
@@ -124,78 +193,10 @@
             "id" : 50,
             "lockScale" : true,
             "mouseChildren" : true,
-            "name" : "",
+            "name" : "DevCorner",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 3.0, 1.5 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts/defaultFont24.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.0,
-                  "text" : "Sandbox",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : "NewGame(\"assets/scenes/sandbox.json\")"
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 53,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 3.0, 2.0 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts/defaultFont24.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.0,
-                  "text" : "Editor",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : "Editor()"
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 56,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 3.0, 2.5 ],
+               "position" : [ 1.7578125, 0.40625 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -220,7 +221,7 @@
             "name" : "MainMenu",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 2.0677084922790527, -1.9713537693023682 ],
+               "position" : [ 1.8020834922790527, -0.97916662693023682 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },

@@ -55,9 +55,10 @@ void GameState::update(float dt)
 {
     Engine::getEventSystem()->dispatchEvents();
 
+    auto ratio = Engine::getResolution().y / 1440.0f;
     auto mousePos = Engine::getInput()->getMousePos();
     mousePos -= Engine::getResolution() * 0.5f;
-    mousePos /= zoom;
+    mousePos /= zoom * ratio;
     auto mouseWorldPosition = mousePos + camera;
     Engine::getScene()->setMousePos(mouseWorldPosition);
 
@@ -66,9 +67,10 @@ void GameState::update(float dt)
 
 void GameState::draw()
 {
+    auto ratio = Engine::getResolution().y / 1440.0f;
     glm::mat4 transform = 
         glm::translate(glm::vec3(Engine::getResolution() * 0.5f, 0.0f)) *
-        glm::scale(glm::vec3(zoom)) * 
+        glm::scale(glm::vec3(zoom * ratio)) * 
         glm::translate(glm::vec3(-camera, 0.0f));
 
     auto sb = Engine::getSpriteBatch().get();

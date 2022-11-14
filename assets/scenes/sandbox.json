@@ -1,7 +1,7 @@
 {
    "camera" : {
-      "position" : [ 0.28775930404663086, 0.64583289623260498 ],
-      "zoom" : 4
+      "position" : [ 0.22525763511657715, -1.0768228769302368 ],
+      "zoom" : 2
    },
    "root" : {
       "children" : [
@@ -33,7 +33,7 @@
             "name" : "LeftFlame",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -1.0, -1.0 ],
+               "position" : [ -1.5, -2.0 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -67,7 +67,7 @@
             "name" : "MiddleFlame",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 0.0, -1.0 ],
+               "position" : [ 0.0, -2.0 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -101,7 +101,7 @@
             "name" : "RightFlame",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 1.0, -1.0 ],
+               "position" : [ 1.5, -2.0 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -147,7 +147,7 @@
                {
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
-                  "font" : "fonts/defaultFont24.json",
+                  "font" : "fonts/defaultFont48.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.7200000286102295,
                   "text" : "Destroy",
@@ -176,20 +176,46 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -2.7734375, -2.5572915077209473 ],
+               "position" : [ -2.4348957538604736, -2.9791665077209473 ],
                "rotation" : -46.0,
                "scale" : [ 1.0, 1.0 ]
             },
             "uiRoot" : false
          },
          {
-            "children" : [],
+            "children" : [
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures\\editorIcon_sound.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     }
+                  ],
+                  "id" : 62,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 1.3203125, -0.0234375 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.3300000429153442, 1.3300000429153442 ]
+                  },
+                  "uiRoot" : false
+               }
+            ],
             "clickThrough" : false,
             "components" : [
                {
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
-                  "font" : "fonts/defaultFont24.json",
+                  "font" : "fonts/defaultFont48.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.7200000286102295,
                   "text" : "Play Sound",
@@ -210,7 +236,7 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 0.0, 1.0 ],
+               "position" : [ 3.2734375, 0.8749997615814209 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -223,7 +249,7 @@
                {
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
-                  "font" : "fonts/defaultFont24.json",
+                  "font" : "fonts/defaultFont48.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.7200000286102295,
                   "text" : "Change Color",
@@ -253,7 +279,7 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 0.026041626930236816, -3.2838540077209473 ],
+               "position" : [ 0.0234375, -3.421875 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -278,9 +304,9 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -1.9856777191162109, -1.9218752384185791 ],
-               "rotation" : 42.0,
-               "scale" : [ 1.190000057220459, 1.190000057220459 ]
+               "position" : [ -2.0338542461395264, -2.6171875 ],
+               "rotation" : 45.0,
+               "scale" : [ 1.0900000333786011, 1.0900000333786011 ]
             },
             "uiRoot" : false
          },
@@ -303,9 +329,9 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -0.0013027191162109375, -2.3203127384185791 ],
+               "position" : [ 0.0, -2.875 ],
                "rotation" : 90.0,
-               "scale" : [ 1.190000057220459, 1.190000057220459 ]
+               "scale" : [ 1.1399999856948853, 1.1399999856948853 ]
             },
             "uiRoot" : false
          },
@@ -316,7 +342,7 @@
                {
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
-                  "font" : "fonts/defaultFont24.json",
+                  "font" : "fonts/defaultFont48.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.7200000286102295,
                   "text" : "Stop",
@@ -345,7 +371,7 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 2.7050774097442627, -2.7239584922790527 ],
+               "position" : [ 2.5305984020233154, -3.1328125 ],
                "rotation" : 39.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -370,9 +396,9 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 2.0214834213256836, -2.0000004768371582 ],
-               "rotation" : 133.0,
-               "scale" : [ 1.190000057220459, 1.190000057220459 ]
+               "position" : [ 2.1412749290466309, -2.6822919845581055 ],
+               "rotation" : 135.0,
+               "scale" : [ 1.1799999475479126, 1.1799999475479126 ]
             },
             "uiRoot" : false
          },
@@ -383,7 +409,7 @@
                {
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
-                  "font" : "fonts/defaultFont24.json",
+                  "font" : "fonts/defaultFont48.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.7200000286102295,
                   "text" : "Stop Moving when close",
@@ -412,7 +438,7 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -4.0, 0.0 ],
+               "position" : [ -3.0, 0.0 ],
                "rotation" : -90.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -437,9 +463,9 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -2.8430995941162109, -4.76837158203125e-07 ],
+               "position" : [ -2.4225268363952637, 0.0078121423721313477 ],
                "rotation" : 0.0,
-               "scale" : [ 1.190000057220459, 1.190000057220459 ]
+               "scale" : [ 1.2599999904632568, 1.2599999904632568 ]
             },
             "uiRoot" : false
          },
@@ -462,20 +488,46 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ -1.0, 0.0625 ],
+               "position" : [ -1.0, 0.046875 ],
                "rotation" : 0.0,
-               "scale" : [ 0.12999999523162842, 0.5899999737739563 ]
+               "scale" : [ 0.10999999940395355, 1.059999942779541 ]
             },
             "uiRoot" : false
          },
          {
-            "children" : [],
+            "children" : [
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures\\editorIcon_sound.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     }
+                  ],
+                  "id" : 64,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 1.2851533889770508, -0.029947757720947266 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.3300000429153442, 1.3300000429153442 ]
+                  },
+                  "uiRoot" : false
+               }
+            ],
             "clickThrough" : false,
             "components" : [
                {
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
-                  "font" : "fonts/defaultFont24.json",
+                  "font" : "fonts/defaultFont48.json",
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.7200000286102295,
                   "text" : "Play Music",
@@ -496,7 +548,7 @@
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 3.0, 1.0 ],
+               "position" : [ 3.3125, 1.40625 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },

@@ -26,6 +26,8 @@ const char* EditorState::getEntityFriendlyName(const Engine::EntityRef& pEntity)
 {
     if (!pEntity->name.empty()) return pEntity->name.c_str();
     if (pEntity->hasComponent<Engine::SpriteComponent>()) return "Sprite";
+    if (pEntity->hasComponent<Engine::TextComponent>()) return pEntity->getComponent<Engine::TextComponent>()->text.c_str();
+    if (pEntity->hasComponent<Engine::ScriptComponent>()) return pEntity->getComponent<Engine::ScriptComponent>()->name.c_str();
     return "Entity";
 }
 
