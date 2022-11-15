@@ -1,6 +1,6 @@
 {
    "camera" : {
-      "position" : [ 0.67056989669799805, -0.38671880960464478 ],
+      "position" : [ 2.311194896697998, -0.23046880960464478 ],
       "zoom" : 3
    },
    "root" : {
@@ -650,6 +650,41 @@
             "sortChildren" : false,
             "transform" : {
                "position" : [ 0.0, 2.5 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : true,
+            "components" : [
+               {
+                  "color" : [ 0.89810186624526978, 0.61851209402084351, 0.97058820724487305, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures/particle.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               },
+               {
+                  "enabled" : true,
+                  "name" : "MovingParticle",
+                  "properties" : {
+                     "mouseActivationDistance" : 0.40000000596046448,
+                     "speed" : 0.05000000074505806,
+                     "targetDistance" : 0.10000000149011612
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 73,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "ParticlePlayer",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 3.319007396697998, 0.12890619039535522 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },

@@ -1,3 +1,40 @@
+-- Particle that moves to mouse position after pressing LMB
+RegisterComponent("MovingParticle", {
+    mouseActivationDistance = 0.4,
+    targetDistance = 0.1,
+    speed = 0.05,
+    targetPosition = Vec2(0, 0),
+
+    initComponent = function()
+        SetFloatProperty("mouseActivationDistance", "Mouse distance from Player to activate movement.")
+        SetFloatProperty("targetDistance",
+            "Player target distance to stop. Player also stops after reaching this distance value.")
+        SetFloatProperty("speed", "Speed of Player movement.")
+    end,
+
+    create = function(self)
+        self.targetPosition = GetWorldPosition(self)
+    end,
+
+    fixedUpdate = function(self)
+        local distanceToTarget = Distance(GetWorldPosition(self), self.targetPosition)
+        local isFarFromTarget = distanceToTarget > self.targetDistance
+        if isFarFromTarget then
+            SetWorldPosition(self,
+                GetWorldPosition(self) + Normalize(self.targetPosition - GetWorldPosition(self)) * self.speed)
+        end
+    end,
+
+    update = function(self)
+        local isMousePressed = IsButtonJustDown(MOUSE_BUTTON_LEFT)
+        local isCursorFar = Distance(GetMouseWorldPosition(), GetWorldPosition(self)) > self.mouseActivationDistance
+
+        if isCursorFar and isMousePressed then
+            self.targetPosition = GetMouseWorldPosition()
+        end
+    end
+})
+
 -- Rotates and scale
 RegisterComponent("sandboxRotator", {
     rotSpeed = 0,
@@ -157,3 +194,4 @@ RegisterComponent("sandboxBadReference", {
         Log("Target texture = " .. GetSpriteTexture(self.target)) -- Should return empty string if not valid
     end
 })
+
