@@ -22,7 +22,7 @@ namespace Engine
 		if (className == "Text") return std::make_shared<TextComponent>();
 		if (className == "Script") return std::make_shared<ScriptComponent>();
 
-		CORE_ERROR("Unrecognized Component Type: {}", className);
+		//CORE_ERROR("Unrecognized Component Type: {}", className); // This will be called often legitemaly by script, it's spammy
 		return nullptr;
 	}
 	

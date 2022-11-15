@@ -1,3 +1,4 @@
+-- Rotates and scale
 RegisterComponent("sandboxRotator", {
     rotSpeed = 0,
     scaleSpeed = 0,
@@ -19,6 +20,7 @@ RegisterComponent("sandboxRotator", {
 })
 
 
+-- Moves left and right
 RegisterComponent("sandboxMover", {
     moveSpeed = 0,
     move = 0,
@@ -45,19 +47,42 @@ RegisterComponent("sandboxMover", {
 })
 
 
+-- Destroy target entity when clicked
 RegisterComponent("sandboxDestroyButton", {
     target = "",
+    targetPosition = Vec2(0),
+    destroyed = false,
 
     initComponent = function()
         SetStringProperty("target", "Entity name to destroy")
     end,
 
     mouseClick = function(self)
-        Destroy(self.target)
+        if not self.destroyed then
+            self.targetPosition = GetPosition(self.target)
+            Destroy(self.target)
+            SetText(self, "Create")
+            self.destroyed = true
+        else
+            -- Recreate it
+            local e = CreateEntity(GetRoot())
+            SetPosition(e, self.targetPosition)
+            SetName(e, self.target)
+            
+            AddComponent(e, "Sprite")
+            SetSpriteTexture(e, "textures/defaultTexture.png")
+
+            local c = AddComponent(e, "sandboxRotator")
+            c.scaleSpeed = 360
+
+            SetText(self, "Destroy")
+            self.destroyed = false
+        end
     end
 })
 
 
+-- Changes color of targeted entity when clicked
 RegisterComponent("sandboxColorButton", {
     target = "",
     color = Color(1),
@@ -73,6 +98,7 @@ RegisterComponent("sandboxColorButton", {
 })
 
 
+-- Stop rotation of targeted entity when clicked (if has sandboxRotator component)
 RegisterComponent("sandboxStopRotationButton", {
     target = "",
 
@@ -90,6 +116,7 @@ RegisterComponent("sandboxStopRotationButton", {
 })
 
 
+-- Stop target entity movement (if has sandboxMover component)
 RegisterComponent("sandboxStopMover", {
     target = "",
 
@@ -98,10 +125,35 @@ RegisterComponent("sandboxStopMover", {
     end,
 
     mouseClick = function(self)
-        local e = FindEntityByName(self.target, GetPosition(self), 3)
+        local e = FindEntityByName(self.target, GetPosition(self), 2)
         local c = GetComponent(e, "sandboxMover")
         if c then
             c.moveSpeed = 0
         end
+    end
+})
+
+
+-- Keeps a reference on a deleted entity, then tries to access it
+RegisterComponent("sandboxBadReference", {
+    targetName = "",
+    target = nil, -- The entity reference
+
+    initComponent = function()
+        SetStringProperty("targetName", "Entity name to keep reference on.")
+    end,
+
+    create = function(self)
+        self.target = GetEntity(self.targetName)
+    end,
+
+    mouseClick = function(self)
+        local e = GetEntity(self.target) -- Should return nil
+        if e then
+            Log("Valid Reference")
+        else
+            Log("Invalid Reference")
+        end
+        Log("Target texture = " .. GetSpriteTexture(self.target)) -- Should return empty string if not valid
     end
 })

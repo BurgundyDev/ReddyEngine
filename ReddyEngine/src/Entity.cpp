@@ -53,9 +53,19 @@ namespace Engine
 			auto L = getLuaBindings()->getState();
 			if (L)
 			{
+				// Set pointer to null
 				lua_getglobal(L, "EINS_t");
-				lua_pushnil(L);
-				lua_setfield(L, -2, luaName.c_str());
+				lua_getfield(L, -1, luaName.c_str());
+				if (!lua_isnil(L, -1))
+				{
+					lua_pushnil(L);
+					lua_setfield(L, -2, "EOBJ");
+					lua_pop(L, 1);
+
+					// Remove self from the global table
+					lua_pushnil(L);
+					lua_setfield(L, -2, luaName.c_str());
+				}
 				lua_pop(L, lua_gettop(L));
 			}
 		}
@@ -63,6 +73,8 @@ namespace Engine
 
 	bool Entity::addChild(EntityRef pChild, int insertAt)
 	{
+		auto worldPos = pChild->getWorldPosition();
+
 		if (pChild->m_pParent) pChild->m_pParent->removeChild(pChild); // This could potentially make the pChild shared_ptr const reference invalid, that's why we pass by value
 		for (const auto& pMyChild : m_children) if (pMyChild == pChild) return false;
 
@@ -72,6 +84,8 @@ namespace Engine
 			m_children.insert(m_children.begin() + insertAt, pChild);
 
 		pChild->m_pParent = this;
+
+		pChild->setWorldPosition(worldPos);
 		return true;
 	}
 
@@ -262,6 +276,13 @@ namespace Engine
 		{
 			setDirtyTransform();
 		}
+	}
+
+	void Entity::addComponent(const ComponentRef& pComponent)
+	{
+		pComponent->m_pEntity = this;
+		m_components.push_back(pComponent);
+		componentAdded(pComponent);
 	}
 
 	glm::vec2 Entity::getWorldPosition()

@@ -38,6 +38,13 @@ namespace Engine
         LUA_REGISTER(SetStringProperty);
         LUA_REGISTER(GetComponent);
         LUA_REGISTER(GetEntity);
+        LUA_REGISTER(GetRoot);
+        LUA_REGISTER(GetParent);
+        LUA_REGISTER(AddChild);
+        LUA_REGISTER(CreateEntity);
+        LUA_REGISTER(Destroy);
+        LUA_REGISTER(AddComponent);
+        LUA_REGISTER(RemoveComponent);
         LUA_REGISTER(SendEvent);
         LUA_REGISTER(GetPosition);
         LUA_REGISTER(SetPosition);
@@ -54,7 +61,6 @@ namespace Engine
         LUA_REGISTER(IsKeyDown);
         LUA_REGISTER(IsButtonDown);
         LUA_REGISTER(PlaySound);
-        LUA_REGISTER(Destroy);
         LUA_REGISTER(GetSpriteTexture);
         LUA_REGISTER(SetSpriteTexture);
         LUA_REGISTER(GetSpriteColor);
@@ -84,6 +90,7 @@ namespace Engine
         LUA_REGISTER(StopMusic);
         LUA_REGISTER(PauseMusic);
         LUA_REGISTER(ResumeMusic);
+        LUA_REGISTER(Log);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -723,6 +730,140 @@ namespace Engine
     int LuaBindings::funcResumeMusic(lua_State* L)
     {
         getMusicManager()->resume();
+        return 0;
+    }
+
+    int LuaBindings::funcGetRoot(lua_State* L)
+    {
+        auto pRoot = getScene()->getRoot();
+        LUA_PUSH_ENTITY(pRoot);
+        return 1;
+    }
+
+    int LuaBindings::funcCreateEntity(lua_State* L)
+    {
+        auto pParent = LUA_GET_ENTITY(1);
+        if (!pParent)
+        {
+            CORE_ERROR_POPUP("Lua: Expected first argument to be entity in CreateEntity(parent)");
+            lua_pushnil(L);
+            return 1;
+        }
+
+        auto pEntity = getScene()->createEntity(pParent);
+        LUA_PUSH_ENTITY(pEntity);
+        return 1;
+    }
+
+    int LuaBindings::funcAddComponent(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (!pEntity)
+        {
+            CORE_ERROR_POPUP("Lua: AddComponent, invalid entity");
+            lua_pushnil(L);
+            return 1;
+        }
+
+        auto componentName = LUA_GET_STRING(2, "");
+        if (componentName.empty())
+        {
+            CORE_ERROR_POPUP("Lua: AddComponent, invalid name: empty");
+            lua_pushnil(L);
+            return 1;
+        }
+
+        auto pComponent = Component::create(componentName);
+        if (pComponent)
+        {
+            if (std::dynamic_pointer_cast<ScriptComponent>(pComponent))
+                CORE_ERROR_POPUP("Lua: AddComponent, Cannot create \"Script\" component. Use the actual component name.");
+            
+            pEntity->addComponent(pComponent);
+            lua_pushnil(L);
+            return 1; // We added a built-in component, we're all good. We don't return built-ins
+        }
+
+        auto pDef = getComponentDef(componentName);
+        if (!pDef)
+        {
+            CORE_ERROR_POPUP("Lua: AddComponent, invalid name: {}", componentName);
+            lua_pushnil(L);
+            return 1;
+        }
+
+        auto pScriptComponent = pEntity->addComponent<Engine::ScriptComponent>();
+        pScriptComponent->loadDef(pDef);
+        
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, pScriptComponent->luaName.c_str());
+        return 1;
+    }
+
+    int LuaBindings::funcRemoveComponent(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (!pEntity) return 0;
+
+        auto componentName = LUA_GET_STRING(2, "");
+        for (const auto& pComponent : pEntity->getComponents())
+        {
+            if (pComponent->getType() == "Script")
+            {
+                auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+                if (pScriptComponent->name == componentName)
+                {
+                    pEntity->removeComponent(pComponent);
+                    return 0;
+                }
+            }
+            if (pComponent->getType() == componentName)
+            {
+                pEntity->removeComponent(pComponent);
+                return 0;
+            }
+        }
+
+        return 0;
+    }
+
+    int LuaBindings::funcGetParent(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (!pEntity)
+        {
+            lua_pushnil(L);
+            return 1;
+        }
+
+        LUA_PUSH_ENTITY(pEntity->getParent());
+        return 1;
+    }
+
+    int LuaBindings::funcAddChild(lua_State* L)
+    {
+        auto pParent = LUA_GET_ENTITY(1);
+        if (!pParent)
+        {
+            CORE_WARN("Lua: AddChild, invalid parent");
+            return 0;
+        }
+
+        auto pChild = LUA_GET_ENTITY(2);
+        if (!pChild)
+        {
+            CORE_WARN("Lua: AddChild, invalid child");
+            return 0;
+        }
+
+        pParent->addChild(pChild);
+        return 0;
+    }
+
+    int LuaBindings::funcLog(lua_State* L)
+    {
+        auto text = LUA_GET_STRING(1, "");
+        CORE_INFO(text);
         return 0;
     }
 }

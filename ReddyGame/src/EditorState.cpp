@@ -361,6 +361,23 @@ void EditorState::update(float dt)
     }
 }
 
+static void drawSafeFrame(const std::string& name, const glm::vec2& dim, const glm::vec4& color)
+{
+    const float VIEWPORT_BOUNDS_SIZE = 0.025f;
+
+    auto sb = Engine::getSpriteBatch().get();
+
+    auto hdim = dim / 2.0f;
+
+    sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * -hdim.x, Engine::SPRITE_BASE_SCALE * -hdim.y), glm::vec2(Engine::SPRITE_BASE_SCALE * -hdim.x, Engine::SPRITE_BASE_SCALE * hdim.y + VIEWPORT_BOUNDS_SIZE/2), VIEWPORT_BOUNDS_SIZE, color);
+    sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * -hdim.x, Engine::SPRITE_BASE_SCALE * hdim.y), glm::vec2(Engine::SPRITE_BASE_SCALE * hdim.x + VIEWPORT_BOUNDS_SIZE/2, Engine::SPRITE_BASE_SCALE * hdim.y), VIEWPORT_BOUNDS_SIZE, color);
+    sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * hdim.x, Engine::SPRITE_BASE_SCALE * hdim.y), glm::vec2(Engine::SPRITE_BASE_SCALE * hdim.x, Engine::SPRITE_BASE_SCALE * -hdim.y - VIEWPORT_BOUNDS_SIZE/2), VIEWPORT_BOUNDS_SIZE, color);
+    sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * hdim.x, Engine::SPRITE_BASE_SCALE * -hdim.y), glm::vec2(Engine::SPRITE_BASE_SCALE * -hdim.x - VIEWPORT_BOUNDS_SIZE/2, Engine::SPRITE_BASE_SCALE * -hdim.y), VIEWPORT_BOUNDS_SIZE, color);
+
+    auto pFont = Engine::getResourceManager()->getFont("fonts/defaultFont24.json");
+    pFont->draw(name, glm::vec2(Engine::SPRITE_BASE_SCALE * -hdim.x, Engine::SPRITE_BASE_SCALE * hdim.y + VIEWPORT_BOUNDS_SIZE * 2), color, 0, 0.005f, glm::vec2(0, 0));
+}
+
 void EditorState::draw()
 {
     glm::mat4 transform = 
@@ -426,14 +443,12 @@ void EditorState::draw()
     }
 
     const glm::vec4 VIEWPORT_BOUNDS_COLOR(255, 0, 155, 155);
-    const float VIEWPORT_BOUNDS_SIZE = 0.05f;
 
-    if(m_isViewportOutlined && m_zoomf >= m_gridHideZoomLevel)
+    if (m_isViewportOutlined && m_zoomf >= m_gridHideZoomLevel)
     {
-        sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * -1280, Engine::SPRITE_BASE_SCALE * -720), glm::vec2(Engine::SPRITE_BASE_SCALE * -1280, Engine::SPRITE_BASE_SCALE * 720 + VIEWPORT_BOUNDS_SIZE/2), VIEWPORT_BOUNDS_SIZE, VIEWPORT_BOUNDS_COLOR);
-        sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * -1280, Engine::SPRITE_BASE_SCALE * 720), glm::vec2(Engine::SPRITE_BASE_SCALE * 1280 + VIEWPORT_BOUNDS_SIZE/2, Engine::SPRITE_BASE_SCALE * 720), VIEWPORT_BOUNDS_SIZE, VIEWPORT_BOUNDS_COLOR);
-        sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * 1280, Engine::SPRITE_BASE_SCALE * 720), glm::vec2(Engine::SPRITE_BASE_SCALE * 1280, Engine::SPRITE_BASE_SCALE * -720 - VIEWPORT_BOUNDS_SIZE/2), VIEWPORT_BOUNDS_SIZE, VIEWPORT_BOUNDS_COLOR);
-        sb->drawLine(glm::vec2(Engine::SPRITE_BASE_SCALE * 1280, Engine::SPRITE_BASE_SCALE * -720), glm::vec2(Engine::SPRITE_BASE_SCALE * -1280 - VIEWPORT_BOUNDS_SIZE/2, Engine::SPRITE_BASE_SCALE * -720), VIEWPORT_BOUNDS_SIZE, VIEWPORT_BOUNDS_COLOR);
+        drawSafeFrame("2K", {1280 * 2, 720 * 2}, glm::vec4(1, 0, 0.6f, 1) * 0.8f);
+        //drawSafeFrame("1080p", {1920, 1080}, glm::vec4(1, 0, 0.6f, 1) * 0.6f);
+        //drawSafeFrame("720p", {1280, 720}, glm::vec4(1, 0, 0.6f, 1) * 0.4f);
     }
 
     sb->end();

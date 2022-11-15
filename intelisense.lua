@@ -5,6 +5,11 @@
 --   - Entity object
 --   - Component object
 
+---------------------------------------------------------------------
+-- Log
+---------------------------------------------------------------------
+function Log(text) end
+
 
 ---------------------------------------------------------------------
 -- Defining a component
@@ -64,6 +69,7 @@ function ResumeMusic() end
 -- Entity functions
 ---------------------------------------------------------------------
 function GetEntity(c) end -- Pass in component or name of entity (entity also works, but pointless)
+function GetRoot() end
 function GetComponent(e, componentName) end -- Returns the LUA component. You cannot get Built-in components.
 function GetName(e) end
 function SetName(e, name) end
@@ -79,15 +85,18 @@ function GetScale(e) end
 function SetScale(e, scale) end
 
 -- Parenting
--- function GetParent(obj) end
--- function AddChild(obj) end
+function GetParent(e) end
+function AddChild(parent, e) end
 
 -- Lifecycle
+function Enable(e) end
+function Disable(e) end
 -- function EnableComponent(obj) end
 -- function DisableComponent(obj) end
+function CreateEntity(parent) end
 function Destroy(e) end -- Destroys the entity (Accepts: component, entity or entity name)
--- function AddComponent(obj, componentName) end
--- function RemoveComponent(obj, componentName) end
+function AddComponent(e, componentName) end -- Lua name, or built-ins: Sprite, Text, etc.
+function RemoveComponent(e, componentName) end
 
 
 ---------------------------------------------------------------------

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Engine/Constants.h>
+
 #include <glm/vec2.hpp>
 
 #include <memory>
@@ -26,7 +28,7 @@ public:
     virtual void leave(const GameStateRef& newState);
 
     glm::vec2 camera = glm::vec2(0);
-    float zoom = 128.0f;
+    float zoom = Engine::TILE_SIZE;
 
 protected:
     bool m_seeThrough = false;

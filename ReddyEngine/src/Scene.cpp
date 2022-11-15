@@ -79,8 +79,8 @@ namespace Engine
 	EntityRef Scene::createEntityFromJson(const EntityRef& pParent, const Json::Value& json, bool generateNewIds)
 	{
 		EntityRef pNewEntity = std::make_shared<Entity>();
-		pNewEntity->deserialize(json, true, generateNewIds);
 		pParent->addChild(pNewEntity);
+		pNewEntity->deserialize(json, true, generateNewIds);
 		if (generateNewIds)
 			m_id = ++m_id;
 		else

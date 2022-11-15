@@ -86,7 +86,13 @@ namespace Engine
 
         int funcGetComponent(lua_State* L);
         int funcGetEntity(lua_State* L);
+        int funcGetRoot(lua_State* L);
+        int funcGetParent(lua_State* L);
+        int funcAddChild(lua_State* L);
+        int funcCreateEntity(lua_State* L);
         int funcDestroy(lua_State* L);
+        int funcAddComponent(lua_State* L);
+        int funcRemoveComponent(lua_State* L);
 
         int funcGetPosition(lua_State* L);
         int funcSetPosition(lua_State* L);
@@ -140,6 +146,8 @@ namespace Engine
         int funcStopMusic(lua_State* L);
         int funcPauseMusic(lua_State* L);
         int funcResumeMusic(lua_State* L);
+
+        int funcLog(lua_State* L);
 
     private:
         void createBindings();

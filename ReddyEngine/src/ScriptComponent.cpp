@@ -10,6 +10,7 @@ extern "C" {
 #include "Engine/GUI.h"
 #include "Engine/Utils.h"
 #include "Engine/Scene.h"
+#include "Engine/Log.h"
 
 #include <imgui.h>
 
@@ -164,6 +165,18 @@ namespace Engine
                 if (!isEditor) lua_pop(L, lua_gettop(L));
             }
         }
+    }
+
+	void ScriptComponent::loadDef(LuaComponentDef* pDef)
+    {
+        CORE_ASSERT(!m_pLuaComponentDef, "We can only call loadDef once on a ScriptComponent");
+        if (m_pLuaComponentDef) return;
+
+        m_pLuaComponentDef = pDef;
+        createLuaObj();
+        m_luaProperties.clear();
+        if (m_pLuaComponentDef)
+            m_luaProperties = m_pLuaComponentDef->properties;
     }
 
     bool ScriptComponent::edit()

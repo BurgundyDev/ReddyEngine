@@ -112,6 +112,8 @@ namespace Engine
 			return pComponent;
 		}
 
+		void addComponent(const ComponentRef& pComponent);
+
 		template<typename T>
 		bool removeComponent() const
 		{

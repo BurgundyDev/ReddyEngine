@@ -26,6 +26,8 @@ const char* EditorState::getEntityFriendlyName(const Engine::EntityRef& pEntity)
 {
     if (!pEntity->name.empty()) return pEntity->name.c_str();
     if (pEntity->hasComponent<Engine::SpriteComponent>()) return "Sprite";
+    if (pEntity->hasComponent<Engine::TextComponent>()) return pEntity->getComponent<Engine::TextComponent>()->text.c_str();
+    if (pEntity->hasComponent<Engine::ScriptComponent>()) return pEntity->getComponent<Engine::ScriptComponent>()->name.c_str();
     return "Entity";
 }
 
@@ -100,7 +102,7 @@ void EditorState::onMouseDown(Engine::IEvent* pEvent)
 
     if (m_mouseButton == SDL_BUTTON_LEFT)
     {
-        auto ctrl = Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
+        auto ctrl = false;//Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
         auto shift = Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT);
         auto alt = Engine::getInput()->isKeyDown(SDL_SCANCODE_LALT);
 
@@ -147,7 +149,7 @@ void EditorState::onMouseUp(Engine::IEvent* pEvent)
     if (pDownEvent->button.button != SDL_BUTTON_LEFT) return;
 
 
-    auto ctrl = Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
+    auto ctrl = false;//Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
     auto shift = Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT);
     auto alt = Engine::getInput()->isKeyDown(SDL_SCANCODE_LALT);
 
