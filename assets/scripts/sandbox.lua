@@ -1,3 +1,4 @@
+-- Rotates and scale
 RegisterComponent("sandboxRotator", {
     rotSpeed = 0,
     scaleSpeed = 0,
@@ -19,6 +20,7 @@ RegisterComponent("sandboxRotator", {
 })
 
 
+-- Moves left and right
 RegisterComponent("sandboxMover", {
     moveSpeed = 0,
     move = 0,
@@ -45,6 +47,7 @@ RegisterComponent("sandboxMover", {
 })
 
 
+-- Destroy target entity when clicked
 RegisterComponent("sandboxDestroyButton", {
     target = "",
     targetPosition = Vec2(0),
@@ -79,6 +82,7 @@ RegisterComponent("sandboxDestroyButton", {
 })
 
 
+-- Changes color of targeted entity when clicked
 RegisterComponent("sandboxColorButton", {
     target = "",
     color = Color(1),
@@ -94,6 +98,7 @@ RegisterComponent("sandboxColorButton", {
 })
 
 
+-- Stop rotation of targeted entity when clicked (if has sandboxRotator component)
 RegisterComponent("sandboxStopRotationButton", {
     target = "",
 
@@ -111,6 +116,7 @@ RegisterComponent("sandboxStopRotationButton", {
 })
 
 
+-- Stop target entity movement (if has sandboxMover component)
 RegisterComponent("sandboxStopMover", {
     target = "",
 
@@ -134,7 +140,7 @@ RegisterComponent("sandboxBadReference", {
     target = nil, -- The entity reference
 
     initComponent = function()
-        SetStringProperty("targetName", "Entity name to stop moving, in a radius of 3")
+        SetStringProperty("targetName", "Entity name to keep reference on.")
     end,
 
     create = function(self)
