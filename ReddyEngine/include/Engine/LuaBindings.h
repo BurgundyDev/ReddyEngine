@@ -19,9 +19,17 @@ extern "C" {
 namespace Engine
 {
     class ScriptComponent;
+    using ScriptComponentRef = std::shared_ptr<ScriptComponent>;
 
     class Entity;
     using EntityRef = std::shared_ptr<Entity>;
+
+    class IEvent;
+    class KeyDownEvent;
+    class KeyUpEvent;
+    class MouseButtonDownEvent;
+    class MouseButtonUpEvent;
+    class LuaEvent;
 
 
     enum class LuaPropertyType
@@ -109,7 +117,6 @@ namespace Engine
         int funcDot(lua_State* L);
         
         int funcGetMouseWorldPosition(lua_State* L);
-        int funcSendEvent(lua_State* L);
         int funcIsKeyDown(lua_State* L);
         int funcIsButtonDown(lua_State* L);
         int funcIsButtonJustDown(lua_State* L);
@@ -151,8 +158,26 @@ namespace Engine
 
         int funcLog(lua_State* L);
 
+        int funcRegisterEvent(lua_State* L);
+        int funcDeregisterEvent(lua_State* L);
+        int funcSendEvent(lua_State* L);
+
     private:
+        struct ScriptEventListeners
+        {
+            std::weak_ptr<ScriptComponent> pScript;
+            std::string name;
+        };
+
+        ScriptComponentRef getScriptComponentFromListener(void* listener, std::string name, std::string* callbackName);
+
         void createBindings();
+
+        void onKeyDown(IEvent* pEvent);
+        void onKeyUp(IEvent* pEvent);
+        void onMouseDown(IEvent* pEvent);
+        void onMouseUp(IEvent* pEvent);
+        void onLuaEvent(IEvent* pEvent);
 
         lua_State* L = nullptr;
 
@@ -160,6 +185,7 @@ namespace Engine
         LuaComponentDef* m_pCurrentComponentDef = nullptr;
         StateChangeRequest m_stateChangeRequest = StateChangeRequest::None;
         std::string m_worldFilenameToLoad;
+        std::map<std::string, std::map<uintptr_t, ScriptEventListeners>> m_scriptEventListeners;
     };
 }
 

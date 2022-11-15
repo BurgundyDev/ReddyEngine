@@ -14,26 +14,28 @@ RegisterComponent("MovingParticle", {
 
     create = function(self)
         self.targetPosition = GetWorldPosition(self)
+        RegisterEvent("MouseDown", self, "onMouseDown")
     end,
 
-    fixedUpdate = function(self)
+    onMouseDown = function(self, button)
+        if button == MOUSE_BUTTON_LEFT then
+            local isCursorFar = Distance(GetMouseWorldPosition(), GetWorldPosition(self)) > self.mouseActivationDistance
+            if isCursorFar then
+                self.targetPosition = GetMouseWorldPosition()
+            end
+        end
+    end,
+
+    update = function(self, dt)
         local distanceToTarget = Distance(GetWorldPosition(self), self.targetPosition)
         local isFarFromTarget = distanceToTarget > self.targetDistance
         if isFarFromTarget then
             SetWorldPosition(self,
-                GetWorldPosition(self) + Normalize(self.targetPosition - GetWorldPosition(self)) * self.speed)
-        end
-    end,
-
-    update = function(self)
-        local isMousePressed = IsButtonJustDown(MOUSE_BUTTON_LEFT)
-        local isCursorFar = Distance(GetMouseWorldPosition(), GetWorldPosition(self)) > self.mouseActivationDistance
-
-        if isCursorFar and isMousePressed then
-            self.targetPosition = GetMouseWorldPosition()
+                GetWorldPosition(self) + Normalize(self.targetPosition - GetWorldPosition(self)) * self.speed * dt)
         end
     end
 })
+
 
 -- Rotates and scale
 RegisterComponent("sandboxRotator", {
@@ -100,6 +102,7 @@ RegisterComponent("sandboxDestroyButton", {
             Destroy(self.target)
             SetText(self, "Create")
             self.destroyed = true
+            SendEvent("LeftFlameDestroyed", "Screw You!")
         else
             -- Recreate it
             local e = CreateEntity(GetRoot())
@@ -182,6 +185,12 @@ RegisterComponent("sandboxBadReference", {
 
     create = function(self)
         self.target = GetEntity(self.targetName)
+        RegisterEvent("LeftFlameDestroyed", self, "onLeftFlameDestroyed")
+    end,
+
+    onLeftFlameDestroyed = function(self, data)
+        print("Left flame destroyed. Message from destroyer: " .. data)
+        DeregisterEvent("LeftFlameDestroyed", self)
     end,
 
     mouseClick = function(self)

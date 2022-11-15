@@ -12,7 +12,7 @@ namespace Engine
 	struct LuaProperty;
 
 
-    class ScriptComponent final : public Component
+    class ScriptComponent final : public Component, public std::enable_shared_from_this<ScriptComponent>
     {
     public:
 		ScriptComponent();
@@ -23,6 +23,7 @@ namespace Engine
 		bool edit() override;
 		std::string getType() const override { return "Script"; }
 		std::string getEditName() const override { return name.empty() ? "Script" : "Script - " + name; }
+		LuaComponentDef* getLuaDef() const { return m_pLuaComponentDef; }
 
 		void loadDef(LuaComponentDef* pDef);
 

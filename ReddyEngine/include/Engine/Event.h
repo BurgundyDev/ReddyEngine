@@ -15,6 +15,8 @@ namespace Engine
 		IEvent(const IEvent &other) = delete;
 		IEvent &operator=(const IEvent &other) = delete;
 		virtual ~IEvent() = default;
+
+		void* pListener = nullptr;
 	};
 
 	class WindowEvent : public IEvent

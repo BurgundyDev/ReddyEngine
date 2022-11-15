@@ -53,8 +53,12 @@ namespace Engine
 		template<class T>
 		void registerListener(EventListenerInstance instance, const std::function<void (IEvent*)>& callback)
 		{
-
 			m_eventHandlersMap[typeid(T)].push_back({instance, callback});
+		}
+
+		void registerLuaListener(const std::string& eventName, EventListenerInstance instance, const std::function<void (IEvent*)>& callback)
+		{
+			m_luaEventHandlersMap[eventName].push_back({instance, callback});
 		}
 
 		template<typename T>
@@ -73,9 +77,25 @@ namespace Engine
 			}
 		}
 
+		void deregisterLuaListener(const std::string& eventName, EventListenerInstance instance)
+		{
+			auto& callbacks = m_luaEventHandlersMap[eventName];
+
+			for (auto it = callbacks.begin(); it != callbacks.end();)
+			{
+				if (it->pListener == instance)
+				{
+					it = callbacks.erase(it);
+					continue;
+				}
+				++it;
+			}
+		}
+
 	private:
 		std::queue<EventStructure> m_eventQueue;
 		std::map<std::type_index, std::vector<Listener>> m_eventHandlersMap;
+		std::map<std::string, std::vector<Listener>> m_luaEventHandlersMap;
 		std::vector<Listener> m_listenerCache;
 	};
 }

@@ -45,7 +45,6 @@ namespace Engine
         LUA_REGISTER(Destroy);
         LUA_REGISTER(AddComponent);
         LUA_REGISTER(RemoveComponent);
-        LUA_REGISTER(SendEvent);
         LUA_REGISTER(GetPosition);
         LUA_REGISTER(SetPosition);
         LUA_REGISTER(GetWorldPosition);
@@ -93,6 +92,9 @@ namespace Engine
         LUA_REGISTER(PauseMusic);
         LUA_REGISTER(ResumeMusic);
         LUA_REGISTER(Log);
+        LUA_REGISTER(SendEvent);
+        LUA_REGISTER(RegisterEvent);
+        LUA_REGISTER(DeregisterEvent);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -322,33 +324,6 @@ namespace Engine
         }
         lua_pushnil(L);
         return 1;
-    }
-
-    int LuaBindings::funcSendEvent(lua_State* L)
-    {
-        if (lua_gettop(L) < 1 || !lua_isstring(L, 1))
-        {
-            CORE_ERROR_POPUP("Lua: SendEvent expected (string, table{optional})");
-            return 0;
-        }
-
-        static uint64_t nextEventDataId = 1;
-
-        std::string eventName = lua_tostring(L, 1);
-        std::string dataName = "";
-
-        if (lua_gettop(L) >= 2)
-        {
-            dataName = "EDAT_" + std::to_string(nextEventDataId++);
-            lua_getglobal(L, "EVTS_t");
-            lua_pushvalue(L, 2);
-            lua_setfield(L, -2, dataName.c_str());
-            lua_pop(L, 1);
-        }
-
-        getEventSystem()->sendEvent(new LuaEvent(eventName, dataName));
-
-        return 0;
     }
 
     int LuaBindings::funcGetPosition(lua_State* L)
@@ -881,6 +856,125 @@ namespace Engine
     {
         auto text = LUA_GET_STRING(1, "");
         CORE_INFO(text);
+        return 0;
+    }
+
+    int LuaBindings::funcRegisterEvent(lua_State* L)
+    {
+        if (lua_gettop(L) < 3 || !lua_isstring(L, 1) || !lua_isstring(L, 3))
+        {
+            CORE_ERROR_POPUP("Lua: RegisterEvent expected (string, c, string)");
+            return 0;
+        }
+
+        auto eventName = LUA_GET_STRING(1, "");
+        if (eventName.empty()) return 0;
+
+        auto rpScript = LUA_GET_SCRIPT_COMPONENT(2);
+        if (!rpScript) return 0;
+
+        auto callbackName = LUA_GET_STRING(3, "");
+        if (callbackName.empty()) return 0;
+
+        // Validate that our object have this callback
+        {
+            lua_getglobal(L, "CINS_t");
+            lua_getfield(L, -1, rpScript->luaName.c_str());
+            lua_getfield(L, -1, callbackName.c_str());
+            if (!lua_isfunction(L, -1)) 
+            {
+                CORE_ERROR_POPUP("Lua: RegisterEvent, callback function \"{}\" not found in component.", callbackName);
+                return 0;
+            }
+            lua_pop(L, 3);
+        }
+
+        // Register event
+        {
+            if (eventName == "KeyDown")
+                getEventSystem()->registerListener<KeyDownEvent>(rpScript, std::bind(&LuaBindings::onKeyDown, this, _1));
+            else if (eventName == "KeyUp")
+                getEventSystem()->registerListener<KeyUpEvent>(rpScript, std::bind(&LuaBindings::onKeyUp, this, _1));
+            else if (eventName == "MouseDown")
+                getEventSystem()->registerListener<MouseButtonDownEvent>(rpScript, std::bind(&LuaBindings::onMouseDown, this, _1));
+            else if (eventName == "MouseUp")
+                getEventSystem()->registerListener<MouseButtonUpEvent>(rpScript, std::bind(&LuaBindings::onMouseUp, this, _1));
+            else // Lua event
+                getEventSystem()->registerLuaListener(eventName, rpScript, std::bind(&LuaBindings::onLuaEvent, this, _1));
+        }
+
+
+        m_scriptEventListeners[eventName][(uintptr_t)rpScript] = { rpScript->shared_from_this(), callbackName };
+
+        return 0;
+    }
+
+    int LuaBindings::funcDeregisterEvent(lua_State* L)
+    {
+        if (lua_gettop(L) < 2 || !lua_isstring(L, 1))
+        {
+            CORE_ERROR_POPUP("Lua: RegisterEvent expected (string, c)");
+            return 0;
+        }
+
+        auto eventName = LUA_GET_STRING(1, "");
+        if (eventName.empty()) return 0;
+
+        auto rpScript = LUA_GET_SCRIPT_COMPONENT(2);
+        if (!rpScript) return 0;
+
+
+        {
+            if (eventName == "KeyDown")
+                getEventSystem()->deregisterListener<KeyDownEvent>(rpScript);
+            else if (eventName == "KeyUp")
+                getEventSystem()->deregisterListener<KeyUpEvent>(rpScript);
+            else if (eventName == "MouseDown")
+                getEventSystem()->deregisterListener<MouseButtonDownEvent>(rpScript);
+            else if (eventName == "MouseUp")
+                getEventSystem()->deregisterListener<MouseButtonUpEvent>(rpScript);
+            else // Lua event
+                getEventSystem()->deregisterLuaListener(eventName, rpScript);
+        }
+
+
+        auto itm = m_scriptEventListeners.find(eventName);
+        if (itm == m_scriptEventListeners.end()) return 0;
+
+        // Find our event listener
+        auto it = itm->second.find((uintptr_t)rpScript);
+        if (it == itm->second.end()) return 0;
+
+        // Erase
+        itm->second.erase(it);
+
+        return 0;
+    }
+
+    int LuaBindings::funcSendEvent(lua_State* L)
+    {
+        if (lua_gettop(L) < 1 || !lua_isstring(L, 1))
+        {
+            CORE_ERROR_POPUP("Lua: SendEvent expected (string, table{optional})");
+            return 0;
+        }
+
+        static uint64_t nextEventDataId = 1;
+
+        std::string eventName = lua_tostring(L, 1);
+        std::string dataName = "";
+
+        if (lua_gettop(L) >= 2)
+        {
+            dataName = "EDAT_" + std::to_string(nextEventDataId++);
+            lua_getglobal(L, "EVTS_t");
+            lua_pushvalue(L, 2);
+            lua_setfield(L, -2, dataName.c_str());
+            lua_pop(L, 1);
+        }
+
+        getEventSystem()->sendEvent(new LuaEvent(eventName, dataName));
+
         return 0;
     }
 }

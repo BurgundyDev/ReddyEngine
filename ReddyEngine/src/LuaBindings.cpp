@@ -11,6 +11,8 @@ extern "C" {
 #include "Engine/Scene.h"
 #include "Engine/Entity.h"
 #include "Engine/ReddyEngine.h"
+#include "Engine/Event.h"
+#include "Engine/EventSystem.h"
 
 #include <filesystem>
 
@@ -54,6 +56,9 @@ namespace Engine
         lua_newtable(L);
         lua_setglobal(L, "EVTS_t"); // Active event data
 
+        lua_newtable(L);
+        lua_setglobal(L, "EVTL_t"); // Active event listeners
+
         createBindings();
         if (doRunFiles)
         {
@@ -66,6 +71,160 @@ namespace Engine
     {
         for (const auto& kv : m_componentDefs) delete kv.second;
         lua_close(L);
+    }
+
+    ScriptComponentRef LuaBindings::getScriptComponentFromListener(void* pListener, std::string name, std::string* callbackName)
+    {
+        auto itm = m_scriptEventListeners.find(name);
+        if (itm == m_scriptEventListeners.end()) return nullptr;
+
+        // Find our event listener
+        auto it = itm->second.find((uintptr_t)pListener);
+        if (it == itm->second.end()) return nullptr;
+
+        // Get ScriptComponent, or remove if it weak reference is null
+        const auto& scriptEventListener = it->second;
+        auto pScriptComponent = scriptEventListener.pScript.lock();
+        if (!pScriptComponent)
+        {
+            itm->second.erase(it);
+            return nullptr;
+        }
+
+        *callbackName = scriptEventListener.name;
+        return pScriptComponent;
+    }
+
+    void LuaBindings::onKeyDown(IEvent* pEvent)
+    {
+        auto pKeyDown = (KeyDownEvent*)pEvent;
+        std::string name;
+        auto pScriptComponent = getScriptComponentFromListener(pEvent->pListener, "KeyDown", &name);
+        if (!pScriptComponent)
+        {
+            getEventSystem()->deregisterListener<KeyDownEvent>(pEvent->pListener);
+            return;
+        }
+
+        // Call the function!
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, pScriptComponent->luaName.c_str());
+        lua_getfield(L, -1, name.c_str());
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            lua_pushinteger(L, (lua_Integer)pKeyDown->key.keysym.scancode);
+            checkLua(L, lua_pcall(L, 2, 0, 0));
+        }
+
+        lua_pop(L, lua_gettop(L));
+    }
+
+    void LuaBindings::onKeyUp(IEvent* pEvent)
+    {
+        auto pKeyUp = (KeyUpEvent*)pEvent;
+        std::string name;
+        auto pScriptComponent = getScriptComponentFromListener(pEvent->pListener, "KeyUp", &name);
+        if (!pScriptComponent)
+        {
+            getEventSystem()->deregisterListener<KeyUpEvent>(pEvent->pListener);
+            return;
+        }
+
+        // Call the function!
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, pScriptComponent->luaName.c_str());
+        lua_getfield(L, -1, name.c_str());
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            lua_pushinteger(L, (lua_Integer)pKeyUp->key.keysym.scancode);
+            checkLua(L, lua_pcall(L, 2, 0, 0));
+        }
+
+        lua_pop(L, lua_gettop(L));
+    }
+
+    void LuaBindings::onMouseDown(IEvent* pEvent)
+    {
+        auto pMouseDown = (MouseButtonDownEvent*)pEvent;
+        std::string name;
+        auto pScriptComponent = getScriptComponentFromListener(pEvent->pListener, "MouseDown", &name);
+        if (!pScriptComponent)
+        {
+            getEventSystem()->deregisterListener<MouseButtonDownEvent>(pEvent->pListener);
+            return;
+        }
+
+        // Call the function!
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, pScriptComponent->luaName.c_str());
+        lua_getfield(L, -1, name.c_str());
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            lua_pushinteger(L, (lua_Integer)pMouseDown->button.button);
+            checkLua(L, lua_pcall(L, 2, 0, 0));
+        }
+
+        lua_pop(L, lua_gettop(L));
+    }
+
+    void LuaBindings::onMouseUp(IEvent* pEvent)
+    {
+        auto pMouseUp = (MouseButtonUpEvent*)pEvent;
+        std::string name;
+        auto pScriptComponent = getScriptComponentFromListener(pEvent->pListener, "MouseUp", &name);
+        if (!pScriptComponent)
+        {
+            getEventSystem()->deregisterListener<MouseButtonUpEvent>(pEvent->pListener);
+            return;
+        }
+
+        // Call the function!
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, pScriptComponent->luaName.c_str());
+        lua_getfield(L, -1, name.c_str());
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            lua_pushinteger(L, (lua_Integer)pMouseUp->button.button);
+            checkLua(L, lua_pcall(L, 2, 0, 0));
+        }
+
+        lua_pop(L, lua_gettop(L));
+    }
+
+    void LuaBindings::onLuaEvent(IEvent* pEvent)
+    {
+        auto pLuaEvent = (LuaEvent*)pEvent;
+        std::string name;
+        auto pScriptComponent = getScriptComponentFromListener(pEvent->pListener, pLuaEvent->name, &name);
+        if (!pScriptComponent)
+        {
+            getEventSystem()->deregisterLuaListener(pLuaEvent->name, pEvent->pListener);
+            return;
+        }
+
+        // Call the function!
+        lua_getglobal(L, "EVTS_t");
+        lua_getglobal(L, "CINS_t");
+        lua_getfield(L, -1, pScriptComponent->luaName.c_str());
+        lua_getfield(L, -1, name.c_str());
+
+        if (lua_isfunction(L, -1))
+        {
+            lua_pushvalue(L, -2);
+            lua_getfield(L, -5, pLuaEvent->dataLuaName.c_str());
+
+            checkLua(L, lua_pcall(L, 2, 0, 0));
+        }
+
+        lua_pop(L, lua_gettop(L));
     }
 
     void LuaBindings::update(float dt)
@@ -202,7 +361,7 @@ Engine::EntityRef LUA_GET_ENTITY_impl(lua_State* L, int stackIndex, const char* 
 
 Engine::ScriptComponent* LUA_GET_SCRIPT_COMPONENT_impl(lua_State* L, int stackIndex, const char* funcName)
 {
-    lua_getfield(L, 1, "COBJ");
+    lua_getfield(L, stackIndex, "COBJ");
     if (!lua_islightuserdata(L, -1))
     {
         CORE_ERROR_POPUP("Lua: {} Argument at {} should be a ScriptComponent.", funcName, stackIndex);

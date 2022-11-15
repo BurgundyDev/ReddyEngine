@@ -672,7 +672,7 @@
                   "name" : "MovingParticle",
                   "properties" : {
                      "mouseActivationDistance" : 0.40000000596046448,
-                     "speed" : 0.05000000074505806,
+                     "speed" : 5.0,
                      "targetDistance" : 0.10000000149011612
                   },
                   "type" : "Script"

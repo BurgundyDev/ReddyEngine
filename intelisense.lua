@@ -45,6 +45,8 @@ function SetCameraZoom(zoom) end
 ---------------------------------------------------------------------
 function IsKeyDown(key) end
 function IsButtonDown(button) end
+function IsButtonJustDown(button) end
+function GetMouseWorldPosition() end
 
 
 ---------------------------------------------------------------------
@@ -60,9 +62,9 @@ function ResumeMusic() end
 ---------------------------------------------------------------------
 -- Events
 ---------------------------------------------------------------------
--- function SendEvent(eventName, data) end
--- function RegisterEvent(eventName, c, callback) end
--- function DeregisterEvent(eventName, c) end
+function SendEvent(eventName, data) end
+function RegisterEvent(eventName, c, functionName) end
+function DeregisterEvent(eventName, c) end
 
 
 ---------------------------------------------------------------------
