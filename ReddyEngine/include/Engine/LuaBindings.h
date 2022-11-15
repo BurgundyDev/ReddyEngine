@@ -108,9 +108,11 @@ namespace Engine
         int funcNormalize(lua_State* L);
         int funcDot(lua_State* L);
         
+        int funcGetMouseWorldPosition(lua_State* L);
         int funcSendEvent(lua_State* L);
         int funcIsKeyDown(lua_State* L);
         int funcIsButtonDown(lua_State* L);
+        int funcIsButtonJustDown(lua_State* L);
         int funcPlaySound(lua_State* L);
 
         int funcGetSpriteTexture(lua_State* L);

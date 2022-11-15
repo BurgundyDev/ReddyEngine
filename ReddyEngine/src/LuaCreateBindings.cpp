@@ -58,8 +58,10 @@ namespace Engine
         LUA_REGISTER(Distance);
         LUA_REGISTER(Normalize);
         LUA_REGISTER(Dot);
-        LUA_REGISTER(IsKeyDown);
+        LUA_REGISTER(GetMouseWorldPosition);
+		LUA_REGISTER(IsKeyDown);
         LUA_REGISTER(IsButtonDown);
+		LUA_REGISTER(IsButtonJustDown);
         LUA_REGISTER(PlaySound);
         LUA_REGISTER(GetSpriteTexture);
         LUA_REGISTER(SetSpriteTexture);
@@ -454,6 +456,13 @@ namespace Engine
         return 1;
     }
 
+	int LuaBindings::funcGetMouseWorldPosition(lua_State* L)
+	{
+		auto position = getScene()->getMousePos();
+		LUA_PUSH_VEC2(position);
+		return 1;
+	}
+
     int LuaBindings::funcIsKeyDown(lua_State* L)
     {
         auto key = LUA_GET_INT(1, 0);
@@ -469,6 +478,14 @@ namespace Engine
         lua_pushboolean(L, isDown ? 1 : 0);
         return 1;
     }
+
+	int LuaBindings::funcIsButtonJustDown(lua_State* L)
+	{
+		auto button = LUA_GET_INT(1, 0);
+		auto isDown = getInput()->isButtonJustDown((SDL_Scancode)button);
+		lua_pushboolean(L, isDown ? 1 : 0);
+		return 1;
+	}
 
     int LuaBindings::funcPlaySound(lua_State* L)
     {
