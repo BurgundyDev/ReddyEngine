@@ -1,6 +1,6 @@
 {
    "camera" : {
-      "position" : [ 0.31640321016311646, -0.26171880960464478 ],
+      "position" : [ 0.67056989669799805, -0.38671880960464478 ],
       "zoom" : 3
    },
    "root" : {
@@ -610,6 +610,48 @@
                "position" : [ -2.9466173648834229, -1.60546875 ],
                "rotation" : 24.0,
                "scale" : [ 1.5499999523162842, 1.5499999523162842 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont48.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Access LeftFlame",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : ""
+                  },
+                  "type" : "Script"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxBadReference",
+                  "properties" : {
+                     "targetName" : "LeftFlame"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "id" : 71,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 0.0, 2.5 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
             },
             "uiRoot" : false
          }

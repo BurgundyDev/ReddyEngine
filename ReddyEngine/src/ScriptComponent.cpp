@@ -186,7 +186,10 @@ namespace Engine
         if (GUI::stringProperty("Component Name", &name, "Changing this will reset all properties values. Lua scripts should call RegisterComponent(\"name\")."))
         {
             changed = true;
-            loadDef(getLuaBindings()->getComponentDef(name));
+            m_pLuaComponentDef = getLuaBindings()->getComponentDef(name);
+            m_luaProperties.clear();
+            if (m_pLuaComponentDef)
+                m_luaProperties = m_pLuaComponentDef->properties;
         }
 
         if (!m_luaProperties.empty())

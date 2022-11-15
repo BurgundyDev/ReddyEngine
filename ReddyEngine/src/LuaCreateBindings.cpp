@@ -90,6 +90,7 @@ namespace Engine
         LUA_REGISTER(StopMusic);
         LUA_REGISTER(PauseMusic);
         LUA_REGISTER(ResumeMusic);
+        LUA_REGISTER(Log);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -856,6 +857,13 @@ namespace Engine
         }
 
         pParent->addChild(pChild);
+        return 0;
+    }
+
+    int LuaBindings::funcLog(lua_State* L)
+    {
+        auto text = LUA_GET_STRING(1, "");
+        CORE_INFO(text);
         return 0;
     }
 }

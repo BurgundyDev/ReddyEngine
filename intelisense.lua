@@ -5,6 +5,11 @@
 --   - Entity object
 --   - Component object
 
+---------------------------------------------------------------------
+-- Log
+---------------------------------------------------------------------
+function Log(text) end
+
 
 ---------------------------------------------------------------------
 -- Defining a component
@@ -84,6 +89,8 @@ function GetParent(e) end
 function AddChild(parent, e) end
 
 -- Lifecycle
+function Enable(e) end
+function Disable(e) end
 -- function EnableComponent(obj) end
 -- function DisableComponent(obj) end
 function CreateEntity(parent) end

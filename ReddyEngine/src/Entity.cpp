@@ -53,9 +53,19 @@ namespace Engine
 			auto L = getLuaBindings()->getState();
 			if (L)
 			{
+				// Set pointer to null
 				lua_getglobal(L, "EINS_t");
-				lua_pushnil(L);
-				lua_setfield(L, -2, luaName.c_str());
+				lua_getfield(L, -1, luaName.c_str());
+				if (!lua_isnil(L, -1))
+				{
+					lua_pushnil(L);
+					lua_setfield(L, -2, "EOBJ");
+					lua_pop(L, 1);
+
+					// Remove self from the global table
+					lua_pushnil(L);
+					lua_setfield(L, -2, luaName.c_str());
+				}
 				lua_pop(L, lua_gettop(L));
 			}
 		}

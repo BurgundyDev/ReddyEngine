@@ -147,6 +147,8 @@ namespace Engine
         int funcPauseMusic(lua_State* L);
         int funcResumeMusic(lua_State* L);
 
+        int funcLog(lua_State* L);
+
     private:
         void createBindings();
 

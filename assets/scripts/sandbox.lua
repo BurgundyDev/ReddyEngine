@@ -126,3 +126,28 @@ RegisterComponent("sandboxStopMover", {
         end
     end
 })
+
+
+-- Keeps a reference on a deleted entity, then tries to access it
+RegisterComponent("sandboxBadReference", {
+    targetName = "",
+    target = nil, -- The entity reference
+
+    initComponent = function()
+        SetStringProperty("targetName", "Entity name to stop moving, in a radius of 3")
+    end,
+
+    create = function(self)
+        self.target = GetEntity(self.targetName)
+    end,
+
+    mouseClick = function(self)
+        local e = GetEntity(self.target) -- Should return nil
+        if e then
+            Log("Valid Reference")
+        else
+            Log("Invalid Reference")
+        end
+        Log("Target texture = " .. GetSpriteTexture(self.target)) -- Should return empty string if not valid
+    end
+})
