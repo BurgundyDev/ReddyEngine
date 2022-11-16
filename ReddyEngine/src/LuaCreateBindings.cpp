@@ -58,7 +58,7 @@ namespace Engine
         LUA_REGISTER(Distance);
         LUA_REGISTER(Normalize);
         LUA_REGISTER(Dot);
-        LUA_REGISTER(GetMouseWorldPosition);
+        LUA_REGISTER(GetMousePosition);
 		LUA_REGISTER(IsKeyDown);
         LUA_REGISTER(IsButtonDown);
 		LUA_REGISTER(IsButtonJustDown);
@@ -97,6 +97,7 @@ namespace Engine
         LUA_REGISTER(PauseMusic);
         LUA_REGISTER(ResumeMusic);
         LUA_REGISTER(Log);
+        LUA_REGISTER(GetScreenRect);
         LUA_REGISTER(SendEvent);
         LUA_REGISTER(RegisterEvent);
         LUA_REGISTER(DeregisterEvent);
@@ -436,7 +437,7 @@ namespace Engine
         return 1;
     }
 
-	int LuaBindings::funcGetMouseWorldPosition(lua_State* L)
+	int LuaBindings::funcGetMousePosition(lua_State* L)
 	{
 		auto position = getScene()->getMousePos();
 		LUA_PUSH_VEC2(position);
@@ -772,6 +773,8 @@ namespace Engine
     int LuaBindings::funcCreateEntity(lua_State* L)
     {
         auto pParent = LUA_GET_ENTITY(1);
+        auto prefab = LUA_GET_STRING(2, "");
+
         if (!pParent)
         {
             CORE_ERROR_POPUP("Lua: Expected first argument to be entity in CreateEntity(parent)");
@@ -780,6 +783,28 @@ namespace Engine
         }
 
         auto pEntity = getScene()->createEntity(pParent);
+
+        if (!prefab.empty())
+        {
+            static std::unordered_map<std::string, Json::Value> prefabCache;
+            auto it = prefabCache.find(prefab);
+            if (it == prefabCache.end())
+            {
+                Json::Value json;
+                if (Utils::loadJson(json, "assets/" + prefab))
+                {
+                    prefabCache[prefab] = json;
+                    it = prefabCache.find(prefab);
+                }
+            }
+
+            if (it != prefabCache.end())
+            {
+                const auto& json = it->second;
+                pEntity->deserialize(json["root"]);
+            }
+        }
+
         LUA_PUSH_ENTITY(pEntity);
         return 1;
     }
@@ -894,6 +919,16 @@ namespace Engine
         auto text = LUA_GET_STRING(1, "");
         CORE_INFO(text);
         return 0;
+    }
+
+    int LuaBindings::funcGetScreenRect(lua_State* L)
+    {
+        auto screenRect = getScene()->getScreenRect();
+        lua_pushnumber(L, (lua_Number)screenRect.x);
+        lua_pushnumber(L, (lua_Number)screenRect.y);
+        lua_pushnumber(L, (lua_Number)screenRect.z);
+        lua_pushnumber(L, (lua_Number)screenRect.w);
+        return 4;
     }
 
     int LuaBindings::funcRegisterEvent(lua_State* L)

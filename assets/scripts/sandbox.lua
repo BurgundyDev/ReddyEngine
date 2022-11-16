@@ -19,9 +19,9 @@ RegisterComponent("MovingParticle", {
 
     onMouseDown = function(self, button)
         if button == MOUSE_BUTTON_LEFT then
-            local isCursorFar = Distance(GetMouseWorldPosition(), GetWorldPosition(self)) > self.mouseActivationDistance
+            local isCursorFar = Distance(GetMousePosition(), GetWorldPosition(self)) > self.mouseActivationDistance
             if isCursorFar then
-                self.targetPosition = GetMouseWorldPosition()
+                self.targetPosition = GetMousePosition()
             end
         end
     end,
@@ -204,3 +204,13 @@ RegisterComponent("sandboxBadReference", {
     end
 })
 
+
+-- Spawn a particle prefab randomly on the screen when pressed
+RegisterComponent("sandboxCreatePrefab", {
+    mouseClick = function()
+        local x, y, w, h = GetScreenRect()
+        local pos = Vec2(math.random() * w + x, math.random() * h + y)
+        local e = CreateEntity(GetRoot(), "scenes/sandboxPrefab.json")
+        SetPosition(e, pos)
+    end
+})

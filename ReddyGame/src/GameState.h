@@ -27,6 +27,8 @@ public:
     virtual void enter(const GameStateRef& previousState);
     virtual void leave(const GameStateRef& newState);
 
+    glm::vec2 screenToWorld(const glm::vec2& screen);
+
     glm::vec2 camera = glm::vec2(0);
     float zoom = Engine::TILE_SIZE;
 

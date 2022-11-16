@@ -116,7 +116,7 @@ namespace Engine
         int funcNormalize(lua_State* L);
         int funcDot(lua_State* L);
         
-        int funcGetMouseWorldPosition(lua_State* L);
+        int funcGetMousePosition(lua_State* L);
         int funcIsKeyDown(lua_State* L);
         int funcIsButtonDown(lua_State* L);
         int funcIsButtonJustDown(lua_State* L);
@@ -161,6 +161,7 @@ namespace Engine
         int funcResumeMusic(lua_State* L);
 
         int funcLog(lua_State* L);
+        int funcGetScreenRect(lua_State* L);
 
         int funcRegisterEvent(lua_State* L);
         int funcDeregisterEvent(lua_State* L);

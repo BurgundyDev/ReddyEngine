@@ -1,7 +1,7 @@
 {
    "camera" : {
-      "position" : [ 1.3684866428375244, -0.71484392881393433 ],
-      "zoom" : 3
+      "position" : [ 2.9179656505584717, 0.076822593808174133 ],
+      "zoom" : 1
    },
    "root" : {
       "children" : [
@@ -684,7 +684,7 @@
             "name" : "ParticlePlayer",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 3.319007396697998, 0.12890619039535522 ],
+               "position" : [ 4.7669243812561035, -2.5690104961395264 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -708,6 +708,46 @@
             "sortChildren" : false,
             "transform" : {
                "position" : [ 4.0, -1.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont48.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Create Prefab",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : ""
+                  },
+                  "type" : "Script"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxCreatePrefab",
+                  "properties" : null,
+                  "type" : "Script"
+               }
+            ],
+            "id" : 79,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 3.5, 0.5 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },

@@ -29,6 +29,7 @@ function Length(v) end
 function Distance(a, b) end
 function Normalize(v) end
 function Dot(a, b) end
+function GetScreenRect() end -- Returns 4 values: x,y,w,h
 
 
 ---------------------------------------------------------------------
@@ -46,7 +47,7 @@ function SetCameraZoom(zoom) end
 function IsKeyDown(key) end
 function IsButtonDown(button) end
 function IsButtonJustDown(button) end
-function GetMouseWorldPosition() end
+function GetMousePosition() end
 
 
 ---------------------------------------------------------------------
