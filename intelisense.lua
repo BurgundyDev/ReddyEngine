@@ -6,9 +6,11 @@
 --   - Component object
 
 ---------------------------------------------------------------------
--- Log
+-- Utilities
 ---------------------------------------------------------------------
 function Log(text) end
+function GetScreenRect() end -- Returns 4 values: x,y,w,h
+function EmitParticles(pfx, position, angle, scale) end -- Returns the newly created entity containing the PFXComponent
 
 
 ---------------------------------------------------------------------
@@ -29,7 +31,6 @@ function Length(v) end
 function Distance(a, b) end
 function Normalize(v) end
 function Dot(a, b) end
-function GetScreenRect() end -- Returns 4 values: x,y,w,h
 
 
 ---------------------------------------------------------------------

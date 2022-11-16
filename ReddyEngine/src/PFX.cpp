@@ -273,6 +273,7 @@ namespace Engine
         }
 
         // Update emitters
+        bool isAlive = m_pParticleHead ? true : false;
         for (auto& emitter : m_emitters)
         {
             if (emitter.pEmitterRef->type == EmitterType::burst)
@@ -282,6 +283,11 @@ namespace Engine
                 {
                     continue;
                 }
+                isAlive = true;
+            }
+            else
+            {
+                isAlive = true;
             }
 
             emitter.spawnAccum += dt * emitter.spawnRate;
@@ -292,6 +298,7 @@ namespace Engine
                 emitter.spawnAccum -= (float)(int)emitter.spawnAccum;
             }
         }
+        m_isAlive = isAlive;
 
         // Update particles
         Particle* pPrevParticle = nullptr;

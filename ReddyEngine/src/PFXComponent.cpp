@@ -7,6 +7,7 @@
 #include "Engine/GUI.h"
 #include "Engine/Entity.h"
 #include "Engine/SpriteBatch.h"
+#include "Engine/Scene.h"
 
 #include <imgui.h>
 
@@ -24,6 +25,7 @@ namespace Engine
 
         json["pfx"] = pPFX ? pPFX->getFilename() : "";
         json["triggerOnStart"] = Utils::serializeJsonValue(triggerOnStart);
+        json["destroyWhenDone"] = Utils::serializeJsonValue(destroyWhenDone);
 
         return json;
     }
@@ -34,6 +36,7 @@ namespace Engine
 
         pPFX = getResourceManager()->getPFX(Utils::deserializeString(json["pfx"]));
         triggerOnStart = Utils::deserializeBool(json["triggerOnStart"], true);
+        destroyWhenDone = Utils::deserializeBool(json["destroyWhenDone"], false);
     }
     
 	void PFXComponent::onCreate()
@@ -49,6 +52,10 @@ namespace Engine
         if (pPFXInstance)
         {
             pPFXInstance->update(dt);
+
+            if (destroyWhenDone && !getScene()->isEditorScene())
+                if (!pPFXInstance->isAlive())
+                    getScene()->destroyEntity(m_pEntity->shared_from_this());
         }
     }
 
@@ -72,6 +79,7 @@ namespace Engine
 
         changed |= GUI::PFXProperty("PFX", &pPFX);
         changed |= GUI::boolProperty("Trigger on Start", &triggerOnStart);
+        changed |= GUI::boolProperty("Destroy when Done", &destroyWhenDone);
 
         return changed;
     }

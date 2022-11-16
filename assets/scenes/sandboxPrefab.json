@@ -1,43 +1,18 @@
 {
    "camera" : {
       "position" : [ 0.22135418653488159, 0.036458291113376617 ],
-      "zoom" : 0
+      "zoom" : 1
    },
    "root" : {
-      "children" : [
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "enabled" : true,
-                  "pfx" : "particles/defaultPFX.json",
-                  "triggerOnStart" : true,
-                  "type" : "PFX"
-               }
-            ],
-            "id" : 77,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 0.0, 0.0 ],
-               "rotation" : 0.0,
-               "scale" : [ 0.25, 0.25 ]
-            },
-            "uiRoot" : false
-         }
-      ],
+      "children" : [],
       "clickThrough" : true,
       "components" : [
          {
+            "destroyWhenDone" : true,
             "enabled" : true,
-            "name" : "DestroyTimeout",
-            "properties" : {
-               "timeout" : 5.0
-            },
-            "type" : "Script"
+            "pfx" : "particles/defaultPFX.json",
+            "triggerOnStart" : true,
+            "type" : "PFX"
          }
       ],
       "id" : 0,
@@ -48,7 +23,7 @@
       "transform" : {
          "position" : [ 0.0, 0.0 ],
          "rotation" : 0.0,
-         "scale" : [ 1.0, 1.0 ]
+         "scale" : [ 0.25, 0.25 ]
       },
       "uiRoot" : false
    },

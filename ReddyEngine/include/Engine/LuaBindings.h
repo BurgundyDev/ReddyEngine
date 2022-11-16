@@ -162,6 +162,7 @@ namespace Engine
 
         int funcLog(lua_State* L);
         int funcGetScreenRect(lua_State* L);
+        int funcEmitParticles(lua_State* L);
 
         int funcRegisterEvent(lua_State* L);
         int funcDeregisterEvent(lua_State* L);

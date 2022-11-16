@@ -36,5 +36,6 @@ namespace Engine
 		PFXRef pPFX;
 		PFXInstanceRef pPFXInstance;
 		bool triggerOnStart = true;
+		bool destroyWhenDone = false;
     };
 }

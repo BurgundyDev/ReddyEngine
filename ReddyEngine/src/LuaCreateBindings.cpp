@@ -98,6 +98,7 @@ namespace Engine
         LUA_REGISTER(ResumeMusic);
         LUA_REGISTER(Log);
         LUA_REGISTER(GetScreenRect);
+        LUA_REGISTER(EmitParticles);
         LUA_REGISTER(SendEvent);
         LUA_REGISTER(RegisterEvent);
         LUA_REGISTER(DeregisterEvent);
@@ -1048,5 +1049,28 @@ namespace Engine
         getEventSystem()->sendEvent(new LuaEvent(eventName, dataName));
 
         return 0;
+    }
+
+    int LuaBindings::funcEmitParticles(lua_State* L)
+    {
+        std::string pfxName = LUA_GET_STRING(1, "particles/defaultPFX.json");
+        glm::vec2 position = LUA_GET_VEC2(2, glm::vec2(0, 0));
+        float rotation = LUA_GET_NUMBER(3, 0.0f);
+        glm::vec2 scale = glm::vec2(LUA_GET_NUMBER(4, 1.0f));
+
+        auto pEntity = getScene()->createEntity();
+        getScene()->getRoot()->addChild(pEntity);
+
+        pEntity->setWorldPosition(position);
+        pEntity->setRotation(rotation);
+        pEntity->setScale(scale);
+
+        auto pPFX = pEntity->addComponent<PFXComponent>();
+        pPFX->pPFX = getResourceManager()->getPFX(pfxName);
+        pPFX->play();
+        pPFX->destroyWhenDone = true;
+
+        LUA_PUSH_ENTITY(pEntity);
+        return 1;
     }
 }
