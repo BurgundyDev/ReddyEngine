@@ -91,11 +91,12 @@ function GetParent(e) end
 function AddChild(parent, e) end
 
 -- Lifecycle
-function Enable(e) end
-function Disable(e) end
--- function EnableComponent(obj) end
--- function DisableComponent(obj) end
+-- function Enable(e) end
+-- function Disable(e) end
+-- function EnableComponent(e, componentName) end -- Lua name, or built-ins: Sprite, Text, etc.
+-- function DisableComponent(e, componentName) end
 function CreateEntity(parent) end
+function CreateEntity(parent, prefabName) end
 function Destroy(e) end -- Destroys the entity (Accepts: component, entity or entity name)
 function AddComponent(e, componentName) end -- Lua name, or built-ins: Sprite, Text, etc.
 function RemoveComponent(e, componentName) end
@@ -121,6 +122,11 @@ function GetTextOrigin(e) end
 function SetTextOrigin(e, origin) end
 function GetTextScale(e) end
 function SetTextScale(e, scale) end
+
+function GetPFX(e) end
+function SetPFX(e, filename) end
+function PlayPFX(e) end
+function StopPFX(e) end
 
 
 ---------------------------------------------------------------------

@@ -138,6 +138,10 @@ namespace Engine
         int funcSetTextOrigin(lua_State* L);
         int funcGetTextScale(lua_State* L);
         int funcSetTextScale(lua_State* L);
+        int funcGetPFX(lua_State* L);
+        int funcSetPFX(lua_State* L);
+        int funcPlayPFX(lua_State* L);
+        int funcStopPFX(lua_State* L);
         int funcGetName(lua_State* L);
         int funcSetName(lua_State* L);
 

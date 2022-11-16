@@ -468,6 +468,63 @@ namespace Engine
             return ret;
         }
 
+        // Lot of duplicate code... should clean up, template? We're going to add more (Sound, PFX, etc)
+        bool PFXProperty(const char* label, PFXRef* value, const char* tooltip)
+        {
+            bool ret = false;
+            ImGui::PushID(++g_propertyCount);
+
+            char buf[260];
+            if (*value)
+                memcpy(buf, (*value)->getFilename().c_str(), (*value)->getFilename().size() + 1);
+            else
+                buf[0] = '\0';
+
+            ImGui::InputText(label, buf, 260);
+            if (ImGui::IsItemDeactivatedAfterEdit())
+            {
+                *value = getResourceManager()->getPFX(buf);
+                ret = true;
+            }
+            ImGui::SameLine();
+
+            if (!ret && ImGui::Button("...", { 25, 16 })) {
+                std::string filePatternMask;
+
+                for (size_t i = 0; i < std::size(Font::SUPPORTED_FORMATS); i++) {
+                    filePatternMask += "*." + std::string(Font::SUPPORTED_FORMATS[i]);
+
+                    if (i != std::size(Font::SUPPORTED_FORMATS) - 1) {
+                        filePatternMask += ";";
+                    }
+                }
+
+                // because we need to take the address of it
+                const char* maskCString = filePatternMask.c_str();
+
+                const char* selectedFile = tinyfd_openFileDialog("Open", "./assets/particles/", 1, &maskCString, "Json", 0);
+                if (!selectedFile) {
+                    ret = false;
+                } else {
+                    std::string resultPath;
+
+                    if (getResourceManager()->copyFileToAssets(selectedFile, "particles", resultPath)) {
+                        *value = getResourceManager()->getPFX(resultPath);
+
+                        ret = true;
+                    } else {
+                        fprintf(stderr, "Failed to copy asset from %s to assets!\n", selectedFile);
+
+                        ret = false;
+                    }
+                }
+            }
+            showToolTip(tooltip);
+
+            ImGui::PopID();
+            return ret;
+        }
+
         bool boolProperty(const char* label, bool* value, const char* tooltip)
         {
             ImGui::PushID(++g_propertyCount);

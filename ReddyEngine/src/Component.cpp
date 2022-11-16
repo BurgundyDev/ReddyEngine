@@ -8,6 +8,7 @@
 #include "Engine/SpriteComponent.h"
 #include "Engine/TextComponent.h"
 #include "Engine/ScriptComponent.h"
+#include "Engine/PFXComponent.h"
 #include "Engine/ResourceManager.h"
 #include "Engine/Constants.h"
 
@@ -21,6 +22,7 @@ namespace Engine
 		if (className == "Sprite") return std::make_shared<SpriteComponent>();
 		if (className == "Text") return std::make_shared<TextComponent>();
 		if (className == "Script") return std::make_shared<ScriptComponent>();
+		if (className == "PFX") return std::make_shared<PFXComponent>();
 
 		//CORE_ERROR("Unrecognized Component Type: {}", className); // This will be called often legitemaly by script, it's spammy
 		return nullptr;

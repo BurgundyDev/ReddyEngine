@@ -16,6 +16,7 @@ extern "C" {
 #include "Engine/Sound.h"
 #include "Engine/ResourceManager.h"
 #include "Engine/SpriteComponent.h"
+#include "Engine/PFXComponent.h"
 #include "Engine/TextComponent.h"
 #include "Engine/MusicManager.h"
 
@@ -78,6 +79,10 @@ namespace Engine
         LUA_REGISTER(SetTextOrigin);
         LUA_REGISTER(GetTextScale);
         LUA_REGISTER(SetTextScale);
+        LUA_REGISTER(GetPFX);
+        LUA_REGISTER(SetPFX);
+        LUA_REGISTER(PlayPFX);
+        LUA_REGISTER(StopPFX);
         LUA_REGISTER(GetName);
         LUA_REGISTER(SetName);
         LUA_REGISTER(FindEntityByName);
@@ -611,6 +616,38 @@ namespace Engine
     {
         auto pText = LUA_GET_COMPONENT(1, TextComponent);
         if (pText) pText->scale = LUA_GET_NUMBER(2, 1.0f);
+        return 0;
+    }
+    
+    int LuaBindings::funcGetPFX(lua_State* L)
+    {
+        auto pPFXComponent = LUA_GET_COMPONENT(1, PFXComponent);
+        std::string ret = "";
+        if (pPFXComponent)
+            if (pPFXComponent->pPFX)
+                ret = pPFXComponent->pPFX->getFilename();
+        lua_pushstring(L, ret.c_str());
+        return 1;
+    }
+
+    int LuaBindings::funcSetPFX(lua_State* L)
+    {
+        auto pPFXComponent = LUA_GET_COMPONENT(1, PFXComponent);
+        if (pPFXComponent) pPFXComponent->pPFX = getResourceManager()->getPFX(LUA_GET_STRING(2, ""));
+        return 0;
+    }
+
+    int LuaBindings::funcPlayPFX(lua_State* L)
+    {
+        auto pPFXComponent = LUA_GET_COMPONENT(1, PFXComponent);
+        if (pPFXComponent) pPFXComponent->play();
+        return 0;
+    }
+
+    int LuaBindings::funcStopPFX(lua_State* L)
+    {
+        auto pPFXComponent = LUA_GET_COMPONENT(1, PFXComponent);
+        if (pPFXComponent) pPFXComponent->stop();
         return 0;
     }
 

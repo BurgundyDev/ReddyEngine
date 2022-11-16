@@ -15,6 +15,9 @@ namespace Engine
     class Font;
     using FontRef = std::shared_ptr<Font>;
 
+    class PFX;
+    using PFXRef = std::shared_ptr<PFX>;
+
 
     namespace GUI
     {
@@ -56,5 +59,6 @@ namespace Engine
         // Resources
         bool textureProperty(const char* label, TextureRef* value, const char* tooltip = nullptr);
         bool fontProperty(const char* label, FontRef* value, const char* tooltip = nullptr);
+        bool PFXProperty(const char* label, PFXRef* value, const char* tooltip = nullptr);
     }
 }

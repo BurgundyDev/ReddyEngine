@@ -4,7 +4,6 @@
 #include <Engine/Entity.h>
 #include <Engine/Scene.h>
 #include <Engine/ReddyEngine.h>
-#include <Engine/SpriteComponent.h>
 #include <Engine/GUI.h>
 #include <Engine/Input.h>
 #include <Engine/ResourceManager.h>
@@ -12,6 +11,7 @@
 #include <Engine/SpriteComponent.h>
 #include <Engine/TextComponent.h>
 #include <Engine/ScriptComponent.h>
+#include <Engine/PFXComponent.h>
 
 #include <filesystem>
 
@@ -22,12 +22,14 @@
 static Engine::EntityRef g_pDragTarget = nullptr;
 
 
+// This is very expensive and done for every entity inthe scene tree window
 const char* EditorState::getEntityFriendlyName(const Engine::EntityRef& pEntity)
 {
     if (!pEntity->name.empty()) return pEntity->name.c_str();
     if (pEntity->hasComponent<Engine::SpriteComponent>()) return "Sprite";
     if (pEntity->hasComponent<Engine::TextComponent>()) return pEntity->getComponent<Engine::TextComponent>()->text.c_str();
     if (pEntity->hasComponent<Engine::ScriptComponent>()) return pEntity->getComponent<Engine::ScriptComponent>()->name.c_str();
+    if (pEntity->hasComponent<Engine::PFXComponent>()) return "PFX";
     return "Entity";
 }
 
@@ -372,6 +374,7 @@ void EditorState::drawSceneUI() // This is also kind of update
         if (ImGui::Selectable("Sprite")) onAddComponent<Engine::SpriteComponent>();
         if (ImGui::Selectable("Text")) onAddComponent<Engine::TextComponent>();
         if (ImGui::Selectable("Script")) onAddComponent<Engine::ScriptComponent>();
+        if (ImGui::Selectable("PFX")) onAddComponent<Engine::PFXComponent>();
         ImGui::EndPopup();
     }
 }

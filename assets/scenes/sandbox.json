@@ -1,6 +1,6 @@
 {
    "camera" : {
-      "position" : [ 2.311194896697998, -0.23046880960464478 ],
+      "position" : [ 1.3684866428375244, -0.71484392881393433 ],
       "zoom" : 3
    },
    "root" : {
@@ -685,6 +685,29 @@
             "sortChildren" : false,
             "transform" : {
                "position" : [ 3.319007396697998, 0.12890619039535522 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "enabled" : true,
+                  "pfx" : "particles\\fire.json",
+                  "triggerOnStart" : true,
+                  "type" : "PFX"
+               }
+            ],
+            "id" : 75,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 4.0, -1.0 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },

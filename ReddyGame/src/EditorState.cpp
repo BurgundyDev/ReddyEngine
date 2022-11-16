@@ -18,6 +18,7 @@
 #include <Engine/SpriteComponent.h>
 #include <Engine/TextComponent.h>
 #include <Engine/ScriptComponent.h>
+#include <Engine/PFXComponent.h>
 #include <Engine/MusicManager.h>
 #include <Engine/LuaBindings.h>
 
@@ -300,6 +301,8 @@ void EditorState::update(float dt)
     switch (m_editDocumentType)
     {
         case EditDocumentType::Scene:
+            if (m_selected.size() == 1 && m_selected.front()->hasComponent<Engine::PFXComponent>())
+                m_selected.front()->getComponent<Engine::PFXComponent>()->update(dt);
             drawSceneUI();
             break;
         case EditDocumentType::PFX:
@@ -771,7 +774,9 @@ void EditorState::onCreateSoundEntity()
 
 void EditorState::onCreateParticleEntity()
 {
-    CORE_ERROR_POPUP("Unsupported PFX Entity yet!");
+    auto pEntity = Engine::getScene()->createEntity();
+    pEntity->addComponent<Engine::PFXComponent>();
+    createEntityAction(pEntity);
 }
 
 void EditorState::onCreateScriptEntity()
