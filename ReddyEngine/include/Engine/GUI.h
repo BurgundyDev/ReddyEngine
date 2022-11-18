@@ -44,6 +44,7 @@ namespace Engine
 
         // Properties. Return true if it has changed (Needs undo)
         bool stringProperty(const char* label, std::string* value, const char* tooltip = nullptr);
+        bool multilineStringProperty(const char* label, std::string* value, const char* tooltip = nullptr);
         bool enumProperty(const char* label, int* choice, const char* items_separated_by_zeros, const char* tooltip = nullptr);
         template<typename T> bool enumProperty(const char* label, T* choice, const char* items_separated_by_zeros, const char* tooltip = nullptr) { return enumProperty(label, (int*)choice, items_separated_by_zeros, tooltip); }
         bool floatProperty(const char* label, float* value, float min = -1000000.0f, float max = 1000000.0f, const char* tooltip = nullptr);

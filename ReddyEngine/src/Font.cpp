@@ -247,6 +247,7 @@ namespace Engine
         auto cosTheta = std::cos(radTheta);
         glm::vec2 right{cosTheta, sinTheta};
         glm::vec2 down{-sinTheta, cosTheta};
+        auto downN = glm::normalize(down);
 
         // Top left
         glm::vec2 topLeft = position - (right * size.x * align.x * scale) - (down * size.y * align.y * scale);
@@ -263,7 +264,7 @@ namespace Engine
             if (c == '\n')
             {
                 ++line;
-                pos = topLeft + down * (float)line;
+                pos = topLeft + downN * (float)line * (float)m_height * scale;
                 continue;
             }
 

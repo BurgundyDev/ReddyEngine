@@ -284,9 +284,28 @@ namespace Engine
             bool ret = false;
             ImGui::PushID(++g_propertyCount);
 
-            char buf[260];
+            static char buf[16536];
             memcpy(buf, value->c_str(), value->size() + 1);
             ImGui::InputText(label, buf, 260);
+            if (ImGui::IsItemDeactivatedAfterEdit())
+            {
+                *value = buf;
+                ret = true;
+            }
+            showToolTip(tooltip);
+
+            ImGui::PopID();
+            return ret;
+        }
+
+        bool multilineStringProperty(const char* label, std::string* value, const char* tooltip)
+        {
+            bool ret = false;
+            ImGui::PushID(++g_propertyCount);
+
+            static char buf[16536];
+            memcpy(buf, value->c_str(), value->size() + 1);
+            ImGui::InputTextMultiline(label, buf, 16536);
             if (ImGui::IsItemDeactivatedAfterEdit())
             {
                 *value = buf;

@@ -51,7 +51,7 @@ namespace Engine
     {
         bool changed = false;
 
-        changed |= GUI::stringProperty("Text", &text);
+        changed |= GUI::multilineStringProperty("Text", &text);
         changed |= GUI::fontProperty("Font", &pFont);
         changed |= GUI::colorProperty("Color", &color);
         changed |= GUI::originProperty("Origin", &origin);
