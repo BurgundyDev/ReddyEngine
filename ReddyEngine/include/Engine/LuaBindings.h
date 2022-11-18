@@ -168,6 +168,11 @@ namespace Engine
         int funcDeregisterEvent(lua_State* L);
         int funcSendEvent(lua_State* L);
 
+        int funcEnableEntity(lua_State* L);
+        int funcDisableEntity(lua_State* L);
+        int funcEnableComponent(lua_State* L);
+        int funcDisableComponent(lua_State* L);
+
     private:
         struct ScriptEventListeners
         {

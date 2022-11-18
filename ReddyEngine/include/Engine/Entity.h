@@ -73,6 +73,9 @@ namespace Engine
 		const std::vector<EntityRef>& getChildren() const { return m_children; }
 		int getChildIndex(const EntityRef& pChild) const; // -1 if not child
 
+		void enable();
+		void disable();
+
 		const std::vector<ComponentRef>& getComponents() const { return m_components; }
 		
 		template<typename T>
@@ -224,6 +227,7 @@ namespace Engine
 
 		uint64_t runtimeId = 0; // This has nothing to do with entity Id. Its for Lua
 		std::string luaName;
+		bool enabled = true;
 
 	public:
 		// Editor stuff (We could #ifdef this in final version?)

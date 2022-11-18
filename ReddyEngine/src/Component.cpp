@@ -56,7 +56,8 @@ namespace Engine
 		if (!m_isEnabled)
 		{
 			m_isEnabled = true;
-			onEnable();
+			if (m_pEntity->enabled)
+				onEnable();
 		}
 	}
 
@@ -65,7 +66,8 @@ namespace Engine
 		if (m_isEnabled)
 		{
 			m_isEnabled = false;
-			onDisable();
+			if (m_pEntity->enabled)
+				onDisable();
 		}
 	}
 

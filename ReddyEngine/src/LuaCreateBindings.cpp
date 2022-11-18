@@ -102,6 +102,10 @@ namespace Engine
         LUA_REGISTER(SendEvent);
         LUA_REGISTER(RegisterEvent);
         LUA_REGISTER(DeregisterEvent);
+        LUA_REGISTER(EnableEntity);
+        LUA_REGISTER(DisableEntity);
+        LUA_REGISTER(EnableComponent);
+        LUA_REGISTER(DisableComponent);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -1072,5 +1076,101 @@ namespace Engine
 
         LUA_PUSH_ENTITY(pEntity);
         return 1;
+    }
+
+    int LuaBindings::funcEnableEntity(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (!pEntity) return 0;
+        pEntity->enable();
+        return 0;
+    }
+
+    int LuaBindings::funcDisableEntity(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (!pEntity) return 0;
+        pEntity->disable();
+        return 0;
+    }
+
+    int LuaBindings::funcEnableComponent(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (!pEntity) return 0;
+
+        ComponentRef pComponent;
+        auto componentName = LUA_GET_STRING(2, "");
+
+        if (componentName == "Sprite")
+            pComponent = LUA_GET_COMPONENT(1, SpriteComponent);
+        else if (componentName == "Text")
+            pComponent = LUA_GET_COMPONENT(1, TextComponent);
+        else if (componentName == "PFX")
+            pComponent = LUA_GET_COMPONENT(1, PFXComponent);
+        else
+        {
+            if (!componentName.empty())
+            {
+                auto pComponents = pEntity->getComponents();
+                for (const auto& pComponent : pComponents)
+                {
+                    auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+                    if (pScriptComponent)
+                    {
+                        if (pScriptComponent->name == componentName)
+                        {
+                            pComponent->enable();
+                            return 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (pComponent)
+            pComponent->enable();
+
+        return 0;
+    }
+
+    int LuaBindings::funcDisableComponent(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (!pEntity) return 0;
+
+        ComponentRef pComponent;
+        auto componentName = LUA_GET_STRING(2, "");
+
+        if (componentName == "Sprite")
+            pComponent = LUA_GET_COMPONENT(1, SpriteComponent);
+        else if (componentName == "Text")
+            pComponent = LUA_GET_COMPONENT(1, TextComponent);
+        else if (componentName == "PFX")
+            pComponent = LUA_GET_COMPONENT(1, PFXComponent);
+        else
+        {
+            if (!componentName.empty())
+            {
+                auto pComponents = pEntity->getComponents();
+                for (const auto& pComponent : pComponents)
+                {
+                    auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+                    if (pScriptComponent)
+                    {
+                        if (pScriptComponent->name == componentName)
+                        {
+                            pComponent->disable();
+                            return 0;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (pComponent)
+            pComponent->disable();
+
+        return 0;
     }
 }

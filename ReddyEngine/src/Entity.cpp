@@ -71,6 +71,28 @@ namespace Engine
 		}
 	}
 
+	void Entity::enable()
+	{
+		if (enabled) return;
+		enabled = true;
+		for (const auto& pComponent : m_components)
+		{
+			if (!pComponent->isEnabled())
+				pComponent->onEnable();
+		}
+	}
+
+	void Entity::disable()
+	{
+		if (!enabled) return;
+		enabled = false;
+		for (const auto& pComponent : m_components)
+		{
+			if (pComponent->isEnabled())
+				pComponent->onDisable();
+		}
+	}
+
 	bool Entity::addChild(EntityRef pChild, int insertAt)
 	{
 		auto worldPos = pChild->getWorldPosition();
@@ -595,7 +617,11 @@ namespace Engine
 	void Entity::draw()
 	{
 		for (auto rit = m_components.rbegin(); rit != m_components.rend(); ++rit)
-			(*rit)->draw();
+		{
+			const auto& pComponent = *rit;
+			if (pComponent->isEnabled())
+				pComponent->draw();
+		}
 
 		if (sortChildren)
 		{
@@ -607,12 +633,18 @@ namespace Engine
 			});
 
 			for (const auto& pChild : sorted)
-				pChild->draw();
+			{
+				if (pChild->enabled)
+					pChild->draw();
+			}
 		}
 		else
 		{
 			for (const auto& pChild : m_children)
-				pChild->draw();
+			{
+				if (pChild->enabled)
+					pChild->draw();
+			}
 		}
 	}
 }

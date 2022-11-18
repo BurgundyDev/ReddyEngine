@@ -93,10 +93,10 @@ function GetParent(e) end
 function AddChild(parent, e) end
 
 -- Lifecycle
--- function Enable(e) end
--- function Disable(e) end
--- function EnableComponent(e, componentName) end -- Lua name, or built-ins: Sprite, Text, etc.
--- function DisableComponent(e, componentName) end
+function EnableEntity(e) end
+function DisableEntity(e) end
+function EnableComponent(e, componentName) end -- Lua name, or built-ins: Sprite, Text, etc.
+function DisableComponent(e, componentName) end
 function CreateEntity(parent) end
 function CreateEntity(parent, prefabName) end
 function Destroy(e) end -- Destroys the entity (Accepts: component, entity or entity name)

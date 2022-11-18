@@ -2,6 +2,7 @@
 #include "Engine/Component.h"
 #include "Engine/Scene.h"
 #include "Engine/ReddyEngine.h"
+#include "Engine/Entity.h"
 
 
 namespace Engine
@@ -36,12 +37,12 @@ namespace Engine
                     case CommandType::Create:
                         m_components.push_back(command.pComponent);
                         command.pComponent->onCreate();
-                        if (command.pComponent->isEnabled())
+                        if (command.pComponent->isEnabled() && command.pComponent->getEntity()->enabled)
                             command.pComponent->onEnable();
                         break;
 
                     case CommandType::Destroy:
-                        if (command.pComponent->isEnabled())
+                        if (command.pComponent->isEnabled() && command.pComponent->getEntity()->enabled)
                             command.pComponent->onDisable();
                         command.pComponent->onDestroy();
                         for (auto it = m_components.begin(); it != m_components.end(); ++it)
@@ -70,7 +71,10 @@ namespace Engine
         processCommands();
 
         for (const auto& pComponent : m_components)
-            pComponent->update(dt);
+        {
+            if (pComponent->isEnabled())
+                pComponent->update(dt);
+        }
 
         processCommands();
     }
