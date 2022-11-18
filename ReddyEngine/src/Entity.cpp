@@ -508,6 +508,13 @@ namespace Engine
 			pComponent->drawOutline(color, zoomScale);
 	}
 
+	void Entity::expand()
+	{
+		expanded = true;
+		if (m_pParent)
+			m_pParent->expand();
+	}
+
 	bool Entity::edit()
 	{
 		bool changed = false;

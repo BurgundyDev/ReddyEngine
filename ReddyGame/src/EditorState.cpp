@@ -473,7 +473,10 @@ void EditorState::changeSelection(const std::vector<Engine::EntityRef>& in_newSe
     m_selected = in_newSelection;
 
     for (const auto& pEntity : m_selected)
+    {
         pEntity->isSelected = true;
+        pEntity->expand();
+    }
 
     serializeSelectionState();
 }

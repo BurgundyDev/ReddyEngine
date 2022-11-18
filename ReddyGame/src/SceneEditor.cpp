@@ -42,6 +42,7 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
     if (pEntity->isSelected) flags |= ImGuiTreeNodeFlags_Selected;
     if (pEntity->expanded) flags |= ImGuiTreeNodeFlags_DefaultOpen;
 
+    ImGui::SetNextItemOpen(pEntity->expanded);
     pEntity->expanded = ImGui::TreeNodeEx((const void*)(uintptr_t)pEntity->id, flags, getEntityFriendlyName(pEntity));
 
     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
