@@ -94,6 +94,10 @@ namespace Engine
         sb->drawLine(points[1], points[2], 2.0f * zoomScale, color);
         sb->drawLine(points[2], points[3], 2.0f * zoomScale, color);
         sb->drawLine(points[3], points[0], 2.0f * zoomScale, color);
+
+        auto pos = m_pEntity->getWorldPosition();
+		sb->drawLine(glm::vec2(pos.x, pos.y - 0.05f), glm::vec2(pos.x, pos.y + 0.05f), 2.0f * zoomScale, color);
+		sb->drawLine(glm::vec2(pos.x - 0.05f, pos.y), glm::vec2(pos.x + 0.05f, pos.y), 2.0f * zoomScale, color);
     }
 
     TextureRef SpriteComponent::getEditorIcon() const
