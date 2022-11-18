@@ -40,8 +40,9 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
     if (children.empty()) flags |= ImGuiTreeNodeFlags_Leaf;
     if (pEntity->isSelected) flags |= ImGuiTreeNodeFlags_Selected;
+    if (pEntity->expanded) flags |= ImGuiTreeNodeFlags_DefaultOpen;
 
-    auto nodeOpen = ImGui::TreeNodeEx((const void*)(uintptr_t)pEntity->id, flags, getEntityFriendlyName(pEntity));
+    pEntity->expanded = ImGui::TreeNodeEx((const void*)(uintptr_t)pEntity->id, flags, getEntityFriendlyName(pEntity));
 
     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
     {
@@ -84,7 +85,7 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
         ImGui::EndDragDropSource();
     }
 
-    if (nodeOpen)
+    if (pEntity->expanded)
     {
         for (const auto& pChild : children)
             drawEntitySceneTree(pChild);

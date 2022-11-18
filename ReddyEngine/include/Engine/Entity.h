@@ -233,6 +233,7 @@ namespace Engine
 		// Editor stuff (We could #ifdef this in final version?)
 		bool edit();
 		bool isSelected = false;
+		bool expanded = true; // Scene Tree view, editor
 		void drawOutline(const glm::vec4& color, float zoomScale);
 
 	private:

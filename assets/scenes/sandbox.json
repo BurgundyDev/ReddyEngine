@@ -1,7 +1,7 @@
 {
    "camera" : {
-      "position" : [ 2.9179656505584717, 0.076822593808174133 ],
-      "zoom" : 1
+      "position" : [ 2.5429656505584717, 0.49869757890701294 ],
+      "zoom" : 2
    },
    "root" : {
       "children" : [
@@ -27,6 +27,7 @@
                   "type" : "Script"
                }
             ],
+            "expanded" : true,
             "id" : 14,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -61,6 +62,7 @@
                   "type" : "Script"
                }
             ],
+            "expanded" : true,
             "id" : 16,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -95,6 +97,7 @@
                   "type" : "Script"
                }
             ],
+            "expanded" : true,
             "id" : 19,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -128,6 +131,7 @@
                   "type" : "Script"
                }
             ],
+            "expanded" : true,
             "id" : 22,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -170,6 +174,7 @@
                   "type" : "Script"
                }
             ],
+            "expanded" : true,
             "id" : 24,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -197,6 +202,7 @@
                         "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                      }
                   ],
+                  "expanded" : true,
                   "id" : 62,
                   "lockScale" : true,
                   "mouseChildren" : true,
@@ -230,6 +236,7 @@
                   "type" : "Script"
                }
             ],
+            "expanded" : false,
             "id" : 25,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -273,6 +280,7 @@
                   "type" : "Script"
                }
             ],
+            "expanded" : true,
             "id" : 27,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -298,6 +306,7 @@
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                }
             ],
+            "expanded" : true,
             "id" : 29,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -323,6 +332,7 @@
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                }
             ],
+            "expanded" : true,
             "id" : 30,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -365,6 +375,7 @@
                   "type" : "Script"
                }
             ],
+            "expanded" : true,
             "id" : 32,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -390,6 +401,7 @@
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                }
             ],
+            "expanded" : true,
             "id" : 35,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -432,6 +444,7 @@
                   "type" : "Script"
                }
             ],
+            "expanded" : true,
             "id" : 37,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -457,6 +470,7 @@
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                }
             ],
+            "expanded" : true,
             "id" : 40,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -482,6 +496,7 @@
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                }
             ],
+            "expanded" : true,
             "id" : 42,
             "lockScale" : false,
             "mouseChildren" : true,
@@ -509,6 +524,7 @@
                         "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                      }
                   ],
+                  "expanded" : true,
                   "id" : 64,
                   "lockScale" : true,
                   "mouseChildren" : true,
@@ -542,6 +558,7 @@
                   "type" : "Script"
                }
             ],
+            "expanded" : true,
             "id" : 58,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -576,6 +593,7 @@
                   "type" : "Script"
                }
             ],
+            "expanded" : true,
             "id" : 66,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -601,6 +619,7 @@
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                }
             ],
+            "expanded" : true,
             "id" : 69,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -643,6 +662,7 @@
                   "type" : "Script"
                }
             ],
+            "expanded" : true,
             "id" : 71,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -678,6 +698,7 @@
                   "type" : "Script"
                }
             ],
+            "expanded" : true,
             "id" : 73,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -695,12 +716,14 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "destroyWhenDone" : false,
                   "enabled" : true,
                   "pfx" : "particles\\fire.json",
                   "triggerOnStart" : true,
                   "type" : "PFX"
                }
             ],
+            "expanded" : true,
             "id" : 75,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -741,6 +764,7 @@
                   "type" : "Script"
                }
             ],
+            "expanded" : true,
             "id" : 79,
             "lockScale" : true,
             "mouseChildren" : true,
@@ -756,6 +780,7 @@
       ],
       "clickThrough" : true,
       "components" : [],
+      "expanded" : true,
       "id" : 0,
       "lockScale" : true,
       "mouseChildren" : true,

@@ -218,6 +218,7 @@ namespace Engine
 		json["clickThrough"] = clickThrough;
 		json["uiRoot"] = uiRoot;
 		json["lockScale"] = lockScale;
+		json["expanded"] = expanded;
 		json["transform"]["position"] = Utils::serializeJsonValue(m_transform.position);
 		json["transform"]["rotation"] = Utils::serializeJsonValue(m_transform.rotation);
 		json["transform"]["scale"] = Utils::serializeJsonValue(m_transform.scale);
@@ -259,6 +260,7 @@ namespace Engine
 		clickThrough = Utils::deserializeBool(json["clickThrough"], false);
 		uiRoot = Utils::deserializeBool(json["uiRoot"], false);
 		lockScale = Utils::deserializeBool(json["lockScale"], true);
+		expanded = Utils::deserializeBool(json["expanded"], true);
 
 		// Transform
 		m_transform.position = Utils::deserializeJsonValue<glm::vec2>(json["transform"]["position"]);
