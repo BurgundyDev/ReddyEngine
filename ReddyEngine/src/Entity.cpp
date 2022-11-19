@@ -640,6 +640,23 @@ namespace Engine
 		return changed;
 	}
 
+	void Entity::collectUpdatables(std::vector<ComponentRef>& updatables)
+	{
+		if (!enabled) return;
+
+		for (const auto& pComponent : m_components)
+		{
+			if (pComponent->isEnabled())
+				updatables.push_back(pComponent);
+		}
+
+		for (const auto& pChild : m_children)
+		{
+			if (pChild->enabled)
+				pChild->collectUpdatables(updatables);
+		}
+	}
+
 	void Entity::draw()
 	{
 		if (!editorVisible && getScene()->isEditorScene()) return;

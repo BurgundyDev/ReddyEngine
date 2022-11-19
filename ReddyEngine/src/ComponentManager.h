@@ -38,6 +38,6 @@ namespace Engine
 
         std::vector<Command> m_commands;
         std::vector<Command> m_commandsCopy;
-        std::vector<ComponentRef> m_components; // All components in the game
+        std::vector<ComponentRef> m_components; // Collected cache
     };
 }

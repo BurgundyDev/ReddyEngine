@@ -196,6 +196,7 @@ namespace Engine
 		//	return lhs.id == rhs.id;
 		//}
 
+		void collectUpdatables(std::vector<ComponentRef>& updatables);
 		void draw();
 
 		const Transform& getTransform() const { return m_transform; }
