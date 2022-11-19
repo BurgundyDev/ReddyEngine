@@ -293,6 +293,11 @@ void EditorState::updateTransform()
         case TransformType::Translate:
         {
             auto diff = m_mouseWorldPos - m_mouseOnDown;
+            if (Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT))
+            {
+                if (std::fabsf(diff.x) > std::fabsf(diff.y)) diff.y = 0;
+                else diff.x = 0;
+            }
             for (int i = 0, len = (int)m_selected.size(); i < len; ++i)
             {
                 const auto& pEntity = m_selected[i];
