@@ -34,5 +34,6 @@ namespace Engine
 		glm::vec4 color = {1, 1, 1, 1};
 		glm::vec2 origin = {0.5f, 0.5f};
 		glm::vec4 uvs = {0, 0, 1, 1};
+		float additive = 0.0f;
     };
 }

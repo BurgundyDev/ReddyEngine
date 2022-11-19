@@ -1,6 +1,6 @@
 {
    "camera" : {
-      "position" : [ -1.1757843494415283, 0.14713507890701294 ],
+      "position" : [ -1.8100079298019409, 0.017371686175465584 ],
       "zoom" : 2
    },
    "root" : {
@@ -10,6 +10,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "origin" : [ 0.5, 0.5 ],
@@ -27,6 +28,8 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 14,
             "lockScale" : true,
@@ -45,6 +48,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "origin" : [ 0.5, 0.5 ],
@@ -62,6 +66,8 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 16,
             "lockScale" : true,
@@ -80,6 +86,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 0.41176462173461914, 1.0, 0.0, 1.0 ],
                   "enabled" : true,
                   "origin" : [ 0.5, 0.5 ],
@@ -97,6 +104,8 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 19,
             "lockScale" : true,
@@ -115,6 +124,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "origin" : [ 0.5, 0.5 ],
@@ -131,6 +141,8 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 22,
             "lockScale" : true,
@@ -149,6 +161,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont48.json",
@@ -174,6 +187,8 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 24,
             "lockScale" : true,
@@ -194,6 +209,7 @@
                   "clickThrough" : false,
                   "components" : [
                      {
+                        "additive" : 0.0,
                         "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                         "enabled" : true,
                         "origin" : [ 0.5, 0.5 ],
@@ -202,6 +218,8 @@
                         "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                      }
                   ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
                   "expanded" : true,
                   "id" : 62,
                   "lockScale" : true,
@@ -219,6 +237,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont48.json",
@@ -236,6 +255,8 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : false,
             "id" : 25,
             "lockScale" : true,
@@ -254,6 +275,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont48.json",
@@ -280,6 +302,8 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 27,
             "lockScale" : true,
@@ -298,6 +322,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 0.0, 0.0, 1.0 ],
                   "enabled" : true,
                   "origin" : [ 0.5, 0.5 ],
@@ -306,6 +331,8 @@
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 29,
             "lockScale" : true,
@@ -324,6 +351,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 0.0, 0.0, 1.0 ],
                   "enabled" : true,
                   "origin" : [ 0.5, 0.5 ],
@@ -332,6 +360,8 @@
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 30,
             "lockScale" : true,
@@ -350,6 +380,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont48.json",
@@ -375,6 +406,8 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 32,
             "lockScale" : true,
@@ -393,6 +426,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 0.0, 0.0, 1.0 ],
                   "enabled" : true,
                   "origin" : [ 0.5, 0.5 ],
@@ -401,6 +435,8 @@
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 35,
             "lockScale" : true,
@@ -419,6 +455,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont48.json",
@@ -444,6 +481,8 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 37,
             "lockScale" : true,
@@ -462,6 +501,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 0.0, 0.0, 1.0 ],
                   "enabled" : true,
                   "origin" : [ 0.5, 0.5 ],
@@ -470,6 +510,8 @@
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 40,
             "lockScale" : true,
@@ -488,6 +530,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 0.0, 0.0, 1.0 ],
                   "enabled" : true,
                   "origin" : [ 0.5, 0.5 ],
@@ -496,6 +539,8 @@
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 42,
             "lockScale" : false,
@@ -516,6 +561,7 @@
                   "clickThrough" : false,
                   "components" : [
                      {
+                        "additive" : 0.0,
                         "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                         "enabled" : true,
                         "origin" : [ 0.5, 0.5 ],
@@ -524,6 +570,8 @@
                         "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                      }
                   ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
                   "expanded" : true,
                   "id" : 64,
                   "lockScale" : true,
@@ -541,6 +589,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont48.json",
@@ -558,6 +607,8 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 58,
             "lockScale" : true,
@@ -576,6 +627,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont48.json",
@@ -593,6 +645,8 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 66,
             "lockScale" : true,
@@ -611,6 +665,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 0.0, 0.0, 1.0 ],
                   "enabled" : true,
                   "origin" : [ 0.5, 0.5 ],
@@ -619,6 +674,8 @@
                   "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 69,
             "lockScale" : true,
@@ -637,6 +694,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont48.json",
@@ -662,6 +720,8 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 71,
             "lockScale" : true,
@@ -680,6 +740,7 @@
             "clickThrough" : true,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 0.89810186624526978, 0.61851209402084351, 0.97058820724487305, 1.0 ],
                   "enabled" : true,
                   "origin" : [ 0.5, 0.5 ],
@@ -698,6 +759,8 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 73,
             "lockScale" : true,
@@ -723,6 +786,8 @@
                   "type" : "PFX"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 75,
             "lockScale" : true,
@@ -741,6 +806,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont48.json",
@@ -764,6 +830,8 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 79,
             "lockScale" : true,
@@ -782,6 +850,7 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont24.json",
@@ -791,6 +860,8 @@
                   "type" : "Text"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
             "expanded" : true,
             "id" : 81,
             "lockScale" : true,
@@ -803,10 +874,101 @@
                "scale" : [ 1.0, 1.0 ]
             },
             "uiRoot" : false
+         },
+         {
+            "children" : [
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 1.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures/defaultTexture.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "expanded" : true,
+                  "id" : 86,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "Blend",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.147216796875, 0.15319395065307617 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 0.80000001192092896, 0.80000001192092896 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 1.0,
+                        "color" : [ 1.0, 0.68235296010971069, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont24.json",
+                        "origin" : [ 0.5, 0.5 ],
+                        "scale" : 1.0,
+                        "text" : "Hello World",
+                        "type" : "Text"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "expanded" : true,
+                  "id" : 88,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.13775157928466797, 0.35250967741012573 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               }
+            ],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "additive" : 0.0,
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "origin" : [ 0.5, 0.5 ],
+                  "texture" : "textures/defaultTexture.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+               }
+            ],
+            "editorLocked" : false,
+            "editorVisible" : true,
+            "expanded" : true,
+            "id" : 83,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "BlendBG",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ -4.3085966110229492, 0.59635370969772339 ],
+               "rotation" : 0.0,
+               "scale" : [ 0.80000001192092896, 0.80000001192092896 ]
+            },
+            "uiRoot" : false
          }
       ],
       "clickThrough" : true,
       "components" : [],
+      "editorLocked" : false,
+      "editorVisible" : true,
       "expanded" : true,
       "id" : 0,
       "lockScale" : true,

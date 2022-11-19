@@ -34,5 +34,6 @@ namespace Engine
 		glm::vec2 origin = {0.5f, 0.5f};
 		float scale = 1.0f;
 		std::string text;
+		float additive = 0.0f;
     };
 }

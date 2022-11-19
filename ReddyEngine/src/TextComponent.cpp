@@ -25,6 +25,7 @@ namespace Engine
         json["origin"] = Utils::serializeJsonValue(origin);
         json["scale"] = Utils::serializeJsonValue(scale);
         json["text"] = Utils::serializeJsonValue(text);
+        json["additive"] = Utils::serializeJsonValue(additive);
 
         return json;
     }
@@ -45,6 +46,7 @@ namespace Engine
         scale = Utils::deserializeFloat(json["scale"], DEFAULT_SCALE);
 
         text = Utils::deserializeString(json["text"], "Text");
+        additive = Utils::deserializeFloat(json["additive"], 0.0f);
     }
 
     bool TextComponent::edit()
@@ -56,6 +58,7 @@ namespace Engine
         changed |= GUI::colorProperty("Color", &color);
         changed |= GUI::originProperty("Origin", &origin);
         changed |= GUI::floatProperty("Scale", &scale);
+        changed |= GUI::floatSliderProperty("additive", &additive, 0.0f, 1.0f);
 
         return changed;
     }
@@ -130,17 +133,18 @@ namespace Engine
             return;
         }
 
+        glm::vec4 col(
+            color.r * color.a,
+            color.g * color.a,
+            color.b * color.a,
+            color.a * (1.0f - additive)
+        );
+
         pFont->draw(text, 
                     m_pEntity->getWorldPosition(),
-                    color,
+                    col,
                     m_pEntity->getRotation(),
                     m_pEntity->getTransform().scale.x * scale * SPRITE_BASE_SCALE,
                     origin);
-        //getSpriteBatch()->drawSprite(pTexture,
-        //                             m_pEntity->getWorldTransformWithScale(),
-        //                             color, 
-        //                             m_pEntity->getTransform().scale * SPRITE_BASE_SCALE,
-        //                             origin,
-        //                             uvs);
     }
 }

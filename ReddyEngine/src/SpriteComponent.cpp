@@ -24,6 +24,7 @@ namespace Engine
         json["color"] = Utils::serializeJsonValue(color);
         json["origin"] = Utils::serializeJsonValue(origin);
         json["uvs"] = Utils::serializeJsonValue(uvs);
+        json["additive"] = Utils::serializeJsonValue(additive);
 
         return json;
     }
@@ -42,6 +43,8 @@ namespace Engine
 
         const float DEFAULT_UVS[4] = {0, 0, 1, 1};
         Utils::deserializeFloat4(&uvs.x, json["uvs"], DEFAULT_UVS);
+
+        additive = Utils::deserializeFloat(json["additive"], 0.0f);
     }
 
     bool SpriteComponent::edit()
@@ -51,6 +54,7 @@ namespace Engine
         changed |= GUI::textureProperty("Texture", &pTexture);
         changed |= GUI::colorProperty("Color", &color);
         changed |= GUI::originProperty("Origin", &origin);
+        changed |= GUI::floatSliderProperty("Additive", &additive, 0.0f, 1.0f, "Alpha blend to Additive blend ratio.");
 
         return changed;
     }
@@ -114,9 +118,16 @@ namespace Engine
 
     void SpriteComponent::draw()
     {
+        glm::vec4 col(
+            color.r * color.a,
+            color.g * color.a,
+            color.b * color.a,
+            color.a * (1.0f - additive)
+        );
+
         getSpriteBatch()->drawSprite(pTexture,
                                      m_pEntity->getWorldTransformWithScale(),
-                                     color, 
+                                     col, 
                                      m_pEntity->getTransform().scale * SPRITE_BASE_SCALE,
                                      origin,
                                      uvs);

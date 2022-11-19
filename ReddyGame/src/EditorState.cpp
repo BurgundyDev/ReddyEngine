@@ -427,7 +427,7 @@ void EditorState::draw()
             break;
     }
 
-    const glm::vec4 MID_GRID_COLOR(0.7f);
+    const glm::vec4 MID_GRID_COLOR(0.5f);
 
     if (m_isGridVisible && m_zoomf >= m_gridHideZoomLevel)
     {

@@ -48,7 +48,7 @@ void InGameState::showInGameMenu()
     m_subState = SubState::InGameMenu;
 
     auto pWorld = Engine::getScene()->getEntityByName("World", true);
-    pWorld->disable();
+    if (pWorld) pWorld->disable();
 
     m_pInGameMenu = Engine::getScene()->createEntityFromJson(Engine::getScene()->getRoot(), m_inGameMenuJson["root"], true);
 }
@@ -61,7 +61,7 @@ void InGameState::hideInGameMenu()
     m_pInGameMenu = nullptr;
 
     auto pWorld = Engine::getScene()->getEntityByName("World", true);
-    pWorld->enable();
+    if (pWorld) pWorld->enable();
 }
 
 void InGameState::onKeyDown(Engine::IEvent* pEvent)
