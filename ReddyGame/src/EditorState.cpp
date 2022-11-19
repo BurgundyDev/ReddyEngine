@@ -413,12 +413,15 @@ void EditorState::draw()
             const glm::vec4 SELECTED_COLOR = { 1, 0, 0, 1 };
             const glm::vec4 HOVER_COLOR = { 1, 1, 0, 1 };
 
-            for (const auto& pEntity : m_selected)
-                pEntity->drawOutline(SELECTED_COLOR, 1.0f / m_zoomf);
+            if (!m_boxSelect)
+            {
+                for (const auto& pEntity : m_selected)
+                    pEntity->drawOutline(SELECTED_COLOR, 1.0f / m_zoomf);
 
-            auto pHovered = Engine::getScene()->getHoveredEntity();
-            if (pHovered && !pHovered->isSelected)
-                pHovered->drawOutline(HOVER_COLOR, 1.0f / m_zoomf);
+                auto pHovered = Engine::getScene()->getHoveredEntity();
+                if (pHovered && !pHovered->isSelected)
+                    pHovered->drawOutline(HOVER_COLOR, 1.0f / m_zoomf);
+            }
 
             break;
         }
@@ -461,6 +464,24 @@ void EditorState::draw()
         //drawSafeFrame("1080p", {1920, 1080}, glm::vec4(1, 0, 0.6f, 1) * 0.6f);
         //drawSafeFrame("720p", {1280, 720}, glm::vec4(1, 0, 0.6f, 1) * 0.4f);
     }
+
+    if (m_boxSelect)
+    {
+        auto boxSelectTo = m_mouseWorldPos;
+        glm::vec4 selectRect(
+            glm::min(boxSelectTo.x, m_boxSelectFrom.x),
+            glm::min(boxSelectTo.y, m_boxSelectFrom.y),
+            glm::abs(boxSelectTo.x - m_boxSelectFrom.x),
+            glm::abs(boxSelectTo.y - m_boxSelectFrom.y)
+        );
+
+        auto lineW = 1.0f / m_zoomf;
+        sb->drawLine({selectRect.x, selectRect.y}, {selectRect.x, selectRect.y + selectRect.w}, lineW, {1, 1, 0, 1});
+        sb->drawLine({selectRect.x, selectRect.y + selectRect.w}, {selectRect.x + selectRect.z, selectRect.y + selectRect.w}, lineW, {1, 1, 0, 1});
+        sb->drawLine({selectRect.x + selectRect.z, selectRect.y + selectRect.w}, {selectRect.x + selectRect.z, selectRect.y}, lineW, {1, 1, 0, 1});
+        sb->drawLine({selectRect.x + selectRect.z, selectRect.y}, {selectRect.x, selectRect.y}, lineW, {1, 1, 0, 1});
+    }
+
 
     sb->end();
 }

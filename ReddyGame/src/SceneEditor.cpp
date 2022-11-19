@@ -173,7 +173,9 @@ void EditorState::onMouseDown(Engine::IEvent* pEvent)
         const auto& pHoveredEntity = Engine::getScene()->getHoveredEntity();
 
         if (!pHoveredEntity && !ctrl && !shift && !m_selected.empty())
+        {
             changeSelectionAction({}); // Deselect
+        }
 
         if (pHoveredEntity)
         {
@@ -194,6 +196,11 @@ void EditorState::onMouseDown(Engine::IEvent* pEvent)
 
             m_isMouseDownInWorld = true;
             m_mouseOnDown = m_mouseWorldPos;
+        }
+        else
+        {
+            m_boxSelect = true;
+            m_boxSelectFrom = m_mouseWorldPos;
         }
     }
 }
@@ -216,6 +223,26 @@ void EditorState::onMouseUp(Engine::IEvent* pEvent)
     auto ctrl = false;//Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
     auto shift = Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT);
     auto alt = Engine::getInput()->isKeyDown(SDL_SCANCODE_LALT);
+
+    if (m_boxSelect)
+    {
+        m_boxSelect = false;
+        auto boxSelectTo = m_mouseWorldPos;
+
+        glm::vec4 selectRect(
+            glm::min(boxSelectTo.x, m_boxSelectFrom.x),
+            glm::min(boxSelectTo.y, m_boxSelectFrom.y),
+            glm::abs(boxSelectTo.x - m_boxSelectFrom.x),
+            glm::abs(boxSelectTo.y - m_boxSelectFrom.y)
+        );
+
+        std::vector<Engine::EntityRef> entities;
+        Engine::getScene()->getRoot()->getEntitiesInRect(entities, selectRect);
+        if (!entities.empty())
+            changeSelectionAction(entities);
+        m_transformType = TransformType::None;
+        return;
+    }
 
     const auto& pHoveredEntity = Engine::getScene()->getHoveredEntity();
     

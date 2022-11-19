@@ -583,6 +583,24 @@ namespace Engine
 		return nullptr;
 	}
 
+	void Entity::getEntitiesInRect(std::vector<Engine::EntityRef>& entities, const glm::vec4& rect)
+	{
+		if (!editorVisible || editorLocked) return;
+
+		auto pos = getWorldPosition();
+		if (pos.x >= rect.x &&
+			pos.x <= rect.x + rect.z &&
+			pos.y >= rect.y &&
+			pos.y <= rect.y + rect.w)
+		{
+			entities.push_back(shared_from_this());
+			//return; // Don't need to select children if we select parent? (nope)
+		}
+
+		for (const auto& pChild : m_children)
+			pChild->getEntitiesInRect(entities, rect);
+	}
+
 	bool Entity::isMouseHover(const glm::vec2& mousePos) const
 	{
 		for (auto rit = m_components.rbegin(); rit != m_components.rend(); ++rit)

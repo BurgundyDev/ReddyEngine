@@ -227,6 +227,7 @@ namespace Engine
 		bool isInRadius(const glm::vec2& pointInWorld, float radius, bool inclusive = true);
 
 		EntityRef getMouseHover(const glm::vec2& mousePos, bool ignoreMouseFlags = false);
+		void getEntitiesInRect(std::vector<Engine::EntityRef>& entities, const glm::vec4& rect);
 
 		void onMouseEnter();
 		void onMouseLeave();
