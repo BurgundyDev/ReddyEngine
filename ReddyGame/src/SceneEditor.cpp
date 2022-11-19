@@ -21,6 +21,8 @@
 #include <imgui.h>
 
 static Engine::EntityRef g_pDragTarget = nullptr;
+static Engine::EntityRef g_pDragAfter = nullptr;
+static Engine::EntityRef g_pDragBefore = nullptr;
 
 
 // This is very expensive and done for every entity in the scene tree window
@@ -57,7 +59,7 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
 {
     const auto& children = pEntity->getChildren();
 
-    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
     if (children.empty()) flags |= ImGuiTreeNodeFlags_Leaf;
     if (pEntity->isSelected) flags |= ImGuiTreeNodeFlags_Selected;
     //if (pEntity->expanded) flags |= ImGuiTreeNodeFlags_DefaultOpen; // No need, we do ImGui::SetNextItemOpen
@@ -97,6 +99,7 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
         {
             g_pDragTarget = pEntity;
         }
+        ImGui::EndDragDropTarget();
     }
 
     if (ImGui::BeginDragDropSource())
@@ -108,10 +111,47 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
 
     if (openned)
     {
+        bool first = true;
         for (const auto& pChild : children)
+        {
+            if (first)
+            {
+                first = false;
+
+                // Draw n drop items before this child
+                bool dummy = false;
+                auto c = ImGui::GetCursorPosY();
+                ImGui::SetCursorPosY(c - 1);
+                ImGui::Selectable("---", &dummy, ImGuiSelectableFlags_Disabled, ImVec2(0, 2));
+                if (ImGui::BeginDragDropTarget())
+                {
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_SCENETREE"))
+                    {
+                        g_pDragBefore = pChild;
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+                ImGui::SetCursorPosY(c);
+            }
             drawEntitySceneTree(pChild);
+        }
         ImGui::TreePop();
     }
+
+    // Draw n drop items after this
+    bool dummy = false;
+    auto c = ImGui::GetCursorPosY();
+    ImGui::SetCursorPosY(c - 1);
+    ImGui::Selectable("---", &dummy, ImGuiSelectableFlags_Disabled, ImVec2(0, 2));
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_SCENETREE"))
+        {
+            g_pDragAfter = pEntity;
+        }
+        ImGui::EndDragDropTarget();
+    }
+    ImGui::SetCursorPosY(c);
 }
 
 void EditorState::onMouseDown(Engine::IEvent* pEvent)
@@ -322,6 +362,8 @@ void EditorState::drawSceneUI() // This is also kind of update
     if (Engine::GUI::beginEditorWindow("Scene"))
     {
         g_pDragTarget = nullptr;
+        g_pDragAfter = nullptr;
+        g_pDragBefore = nullptr;
         drawEntitySceneTree(Engine::getScene()->getRoot());
 
         if (g_pDragTarget)
@@ -337,8 +379,6 @@ void EditorState::drawSceneUI() // This is also kind of update
                 }
             }
 
-            ImGui::EndDragDropTarget();
-
             if (valid)
             {
                 for (const auto& pDragEntity : m_selected)
@@ -346,6 +386,62 @@ void EditorState::drawSceneUI() // This is also kind of update
                     g_pDragTarget->addChild(pDragEntity);
                 }
                 pushUndo("Scene Tree Change");
+            }
+        }
+        else if (g_pDragAfter)
+        {
+            bool valid = true;
+            auto pParent = g_pDragAfter->getParent();
+            if (pParent)
+            {
+                for (const auto& pDragEntity : m_selected)
+                {
+                    // Make sure we're not dragging a parent into one of it's child
+                    if (pDragEntity == pParent || pDragEntity->hasChild(pParent, true))
+                    {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (valid)
+                {
+                    // Find index
+                    int index = -1;
+                    for (const auto& pDragEntity : m_selected)
+                    {
+                        pParent->addChild(pDragEntity, pParent->getChildIndex(g_pDragAfter) + 1);
+                    }
+                    pushUndo("Scene Tree Change");
+                }
+            }
+        }
+        else if (g_pDragBefore)
+        {
+            bool valid = true;
+            auto pParent = g_pDragBefore->getParent();
+            if (pParent)
+            {
+                for (const auto& pDragEntity : m_selected)
+                {
+                    // Make sure we're not dragging a parent into one of it's child
+                    if (pDragEntity == pParent || pDragEntity->hasChild(pParent, true))
+                    {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (valid)
+                {
+                    // Find index
+                    int index = -1;
+                    for (const auto& pDragEntity : m_selected)
+                    {
+                        pParent->addChild(pDragEntity, pParent->getChildIndex(g_pDragBefore));
+                    }
+                    pushUndo("Scene Tree Change");
+                }
             }
         }
 
