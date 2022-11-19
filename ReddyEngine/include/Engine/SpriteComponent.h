@@ -30,6 +30,9 @@ namespace Engine
 		TextureRef getEditorIcon() const override;
 		std::string getFriendlyName() const override;
 
+		/*! \brief If the current texture is set by FrameAnimComponent, disable it from being changed */
+		bool isFrameAnimTexture() const;
+
 		TextureRef pTexture;
 		glm::vec4 color = {1, 1, 1, 1};
 		glm::vec2 origin = {0.5f, 0.5f};

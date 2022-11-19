@@ -42,6 +42,11 @@ namespace Engine
         return getResource<Font>(name);
     }
 
+    FrameAnimRef ResourceManager::getFrameAnim(const std::string& name)
+    {
+        return getResource<FrameAnim>(name);
+    }
+
     bool ResourceManager::copyFileToAssets(const std::string &path, const std::string& subDir, std::string& resultPath)
     {
         const std::filesystem::path selectedPath(path);

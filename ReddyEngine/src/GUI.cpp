@@ -388,10 +388,14 @@ namespace Engine
             return ret;
         }
 
-        bool textureProperty(const char* label, TextureRef* value, const char* tooltip)
+        bool textureProperty(const char* label, TextureRef* value, const char* tooltip, bool disabled)
         {
             bool ret = false;
             ImGui::PushID(++g_propertyCount);
+
+            if (disabled) {
+                ImGui::BeginDisabled();
+            }
 
             char buf[260];
             if (*value)
@@ -438,6 +442,11 @@ namespace Engine
                     }
                 }
             }
+
+            if (disabled) {
+                ImGui::EndDisabled();
+            }
+
             showToolTip(tooltip);
 
             ImGui::PopID();
@@ -553,6 +562,63 @@ namespace Engine
                 }
             }
             showToolTip(tooltip);
+
+            ImGui::PopID();
+            return ret;
+        }
+
+        // Lot of duplicate code... should clean up, template? We're going to add more (Sound, PFX, etc)
+        bool frameAnimProperty(const char* label, FrameAnimRef* value, const char* tooltip, bool disabled)
+        {
+            bool ret = false;
+            ImGui::PushID(++g_propertyCount);
+
+            if (disabled) {
+                ImGui::BeginDisabled();
+            }
+
+            char buf[260];
+            if (*value)
+                memcpy(buf, (*value)->getFilename().c_str(), (*value)->getFilename().size() + 1);
+            else
+                buf[0] = '\0';
+
+            ImGui::InputText(label, buf, 260);
+            if (ImGui::IsItemDeactivatedAfterEdit())
+            {
+                *value = getResourceManager()->getFrameAnim(buf);
+                ret = true;
+            }
+            ImGui::SameLine();
+
+            if (!ret && ImGui::Button("...", { 25, 16 })) {
+                static const std::string filePatternMask = "*.json";
+
+                // because we need to take the address of it
+                const char* maskCString = filePatternMask.c_str();
+
+                const char* selectedFile = tinyfd_openFileDialog("Open", "./assets/frame_anims/", 1, &maskCString, "Json", 0);
+                if (!selectedFile) {
+                    ret = false;
+                } else {
+                    std::string resultPath;
+
+                    if (getResourceManager()->copyFileToAssets(selectedFile, "frame_anims", resultPath)) {
+                        *value = getResourceManager()->getFrameAnim(resultPath);
+
+                        ret = true;
+                    } else {
+                        fprintf(stderr, "Failed to copy asset from %s to assets!\n", selectedFile);
+
+                        ret = false;
+                    }
+                }
+            }
+            showToolTip(tooltip);
+
+            if (disabled) {
+                ImGui::EndDisabled();
+            }
 
             ImGui::PopID();
             return ret;
