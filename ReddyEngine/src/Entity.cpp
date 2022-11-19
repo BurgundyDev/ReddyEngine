@@ -193,6 +193,25 @@ namespace Engine
 
 		return nullptr;
 	}
+	
+	void Entity::findByName(const std::string& in_name, std::vector<EntityRef>& entities, bool recursive)
+	{
+		if (name == in_name) entities.push_back(shared_from_this());
+
+		if (recursive)
+			for (const auto& pChild : m_children)
+				pChild->findByName(in_name, entities, true);
+	}
+
+	void Entity::findByName(const std::string& in_name, std::vector<EntityRef>& entities, const EntitySearchParams &searchParams, bool recursive)
+	{
+		if (name == in_name && (searchParams.radius < FLT_EPSILON || isInRadius(searchParams.pointInWorld, searchParams.radius)))
+			entities.push_back(shared_from_this());
+
+		if (recursive)
+			for (const auto& pChild : m_children)
+				pChild->findByName(in_name, entities, searchParams, true);
+	}
 
 	bool Entity::hasChild(const EntityRef& pChild, bool recursive) const
 	{

@@ -148,6 +148,9 @@ namespace Engine
         int funcFindEntityByName(lua_State* L);
         int funcFindEntityByComponent(lua_State* L);
 
+        int funcFindEntitiesByName(lua_State* L);
+        int funcFindEntitiesByComponent(lua_State* L);
+
         int funcContinueGame(lua_State* L);
         int funcNewGame(lua_State* L);
         int funcQuit(lua_State* L);
@@ -204,7 +207,7 @@ namespace Engine
 // Helper macros
 #define LUA_PUSH_VEC2(v) {lua_getglobal(L, "Vec2"); lua_pushnumber(L, v.x); lua_pushnumber(L, v.y); lua_pcall(L, 2, 1, 0);}
 #define LUA_PUSH_COLOR(c) {lua_getglobal(L, "Color"); lua_pushnumber(L, c.r); lua_pushnumber(L, c.g); lua_pushnumber(L, c.b); lua_pushnumber(L, c.a); lua_pcall(L, 4, 1, 0);}
-#define LUA_PUSH_ENTITY(e) {lua_getglobal(L, "EINS_t"); if (e) lua_getfield(L, -1, e->luaName.c_str()); else lua_pushnil(L); }
+#define LUA_PUSH_ENTITY(e) {lua_getglobal(L, "EINS_t"); if (e) lua_getfield(L, -1, e->luaName.c_str()); else lua_pushnil(L); lua_remove(L, -2); }
 
 #define LUA_GET_INT(i, defaultValue) LUA_GET_INT_impl(L, i, defaultValue)
 #define LUA_GET_NUMBER(i, defaultValue) LUA_GET_NUMBER_impl(L, i, defaultValue)

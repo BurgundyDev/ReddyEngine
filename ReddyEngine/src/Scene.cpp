@@ -113,10 +113,20 @@ namespace Engine
 		return m_pRoot->getChildByName(name, recursive);
 	}
 
+	void Scene::FindEntitiesByName(const std::string& name, std::vector<EntityRef>& entities, bool recursive) const
+	{
+		m_pRoot->findByName(name, entities, recursive);
+	}
+
 	EntityRef Scene::getEntityByName(const std::string& name, const EntitySearchParams& searchParams, bool recursive) const
 	{
 		return m_pRoot->getChildByName(name, searchParams, recursive);
     }
+
+	void Scene::FindEntitiesByName(const std::string& name, std::vector<EntityRef>& entities, const EntitySearchParams& searchParams, bool recursive) const
+	{
+		m_pRoot->findByName(name, entities, searchParams, recursive);
+	}
     
 	EntityRef Scene::findEntity(uint64_t id)
 	{

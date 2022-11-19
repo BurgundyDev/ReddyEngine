@@ -207,10 +207,22 @@ RegisterComponent("sandboxBadReference", {
 
 -- Spawn a particle prefab randomly on the screen when pressed
 RegisterComponent("sandboxCreatePrefab", {
-    mouseClick = function()
+    mouseClick = function(self)
         local x, y, w, h = GetScreenRect()
         local pos = Vec2(math.random() * w + x, math.random() * h + y)
         local e = CreateEntity(GetRoot(), "scenes/sandboxPrefab.json")
         SetPosition(e, pos)
+    end
+})
+
+
+-- Find all entities named "arrow"
+RegisterComponent("sandboxFindArrows", {
+    mouseClick = function(self)
+        local entities = FindEntitiesByName("arrow")
+        print("Found " .. #entities .. " arrows.")
+
+        local entities = FindEntitiesByName("arrow", GetPosition(self), 5)
+        print("Found " .. #entities .. " arrows in radius.")
     end
 })

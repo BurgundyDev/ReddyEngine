@@ -138,6 +138,9 @@ namespace Engine
 		EntityRef getChildByName(const std::string& name, bool recursive = false);
 		EntityRef getChildByName(const std::string& name, const EntitySearchParams &searchParams, bool recursive = false);
 
+		void findByName(const std::string& name, std::vector<EntityRef>& entities, bool recursive = false);
+		void findByName(const std::string& name, std::vector<EntityRef>& entities, const EntitySearchParams &searchParams, bool recursive = false);
+
 		bool hasChild(const EntityRef& pChild, bool recursive = false) const;
 
 		template <class T>

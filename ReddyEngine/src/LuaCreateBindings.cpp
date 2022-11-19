@@ -86,6 +86,7 @@ namespace Engine
         LUA_REGISTER(GetName);
         LUA_REGISTER(SetName);
         LUA_REGISTER(FindEntityByName);
+        LUA_REGISTER(FindEntitiesByName);
         LUA_REGISTER(ContinueGame);
         LUA_REGISTER(NewGame);
         LUA_REGISTER(Quit);
@@ -684,7 +685,7 @@ namespace Engine
         glm::vec2 searchPos = LUA_GET_VEC2(2, glm::vec2(0));
         auto searchRadius = LUA_GET_NUMBER(3, 0.0f);
 
-        if (searchRadius == 0.0f)
+        if (searchRadius < FLT_EPSILON)
         {
             auto pEntity = getScene()->getEntityByName(searchName, true);
             LUA_PUSH_ENTITY(pEntity);
@@ -701,7 +702,49 @@ namespace Engine
         }
     }
 
+    int LuaBindings::funcFindEntitiesByName(lua_State* L)
+    {
+        auto searchName = LUA_GET_STRING(1, "");
+        if (searchName.empty())
+        {
+            lua_pushnil(L);
+            return 1;
+        }
+        glm::vec2 searchPos = LUA_GET_VEC2(2, glm::vec2(0));
+        auto searchRadius = LUA_GET_NUMBER(3, 0.0f);
+
+        std::vector<EntityRef> entities;
+        if (searchRadius < FLT_EPSILON)
+        {
+            getScene()->FindEntitiesByName(searchName, entities, true);
+        }
+        else
+        {
+            EntitySearchParams searchParams;
+            searchParams.pointInWorld = searchPos;
+            searchParams.radius = searchRadius;
+            getScene()->FindEntitiesByName(searchName, entities, searchParams, true);
+        }
+
+        lua_newtable(L);
+
+        for (int i = 0, len = (int)entities.size(); i < len; ++i)
+        {
+            const auto& pEntity = entities[i];
+            LUA_PUSH_ENTITY(pEntity);
+            lua_seti(L, -2, i + 1);
+        }
+
+        return 1;
+    }
+
     int LuaBindings::funcFindEntityByComponent(lua_State* L)
+    {
+        //TODO:
+        return 0;
+    }
+
+    int LuaBindings::funcFindEntitiesByComponent(lua_State* L)
     {
         //TODO:
         return 0;
