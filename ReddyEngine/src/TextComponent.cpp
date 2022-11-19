@@ -23,6 +23,7 @@ namespace Engine
         json["font"] = pFont ? pFont->getFilename() : "";
         json["color"] = Utils::serializeJsonValue(color);
         json["origin"] = Utils::serializeJsonValue(origin);
+        json["justify"] = Utils::serializeJsonValue(justify);
         json["scale"] = Utils::serializeJsonValue(scale);
         json["text"] = Utils::serializeJsonValue(text);
         json["additive"] = Utils::serializeJsonValue(additive);
@@ -42,6 +43,8 @@ namespace Engine
         const float DEFAULT_ORIGIN[2] = {0.5f, 0.5f};
         Utils::deserializeFloat2(&origin.x, json["origin"], DEFAULT_ORIGIN);
 
+        justify = Utils::deserializeFloat(json["justify"], 0.5f);
+
         const float DEFAULT_SCALE = 1.0f;
         scale = Utils::deserializeFloat(json["scale"], DEFAULT_SCALE);
 
@@ -57,6 +60,7 @@ namespace Engine
         changed |= GUI::fontProperty("Font", &pFont);
         changed |= GUI::colorProperty("Color", &color);
         changed |= GUI::originProperty("Origin", &origin);
+        changed |= GUI::floatSliderProperty("justify", &justify, 0.0f, 1.0f);
         changed |= GUI::floatProperty("Scale", &scale);
         changed |= GUI::floatSliderProperty("additive", &additive, 0.0f, 1.0f);
 
@@ -145,6 +149,7 @@ namespace Engine
                     col,
                     m_pEntity->getRotation(),
                     m_pEntity->getTransform().scale.x * scale * SPRITE_BASE_SCALE,
-                    origin);
+                    origin,
+                    justify);
     }
 }

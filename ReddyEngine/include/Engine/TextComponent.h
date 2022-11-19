@@ -35,5 +35,6 @@ namespace Engine
 		float scale = 1.0f;
 		std::string text;
 		float additive = 0.0f;
+		float justify = 0.5f;
     };
 }

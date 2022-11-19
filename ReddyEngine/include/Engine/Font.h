@@ -39,7 +39,8 @@ namespace Engine
                   const glm::vec4& color = {1, 1, 1, 1},
                   float rotation = 0.0f,
                   float scale = 1.0f,
-                  const glm::vec2& align = {0.0f, 0.0f});
+                  const glm::vec2& align = {0.0f, 0.0f},
+                  float justify = 0.0f);
 
         //void draw(const std::string& text,
         //          const glm::mat4& transform, 
@@ -61,6 +62,7 @@ namespace Engine
 
         bool addGlyph(int codepoint);
         void updateAtlas();
+        float measureLine(const char* p);
 
         TextureRef m_pAtlas; // For now lets just use 1 atlas. But we might want to eventually page this if we go chinese and bigger characters.
         uint8_t* m_pAtlasData = nullptr;

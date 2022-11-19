@@ -194,6 +194,43 @@ namespace Engine
         m_pAtlas->setData(m_pAtlasData);
     }
 
+    float Font::measureLine(const char* p)
+    {
+        float size = 0.0f;
+        int len = (int)strlen(p);
+
+        while (*p != '\n' && *p != '\0')
+        {
+            auto c = *p;
+
+            auto it = m_chars.find((int)c);
+            if (it == m_chars.end())
+            {
+                --len;
+                ++p;
+                continue;
+            }
+            const auto& chr = it->second;
+
+            // Advance
+            float xAdvance = chr->xAdvance;
+
+            // Kerning
+            if (len > 1)
+            {
+                auto nextC = p[1];
+                int kern = stbtt_GetCodepointKernAdvance(m_pInfo, (int)c, (int)nextC);
+                xAdvance += (float)kern * m_scale;
+            }
+
+            size += xAdvance;
+
+            --len;
+            ++p;
+        }
+        return size;
+    }
+
     glm::vec2 Font::measure(const std::string& text)
     {
         glm::vec2 size{0.0f, (float)m_height};
@@ -258,7 +295,8 @@ namespace Engine
                     const glm::vec4& color,
                     float rotation,
                     float scale,
-                    const glm::vec2& align)
+                    const glm::vec2& align,
+                    float justify)
     {
         auto sb = Engine::getSpriteBatch().get();
 
@@ -279,6 +317,10 @@ namespace Engine
         glm::vec2 pos = topLeft;
         int line = 0;
 
+        float lineW = measureLine(text.c_str());
+        auto diff = size.x - lineW;
+        pos.x += diff * justify * scale;
+
         // Naive approach for now, only ASCII characters (English)
         // TODO: UTF8 (Maybe we won't need it)
         for (int i = 0, len = (int)text.length(); i < len; ++i)
@@ -290,6 +332,12 @@ namespace Engine
             {
                 ++line;
                 pos = topLeft + downN * (float)line * (float)m_height * scale;
+                if (i < len - 1)
+                {
+                    lineW = measureLine(text.c_str() + (i + 1));
+                    diff = size.x - lineW;
+                    pos.x += diff * justify * scale;
+                }
                 continue;
             }
 
