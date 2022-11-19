@@ -225,7 +225,7 @@ template<typename T>
 std::shared_ptr<T> LUA_GET_COMPONENT_impl(lua_State* L, int stackIndex, const char* funcName)
 {
     auto pEntity = LUA_GET_ENTITY(stackIndex);
-    if (pEntity) return pEntity->getComponent<T>();
+    if (pEntity) return pEntity->template getComponent<T>();
     return nullptr;
 }
 

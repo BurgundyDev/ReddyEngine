@@ -4,6 +4,7 @@
 !premake/bin
 bin-int/
 ReddyGame.exe
+build/
 
 # Visual Studio files and folder
 .vscode/

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Engine/Utils.h>
+
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 #include <json/json.h>
@@ -29,7 +31,7 @@ namespace Engine
     };
 
 
-    template<typename T>
+    template<class T>
     class RangedPFXValue final
     {
     public:

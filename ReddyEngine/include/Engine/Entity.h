@@ -1,5 +1,8 @@
 #pragma once
 
+#include <Engine/Scene.h>
+#include <Engine/ReddyEngine.h>
+
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 #include <json/json.h>
@@ -115,7 +118,7 @@ namespace Engine
 		void addComponent(const ComponentRef& pComponent);
 
 		template<typename T>
-		bool removeComponent() const
+		bool removeComponent()
 		{
 			for (auto it = m_components.begin(); it != m_components.end(); ++it)
 			{
@@ -143,7 +146,7 @@ namespace Engine
 			for (auto it = m_children.begin(); it != m_children.end(); ++it) {
 				const EntityRef &ref = *it;
 
-				if (ref->hasComponent<T>() && (searchParams.radius < FLT_EPSILON || ref->isInRadius(searchParams.pointInWorld, searchParams.radius)))
+				if (ref->hasComponent<T>() && (searchParams.radius < 0.0 || ref->isInRadius(searchParams.pointInWorld, searchParams.radius)))
 				{
 					return ref;
 				}
@@ -170,7 +173,7 @@ namespace Engine
 			for (auto it = m_children.begin(); it != m_children.end(); ++it) {
 				const EntityRef &ref = *it;
 
-				if (ref->hasComponent<T>() && (searchParams.radius < FLT_EPSILON || ref->isInRadius(searchParams.pointInWorld, searchParams.radius)))
+				if (ref->hasComponent<T>() && (searchParams.radius < 0.0f || ref->isInRadius(searchParams.pointInWorld, searchParams.radius)))
 				{
 					outRefs.push_back(ref);
 				}
@@ -184,7 +187,7 @@ namespace Engine
 		template <class T>
 		void getChildrenByComponent(std::vector<EntityRef>& outRefs, bool recursive = false)
 		{
-			getChildrenByComponent(outRefs, EntitySearchParams { }, recursive);
+			getChildrenByComponent<T>(outRefs, EntitySearchParams { }, recursive);
 		}
 		
 		// Oh boy this was dangerous.

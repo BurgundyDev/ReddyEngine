@@ -12,6 +12,7 @@
 #include <Engine/TextComponent.h>
 #include <Engine/ScriptComponent.h>
 #include <Engine/PFXComponent.h>
+#include <Engine/Utils.h>
 
 #include <filesystem>
 
@@ -198,6 +199,7 @@ void EditorState::onMouseUp(Engine::IEvent* pEvent)
 
 void EditorState::onDropEvent(Engine::IEvent* pEvent)
 {
+#if WIN32
     auto pDropEvent = (Engine::DropEvent*)pEvent;
     if (!pDropEvent) return;
 
@@ -245,6 +247,7 @@ void EditorState::onDropEvent(Engine::IEvent* pEvent)
     spriteComponent->pTexture = std::move(texture);
 
     createEntityAction(pEntity);
+#endif
 }
 
 void EditorState::updateTransform()

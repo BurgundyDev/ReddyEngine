@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <thread>
 
 
 struct stb_vorbis;
