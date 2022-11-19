@@ -5,7 +5,6 @@ extern "C" {
 }
 
 #include "InGameState.h"
-#include "InGameMenuState.h"
 #include "MainMenuState.h"
 #include "Game.h"
 
@@ -28,8 +27,6 @@ InGameState::InGameState(const std::string& filename)
 
 void InGameState::enter(const GameStateRef& previousState)
 {
-    GameState::enter(previousState);
-
     REGISTER_EVENT(KeyDownEvent, InGameState::onKeyDown);
 	Engine::getInput()->setMouseCursor("assets/textures/cursor.png", glm::ivec2(4, 0));
 }

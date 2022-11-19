@@ -1,55 +1,139 @@
 {
    "camera" : {
-      "position" : [ 0.2630208432674408, -0.22395831346511841 ],
+      "position" : [ 0.4921875, -0.31770831346511841 ],
       "zoom" : 1
    },
    "root" : {
       "children" : [
          {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
+            "children" : [
                {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "origin" : [ 0.5, 0.5 ],
-                  "texture" : "textures/defaultTexture.png",
-                  "type" : "Sprite",
-                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "expanded" : true,
+                  "id" : 84,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "Background",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.0, 0.0 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [
+                     {
+                        "children" : [],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                              "enabled" : true,
+                              "origin" : [ 0.5, 0.70999997854232788 ],
+                              "texture" : "textures/defaultTexture.png",
+                              "type" : "Sprite",
+                              "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "expanded" : true,
+                        "id" : 16,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "Campfire",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 0.0, 0.0 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.0, 1.0 ]
+                        },
+                        "uiRoot" : false
+                     }
+                  ],
+                  "clickThrough" : false,
+                  "components" : [],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "expanded" : true,
+                  "id" : 85,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "Entities",
+                  "sortChildren" : true,
+                  "transform" : {
+                     "position" : [ 0.0, 0.0 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "expanded" : true,
+                  "id" : 86,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "Foreground",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.0, 0.0 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "enabled" : true,
+                        "name" : "InGame",
+                        "properties" : {
+                           "music" : "musics/8bitKnightMix.ogg"
+                        },
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "expanded" : true,
+                  "id" : 62,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "Game Manager",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 1.5, -1.5 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
                }
             ],
-            "id" : 16,
+            "clickThrough" : false,
+            "components" : [],
+            "editorLocked" : false,
+            "editorVisible" : true,
+            "expanded" : true,
+            "id" : 83,
             "lockScale" : true,
             "mouseChildren" : true,
-            "name" : "",
+            "name" : "World",
             "sortChildren" : false,
             "transform" : {
                "position" : [ 0.0, 0.0 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "enabled" : true,
-                  "name" : "InGame",
-                  "properties" : {
-                     "music" : "musics/8bitKnightMix.ogg"
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 62,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 1.5546875, -1.421875 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -58,6 +142,9 @@
       ],
       "clickThrough" : true,
       "components" : [],
+      "editorLocked" : false,
+      "editorVisible" : true,
+      "expanded" : true,
       "id" : 0,
       "lockScale" : true,
       "mouseChildren" : true,

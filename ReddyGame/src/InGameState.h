@@ -2,10 +2,15 @@
 
 #include "GameState.h"
 
+#include <memory>
+
 
 namespace Engine
 {
     class IEvent;
+
+    class Entity;
+    using EntityRef = std::shared_ptr<Entity>;
 };
 
 
