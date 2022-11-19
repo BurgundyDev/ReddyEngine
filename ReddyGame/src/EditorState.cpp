@@ -139,6 +139,8 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
             if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_C) onCopy();
             if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_V) onPaste();
             if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_D) onDuplicate();
+            if (!ctrl && !shift && !alt && scancode == SDL_SCANCODE_ESCAPE) onDeselect();
+            if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_A) onSelectAll();
             break;
         }
         case EditDocumentType::PFX:
@@ -230,6 +232,9 @@ void EditorState::update(float dt)
             if (ImGui::MenuItem("Paste", "Ctrl+V", nullptr, enabled)) onPaste();
             if (ImGui::MenuItem("Duplicate", "Ctrl+D", nullptr, enabled)) onDuplicate();
             if (ImGui::MenuItem("Delete", "Del", nullptr, enabled)) onDelete();
+            ImGui::Separator();
+            if (ImGui::MenuItem("Select All", "Ctrl+A", nullptr, enabled)) onSelectAll();
+            if (ImGui::MenuItem("Deselect", "Escape", nullptr, enabled)) onDeselect();
             ImGui::EndMenu();
         }
 
@@ -796,16 +801,12 @@ void EditorState::onDisableGrid()
 {
     switch (m_isGridVisible)
     {
-    case true:
-    {
-        m_isGridVisible = false;
-        break;
-    }
-    case false:
-    {
-        m_isGridVisible = true;
-        break;
-    }
+        case true:
+            m_isGridVisible = false;
+            break;
+        case false:
+            m_isGridVisible = true;
+            break;
     }
 }
 
@@ -813,19 +814,28 @@ void EditorState::onDisableViewportOutline()
 {
     switch (m_isViewportOutlined)
     {
-    case true:
-    {
-        m_isViewportOutlined = false;
-        break;
-    }
-    case false:
-    {
-        m_isViewportOutlined = true;
-        break;
-    }
+        case true:
+            m_isViewportOutlined = false;
+            break;
+        case false:
+            m_isViewportOutlined = true;
+            break;
     }
 }
 
+void EditorState::onDeselect()
+{
+    if (m_selected.empty()) return;
+    changeSelectionAction({});
+}
+
+void EditorState::onSelectAll()
+{
+    std::vector<Engine::EntityRef> entities;
+    Engine::getScene()->getRoot()->getVisibleEntities(entities);
+    if (m_selected.size() == entities.size()) return;
+    changeSelectionAction(entities);
+}
 
 
 //-----------------------------------------------------------------------

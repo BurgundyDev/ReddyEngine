@@ -601,6 +601,16 @@ namespace Engine
 			pChild->getEntitiesInRect(entities, rect);
 	}
 
+	void Entity::getVisibleEntities(std::vector<Engine::EntityRef>& entities)
+	{
+		if (!editorVisible || editorLocked) return;
+
+		entities.push_back(shared_from_this());
+
+		for (const auto& pChild : m_children)
+			pChild->getVisibleEntities(entities);
+	}
+
 	bool Entity::isMouseHover(const glm::vec2& mousePos) const
 	{
 		for (auto rit = m_components.rbegin(); rit != m_components.rend(); ++rit)

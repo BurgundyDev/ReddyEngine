@@ -72,6 +72,8 @@ private:
     void onCreateEntity(const std::string& typeName);
     void onDisableGrid();
     void onDisableViewportOutline();
+    void onDeselect();
+    void onSelectAll();
 
     void open(const std::string& filename);
     bool openAs(); // Returns false if user cancelled

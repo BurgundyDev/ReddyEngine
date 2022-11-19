@@ -229,6 +229,8 @@ namespace Engine
 		EntityRef getMouseHover(const glm::vec2& mousePos, bool ignoreMouseFlags = false);
 		void getEntitiesInRect(std::vector<Engine::EntityRef>& entities, const glm::vec4& rect);
 
+		void getVisibleEntities(std::vector<Engine::EntityRef>& entities);
+
 		void onMouseEnter();
 		void onMouseLeave();
 		void onMouseDown();
