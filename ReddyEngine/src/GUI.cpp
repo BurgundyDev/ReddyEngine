@@ -206,7 +206,7 @@ namespace Engine
             if (g_windowOpen)
             {
                 // Leave space for status bar
-                ImGui::BeginChild("Client Area", ImGui::GetWindowSize() - ImVec2(12, 62));
+                ImGui::BeginChild("Client Area", ImGui::GetWindowSize() - ImVec2(12, 64));
                 g_statusBarDrawn = false;
                 g_statusBarBtnCount = 0;
                 g_sectionCount = 0;
@@ -234,8 +234,22 @@ namespace Engine
         {
             if (!g_statusBarDrawn) beginStatusBar();
 
-            ImGui::SetCursorPos({ImGui::GetWindowWidth() - 40 - 24 * (float)g_statusBarBtnCount++, ImGui::GetCursorPosY()});
-            auto ret = ImGui::Button(text.c_str(), {20, 18});
+            ImVec2 pos = {ImGui::GetWindowWidth() - 40 - 24 * (float)g_statusBarBtnCount++, ImGui::GetCursorPosY() - 2};
+            ImGui::SetCursorPos(pos);
+            pos += ImGui::GetWindowPos();
+
+            auto ret = ImGui::Button(" ", {20, 18});
+
+            if (text == "+")
+            {
+                ImGuiContext& g = *GImGui;
+                ImGuiWindow* window = g.CurrentWindow;
+                
+                ImU32 col = ImGui::GetColorU32(ImGuiCol_Text);
+                window->DrawList->AddLine(ImVec2(pos.x + 10, pos.y + 9 - 5), ImVec2(pos.x + 10, pos.y + 9 + 4), col, 1.0f);
+                window->DrawList->AddLine(ImVec2(pos.x + 10 - 4, pos.y + 9), ImVec2(pos.x + 10 + 5, pos.y + 9), col, 1.0f);
+            }
+
             showToolTip(tooltip);
 
             return ret;
@@ -305,7 +319,7 @@ namespace Engine
 
             static char buf[16536];
             memcpy(buf, value->c_str(), value->size() + 1);
-            ImGui::InputTextMultiline(label, buf, 16536);
+            ImGui::InputTextMultiline(label, buf, 16536, ImVec2(0, 0), ImGuiInputTextFlags_CtrlEnterForNewLine);
             if (ImGui::IsItemDeactivatedAfterEdit())
             {
                 *value = buf;
