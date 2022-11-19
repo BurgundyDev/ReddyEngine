@@ -29,6 +29,8 @@ namespace Engine
 
         auto pRet = std::shared_ptr<Font>(new Font());
         pRet->m_height = Utils::deserializeInt32(json["height"], 24);
+        pRet->m_shadowAlpha = Utils::deserializeFloat(json["shadowOpacity"], 0.0f);
+        pRet->m_shadowDistance = Utils::deserializeInt32(json["shadowDistance"], 2);
         
         // load font file
         long size;
@@ -97,6 +99,9 @@ namespace Engine
 
     bool Font::addGlyph(int codepoint)
     {
+        int shadowPadding = m_shadowAlpha > 0.0f ? m_shadowDistance : 0;
+        int shadowAlpha = (int)(m_shadowAlpha * 255.0f);
+
         // how wide is this character
         int ax;
 	    int lsb;
@@ -111,8 +116,8 @@ namespace Engine
         // Find space in our atlas
         stbrp_rect rect;
         rect.id = codepoint;
-        rect.w = w + PADDING * 2;
-        rect.h = h + PADDING * 2;
+        rect.w = w + PADDING * 2 + shadowPadding;
+        rect.h = h + PADDING * 2 + shadowPadding;
         stbrp_pack_rects(m_pRectContext, &rect, 1);
 
         if (!rect.was_packed)
@@ -128,21 +133,41 @@ namespace Engine
         charData.resize(w * h);
         stbtt_MakeCodepointBitmap(m_pInfo, charData.data(), w, h, w, m_scale, m_scale, codepoint);
 
-        for (int srcy = 0; srcy < h; ++srcy)
+        auto dstW = w + shadowPadding;
+        auto dstH = h + shadowPadding;
+
+        for (int srcy = 0; srcy < dstH; ++srcy)
         {
             int dsty = rect.y + PADDING + srcy;
-            for (int srcx = 0; srcx < w; ++srcx)
+            for (int srcx = 0; srcx < dstW; ++srcx)
             {
+                uint8_t c = 0;
                 int dstx = rect.x + PADDING + srcx;
-                int srck = srcy * w + srcx;
                 int dstk = ((dsty * ATLAS_SIZE) + dstx) * 4;
-                uint8_t c = charData[srck];
 
-                // Premultiplied
-                m_pAtlasData[dstk + 0] = c;
-                m_pAtlasData[dstk + 1] = c;
-                m_pAtlasData[dstk + 2] = c;
-                m_pAtlasData[dstk + 3] = c;
+                if (srcx < w && srcy < h)
+                {
+                    int srck = srcy * w + srcx;
+                    c = charData[srck];
+                }
+
+                if (shadowAlpha && srcx > m_shadowDistance && srcy > m_shadowDistance)
+                {
+                    int shadowk = (srcy - m_shadowDistance) * w + (srcx - m_shadowDistance);
+                    uint8_t s = charData[shadowk];
+
+                    m_pAtlasData[dstk + 0] = c;
+                    m_pAtlasData[dstk + 1] = c;
+                    m_pAtlasData[dstk + 2] = c;
+                    m_pAtlasData[dstk + 3] = std::max(s, c);
+                }
+                else
+                {
+                    m_pAtlasData[dstk + 0] = c;
+                    m_pAtlasData[dstk + 1] = c;
+                    m_pAtlasData[dstk + 2] = c;
+                    m_pAtlasData[dstk + 3] = c;
+                }
             }
         }
 

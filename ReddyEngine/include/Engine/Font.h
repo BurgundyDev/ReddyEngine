@@ -73,6 +73,8 @@ namespace Engine
         int m_ascent = 0;
         int m_descent = 0;
         int m_lineGap = 0;
+        float m_shadowAlpha = 0.0f;
+        int m_shadowDistance = 2;
 
         std::unordered_map<int, Char*> m_chars;
         stbrp_context* m_pRectContext = nullptr;

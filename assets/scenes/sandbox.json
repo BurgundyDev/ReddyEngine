@@ -1,6 +1,6 @@
 {
    "camera" : {
-      "position" : [ 2.1691985130310059, -0.28733569383621216 ],
+      "position" : [ 2.6401519775390625, 0.11088091135025024 ],
       "zoom" : 2
    },
    "root" : {
@@ -809,50 +809,6 @@
                   "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
-                  "font" : "fonts/defaultFont48.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.7200000286102295,
-                  "text" : "Find Arrows",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : ""
-                  },
-                  "type" : "Script"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "sandboxFindArrows",
-                  "properties" : null,
-                  "type" : "Script"
-               }
-            ],
-            "editorLocked" : false,
-            "editorVisible" : true,
-            "expanded" : true,
-            "id" : 79,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 3.5, 0.5 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "additive" : 0.0,
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
                   "font" : "fonts/defaultFont24.json",
                   "origin" : [ 0.0, 1.0 ],
                   "scale" : 2.0899999141693115,
@@ -965,90 +921,164 @@
             "uiRoot" : false
          },
          {
-            "children" : [],
+            "children" : [
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 0.9768339991569519, 0.65625143051147461, 0.0, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont48.json",
+                        "origin" : [ 0.5, 0.5 ],
+                        "scale" : 1.7200000286102295,
+                        "text" : "Find Buttons",
+                        "type" : "Text"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "Button",
+                        "properties" : {
+                           "codeToEval" : ""
+                        },
+                        "type" : "Script"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "sandboxFindButtons",
+                        "properties" : null,
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "expanded" : true,
+                  "id" : 92,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.0088765621185302734, -0.48606356978416443 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 0.97647058963775635, 0.65490198135375977, 0.0, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont48.json",
+                        "origin" : [ 0.5, 0.5 ],
+                        "scale" : 1.7200000286102295,
+                        "text" : "Find Arrows",
+                        "type" : "Text"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "Button",
+                        "properties" : {
+                           "codeToEval" : ""
+                        },
+                        "type" : "Script"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "sandboxFindArrows",
+                        "properties" : null,
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "expanded" : true,
+                  "id" : 79,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.0088765621185302734, 0.021748930215835571 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 0.97647058963775635, 0.65490198135375977, 0.0, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont48.json",
+                        "origin" : [ 0.5, 0.5 ],
+                        "scale" : 1.7200000286102295,
+                        "text" : "Create Prefab",
+                        "type" : "Text"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "Button",
+                        "properties" : {
+                           "codeToEval" : ""
+                        },
+                        "type" : "Script"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "sandboxCreatePrefab",
+                        "properties" : null,
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "expanded" : true,
+                  "id" : 90,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.0088765621185302734, 0.50612390041351318 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               }
+            ],
             "clickThrough" : false,
             "components" : [
                {
                   "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
-                  "font" : "fonts/defaultFont48.json",
                   "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.7200000286102295,
-                  "text" : "Create Prefab",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : ""
-                  },
-                  "type" : "Script"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "sandboxCreatePrefab",
-                  "properties" : null,
-                  "type" : "Script"
+                  "texture" : "textures\\white.png",
+                  "type" : "Sprite",
+                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
                }
             ],
             "editorLocked" : false,
             "editorVisible" : true,
             "expanded" : true,
-            "id" : 90,
-            "lockScale" : true,
+            "id" : 95,
+            "lockScale" : false,
             "mouseChildren" : true,
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 3.5, 0.984375 ],
+               "position" : [ 3.5067484378814697, 0.54856359958648682 ],
                "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "additive" : 0.0,
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts/defaultFont48.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.7200000286102295,
-                  "text" : "Find Buttons",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : ""
-                  },
-                  "type" : "Script"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "sandboxFindButtons",
-                  "properties" : null,
-                  "type" : "Script"
-               }
-            ],
-            "editorLocked" : false,
-            "editorVisible" : true,
-            "expanded" : true,
-            "id" : 92,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 3.5, -0.0078125 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
+               "scale" : [ 1.6399999856948853, 1.3300000429153442 ]
             },
             "uiRoot" : false
          }
