@@ -6,6 +6,7 @@
 #include "Engine/Font.h"
 #include "Engine/PFX.h"
 #include "Engine/Resource.h"
+#include "Engine/FrameAnim.h"
 #include <string>
 #include <unordered_map>
 
@@ -19,6 +20,7 @@ namespace Engine
         TextureRef getTexture(const std::string& name);
         PFXRef getPFX(const std::string& name);
         FontRef getFont(const std::string& name);
+        FrameAnimRef getFrameAnim(const std::string& name);
 
         /*! \brief Copy the file from \ref{path} to the assets directory, with \ref{subDir} 
             being one of textures, fonts, etc. to copy to. resultPath gets set to the resulting path

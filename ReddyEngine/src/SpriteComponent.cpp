@@ -7,6 +7,7 @@
 #include "Engine/GUI.h"
 #include "Engine/Entity.h"
 #include "Engine/SpriteBatch.h"
+#include "Engine/FrameAnimComponent.h"
 
 
 namespace Engine
@@ -51,7 +52,7 @@ namespace Engine
     {
         bool changed = false;
 
-        changed |= GUI::textureProperty("Texture", &pTexture);
+        changed |= GUI::textureProperty("Texture", &pTexture, "", isFrameAnimTexture());
         changed |= GUI::colorProperty("Color", &color);
         changed |= GUI::originProperty("Origin", &origin);
         changed |= GUI::floatSliderProperty("Additive", &additive, 0.0f, 1.0f, "Alpha blend to Additive blend ratio.");
@@ -107,6 +108,11 @@ namespace Engine
     TextureRef SpriteComponent::getEditorIcon() const
     {
         return pTexture ? pTexture : Component::getEditorIcon();
+    }
+
+    bool SpriteComponent::isFrameAnimTexture() const
+    {
+        return pTexture != nullptr && m_pEntity->hasComponent<FrameAnimComponent>();
     }
 
     std::string SpriteComponent::getFriendlyName() const
