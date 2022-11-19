@@ -5,6 +5,7 @@
 #include "Engine/TextComponent.h"
 #include "Engine/ScriptComponent.h"
 #include "Engine/PFXComponent.h"
+#include "Engine/FrameAnimComponent.h"
 
 namespace Engine
 {
@@ -14,6 +15,7 @@ namespace Engine
         registerComponent<TextComponent>();
         registerComponent<ScriptComponent>();
         registerComponent<PFXComponent>();
+        registerComponent<FrameAnimComponent>();
     }
 
     std::map<std::string, CreateComponentFn> ComponentFactory::s_factories;

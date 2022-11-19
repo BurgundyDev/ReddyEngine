@@ -18,6 +18,9 @@ namespace Engine
     class PFX;
     using PFXRef = std::shared_ptr<PFX>;
 
+    class FrameAnim;
+    using FrameAnimRef = std::shared_ptr<FrameAnim>;
+
 
     namespace GUI
     {
@@ -58,8 +61,9 @@ namespace Engine
         void idProperty(const char* label, uint64_t id, const char* tooltip = nullptr); // Can't modify this
 
         // Resources
-        bool textureProperty(const char* label, TextureRef* value, const char* tooltip = nullptr);
+        bool textureProperty(const char* label, TextureRef* value, const char* tooltip = nullptr, bool disabled = false);
         bool fontProperty(const char* label, FontRef* value, const char* tooltip = nullptr);
         bool PFXProperty(const char* label, PFXRef* value, const char* tooltip = nullptr);
+        bool frameAnimProperty(const char* label, FrameAnimRef* value, const char* tooltip = nullptr, bool disabled = false);
     }
 }
