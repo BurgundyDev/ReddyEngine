@@ -59,7 +59,7 @@
                   "enabled" : true,
                   "name" : "Button",
                   "properties" : {
-                     "codeToEval" : "Quit()"
+                     "codeToEval" : "MainMenu()"
                   },
                   "type" : "Script"
                }
