@@ -237,7 +237,7 @@ void EditorState::update(float dt)
         {
             if (ImGui::MenuItem("Reset Camera")) 
             {
-                m_position = {0,0};
+                m_positionTarget = m_position = {0,0};
                 m_zoom = 2;
             }
 
@@ -329,22 +329,32 @@ void EditorState::update(float dt)
                 auto diff = m_mouseOnDown - Engine::getInput()->getMousePos();
                 diff /= m_zoomf;
                 m_position = m_positionOnDown + diff;
+                m_positionTarget = m_position;
             }
             else if (Engine::getInput()->getMouseWheel() > 0)
             {
                 // Zoom In
+                auto diff_before = (m_mouseWorldPos - m_position) * m_zoomf;
                 m_zoom = std::max(0, m_zoom - 1);
+                auto diff_after = (m_mouseWorldPos - m_position) * ZOOM_LEVELS[m_zoom];
+                m_positionTarget = m_position + (diff_after - diff_before) / ZOOM_LEVELS[m_zoom];
             }
             else if (Engine::getInput()->getMouseWheel() < 0)
             {
                 // Zoom out
+                auto diff_before = (m_mouseWorldPos - m_position) * m_zoomf;
                 m_zoom = std::min(7, m_zoom + 1);
+                auto diff_after = (m_mouseWorldPos - m_position) * ZOOM_LEVELS[m_zoom];
+                m_positionTarget = m_position + (diff_after - diff_before) / ZOOM_LEVELS[m_zoom];
             }
         }
 
         // Update zoom
         auto zoomTarget = ZOOM_LEVELS[m_zoom];
         m_zoomf = Engine::Utils::lerp(m_zoomf, zoomTarget, std::min(1.0f, dt * 50.0f));
+
+        // Update position
+        m_position = Engine::Utils::lerp(m_position, m_positionTarget, std::min(1.0f, dt * 50.0f));
     }
     
     // Transforming with mouse
@@ -836,7 +846,7 @@ void EditorState::open(const std::string& filename)
         return;
     }
 
-    m_position = Engine::Utils::deserializeJsonValue<glm::vec2>(json["camera"]["position"]);
+    m_positionTarget = Engine::Utils::deserializeJsonValue<glm::vec2>(json["camera"]["position"]);
     m_zoom = Engine::Utils::deserializeJsonValue<int>(json["camera"]["zoom"]);
     m_filename = filename;
     m_pActionManager->clear();
@@ -928,7 +938,7 @@ void EditorState::clear()
     m_pActionManager->clear();
     m_pPfxInstance.reset();
     m_pPfx.reset();
-    m_position = {0, 0};
+    m_positionTarget = m_position = {0, 0};
     m_zoom = 2;
     m_zoomf = ZOOM_LEVELS[2];
     m_prevJson = Json::Value();
