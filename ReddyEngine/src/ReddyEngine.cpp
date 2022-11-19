@@ -115,6 +115,9 @@ namespace Engine
         //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
         //IM_ASSERT(font != NULL);
 
+        if (Utils::fileExists("c:\\Windows\\Fonts\\segoeui.ttf"))
+            io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f, NULL);
+
         // Initialize Engine's systems
         ComponentFactory::initialize();
         g_pEventSystem = std::make_shared<EventSystem>();

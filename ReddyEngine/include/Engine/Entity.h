@@ -236,6 +236,8 @@ namespace Engine
 		bool expanded = true; // Scene Tree view, editor
 		void drawOutline(const glm::vec4& color, float zoomScale);
 		void expand();
+		bool editorVisible = true;
+		bool editorLocked = false;
 
 	private:
 		void componentAdded(const ComponentRef& pComponent);

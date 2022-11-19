@@ -219,6 +219,8 @@ namespace Engine
 		json["uiRoot"] = uiRoot;
 		json["lockScale"] = lockScale;
 		json["expanded"] = expanded;
+		json["editorVisible"] = editorVisible;
+		json["editorLocked"] = editorLocked;
 		json["transform"]["position"] = Utils::serializeJsonValue(m_transform.position);
 		json["transform"]["rotation"] = Utils::serializeJsonValue(m_transform.rotation);
 		json["transform"]["scale"] = Utils::serializeJsonValue(m_transform.scale);
@@ -261,6 +263,8 @@ namespace Engine
 		uiRoot = Utils::deserializeBool(json["uiRoot"], false);
 		lockScale = Utils::deserializeBool(json["lockScale"], true);
 		expanded = Utils::deserializeBool(json["expanded"], true);
+		editorVisible = Utils::deserializeBool(json["editorVisible"], true);
+		editorLocked = Utils::deserializeBool(json["editorLocked"], false);
 
 		// Transform
 		m_transform.position = Utils::deserializeJsonValue<glm::vec2>(json["transform"]["position"]);
@@ -414,9 +418,12 @@ namespace Engine
 			: glm::distance(getWorldPosition(), pointInWorld) < radius;
 	}
 
-	// Pretty slow, now partitionning, we basically check every entity/components :derp:
+	// Pretty slow, not partitionning, we basically check every entity/components :derp:
 	EntityRef Entity::getMouseHover(const glm::vec2& mousePos, bool ignoreMouseFlags)
 	{
+		if (!editorVisible && getScene()->isEditorScene()) return false;
+		if (editorLocked && getScene()->isEditorScene()) return false;
+
 		// We start with leaves first
 		if (ignoreMouseFlags || mouseChildren)
 		{
@@ -519,6 +526,16 @@ namespace Engine
 	{
 		bool changed = false;
 		auto transformBefore = m_transform;
+
+		GUI::beginGroup("Editor Only");
+		ImGui::Columns(2);
+		changed |= GUI::boolProperty("Visible", &editorVisible);
+		ImGui::NextColumn();
+		changed |= GUI::boolProperty("Locked", &editorLocked);
+		ImGui::Columns();
+		GUI::endGroup();
+
+		ImGui::Separator();
 
 		GUI::idProperty("ID", id);
 		changed |= GUI::stringProperty("Name", &name);
@@ -625,6 +642,8 @@ namespace Engine
 
 	void Entity::draw()
 	{
+		if (!editorVisible && getScene()->isEditorScene()) return;
+
 		for (auto rit = m_components.rbegin(); rit != m_components.rend(); ++rit)
 		{
 			const auto& pComponent = *rit;

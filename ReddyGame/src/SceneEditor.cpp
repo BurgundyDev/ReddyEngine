@@ -23,19 +23,34 @@
 static Engine::EntityRef g_pDragTarget = nullptr;
 
 
-// This is very expensive and done for every entity inthe scene tree window
+// This is very expensive and done for every entity in the scene tree window
 std::string EditorState::getEntityFriendlyName(const Engine::EntityRef& pEntity)
 {
-    if (!pEntity->name.empty()) return pEntity->name.c_str();
-    const auto& components = pEntity->getComponents();
-    if (components.empty()) return "Entity";
     std::string ret;
-    for (const auto& pComponent : components)
+    if (pEntity->editorLocked) ret = "(LOCKED) ";
+    if (!pEntity->editorVisible) ret += "(HIDDEN) ";
+    if (!pEntity->name.empty()) ret += pEntity->name.c_str();
+    else
     {
-        ret = pComponent->getFriendlyName();
-        if (!ret.empty()) return ret;
+        const auto& components = pEntity->getComponents();
+        if (components.empty()) ret += "Entity";
+        else
+        {
+            bool found = false;
+            for (const auto& pComponent : components)
+            {
+                auto n = pComponent->getFriendlyName();
+                if (!n.empty())
+                {
+                    found = true;
+                    ret += n;
+                    break;
+                }
+            }
+            if (!found) ret += components.front()->getType();
+        }
     }
-    return components.front()->getType();
+    return ret;
 }
 
 void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
