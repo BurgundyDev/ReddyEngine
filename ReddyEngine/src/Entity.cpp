@@ -193,6 +193,61 @@ namespace Engine
 
 		return nullptr;
 	}
+
+	EntityRef Entity::findByComponent(const std::string& componentName, bool recursive)
+	{
+		for (const auto& pComponent : m_components)
+		{
+			if (pComponent->getType() == componentName)
+				return shared_from_this();
+			auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+			if (pScriptComponent)
+			{
+				if (pScriptComponent->name == componentName)
+					return shared_from_this();
+			}
+		}
+
+		for (auto it = m_children.begin(); it != m_children.end(); ++it)
+		{
+			const EntityRef &ref = *it;
+
+			if (recursive)
+				if (auto found_child = ref->findByComponent(componentName, true))
+					return found_child;
+		}
+
+		return nullptr;
+	}
+
+	EntityRef Entity::findByComponent(const std::string& componentName, const EntitySearchParams& searchParams, bool recursive)
+	{
+		if (searchParams.radius < FLT_EPSILON || isInRadius(searchParams.pointInWorld, searchParams.radius))
+		{
+			for (const auto& pComponent : m_components)
+			{
+				if (pComponent->getType() == componentName)
+					return shared_from_this();
+				auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+				if (pScriptComponent)
+				{
+					if (pScriptComponent->name == componentName)
+						return shared_from_this();
+				}
+			}
+		}
+
+		for (auto it = m_children.begin(); it != m_children.end(); ++it)
+		{
+			const EntityRef &ref = *it;
+
+			if (recursive)
+				if (auto found_child = ref->findByComponent(componentName, searchParams, true))
+					return found_child;
+		}
+
+		return nullptr;
+	}
 	
 	void Entity::findByName(const std::string& in_name, std::vector<EntityRef>& entities, bool recursive)
 	{
@@ -211,6 +266,53 @@ namespace Engine
 		if (recursive)
 			for (const auto& pChild : m_children)
 				pChild->findByName(in_name, entities, searchParams, true);
+	}
+	
+	void Entity::findByComponent(const std::string& componentName, std::vector<EntityRef>& entities, bool recursive)
+	{
+		for (const auto& pComponent : m_components)
+		{
+			if (pComponent->getType() == componentName)
+			{
+				entities.push_back(shared_from_this());
+				continue;
+			}
+			auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+			if (pScriptComponent)
+			{
+				if (pScriptComponent->name == componentName)
+					entities.push_back(shared_from_this());
+			}
+		}
+
+		if (recursive)
+			for (const auto& pChild : m_children)
+				pChild->findByComponent(componentName, entities, true);
+	}
+
+	void Entity::findByComponent(const std::string& componentName, std::vector<EntityRef>& entities, const EntitySearchParams &searchParams, bool recursive)
+	{
+		if (searchParams.radius < FLT_EPSILON || isInRadius(searchParams.pointInWorld, searchParams.radius))
+		{
+			for (const auto& pComponent : m_components)
+			{
+				if (pComponent->getType() == componentName)
+				{
+					entities.push_back(shared_from_this());
+					continue;
+				}
+				auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+				if (pScriptComponent)
+				{
+					if (pScriptComponent->name == componentName)
+						entities.push_back(shared_from_this());
+				}
+			}
+		}
+
+		if (recursive)
+			for (const auto& pChild : m_children)
+				pChild->findByComponent(componentName, entities, searchParams, true);
 	}
 
 	bool Entity::hasChild(const EntityRef& pChild, bool recursive) const

@@ -1007,6 +1007,50 @@
                "scale" : [ 1.0, 1.0 ]
             },
             "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "additive" : 0.0,
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont48.json",
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.7200000286102295,
+                  "text" : "Find Buttons",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : ""
+                  },
+                  "type" : "Script"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "sandboxFindButtons",
+                  "properties" : null,
+                  "type" : "Script"
+               }
+            ],
+            "editorLocked" : false,
+            "editorVisible" : true,
+            "expanded" : true,
+            "id" : 92,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 3.5, -0.0078125 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
          }
       ],
       "clickThrough" : true,

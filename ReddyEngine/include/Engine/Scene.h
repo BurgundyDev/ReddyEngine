@@ -44,11 +44,15 @@ namespace Engine
 
 		/*! \brief Search the root for an entity with the given name */
 		EntityRef getEntityByName(const std::string& name, bool recursive = false) const;
+		EntityRef findByComponent(const std::string& componentName, bool recursive = false) const;
 		void FindEntitiesByName(const std::string& name, std::vector<EntityRef>& entities, bool recursive = false) const;
+		void FindEntitiesByComponent(const std::string& componentName, std::vector<EntityRef>& entities, bool recursive = false) const;
 
 		/*! \brief Search the root for an entity with the given name, optionally searching  using EntitySearchParams */
 		EntityRef getEntityByName(const std::string& name, const EntitySearchParams& searchParams, bool recursive = false) const;
+		EntityRef findByComponent(const std::string& componentName, const EntitySearchParams& searchParams, bool recursive = false) const;
 		void FindEntitiesByName(const std::string& name, std::vector<EntityRef>& entities, const EntitySearchParams& searchParams, bool recursive = false) const;
+		void FindEntitiesByComponent(const std::string& componentName, std::vector<EntityRef>& entities, const EntitySearchParams& searchParams, bool recursive = false) const;
 		
 		const EntityRef& getRoot() const { return m_pRoot; }
 

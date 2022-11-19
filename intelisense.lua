@@ -135,9 +135,9 @@ function StopPFX(e) end
 -- Entity searching
 ---------------------------------------------------------------------
 function FindEntityByName(entityName, pos, searchRadius) end -- Pass 0 for Radius for whole world
--- function FindEntityByComponent(componentTypeName, pos, searchRadius) end -- Pass 0 for Radius for whole world
 function FindEntitiesByName(entityName, pos, searchRadius) end -- Returns array. Pass 0 for Radius for whole world.
--- function FindEntitiesByComponent(componentTypeName, pos, searchRadius) end -- eturns array. Pass 0 for Radius for whole world.
+function FindEntityByComponent(componentTypeName, pos, searchRadius) end -- Pass 0 for Radius for whole world
+function FindEntitiesByComponent(componentTypeName, pos, searchRadius) end -- eturns array. Pass 0 for Radius for whole world.
 
 
 ---------------------------------------------------------------------

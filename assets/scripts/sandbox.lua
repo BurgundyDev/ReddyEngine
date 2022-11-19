@@ -226,3 +226,15 @@ RegisterComponent("sandboxFindArrows", {
         print("Found " .. #entities .. " arrows in radius.")
     end
 })
+
+
+-- Find all entities with a component "Button"
+RegisterComponent("sandboxFindButtons", {
+    mouseClick = function(self)
+        local entities = FindEntitiesByComponent("Button")
+        print("Found " .. #entities .. " Buttons.")
+
+        local entities = FindEntitiesByComponent("Button", GetPosition(self), 5)
+        print("Found " .. #entities .. " Buttons in radius.")
+    end
+})

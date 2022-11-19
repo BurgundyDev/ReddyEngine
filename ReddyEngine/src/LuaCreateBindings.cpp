@@ -86,7 +86,9 @@ namespace Engine
         LUA_REGISTER(GetName);
         LUA_REGISTER(SetName);
         LUA_REGISTER(FindEntityByName);
+        LUA_REGISTER(FindEntityByComponent);
         LUA_REGISTER(FindEntitiesByName);
+        LUA_REGISTER(FindEntitiesByComponent);
         LUA_REGISTER(ContinueGame);
         LUA_REGISTER(NewGame);
         LUA_REGISTER(Quit);
@@ -740,14 +742,66 @@ namespace Engine
 
     int LuaBindings::funcFindEntityByComponent(lua_State* L)
     {
-        //TODO:
-        return 0;
+        auto searchName = LUA_GET_STRING(1, "");
+        if (searchName.empty())
+        {
+            lua_pushnil(L);
+            return 1;
+        }
+        glm::vec2 searchPos = LUA_GET_VEC2(2, glm::vec2(0));
+        auto searchRadius = LUA_GET_NUMBER(3, 0.0f);
+
+        if (searchRadius < FLT_EPSILON)
+        {
+            auto pEntity = getScene()->findByComponent(searchName, true);
+            LUA_PUSH_ENTITY(pEntity);
+            return 1;
+        }
+        else
+        {
+            EntitySearchParams searchParams;
+            searchParams.pointInWorld = searchPos;
+            searchParams.radius = searchRadius;
+            auto pEntity = getScene()->findByComponent(searchName, searchParams, true);
+            LUA_PUSH_ENTITY(pEntity);
+            return 1;
+        }
     }
 
     int LuaBindings::funcFindEntitiesByComponent(lua_State* L)
     {
-        //TODO:
-        return 0;
+        auto searchName = LUA_GET_STRING(1, "");
+        if (searchName.empty())
+        {
+            lua_pushnil(L);
+            return 1;
+        }
+        glm::vec2 searchPos = LUA_GET_VEC2(2, glm::vec2(0));
+        auto searchRadius = LUA_GET_NUMBER(3, 0.0f);
+
+        std::vector<EntityRef> entities;
+        if (searchRadius < FLT_EPSILON)
+        {
+            getScene()->FindEntitiesByComponent(searchName, entities, true);
+        }
+        else
+        {
+            EntitySearchParams searchParams;
+            searchParams.pointInWorld = searchPos;
+            searchParams.radius = searchRadius;
+            getScene()->FindEntitiesByComponent(searchName, entities, searchParams, true);
+        }
+
+        lua_newtable(L);
+
+        for (int i = 0, len = (int)entities.size(); i < len; ++i)
+        {
+            const auto& pEntity = entities[i];
+            LUA_PUSH_ENTITY(pEntity);
+            lua_seti(L, -2, i + 1);
+        }
+
+        return 1;
     }
 
     int LuaBindings::funcContinueGame(lua_State* L)

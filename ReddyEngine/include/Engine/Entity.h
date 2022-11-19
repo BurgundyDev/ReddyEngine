@@ -137,9 +137,14 @@ namespace Engine
 
 		EntityRef getChildByName(const std::string& name, bool recursive = false);
 		EntityRef getChildByName(const std::string& name, const EntitySearchParams &searchParams, bool recursive = false);
-
 		void findByName(const std::string& name, std::vector<EntityRef>& entities, bool recursive = false);
 		void findByName(const std::string& name, std::vector<EntityRef>& entities, const EntitySearchParams &searchParams, bool recursive = false);
+
+		// We use strings here instead of template type because this is meant to be called from Lua gameplay code anyway.
+		EntityRef findByComponent(const std::string& componentName, bool recursive = false);
+		EntityRef findByComponent(const std::string& componentName, const EntitySearchParams &searchParams, bool recursive = false);
+		void findByComponent(const std::string& componentName, std::vector<EntityRef>& entities, bool recursive = false);
+		void findByComponent(const std::string& componentName, std::vector<EntityRef>& entities, const EntitySearchParams &searchParams, bool recursive = false);
 
 		bool hasChild(const EntityRef& pChild, bool recursive = false) const;
 
