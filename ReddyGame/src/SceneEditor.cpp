@@ -3,6 +3,7 @@
 
 #include <Engine/Entity.h>
 #include <Engine/Scene.h>
+#include <Engine/Component.h>
 #include <Engine/ReddyEngine.h>
 #include <Engine/GUI.h>
 #include <Engine/Input.h>
@@ -23,14 +24,18 @@ static Engine::EntityRef g_pDragTarget = nullptr;
 
 
 // This is very expensive and done for every entity inthe scene tree window
-const char* EditorState::getEntityFriendlyName(const Engine::EntityRef& pEntity)
+std::string EditorState::getEntityFriendlyName(const Engine::EntityRef& pEntity)
 {
     if (!pEntity->name.empty()) return pEntity->name.c_str();
-    if (pEntity->hasComponent<Engine::SpriteComponent>()) return "Sprite";
-    if (pEntity->hasComponent<Engine::TextComponent>()) return pEntity->getComponent<Engine::TextComponent>()->text.c_str();
-    if (pEntity->hasComponent<Engine::ScriptComponent>()) return pEntity->getComponent<Engine::ScriptComponent>()->name.c_str();
-    if (pEntity->hasComponent<Engine::PFXComponent>()) return "PFX";
-    return "Entity";
+    const auto& components = pEntity->getComponents();
+    if (components.empty()) return "Entity";
+    std::string ret;
+    for (const auto& pComponent : components)
+    {
+        ret = pComponent->getFriendlyName();
+        if (!ret.empty()) return ret;
+    }
+    return components.front()->getType();
 }
 
 void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
@@ -40,10 +45,10 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
     if (children.empty()) flags |= ImGuiTreeNodeFlags_Leaf;
     if (pEntity->isSelected) flags |= ImGuiTreeNodeFlags_Selected;
-    if (pEntity->expanded) flags |= ImGuiTreeNodeFlags_DefaultOpen;
+    //if (pEntity->expanded) flags |= ImGuiTreeNodeFlags_DefaultOpen; // No need, we do ImGui::SetNextItemOpen
 
     ImGui::SetNextItemOpen(pEntity->expanded);
-    pEntity->expanded = ImGui::TreeNodeEx((const void*)(uintptr_t)pEntity->id, flags, getEntityFriendlyName(pEntity));
+    bool openned = pEntity->expanded = ImGui::TreeNodeEx((const void*)(uintptr_t)pEntity->id, flags, getEntityFriendlyName(pEntity).c_str());
 
     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
     {
@@ -86,7 +91,7 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
         ImGui::EndDragDropSource();
     }
 
-    if (pEntity->expanded)
+    if (openned)
     {
         for (const auto& pChild : children)
             drawEntitySceneTree(pChild);
@@ -358,11 +363,11 @@ void EditorState::drawSceneUI() // This is also kind of update
     if (ImGui::BeginPopupContextWindow("CreateEntityContext"))
     {
         if (ImGui::Selectable("Empty")) onCreateEmptyEntity();
-        if (ImGui::Selectable("Sprite")) onCreateSpriteEntity();
-        if (ImGui::Selectable("Text")) onCreateTextEntity();
-        if (ImGui::Selectable("Sound")) onCreateSoundEntity();
-        if (ImGui::Selectable("Particle")) onCreateParticleEntity();
-        if (ImGui::Selectable("Script")) onCreateScriptEntity();
+        ImGui::Separator();
+        const auto& componentNames = Engine::ComponentFactory::getComponentNames();
+        for (const auto& componentName : componentNames)
+            if (ImGui::MenuItem(componentName.c_str()))
+                onCreateEntity(componentName);
         ImGui::EndPopup();
     }
 
@@ -373,10 +378,16 @@ void EditorState::drawSceneUI() // This is also kind of update
     }
     if (ImGui::BeginPopupContextWindow("CreateComponentContext"))
     {
-        if (ImGui::Selectable("Sprite")) onAddComponent<Engine::SpriteComponent>();
-        if (ImGui::Selectable("Text")) onAddComponent<Engine::TextComponent>();
-        if (ImGui::Selectable("Script")) onAddComponent<Engine::ScriptComponent>();
-        if (ImGui::Selectable("PFX")) onAddComponent<Engine::PFXComponent>();
+        const auto& componentNames = Engine::ComponentFactory::getComponentNames();
+        for (const auto& componentName : componentNames)
+        {
+            if (ImGui::Selectable(componentName.c_str()))
+            {
+                if (m_selected.size() != 1) return;
+                m_selected.front()->addComponent(Engine::ComponentFactory::create(componentName));
+                pushUndo("Add Component");
+            }
+        }
         ImGui::EndPopup();
     }
 }

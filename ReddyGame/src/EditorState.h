@@ -25,7 +25,6 @@ namespace Engine
     using PFXInstanceRef = std::shared_ptr<PFXInstance>;
 
     class IEvent;
-    class ScriptComponent;
 }
 
 
@@ -70,21 +69,9 @@ private:
     void onDuplicate();
     void onDelete();
     void onCreateEmptyEntity();
-    void onCreateSpriteEntity();
-    void onCreateTextEntity();
-    void onCreateSoundEntity();
-    void onCreateParticleEntity();
-    void onCreateScriptEntity();
+    void onCreateEntity(const std::string& typeName);
     void onDisableGrid();
     void onDisableViewportOutline();
-
-    template<typename T>
-    void onAddComponent()
-    {
-        if (m_selected.size() != 1) return;
-        m_selected.front()->addComponent<T>();
-        pushUndo("Add Component");
-    }
 
     void open(const std::string& filename);
     bool openAs(); // Returns false if user cancelled
@@ -99,7 +86,7 @@ private:
     void changeSelection(const std::vector<Engine::EntityRef>& newSelection);
     void changeSelectionAction(const std::vector<Engine::EntityRef>& newSelection);
     void drawEntitySceneTree(const Engine::EntityRef& pEntity);
-    const char* getEntityFriendlyName(const Engine::EntityRef& pEntity);
+    std::string getEntityFriendlyName(const Engine::EntityRef& pEntity);
     void serializeSelectionState();
     void updateTransform();
     void createEntityAction(Engine::EntityRef pEntity);

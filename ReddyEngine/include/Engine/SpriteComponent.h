@@ -14,6 +14,8 @@ namespace Engine
 
     class SpriteComponent final : public Component
     {
+		DECLARE_COMPONENT("Sprite");
+
     public:
 		SpriteComponent();
 		~SpriteComponent() {}
@@ -25,9 +27,8 @@ namespace Engine
 
 		bool isMouseHover(const glm::vec2& mousePos) const override;
 		void drawOutline(const glm::vec4& color, float zoomScale) override; // For editor
-		virtual TextureRef getEditorIcon() const override;
-
-		std::string getType() const override { return "Sprite"; }
+		TextureRef getEditorIcon() const override;
+		std::string getFriendlyName() const override;
 
 		TextureRef pTexture;
 		glm::vec4 color = {1, 1, 1, 1};

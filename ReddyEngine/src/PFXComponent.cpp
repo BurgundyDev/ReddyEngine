@@ -68,6 +68,13 @@ namespace Engine
     {
         pPFXInstance = nullptr;
     }
+    
+    std::string PFXComponent::getFriendlyName() const
+    {
+        if (pPFX)
+            return Utils::getFilenameWithoutExtension(pPFX->getFilename());
+        return "";
+    }
 
     bool PFXComponent::edit()
     {

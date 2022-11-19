@@ -105,6 +105,13 @@ namespace Engine
         return pTexture ? pTexture : Component::getEditorIcon();
     }
 
+    std::string SpriteComponent::getFriendlyName() const
+    {
+        if (pTexture)
+            return Utils::getFilenameWithoutExtension(pTexture->getFilename());
+        return "";
+    }
+
     void SpriteComponent::draw()
     {
         getSpriteBatch()->drawSprite(pTexture,

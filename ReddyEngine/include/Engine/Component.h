@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Engine/ComponentFactory.h>
+
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 #include <json/json.h>
@@ -23,7 +25,6 @@ namespace Engine
 	class Component
 	{
 	public:
-		static ComponentRef create(const std::string& className);
 		static void clearCachedEditorIcons();
 
 		Component();
@@ -49,6 +50,7 @@ namespace Engine
 		virtual std::string getType() const = 0;
 		virtual std::string getEditName() const { return getType(); }
 		virtual TextureRef getEditorIcon() const;
+		virtual std::string getFriendlyName() const { return ""; }
 
 		virtual bool isMouseHover(const glm::vec2& mousePos) const;
 		virtual void drawOutline(const glm::vec4& color, float zoomScale); // For editor

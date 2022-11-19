@@ -79,6 +79,17 @@ namespace Engine
             localMouse.y <= sizef.y * invOrigin.y;
     }
 
+    std::string TextComponent::getFriendlyName() const
+    {
+        auto ret = text.substr(0, 32);
+        for (auto& c : ret)
+            if (c == '\n')
+                c = ' ';
+        if (text.size() > 32)
+            ret += "...";
+        return ret;
+    }
+
 	void TextComponent::drawOutline(const glm::vec4& color, float zoomScale)
     {
         if (!pFont || text.empty())

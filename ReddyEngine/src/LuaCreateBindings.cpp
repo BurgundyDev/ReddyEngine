@@ -832,7 +832,7 @@ namespace Engine
             return 1;
         }
 
-        auto pComponent = Component::create(componentName);
+        auto pComponent = ComponentFactory::create(componentName);
         if (pComponent)
         {
             if (std::dynamic_pointer_cast<ScriptComponent>(pComponent))
@@ -1099,37 +1099,25 @@ namespace Engine
         auto pEntity = LUA_GET_ENTITY(1);
         if (!pEntity) return 0;
 
-        ComponentRef pComponent;
         auto componentName = LUA_GET_STRING(2, "");
 
-        if (componentName == "Sprite")
-            pComponent = LUA_GET_COMPONENT(1, SpriteComponent);
-        else if (componentName == "Text")
-            pComponent = LUA_GET_COMPONENT(1, TextComponent);
-        else if (componentName == "PFX")
-            pComponent = LUA_GET_COMPONENT(1, PFXComponent);
-        else
+        for (const auto& pComponent : pEntity->getComponents())
         {
-            if (!componentName.empty())
+            if (componentName == pComponent->getType())
             {
-                auto pComponents = pEntity->getComponents();
-                for (const auto& pComponent : pComponents)
+                pComponent->enable();
+                break;
+            }
+            auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+            if (pScriptComponent)
+            {
+                if (pScriptComponent->name == componentName)
                 {
-                    auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
-                    if (pScriptComponent)
-                    {
-                        if (pScriptComponent->name == componentName)
-                        {
-                            pComponent->enable();
-                            return 0;
-                        }
-                    }
+                    pComponent->enable();
+                    return 0;
                 }
             }
         }
-
-        if (pComponent)
-            pComponent->enable();
 
         return 0;
     }
@@ -1139,37 +1127,25 @@ namespace Engine
         auto pEntity = LUA_GET_ENTITY(1);
         if (!pEntity) return 0;
 
-        ComponentRef pComponent;
         auto componentName = LUA_GET_STRING(2, "");
 
-        if (componentName == "Sprite")
-            pComponent = LUA_GET_COMPONENT(1, SpriteComponent);
-        else if (componentName == "Text")
-            pComponent = LUA_GET_COMPONENT(1, TextComponent);
-        else if (componentName == "PFX")
-            pComponent = LUA_GET_COMPONENT(1, PFXComponent);
-        else
+        for (const auto& pComponent : pEntity->getComponents())
         {
-            if (!componentName.empty())
+            if (componentName == pComponent->getType())
             {
-                auto pComponents = pEntity->getComponents();
-                for (const auto& pComponent : pComponents)
+                pComponent->disable();
+                break;
+            }
+            auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+            if (pScriptComponent)
+            {
+                if (pScriptComponent->name == componentName)
                 {
-                    auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
-                    if (pScriptComponent)
-                    {
-                        if (pScriptComponent->name == componentName)
-                        {
-                            pComponent->disable();
-                            return 0;
-                        }
-                    }
+                    pComponent->disable();
+                    return 0;
                 }
             }
         }
-        
-        if (pComponent)
-            pComponent->disable();
 
         return 0;
     }

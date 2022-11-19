@@ -14,6 +14,8 @@ namespace Engine
 
     class ScriptComponent final : public Component, public std::enable_shared_from_this<ScriptComponent>
     {
+		DECLARE_COMPONENT("Script");
+
     public:
 		ScriptComponent();
 		~ScriptComponent();
@@ -21,10 +23,10 @@ namespace Engine
 		Json::Value serialize() override;
 		void deserialize(const Json::Value& json) override;
 		bool edit() override;
-		std::string getType() const override { return "Script"; }
 		std::string getEditName() const override { return name.empty() ? "Script" : "Script - " + name; }
-		LuaComponentDef* getLuaDef() const { return m_pLuaComponentDef; }
+		std::string getFriendlyName() const override;
 
+		LuaComponentDef* getLuaDef() const { return m_pLuaComponentDef; }
 		void loadDef(LuaComponentDef* pDef);
 
 

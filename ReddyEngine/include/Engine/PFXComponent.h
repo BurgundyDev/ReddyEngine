@@ -17,6 +17,8 @@ namespace Engine
 
     class PFXComponent final : public Component
     {
+		DECLARE_COMPONENT("PFX");
+
     public:
 		PFXComponent();
 		~PFXComponent() {}
@@ -31,7 +33,7 @@ namespace Engine
 		void play();
 		void stop();
 
-		std::string getType() const override { return "PFX"; }
+		std::string getFriendlyName() const override;
 
 		PFXRef pPFX;
 		PFXInstanceRef pPFXInstance;

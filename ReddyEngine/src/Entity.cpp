@@ -273,7 +273,7 @@ namespace Engine
 		for (const auto& componentJson : componentsJson)
 		{
 			std::string type = Utils::deserializeString(componentJson["type"]);
-			auto pComponent = Component::create(type);
+			auto pComponent = ComponentFactory::create(type);
 			if (!pComponent)
 			{
 				continue;

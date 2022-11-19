@@ -9,6 +9,7 @@
 #include "Engine/EventSystem.h"
 #include "Engine/LuaBindings.h"
 #include "Engine/MusicManager.h"
+#include "Engine/ComponentFactory.h"
 
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -115,6 +116,7 @@ namespace Engine
         //IM_ASSERT(font != NULL);
 
         // Initialize Engine's systems
+        ComponentFactory::initialize();
         g_pEventSystem = std::make_shared<EventSystem>();
         g_pInput = std::make_shared<Input>();
         g_pAudio = std::make_shared<Audio>();

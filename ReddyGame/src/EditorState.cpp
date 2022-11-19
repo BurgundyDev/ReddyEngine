@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "MainMenuState.h"
 
+#include <Engine/Component.h>
 #include <Engine/Config.h>
 #include <Engine/Event.h>
 #include <Engine/Input.h>
@@ -15,12 +16,9 @@
 #include <Engine/Utils.h>
 #include <Engine/Entity.h>
 #include <Engine/Scene.h>
-#include <Engine/SpriteComponent.h>
-#include <Engine/TextComponent.h>
-#include <Engine/ScriptComponent.h>
-#include <Engine/PFXComponent.h>
 #include <Engine/MusicManager.h>
 #include <Engine/LuaBindings.h>
+#include <Engine/PFXComponent.h>
 
 #include <imgui.h>
 #include <tinyfiledialogs/tinyfiledialogs.h>
@@ -269,11 +267,11 @@ void EditorState::update(float dt)
                 if (ImGui::BeginMenu("Create Entity (Shift+A)"))
                 {
                     if (ImGui::MenuItem("Empty")) onCreateEmptyEntity();
-                    if (ImGui::MenuItem("Sprite")) onCreateSpriteEntity();
-                    if (ImGui::MenuItem("Text")) onCreateTextEntity();
-                    if (ImGui::MenuItem("Sound")) onCreateSoundEntity();
-                    if (ImGui::MenuItem("Particle")) onCreateParticleEntity();
-                    if (ImGui::MenuItem("Script")) onCreateScriptEntity();
+                    ImGui::Separator();
+                    const auto& componentNames = Engine::ComponentFactory::getComponentNames();
+                    for (const auto& componentName : componentNames)
+                        if (ImGui::MenuItem(componentName.c_str()))
+                            onCreateEntity(componentName);
                     ImGui::EndMenu();
                 }
                 ImGui::EndMenu();
@@ -756,36 +754,10 @@ void EditorState::onCreateEmptyEntity()
     createEntityAction(pEntity);
 }
 
-void EditorState::onCreateSpriteEntity()
+void EditorState::onCreateEntity(const std::string& typeName)
 {
     auto pEntity = Engine::getScene()->createEntity();
-    pEntity->addComponent<Engine::SpriteComponent>();
-    createEntityAction(pEntity);
-}
-
-void EditorState::onCreateTextEntity()
-{
-    auto pEntity = Engine::getScene()->createEntity();
-    pEntity->addComponent<Engine::TextComponent>();
-    createEntityAction(pEntity);
-}
-
-void EditorState::onCreateSoundEntity()
-{
-    CORE_ERROR_POPUP("Unsupported Sound Entity yet!");
-}
-
-void EditorState::onCreateParticleEntity()
-{
-    auto pEntity = Engine::getScene()->createEntity();
-    pEntity->addComponent<Engine::PFXComponent>();
-    createEntityAction(pEntity);
-}
-
-void EditorState::onCreateScriptEntity()
-{
-    auto pEntity = Engine::getScene()->createEntity();
-    pEntity->addComponent<Engine::ScriptComponent>();
+    pEntity->addComponent(Engine::ComponentFactory::create(typeName));
     createEntityAction(pEntity);
 }
 
