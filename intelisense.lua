@@ -136,10 +136,11 @@ function PlayFrameAnim(e, animAnme) end
 ---------------------------------------------------------------------
 -- Entity searching
 ---------------------------------------------------------------------
-function FindEntityByName(entityName, pos, searchRadius) end -- Pass 0 for Radius for whole world
-function FindEntitiesByName(entityName, pos, searchRadius) end -- Returns array. Pass 0 for Radius for whole world.
-function FindEntityByComponent(componentTypeName, pos, searchRadius) end -- Pass 0 for Radius for whole world
-function FindEntitiesByComponent(componentTypeName, pos, searchRadius) end -- eturns array. Pass 0 for Radius for whole world.
+-- Root argument is where to start searching. If root is nil, scene root will be used.
+function FindEntityByName(root, entityName, pos, searchRadius) end -- Pass 0 for Radius for whole world.
+function FindEntitiesByName(root, entityName, pos, searchRadius) end -- Returns array. Pass 0 for Radius for whole world.
+function FindEntityByComponent(root, componentTypeName, pos, searchRadius) end -- Pass 0 for Radius for whole world
+function FindEntitiesByComponent(root, componentTypeName, pos, searchRadius) end -- eturns array. Pass 0 for Radius for whole world.
 
 
 ---------------------------------------------------------------------

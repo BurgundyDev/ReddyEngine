@@ -4,10 +4,12 @@
 
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
+#include <json/json.h>
 
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <memory>
 
 
@@ -196,6 +198,7 @@ namespace Engine
 
         lua_State* L = nullptr;
 
+        std::unordered_map<std::string, Json::Value> m_prefabCache;
         std::map<std::string, LuaComponentDef*> m_componentDefs;
         LuaComponentDef* m_pCurrentComponentDef = nullptr;
         StateChangeRequest m_stateChangeRequest = StateChangeRequest::None;

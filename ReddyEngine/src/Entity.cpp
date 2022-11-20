@@ -333,6 +333,7 @@ namespace Engine
 		Json::Value json;
 
 		json["id"] = id;
+		json["enabled"] = enabled;
 		json["name"] = name;
 		json["sortChildren"] = sortChildren;
 		json["mouseChildren"] = mouseChildren;
@@ -378,6 +379,7 @@ namespace Engine
 			id = Utils::deserializeUInt64(json["id"]);
 		getScene()->updateMaxId(id);
 		name = Utils::deserializeString(json["name"]);
+		enabled = Utils::deserializeBool(json["enabled"], true);
 		sortChildren = Utils::deserializeBool(json["sortChildren"], false);
 		mouseChildren = Utils::deserializeBool(json["mouseChildren"], true);
 		clickThrough = Utils::deserializeBool(json["clickThrough"], false);
@@ -542,8 +544,10 @@ namespace Engine
 	// Pretty slow, not partitionning, we basically check every entity/components :derp:
 	EntityRef Entity::getMouseHover(const glm::vec2& mousePos, bool ignoreMouseFlags)
 	{
-		if (!editorVisible && getScene()->isEditorScene()) return false;
-		if (editorLocked && getScene()->isEditorScene()) return false;
+		auto isEditor = getScene()->isEditorScene();
+		if (!editorVisible && isEditor) return false;
+		if (editorLocked && isEditor) return false;
+		if (!enabled && !isEditor) return false;
 
 		// We start with leaves first
 		if (ignoreMouseFlags || mouseChildren)
@@ -688,7 +692,8 @@ namespace Engine
 		GUI::endGroup();
 
 		ImGui::Separator();
-
+		
+		changed |= GUI::boolProperty("Enabled", &enabled);
 		GUI::idProperty("ID", id);
 		changed |= GUI::stringProperty("Name", &name);
 		changed |= GUI::boolProperty("Sort Children", &sortChildren, "Immediate children will be sorted Top to Bottom on the Y axis.");
@@ -811,12 +816,13 @@ namespace Engine
 
 	void Entity::draw()
 	{
-		if (!editorVisible && getScene()->isEditorScene()) return;
+		auto isEditor = getScene()->isEditorScene();
+		if (!editorVisible && isEditor) return;
 
 		for (auto rit = m_components.rbegin(); rit != m_components.rend(); ++rit)
 		{
 			const auto& pComponent = *rit;
-			if (pComponent->isEnabled())
+			if (pComponent->isEnabled() || isEditor)
 				pComponent->draw();
 		}
 
@@ -831,7 +837,7 @@ namespace Engine
 
 			for (const auto& pChild : sorted)
 			{
-				if (pChild->enabled)
+				if (pChild->enabled || isEditor)
 					pChild->draw();
 			}
 		}
@@ -839,7 +845,7 @@ namespace Engine
 		{
 			for (const auto& pChild : m_children)
 			{
-				if (pChild->enabled)
+				if (pChild->enabled || isEditor)
 					pChild->draw();
 			}
 		}

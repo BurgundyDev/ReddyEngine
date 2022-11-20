@@ -40,6 +40,7 @@ namespace Engine
         m_componentDefs.clear();
         if (L) lua_close(L);
         L = nullptr;
+        m_prefabCache.clear();
     }
 
     void LuaBindings::init(bool doRunFiles)

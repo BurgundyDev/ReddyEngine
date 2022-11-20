@@ -680,18 +680,21 @@ namespace Engine
 
     int LuaBindings::funcFindEntityByName(lua_State* L)
     {
-        auto searchName = LUA_GET_STRING(1, "");
+        auto pSearchRoot = LUA_GET_ENTITY(1);
+        if (!pSearchRoot) pSearchRoot = getScene()->getRoot();
+
+        auto searchName = LUA_GET_STRING(2, "");
         if (searchName.empty())
         {
             lua_pushnil(L);
             return 1;
         }
-        glm::vec2 searchPos = LUA_GET_VEC2(2, glm::vec2(0));
-        auto searchRadius = LUA_GET_NUMBER(3, 0.0f);
+        glm::vec2 searchPos = LUA_GET_VEC2(3, glm::vec2(0));
+        auto searchRadius = LUA_GET_NUMBER(4, 0.0f);
 
         if (searchRadius < FLT_EPSILON)
         {
-            auto pEntity = getScene()->getEntityByName(searchName, true);
+            auto pEntity = pSearchRoot->getChildByName(searchName, true);
             LUA_PUSH_ENTITY(pEntity);
             return 1;
         }
@@ -700,7 +703,7 @@ namespace Engine
             EntitySearchParams searchParams;
             searchParams.pointInWorld = searchPos;
             searchParams.radius = searchRadius;
-            auto pEntity = getScene()->getEntityByName(searchName, searchParams, true);
+            auto pEntity = pSearchRoot->getChildByName(searchName, searchParams, true);
             LUA_PUSH_ENTITY(pEntity);
             return 1;
         }
@@ -708,26 +711,29 @@ namespace Engine
 
     int LuaBindings::funcFindEntitiesByName(lua_State* L)
     {
-        auto searchName = LUA_GET_STRING(1, "");
+        auto pSearchRoot = LUA_GET_ENTITY(1);
+        if (!pSearchRoot) pSearchRoot = getScene()->getRoot();
+
+        auto searchName = LUA_GET_STRING(2, "");
         if (searchName.empty())
         {
             lua_pushnil(L);
             return 1;
         }
-        glm::vec2 searchPos = LUA_GET_VEC2(2, glm::vec2(0));
-        auto searchRadius = LUA_GET_NUMBER(3, 0.0f);
+        glm::vec2 searchPos = LUA_GET_VEC2(3, glm::vec2(0));
+        auto searchRadius = LUA_GET_NUMBER(4, 0.0f);
 
         std::vector<EntityRef> entities;
         if (searchRadius < FLT_EPSILON)
         {
-            getScene()->FindEntitiesByName(searchName, entities, true);
+            pSearchRoot->findByName(searchName, entities, true);
         }
         else
         {
             EntitySearchParams searchParams;
             searchParams.pointInWorld = searchPos;
             searchParams.radius = searchRadius;
-            getScene()->FindEntitiesByName(searchName, entities, searchParams, true);
+            pSearchRoot->findByName(searchName, entities, searchParams, true);
         }
 
         lua_newtable(L);
@@ -744,18 +750,21 @@ namespace Engine
 
     int LuaBindings::funcFindEntityByComponent(lua_State* L)
     {
-        auto searchName = LUA_GET_STRING(1, "");
+        auto pSearchRoot = LUA_GET_ENTITY(1);
+        if (!pSearchRoot) pSearchRoot = getScene()->getRoot();
+
+        auto searchName = LUA_GET_STRING(2, "");
         if (searchName.empty())
         {
             lua_pushnil(L);
             return 1;
         }
-        glm::vec2 searchPos = LUA_GET_VEC2(2, glm::vec2(0));
-        auto searchRadius = LUA_GET_NUMBER(3, 0.0f);
+        glm::vec2 searchPos = LUA_GET_VEC2(3, glm::vec2(0));
+        auto searchRadius = LUA_GET_NUMBER(4, 0.0f);
 
         if (searchRadius < FLT_EPSILON)
         {
-            auto pEntity = getScene()->findByComponent(searchName, true);
+            auto pEntity = pSearchRoot->findByComponent(searchName, true);
             LUA_PUSH_ENTITY(pEntity);
             return 1;
         }
@@ -764,7 +773,7 @@ namespace Engine
             EntitySearchParams searchParams;
             searchParams.pointInWorld = searchPos;
             searchParams.radius = searchRadius;
-            auto pEntity = getScene()->findByComponent(searchName, searchParams, true);
+            auto pEntity = pSearchRoot->findByComponent(searchName, searchParams, true);
             LUA_PUSH_ENTITY(pEntity);
             return 1;
         }
@@ -772,26 +781,29 @@ namespace Engine
 
     int LuaBindings::funcFindEntitiesByComponent(lua_State* L)
     {
-        auto searchName = LUA_GET_STRING(1, "");
+        auto pSearchRoot = LUA_GET_ENTITY(1);
+        if (!pSearchRoot) pSearchRoot = getScene()->getRoot();
+
+        auto searchName = LUA_GET_STRING(2, "");
         if (searchName.empty())
         {
             lua_pushnil(L);
             return 1;
         }
-        glm::vec2 searchPos = LUA_GET_VEC2(2, glm::vec2(0));
-        auto searchRadius = LUA_GET_NUMBER(3, 0.0f);
+        glm::vec2 searchPos = LUA_GET_VEC2(3, glm::vec2(0));
+        auto searchRadius = LUA_GET_NUMBER(4, 0.0f);
 
         std::vector<EntityRef> entities;
         if (searchRadius < FLT_EPSILON)
         {
-            getScene()->FindEntitiesByComponent(searchName, entities, true);
+            pSearchRoot->findByComponent(searchName, entities, true);
         }
         else
         {
             EntitySearchParams searchParams;
             searchParams.pointInWorld = searchPos;
             searchParams.radius = searchRadius;
-            getScene()->FindEntitiesByComponent(searchName, entities, searchParams, true);
+            pSearchRoot->findByComponent(searchName, entities, searchParams, true);
         }
 
         lua_newtable(L);
@@ -890,19 +902,18 @@ namespace Engine
 
         if (!prefab.empty())
         {
-            static std::unordered_map<std::string, Json::Value> prefabCache;
-            auto it = prefabCache.find(prefab);
-            if (it == prefabCache.end())
+            auto it = m_prefabCache.find(prefab);
+            if (it == m_prefabCache.end())
             {
                 Json::Value json;
                 if (Utils::loadJson(json, "assets/" + prefab))
                 {
-                    prefabCache[prefab] = json;
-                    it = prefabCache.find(prefab);
+                    m_prefabCache[prefab] = json;
+                    it = m_prefabCache.find(prefab);
                 }
             }
 
-            if (it != prefabCache.end())
+            if (it != m_prefabCache.end())
             {
                 const auto& json = it->second;
                 pEntity->deserialize(json["root"]);

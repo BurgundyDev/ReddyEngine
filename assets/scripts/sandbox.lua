@@ -219,10 +219,10 @@ RegisterComponent("sandboxCreatePrefab", {
 -- Find all entities named "arrow"
 RegisterComponent("sandboxFindArrows", {
     mouseClick = function(self)
-        local entities = FindEntitiesByName("arrow")
+        local entities = FindEntitiesByName(nil, "arrow")
         print("Found " .. #entities .. " arrows.")
 
-        local entities = FindEntitiesByName("arrow", GetPosition(self), 5)
+        local entities = FindEntitiesByName(nil, "arrow", GetPosition(self), 5)
         print("Found " .. #entities .. " arrows in radius.")
     end
 })
@@ -231,10 +231,10 @@ RegisterComponent("sandboxFindArrows", {
 -- Find all entities with a component "Button"
 RegisterComponent("sandboxFindButtons", {
     mouseClick = function(self)
-        local entities = FindEntitiesByComponent("Button")
+        local entities = FindEntitiesByComponent(nil, "Button")
         print("Found " .. #entities .. " Buttons.")
 
-        local entities = FindEntitiesByComponent("Button", GetPosition(self), 5)
+        local entities = FindEntitiesByComponent(nil, "Button", GetPosition(self), 5)
         print("Found " .. #entities .. " Buttons in radius.")
     end
 })
