@@ -1,7 +1,7 @@
 {
    "camera" : {
-      "position" : [ 0.33723932504653931, 0.2148442417383194 ],
-      "zoom" : 2
+      "position" : [ 0.89376425743103027, -0.80324798822402954 ],
+      "zoom" : 3
    },
    "root" : {
       "children" : [
@@ -10,9 +10,11 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont48.json",
+                  "justify" : 0.5,
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.0,
                   "text" : "Continue Game",
@@ -27,13 +29,16 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
+            "expanded" : true,
             "id" : 44,
             "lockScale" : true,
             "mouseChildren" : true,
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 0.0, -0.5 ],
+               "position" : [ 0.0, -0.75 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -44,9 +49,11 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont48.json",
+                  "justify" : 0.5,
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.0,
                   "text" : "New Game",
@@ -61,13 +68,16 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
+            "expanded" : true,
             "id" : 45,
             "lockScale" : true,
             "mouseChildren" : true,
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 0.0, 0.0 ],
+               "position" : [ 0.0, -0.24999997019767761 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -78,9 +88,11 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont48.json",
+                  "justify" : 0.5,
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.0,
                   "text" : "Quit",
@@ -95,13 +107,16 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
+            "expanded" : true,
             "id" : 48,
             "lockScale" : true,
             "mouseChildren" : true,
             "name" : "",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 0.0, 0.5 ],
+               "position" : [ 0.0, 0.75 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -114,9 +129,11 @@
                   "clickThrough" : false,
                   "components" : [
                      {
+                        "additive" : 0.0,
                         "color" : [ 0.54411768913269043, 0.54411768913269043, 0.54411768913269043, 1.0 ],
                         "enabled" : true,
                         "font" : "fonts/defaultFont48.json",
+                        "justify" : 0.5,
                         "origin" : [ 0.5, 0.5 ],
                         "scale" : 1.0,
                         "text" : "Sandbox",
@@ -131,13 +148,16 @@
                         "type" : "Script"
                      }
                   ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "expanded" : true,
                   "id" : 53,
                   "lockScale" : true,
                   "mouseChildren" : true,
                   "name" : "",
                   "sortChildren" : false,
                   "transform" : {
-                     "position" : [ 0.0, 0.359375 ],
+                     "position" : [ 0.0, 0.35937511920928955 ],
                      "rotation" : 0.0,
                      "scale" : [ 1.0, 1.0 ]
                   },
@@ -148,9 +168,11 @@
                   "clickThrough" : false,
                   "components" : [
                      {
+                        "additive" : 0.0,
                         "color" : [ 0.54509806632995605, 0.54509806632995605, 0.54509806632995605, 1.0 ],
                         "enabled" : true,
                         "font" : "fonts/defaultFont48.json",
+                        "justify" : 0.5,
                         "origin" : [ 0.5, 0.5 ],
                         "scale" : 1.0,
                         "text" : "Editor",
@@ -165,6 +187,9 @@
                         "type" : "Script"
                      }
                   ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "expanded" : true,
                   "id" : 56,
                   "lockScale" : true,
                   "mouseChildren" : true,
@@ -181,22 +206,27 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 0.16378314793109894, 0.33599632978439331, 0.69607841968536377, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont48.json",
+                  "justify" : 0.5,
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.0,
                   "text" : "Dev Corner",
                   "type" : "Text"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
+            "expanded" : true,
             "id" : 50,
             "lockScale" : true,
             "mouseChildren" : true,
             "name" : "DevCorner",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 1.7578125, 0.40625 ],
+               "position" : [ 4.0, 1.5 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -215,13 +245,55 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
+            "expanded" : true,
             "id" : 60,
             "lockScale" : true,
             "mouseChildren" : true,
             "name" : "MainMenu",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 1.8020834922790527, -0.97916662693023682 ],
+               "position" : [ 3.5, -1.5 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [],
+            "clickThrough" : false,
+            "components" : [
+               {
+                  "additive" : 0.0,
+                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                  "enabled" : true,
+                  "font" : "fonts/defaultFont48.json",
+                  "justify" : 0.5,
+                  "origin" : [ 0.5, 0.5 ],
+                  "scale" : 1.0,
+                  "text" : "Options",
+                  "type" : "Text"
+               },
+               {
+                  "enabled" : true,
+                  "name" : "Button",
+                  "properties" : {
+                     "codeToEval" : "SendEvent(\"ShowOptionsMenu\")"
+                  },
+                  "type" : "Script"
+               }
+            ],
+            "editorLocked" : false,
+            "editorVisible" : true,
+            "expanded" : true,
+            "id" : 158,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 0.0, 0.25000002980232239 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -230,6 +302,9 @@
       ],
       "clickThrough" : true,
       "components" : [],
+      "editorLocked" : false,
+      "editorVisible" : true,
+      "expanded" : true,
       "id" : 0,
       "lockScale" : true,
       "mouseChildren" : true,

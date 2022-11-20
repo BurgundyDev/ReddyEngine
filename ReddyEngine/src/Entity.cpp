@@ -586,15 +586,18 @@ namespace Engine
 	void Entity::getEntitiesInRect(std::vector<Engine::EntityRef>& entities, const glm::vec4& rect)
 	{
 		if (!editorVisible || editorLocked) return;
-
-		auto pos = getWorldPosition();
-		if (pos.x >= rect.x &&
-			pos.x <= rect.x + rect.z &&
-			pos.y >= rect.y &&
-			pos.y <= rect.y + rect.w)
+		
+		if (!m_components.empty())
 		{
-			entities.push_back(shared_from_this());
-			//return; // Don't need to select children if we select parent? (nope)
+			auto pos = getWorldPosition();
+			if (pos.x >= rect.x &&
+				pos.x <= rect.x + rect.z &&
+				pos.y >= rect.y &&
+				pos.y <= rect.y + rect.w)
+			{
+				entities.push_back(shared_from_this());
+				//return; // Don't need to select children if we select parent? (nope)
+			}
 		}
 
 		for (const auto& pChild : m_children)
