@@ -794,6 +794,8 @@ void EditorState::onCreateEntity(const std::string& typeName)
 {
     auto pEntity = Engine::getScene()->createEntity();
     pEntity->addComponent(Engine::ComponentFactory::create(typeName));
+    if (typeName == "FrameAnim")
+        pEntity->addComponent(Engine::ComponentFactory::create("Sprite"));
     createEntityAction(pEntity);
 }
 
