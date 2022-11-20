@@ -67,8 +67,8 @@ namespace Engine
                 Utils::deserializeInt2(&resolution.x, json["resolution"], &resolution.x);
                 vsync = Utils::deserializeBool(json["vsync"], vsync);
                 masterVolume = Utils::deserializeBool(json["masterVolume"], masterVolume);
-                sfxVolume = Utils::deserializeBool(json["sfxVolume"], sfxVolume);
-                musicVolume = Utils::deserializeBool(json["musicVolume"], musicVolume);
+                sfxVolume = Utils::deserializeFloat(json["sfxVolume"], sfxVolume);
+                musicVolume = Utils::deserializeFloat(json["musicVolume"], musicVolume);
                 recentEditorFiles = Utils::deserializeStringArray(json["recentEditorFiles"]);
                 displayMode = (DisplayMode)Utils::deserializeInt32(json["displayMode"], (int32_t)displayMode);
                 dpiAware = Utils::deserializeBool(json["dpiAware"], dpiAware);

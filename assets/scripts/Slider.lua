@@ -15,6 +15,7 @@ RegisterComponent("Slider", {
     end,
 
     setValue = function(self, val)
+        print("patate poil "..val)
         self.value = val
         local bar = GetParent(self)
         local pos = GetPosition(self)
