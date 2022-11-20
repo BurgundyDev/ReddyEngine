@@ -130,6 +130,8 @@ function SetPFX(e, filename) end
 function PlayPFX(e) end
 function StopPFX(e) end
 
+function PlayFrameAnim(e, animAnme) end
+
 
 ---------------------------------------------------------------------
 -- Entity searching

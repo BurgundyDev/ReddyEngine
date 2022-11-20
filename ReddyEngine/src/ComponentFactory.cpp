@@ -41,7 +41,7 @@ namespace Engine
         auto it = s_factories.find(name);
         if (it == s_factories.end())
         {
-            CORE_FATAL("Unknown Component: {}", name);
+            //CORE_FATAL("Unknown Component: {}", name); // Don't alert, might be done on purpose
             return nullptr;
         }
 

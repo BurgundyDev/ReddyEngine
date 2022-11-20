@@ -34,6 +34,7 @@ namespace Engine
 		void drawOutline(const glm::vec4& color, float zoomScale) override; // For editor
 		virtual TextureRef getEditorIcon() const override;
 
+		const std::string& getCurrentAnimation() const { return m_currentAnimation; }
 		void setCurrentAnimation(const std::string& animation);
 		void setToFirstAnimation();
 

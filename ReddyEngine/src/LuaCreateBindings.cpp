@@ -16,6 +16,7 @@ extern "C" {
 #include "Engine/Sound.h"
 #include "Engine/ResourceManager.h"
 #include "Engine/SpriteComponent.h"
+#include "Engine/FrameAnimComponent.h"
 #include "Engine/PFXComponent.h"
 #include "Engine/TextComponent.h"
 #include "Engine/MusicManager.h"
@@ -85,6 +86,7 @@ namespace Engine
         LUA_REGISTER(StopPFX);
         LUA_REGISTER(GetName);
         LUA_REGISTER(SetName);
+        LUA_REGISTER(PlayFrameAnim);
         LUA_REGISTER(FindEntityByName);
         LUA_REGISTER(FindEntityByComponent);
         LUA_REGISTER(FindEntitiesByName);
@@ -1244,6 +1246,20 @@ namespace Engine
             }
         }
 
+        return 0;
+    }
+
+    int LuaBindings::funcPlayFrameAnim(lua_State* L)
+    {
+        auto pFrameAnim = LUA_GET_COMPONENT(1, FrameAnimComponent);
+        if (!pFrameAnim) return 0;
+
+        auto animName = LUA_GET_STRING(2, "");
+        if (animName.empty()) return 0;
+
+        if (pFrameAnim->getCurrentAnimation() == animName) return 0; // Don't restart the anim if it's already playing
+
+        pFrameAnim->setCurrentAnimation(animName);
         return 0;
     }
 }

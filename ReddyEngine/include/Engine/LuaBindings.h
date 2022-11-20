@@ -144,6 +144,7 @@ namespace Engine
         int funcStopPFX(lua_State* L);
         int funcGetName(lua_State* L);
         int funcSetName(lua_State* L);
+        int funcPlayFrameAnim(lua_State* L);
 
         int funcFindEntityByName(lua_State* L);
         int funcFindEntityByComponent(lua_State* L);
