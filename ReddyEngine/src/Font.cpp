@@ -319,7 +319,7 @@ namespace Engine
 
         float lineW = measureLine(text.c_str());
         auto diff = size.x - lineW;
-        pos.x += diff * justify * scale;
+        pos += right * diff * justify * scale;
 
         // Naive approach for now, only ASCII characters (English)
         // TODO: UTF8 (Maybe we won't need it)
