@@ -10,8 +10,15 @@ namespace Engine
 {
     namespace Config
     {
+        enum class DisplayMode : int
+        {
+            Windowed,
+            BorderlessFullscreen
+        };
+
         extern glm::ivec2 resolution;
         extern bool vsync;
+        //extern DisplayMode displayMode;
         extern float masterVolume;
         extern float sfxVolume;
         extern float musicVolume;

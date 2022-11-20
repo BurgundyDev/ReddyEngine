@@ -67,7 +67,7 @@ namespace Engine
         const auto& invTransform = m_pEntity->getInvWorldTransformWithScale();
 
         glm::ivec2 textureSize = pTexture ? pTexture->getSize() : glm::ivec2{ 1, 1 };
-        glm::vec2 sizef = glm::vec2((float)textureSize.x, (float)textureSize.y) * m_pEntity->getTransform().scale * SPRITE_BASE_SCALE;
+        glm::vec2 sizef = glm::vec2((float)textureSize.x, (float)textureSize.y) * SPRITE_BASE_SCALE;
         glm::vec2 invOrigin(1.f - origin.x, 1.f - origin.y);
 
         glm::vec2 localMouse = invTransform * glm::vec4(mousePos, 0, 1);
@@ -85,7 +85,7 @@ namespace Engine
 		auto sb = getSpriteBatch().get();
 
         glm::ivec2 textureSize = pTexture ? pTexture->getSize() : glm::ivec2{ 1, 1 };
-        glm::vec2 sizef = glm::vec2((float)textureSize.x, (float)textureSize.y) * m_pEntity->getTransform().scale * SPRITE_BASE_SCALE;
+        glm::vec2 sizef = glm::vec2((float)textureSize.x, (float)textureSize.y) * SPRITE_BASE_SCALE;
         glm::vec2 invOrigin(1.f - origin.x, 1.f - origin.y);
 
         glm::vec2 points[4] = {
@@ -134,7 +134,7 @@ namespace Engine
         getSpriteBatch()->drawSprite(pTexture,
                                      m_pEntity->getWorldTransformWithScale(),
                                      col, 
-                                     m_pEntity->getTransform().scale * SPRITE_BASE_SCALE,
+                                     glm::vec2(SPRITE_BASE_SCALE),
                                      origin,
                                      uvs);
     }
