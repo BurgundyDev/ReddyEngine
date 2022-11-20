@@ -218,6 +218,7 @@ namespace Engine
 		void setRotation(float degrees);
 		void setScale(const glm::vec2& scale);
 		void setWorldPosition(const glm::vec2& position);
+		void setDirtyTransform();
 
 		const glm::mat4& getWorldTransform();
 		const glm::mat4& getWorldTransformWithScale();
@@ -254,7 +255,6 @@ namespace Engine
 	private:
 		void componentAdded(const ComponentRef& pComponent);
 		void updateDirtyTransforms();
-		void setDirtyTransform();
 		bool isMouseHover(const glm::vec2& mousePos) const;
 
 		bool m_transformDirty = true;

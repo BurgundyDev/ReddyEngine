@@ -20,6 +20,7 @@ extern "C" {
 #include "Engine/PFXComponent.h"
 #include "Engine/TextComponent.h"
 #include "Engine/MusicManager.h"
+#include "Engine/Config.h"
 
 
 namespace Engine
@@ -111,6 +112,8 @@ namespace Engine
         LUA_REGISTER(DisableEntity);
         LUA_REGISTER(EnableComponent);
         LUA_REGISTER(DisableComponent);
+        LUA_REGISTER(GetConfig);
+        LUA_REGISTER(SetConfig);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -1271,6 +1274,93 @@ namespace Engine
         if (pFrameAnim->getCurrentAnimation() == animName) return 0; // Don't restart the anim if it's already playing
 
         pFrameAnim->setCurrentAnimation(animName);
+        return 0;
+    }
+
+    int LuaBindings::funcGetConfig(lua_State* L)
+    {
+        auto configName = LUA_GET_STRING(1, "");
+
+        if (configName == "displayMode")
+        {
+            lua_pushinteger(L, (lua_Integer)Config::displayMode);
+            return 1;
+        }
+        else if (configName == "vsync")
+        {
+            lua_pushboolean(L, Config::vsync ? 1 : 0);
+            return 1;
+        }
+        else if (configName == "musicVolume")
+        {
+            lua_pushnumber(L, (lua_Number)Config::musicVolume);
+            return 1;
+        }
+        else if (configName == "sfxVolume")
+        {
+            lua_pushnumber(L, (lua_Number)Config::sfxVolume);
+            return 1;
+        }
+        lua_pushnil(L);
+        return 1;
+    }
+
+    int LuaBindings::funcSetConfig(lua_State* L)
+    {
+        auto configName = LUA_GET_STRING(1, "");
+
+        if (configName == "displayMode")
+        {
+            switch (LUA_GET_INT(2, -1))
+            {
+                case (int)Config::DisplayMode::Windowed:
+                {
+                    auto prev = Config::displayMode;
+                    Config::displayMode = Config::DisplayMode::Windowed;
+                    if (prev != Config::displayMode)
+                    {
+                        displayModeChanged();
+                        getScene()->getRoot()->setDirtyTransform(); // We need this because everything will move to adjust to new screen size
+                    }
+                    break;
+                }
+                case (int)Config::DisplayMode::BorderlessFullscreen:
+                {
+                    auto prev = Config::displayMode;
+                    Config::displayMode = Config::DisplayMode::BorderlessFullscreen;
+                    if (prev != Config::displayMode)
+                    {
+                        displayModeChanged();
+                        getScene()->getRoot()->setDirtyTransform(); // We need this because everything will move to adjust to new screen size
+                    }
+                    break;
+                }
+            }
+            return 0;
+        }
+        else if (configName == "vsync")
+        {
+            auto prev = Config::vsync;
+            Config::vsync = lua_toboolean(L, 2) ? true : false;
+            if (prev != Config::vsync)
+                vsyncChanged();
+            return 0;
+        }
+        else if (configName == "musicVolume")
+        {
+            Config::musicVolume = LUA_GET_NUMBER(2, 1.0f);
+            return 0;
+        }
+        else if (configName == "sfxVolume")
+        {
+            Config::sfxVolume = LUA_GET_NUMBER(2, 1.0f);
+            return 0;
+        }
+        else
+        {
+            CORE_FATAL("Lua SetConfig, Unknown config: \"{}\"", configName);
+        }
+
         return 0;
     }
 }

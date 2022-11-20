@@ -58,4 +58,6 @@ namespace Engine
     void setFixedUpdateFPS(int fps = 60);
     void setWindowCaption(const std::string& caption);
     void quit();
+    void displayModeChanged();
+    void vsyncChanged();
 }

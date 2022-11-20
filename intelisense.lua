@@ -11,6 +11,8 @@
 function Log(text) end
 function GetScreenRect() end -- Returns 4 values: x,y,w,h
 function EmitParticles(pfx, position, angle, scale) end -- Returns the newly created entity containing the PFXComponent
+function GetConfig(configName) end -- displayMode (0 or 1), vsync (true or false), musicVolume ([0, 1]), sfxVolume ([0, 1])
+function SetConfig(configName, value) end -- displayMode (0 or 1), vsync (true or false), musicVolume ([0, 1]), sfxVolume ([0, 1])
 
 
 ---------------------------------------------------------------------

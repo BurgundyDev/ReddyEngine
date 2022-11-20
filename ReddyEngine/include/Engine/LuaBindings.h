@@ -179,6 +179,9 @@ namespace Engine
         int funcEnableComponent(lua_State* L);
         int funcDisableComponent(lua_State* L);
 
+        int funcGetConfig(lua_State* L);
+        int funcSetConfig(lua_State* L);
+
     private:
         struct ScriptEventListeners
         {

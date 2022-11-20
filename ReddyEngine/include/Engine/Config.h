@@ -18,6 +18,7 @@ namespace Engine
 
         extern glm::ivec2 resolution;
         extern bool vsync;
+        extern bool showFPS;
         extern DisplayMode displayMode;
         extern float masterVolume;
         extern float sfxVolume;

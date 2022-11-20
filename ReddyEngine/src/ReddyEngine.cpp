@@ -10,6 +10,9 @@
 #include "Engine/LuaBindings.h"
 #include "Engine/MusicManager.h"
 #include "Engine/ComponentFactory.h"
+#include "Engine/Entity.h"
+#include "Engine/Scene.h"
+#include "Engine/Font.h"
 
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -30,6 +33,7 @@ namespace Engine
 	static LuaBindingsRef g_pLuaBindings;
 	static IGameRef g_pGame;
 	static MusicManagerRef g_pMusicManager;
+	static FontRef g_pFPSFont;
 
     static int g_fixedUpdateFPS = 60;
     static bool g_done = false;
@@ -92,14 +96,19 @@ namespace Engine
             {
                 window_flags = (SDL_WindowFlags)(window_flags | SDL_WINDOW_BORDERLESS);
 #if defined(WIN32)
-                resolution.x = GetSystemMetrics(SM_CXSCREEN);
-                resolution.y = GetSystemMetrics(SM_CYSCREEN);
-#else
-                SDL_DisplayMode DM;
-                SDL_GetCurrentDisplayMode(0, &DM);
-                resolution.x = DM.w;
-                resolution.y = DM.h;
+                if (Config::dpiAware)
+                {
+                    resolution.x = GetSystemMetrics(SM_CXSCREEN);
+                    resolution.y = GetSystemMetrics(SM_CYSCREEN);
+                }
+                else
 #endif
+                {
+                    SDL_DisplayMode DM;
+                    SDL_GetCurrentDisplayMode(0, &DM);
+                    resolution.x = DM.w;
+                    resolution.y = DM.h;
+                }
                 break;
             }
         }
@@ -159,12 +168,17 @@ namespace Engine
         g_pLuaBindings->init();
         g_pScene->init();
 
+        g_pFPSFont = g_pResourceManager->getFont("fonts/defaultFont24.json");
+
         // Once everything is setup, the game can load stuff
         pGame->loadContent();
 
         // Main loop
         Uint64 lastTime = SDL_GetPerformanceCounter();
         float fixedUpdateProgress = 0.0f;
+        int currentFPS = 0;
+        int fps = 0;
+        float fpsDelay = 0.0f;
         while (!g_done)
         {
             g_pEventSystem->dispatchEvents();
@@ -202,8 +216,13 @@ namespace Engine
                                     g_done = true;
                                     break;
                                 case SDL_WINDOWEVENT_RESIZED:
+                                {
                                     SDL_GetWindowSize(pWindow, &Config::resolution.x, &Config::resolution.y);
+                                    auto pScene = getScene();
+                                    if (pScene)
+                                        getScene()->getRoot()->setDirtyTransform();
                                     break;
+                                }
                             }
                         }
                         break;
@@ -311,6 +330,22 @@ namespace Engine
             // Draw game
             g_pEventSystem->dispatchEvents();
             pGame->draw();
+
+            // FPS
+            ++currentFPS;
+            fpsDelay += deltaTime;
+            if (fpsDelay >= 1.0f)
+            {
+                fpsDelay -= 1.0f;
+                fps = currentFPS;
+                currentFPS = 0;
+            }
+            if (Config::showFPS)
+            {
+                g_pSpriteBatch->begin();
+                g_pFPSFont->draw("FPS: " + std::to_string(fps), {0, 0});
+                g_pSpriteBatch->end();
+            }
             
             // Draw ImGui on top
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -323,6 +358,7 @@ namespace Engine
         Config::save();
 
         // Cleanup
+        g_pFPSFont.reset();
         g_pLuaBindings.reset();
         g_pScene.reset();
         g_pMusicManager.reset();
@@ -407,5 +443,47 @@ namespace Engine
     void quit()
     {
         g_done = true;
+    }
+
+    void displayModeChanged()
+    {
+        switch (Config::displayMode)
+        {
+            case Config::DisplayMode::Windowed:
+            {
+                SDL_SetWindowSize(pWindow, Config::resolution.x, Config::resolution.y);
+                SDL_SetWindowResizable(pWindow, SDL_TRUE);
+                SDL_SetWindowBordered(pWindow, SDL_TRUE);
+                break;
+            }
+            case Config::DisplayMode::BorderlessFullscreen:
+            {
+                glm::ivec2 resolution;
+#if defined(WIN32)
+                if (Config::dpiAware)
+                {
+                    resolution.x = GetSystemMetrics(SM_CXSCREEN);
+                    resolution.y = GetSystemMetrics(SM_CYSCREEN);
+                }
+                else
+#endif
+                {
+                    SDL_DisplayMode DM;
+                    SDL_GetCurrentDisplayMode(0, &DM);
+                    resolution.x = DM.w;
+                    resolution.y = DM.h;
+                }
+
+                SDL_SetWindowSize(pWindow, resolution.x, resolution.y);
+                SDL_SetWindowResizable(pWindow, SDL_FALSE);
+                SDL_SetWindowBordered(pWindow, SDL_FALSE);
+                break;
+            }
+        }
+    }
+
+    void vsyncChanged()
+    {
+        SDL_GL_SetSwapInterval(Config::vsync ? 1 : 0);
     }
 }

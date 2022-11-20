@@ -14,10 +14,12 @@ namespace Engine
 #if defined(FINAL)
         glm::ivec2 resolution = { 1280, 720 };
         bool dpiAware = true;
+        bool showFPS = false;
         DisplayMode displayMode = DisplayMode::BorderlessFullscreen;
 #else
         glm::ivec2 resolution = { 1280, 720 };
         bool dpiAware = true;
+        bool showFPS = true;
         DisplayMode displayMode = DisplayMode::Windowed;
 #endif
         bool vsync = true;
@@ -42,6 +44,7 @@ namespace Engine
             json["recentEditorFiles"] = Utils::serializeStringArray(recentEditorFiles);
             json["displayMode"] = Utils::serializeInt32((int32_t)displayMode);
             json["dpiAware"] = Utils::serializeBool(dpiAware);
+            json["showFPS"] = Utils::serializeBool(showFPS);
 
             if (json == configJsonAtLaunch)
             {
@@ -69,6 +72,7 @@ namespace Engine
                 recentEditorFiles = Utils::deserializeStringArray(json["recentEditorFiles"]);
                 displayMode = (DisplayMode)Utils::deserializeInt32(json["displayMode"], (int32_t)displayMode);
                 dpiAware = Utils::deserializeBool(json["dpiAware"], dpiAware);
+                showFPS = Utils::deserializeBool(json["showFPS"], showFPS);
             }
 
             configJsonAtLaunch = json;
