@@ -84,35 +84,11 @@ namespace Engine
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
         SDL_WindowFlags window_flags = (SDL_WindowFlags)(
             SDL_WINDOW_OPENGL | 
-            SDL_WINDOW_ALLOW_HIGHDPI /* This flag doesn't do anything on Windows, SDL doesnt implement it */
+            SDL_WINDOW_ALLOW_HIGHDPI | /* This flag doesn't do anything on Windows, SDL doesnt implement it */
+            SDL_WINDOW_RESIZABLE
         );
-        glm::ivec2 resolution = Config::resolution;
-        switch (Config::displayMode)
-        {
-            case Config::DisplayMode::Windowed:
-                window_flags = (SDL_WindowFlags)(window_flags | SDL_WINDOW_RESIZABLE);
-                break;
-            case Config::DisplayMode::BorderlessFullscreen:
-            {
-                window_flags = (SDL_WindowFlags)(window_flags | SDL_WINDOW_BORDERLESS);
-#if defined(WIN32)
-                if (Config::dpiAware)
-                {
-                    resolution.x = GetSystemMetrics(SM_CXSCREEN);
-                    resolution.y = GetSystemMetrics(SM_CYSCREEN);
-                }
-                else
-#endif
-                {
-                    SDL_DisplayMode DM;
-                    SDL_GetCurrentDisplayMode(0, &DM);
-                    resolution.x = DM.w;
-                    resolution.y = DM.h;
-                }
-                break;
-            }
-        }
-        pWindow = SDL_CreateWindow("Reddy", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, resolution.x, resolution.y, window_flags);
+        pWindow = SDL_CreateWindow("Reddy", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Config::resolution.x, Config::resolution.y, window_flags);
+        displayModeChanged();
         
         // enable file drop events
         SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
@@ -217,10 +193,8 @@ namespace Engine
                                     break;
                                 case SDL_WINDOWEVENT_RESIZED:
                                 {
-                                    SDL_GetWindowSize(pWindow, &Config::resolution.x, &Config::resolution.y);
-                                    auto pScene = getScene();
-                                    if (pScene)
-                                        getScene()->getRoot()->setDirtyTransform();
+                                    if (Config::displayMode == Config::DisplayMode::Windowed)
+                                        SDL_GetWindowSize(pWindow, &Config::resolution.x, &Config::resolution.y);
                                     break;
                                 }
                             }
@@ -344,6 +318,7 @@ namespace Engine
             {
                 g_pSpriteBatch->begin();
                 g_pFPSFont->draw("FPS: " + std::to_string(fps), {0, 0});
+                g_pFPSFont->draw("Mouse: " + std::to_string(g_pInput->getMousePos().x) + ", " + std::to_string(g_pInput->getMousePos().y), {0, 50});
                 g_pSpriteBatch->end();
             }
             
@@ -451,32 +426,12 @@ namespace Engine
         {
             case Config::DisplayMode::Windowed:
             {
-                SDL_SetWindowSize(pWindow, Config::resolution.x, Config::resolution.y);
-                SDL_SetWindowResizable(pWindow, SDL_TRUE);
-                SDL_SetWindowBordered(pWindow, SDL_TRUE);
+                SDL_SetWindowFullscreen(pWindow, 0);
                 break;
             }
             case Config::DisplayMode::BorderlessFullscreen:
             {
-                glm::ivec2 resolution;
-#if defined(WIN32)
-                if (Config::dpiAware)
-                {
-                    resolution.x = GetSystemMetrics(SM_CXSCREEN);
-                    resolution.y = GetSystemMetrics(SM_CYSCREEN);
-                }
-                else
-#endif
-                {
-                    SDL_DisplayMode DM;
-                    SDL_GetCurrentDisplayMode(0, &DM);
-                    resolution.x = DM.w;
-                    resolution.y = DM.h;
-                }
-
-                SDL_SetWindowSize(pWindow, resolution.x, resolution.y);
-                SDL_SetWindowResizable(pWindow, SDL_FALSE);
-                SDL_SetWindowBordered(pWindow, SDL_FALSE);
+                SDL_SetWindowFullscreen(pWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
                 break;
             }
         }
