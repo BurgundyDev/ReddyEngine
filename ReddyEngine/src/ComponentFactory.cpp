@@ -2,6 +2,7 @@
 #include "Engine/Log.h"
 
 #include "Engine/SpriteComponent.h"
+#include "Engine/Slice9Component.h"
 #include "Engine/TextComponent.h"
 #include "Engine/ScriptComponent.h"
 #include "Engine/PFXComponent.h"
@@ -12,6 +13,7 @@ namespace Engine
     void ComponentFactory::initialize()
     {
         registerComponent<SpriteComponent>();
+        registerComponent<Slice9Component>();
         registerComponent<TextComponent>();
         registerComponent<ScriptComponent>();
         registerComponent<PFXComponent>();

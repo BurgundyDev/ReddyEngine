@@ -317,8 +317,7 @@ namespace Engine
             if (Config::showFPS)
             {
                 g_pSpriteBatch->begin();
-                g_pFPSFont->draw("FPS: " + std::to_string(fps), {0, 0});
-                g_pFPSFont->draw("Mouse: " + std::to_string(g_pInput->getMousePos().x) + ", " + std::to_string(g_pInput->getMousePos().y), {0, 50});
+                g_pFPSFont->draw("FPS: " + std::to_string(fps), {0, 25});
                 g_pSpriteBatch->end();
             }
             

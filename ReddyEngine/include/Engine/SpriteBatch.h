@@ -40,6 +40,13 @@ namespace Engine
                         const glm::vec2& origin = { 0.5f, 0.5f }, 
                         const glm::vec4& uvs = { 0, 0, 1, 1 });
 
+        void drawSlice9Sprite(const TextureRef& pTexture, // nullptr for 1x1 white
+                        const glm::mat4& transform, 
+                        const glm::vec4& color = { 1, 1, 1, 1 }, 
+                        const glm::vec2& scale = {1, 1}, 
+                        const glm::vec2& origin = { 0.5f, 0.5f }, 
+                        const glm::ivec4& padding = { 0, 0, 0, 0 });
+
         void drawRect(const TextureRef& pTexture, // nullptr for white
                       const glm::vec4& rect, // x, y, w, h
                       const glm::vec4& color = { 1, 1, 1, 1 }, 

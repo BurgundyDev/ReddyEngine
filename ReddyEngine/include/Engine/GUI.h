@@ -57,6 +57,7 @@ namespace Engine
         bool boolProperty(const char* label, bool* value, const char* tooltip = nullptr);
         bool colorProperty(const char* label, glm::vec4* color, const char* tooltip = nullptr);
         bool vec2Property(const char* label, glm::vec2* value, const char* tooltip = nullptr);
+        bool paddingProperty(const char* label, glm::ivec4* value, const char* tooltip = nullptr);
         bool originProperty(const char* label, glm::vec2* value, const char* tooltip = nullptr);
         void idProperty(const char* label, uint64_t id, const char* tooltip = nullptr); // Can't modify this
 

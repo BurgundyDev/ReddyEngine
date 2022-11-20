@@ -1,39 +1,10 @@
 {
    "camera" : {
-      "position" : [ 0.32049548625946045, -0.63964128494262695 ],
-      "zoom" : 4
+      "position" : [ 0.69371724128723145, 0.35888418555259705 ],
+      "zoom" : 1
    },
    "root" : {
       "children" : [
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "additive" : 0.0,
-                  "color" : [ 0.0, 0.0, 0.0, 0.78431373834609985 ],
-                  "enabled" : true,
-                  "origin" : [ 0.5, 0.5 ],
-                  "texture" : "textures\\white.png",
-                  "type" : "Sprite",
-                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-               }
-            ],
-            "editorLocked" : false,
-            "editorVisible" : true,
-            "expanded" : true,
-            "id" : 154,
-            "lockScale" : false,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 0.0, 0.0 ],
-               "rotation" : 0.0,
-               "scale" : [ 3.2200000286102295, 2.4300000667572021 ]
-            },
-            "uiRoot" : false
-         },
          {
             "children" : [],
             "clickThrough" : false,
@@ -60,6 +31,7 @@
             ],
             "editorLocked" : false,
             "editorVisible" : true,
+            "enabled" : true,
             "expanded" : true,
             "id" : 62,
             "lockScale" : true,
@@ -99,6 +71,7 @@
             ],
             "editorLocked" : false,
             "editorVisible" : true,
+            "enabled" : true,
             "expanded" : true,
             "id" : 63,
             "lockScale" : true,
@@ -114,9 +87,23 @@
          }
       ],
       "clickThrough" : true,
-      "components" : [],
+      "components" : [
+         {
+            "additive" : 0.0,
+            "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+            "enabled" : true,
+            "origin" : [ 0.5, 0.5 ],
+            "padding" : [ 88, 88, 88, 88 ],
+            "repeatCenter" : false,
+            "scale" : [ 2.0, 1.2000000476837158 ],
+            "texture" : "textures\\defaultSlice9.png",
+            "type" : "Slice9",
+            "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+         }
+      ],
       "editorLocked" : false,
       "editorVisible" : true,
+      "enabled" : true,
       "expanded" : true,
       "id" : 0,
       "lockScale" : true,

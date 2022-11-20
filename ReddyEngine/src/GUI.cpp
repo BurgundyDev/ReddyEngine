@@ -652,6 +652,16 @@ namespace Engine
             ImGui::PopID();
             return ret;
         }
+
+        bool paddingProperty(const char* label, glm::ivec4* value, const char* tooltip)
+        {
+            ImGui::PushID(++g_propertyCount);
+            ImGui::DragInt4(label, &value->x, 0.01f, 0, 100000);
+            auto ret = ImGui::IsItemDeactivatedAfterEdit();
+            showToolTip(tooltip);
+            ImGui::PopID();
+            return ret;
+        }
         
         bool originProperty(const char* label, glm::vec2* value, const char* tooltip)
         {
