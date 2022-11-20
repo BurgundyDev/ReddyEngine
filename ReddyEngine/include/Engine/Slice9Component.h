@@ -12,13 +12,14 @@ namespace Engine
 	using TextureRef = std::shared_ptr<Texture>;
 
 
-    class SpriteComponent final : public Component
+	// This is a huge copy paste from sprite component, with padding added
+    class Slice9Component final : public Component
     {
-		DECLARE_COMPONENT("Sprite");
+		DECLARE_COMPONENT("Slice9");
 
     public:
-		SpriteComponent();
-		~SpriteComponent() {}
+		Slice9Component();
+		~Slice9Component() {}
 
 		Json::Value serialize() override;
 		void deserialize(const Json::Value& json) override;
@@ -38,5 +39,8 @@ namespace Engine
 		glm::vec2 origin = {0.5f, 0.5f};
 		glm::vec4 uvs = {0, 0, 1, 1};
 		float additive = 0.0f;
+		glm::vec2 scale = {1, 1};
+		glm::ivec4 padding = {0, 0, 0, 0};
+		bool repeatCenter = false;
     };
 }

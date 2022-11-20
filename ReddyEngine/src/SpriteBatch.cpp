@@ -6,6 +6,7 @@
 #include "Engine/SpriteBatch.h"
 #include "Engine/Log.h"
 #include "Engine/Texture.h"
+#include "Engine/Constants.h"
 
 #include <glm/glm.hpp>
 #include <imgui.h>
@@ -175,7 +176,7 @@ namespace Engine
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glEnable(GL_BLEND);
         glBlendEquation(GL_FUNC_ADD);
-        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // Premultiplied
+        glBlendFuncSeparate(GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // Premultiplied
         glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_STENCIL_TEST);
@@ -296,6 +297,8 @@ namespace Engine
 
         glm::ivec2 textureSize = m_pCurrentTexture ? m_pCurrentTexture->getSize() : glm::ivec2{ 1, 1 };
         glm::vec2 sizef = glm::vec2((float)textureSize.x, (float)textureSize.y) * scale;
+        sizef.x *= std::abs(uvs.z - uvs.x);
+        sizef.y *= std::abs(uvs.w - uvs.y);
         glm::vec2 invOrigin(1.f - origin.x, 1.f - origin.y);
 
         Vertex* pVerts = m_vertices + (m_spriteCount * 4);
@@ -316,6 +319,93 @@ namespace Engine
         pVerts[3].color = color;
 
         ++m_spriteCount;
+
+        if (m_spriteCount == MAX_SPRITE_COUNT)
+        {
+            flush();
+        }
+    }
+
+    void SpriteBatch::drawSlice9Sprite(const TextureRef& pTexture, // nullptr for 1x1 white
+                                 const glm::mat4& transform, 
+                                 const glm::vec4& color, 
+                                 const glm::vec2& scale, 
+                                 const glm::vec2& origin, 
+                                 const glm::ivec4& padding)
+    {
+        CORE_ASSERT(m_isInBatch, "SpriteBatch::draw() called without calling begin() first");
+
+        if (!scale.x || !scale.y) return; // Scale 0, can't draw this
+
+        if (m_pCurrentTexture != pTexture)
+        {
+            flush();
+            m_pCurrentTexture = pTexture;
+        }
+        
+        if (m_spriteCount + 9 >= MAX_SPRITE_COUNT)
+        {
+            flush();
+        }
+
+        glm::ivec2 textureSize = m_pCurrentTexture ? m_pCurrentTexture->getSize() : glm::ivec2{ 1, 1 };
+        glm::vec2 texSizef = glm::vec2((float)textureSize.x, (float)textureSize.y);
+        glm::vec2 sizef = texSizef * scale;
+        glm::vec2 ratio = 1.0f / (scale / SPRITE_BASE_SCALE);
+        glm::vec2 invOrigin(1.f - origin.x, 1.f - origin.y);
+        glm::vec4 uvs((float)padding.x / texSizef.x,
+                      (float)padding.y / texSizef.y,
+                      (float)padding.z / texSizef.x,
+                      (float)padding.w / texSizef.y);
+
+        float hSlices[4] = {
+            -sizef.x * origin.x,
+            -sizef.x * origin.x + sizef.x * uvs.x * ratio.x,
+            sizef.x * invOrigin.x - sizef.x * uvs.z * ratio.x,
+            sizef.x * invOrigin.x
+        };
+
+        float vSlices[4] = {
+            -sizef.y * origin.y,
+            -sizef.y * origin.y + sizef.y * uvs.y * ratio.y,
+            sizef.y * invOrigin.y - sizef.y * uvs.w * ratio.y,
+            sizef.y * invOrigin.y
+        };
+
+        // Top left
+        Vertex* pVerts = m_vertices + (m_spriteCount * 4);
+
+#define DRAW_SLICE(h, v, u0, v0, u1, v1) \
+        pVerts[0].position = transform * glm::vec4(hSlices[h], vSlices[v], 0, 1); \
+        pVerts[0].texCoord = {u0, v0}; \
+        pVerts[0].color = color; \
+        \
+        pVerts[1].position = transform * glm::vec4(hSlices[h], vSlices[v + 1], 0, 1); \
+        pVerts[1].texCoord = {u0, v1}; \
+        pVerts[1].color = color; \
+        \
+        pVerts[2].position = transform * glm::vec4(hSlices[h + 1], vSlices[v + 1], 0, 1); \
+        pVerts[2].texCoord = {u1, v1}; \
+        pVerts[2].color = color; \
+        \
+        pVerts[3].position = transform * glm::vec4(hSlices[h + 1], vSlices[v], 0, 1); \
+        pVerts[3].texCoord = {u1, v0}; \
+        pVerts[3].color = color; \
+        \
+        pVerts += 4; \
+        ++m_spriteCount;
+
+        DRAW_SLICE(0, 0, 0, 0, uvs.x, uvs.y);
+        DRAW_SLICE(1, 0, uvs.x, 0, 1.0f - uvs.z, uvs.y);
+        DRAW_SLICE(2, 0, 1.0f - uvs.z, 0, 1.0f, uvs.y);
+
+        DRAW_SLICE(0, 1, 0, uvs.y, uvs.x, 1.0f - uvs.w);
+        DRAW_SLICE(1, 1, uvs.x, uvs.y, 1.0f - uvs.z, 1.0f - uvs.w);
+        DRAW_SLICE(2, 1, 1.0f - uvs.z, uvs.y, 1.0f, 1.0f - uvs.w);
+
+        DRAW_SLICE(0, 2, 0, 1.0f - uvs.w, uvs.x, 1.0f);
+        DRAW_SLICE(1, 2, uvs.x, 1.0f - uvs.w, 1.0f - uvs.z, 1.0f);
+        DRAW_SLICE(2, 2, 1.0f - uvs.z, 1.0f - uvs.w, 1.0f, 1.0f);
 
         if (m_spriteCount == MAX_SPRITE_COUNT)
         {

@@ -11,7 +11,17 @@ namespace Engine
 {
     namespace Config
     {
+#if defined(FINAL)
         glm::ivec2 resolution = { 1280, 720 };
+        bool dpiAware = true;
+        bool showFPS = false;
+        DisplayMode displayMode = DisplayMode::BorderlessFullscreen;
+#else
+        glm::ivec2 resolution = { 1280, 720 };
+        bool dpiAware = true;
+        bool showFPS = true;
+        DisplayMode displayMode = DisplayMode::Windowed;
+#endif
         bool vsync = true;
         float masterVolume = 1.0f;
         float sfxVolume = 1.0f;
@@ -32,6 +42,9 @@ namespace Engine
             json["sfxVolume"] = Utils::serializeFloat(sfxVolume);
             json["musicVolume"] = Utils::serializeFloat(musicVolume);
             json["recentEditorFiles"] = Utils::serializeStringArray(recentEditorFiles);
+            json["displayMode"] = Utils::serializeInt32((int32_t)displayMode);
+            json["dpiAware"] = Utils::serializeBool(dpiAware);
+            json["showFPS"] = Utils::serializeBool(showFPS);
 
             if (json == configJsonAtLaunch)
             {
@@ -54,9 +67,12 @@ namespace Engine
                 Utils::deserializeInt2(&resolution.x, json["resolution"], &resolution.x);
                 vsync = Utils::deserializeBool(json["vsync"], vsync);
                 masterVolume = Utils::deserializeBool(json["masterVolume"], masterVolume);
-                sfxVolume = Utils::deserializeBool(json["sfxVolume"], sfxVolume);
-                musicVolume = Utils::deserializeBool(json["musicVolume"], musicVolume);
+                sfxVolume = Utils::deserializeFloat(json["sfxVolume"], sfxVolume);
+                musicVolume = Utils::deserializeFloat(json["musicVolume"], musicVolume);
                 recentEditorFiles = Utils::deserializeStringArray(json["recentEditorFiles"]);
+                displayMode = (DisplayMode)Utils::deserializeInt32(json["displayMode"], (int32_t)displayMode);
+                dpiAware = Utils::deserializeBool(json["dpiAware"], dpiAware);
+                showFPS = Utils::deserializeBool(json["showFPS"], showFPS);
             }
 
             configJsonAtLaunch = json;

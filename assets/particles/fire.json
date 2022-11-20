@@ -1,0 +1,86 @@
+{
+   "camera" : {
+      "position" : [ 0.65234363079071045, -0.66796875 ],
+      "zoom" : 1
+   },
+   "emitters" : [
+      {
+         "additive" : {
+            "endRange" : [ 1.0, 0.0 ],
+            "randomEnd" : false,
+            "randomStart" : false,
+            "sameStartEnd" : false,
+            "startRange" : [ 1.0, 1.0 ]
+         },
+         "burstAmount" : 100,
+         "burstDuration" : 0.0,
+         "color" : {
+            "endRange" : [
+               [ 0.91372549533843994, 1.0, 0.0, 1.0 ],
+               [ 0.0, 0.0, 0.0, 0.0 ]
+            ],
+            "randomEnd" : false,
+            "randomStart" : false,
+            "sameStartEnd" : false,
+            "startRange" : [
+               [ 1.0, 0.4117647111415863, 0.0, 0.19607843458652496 ],
+               [ 1.0, 0.97058826684951782, 0.0, 1.0 ]
+            ]
+         },
+         "duration" : {
+            "random" : true,
+            "range" : [ 0.5, 1.5 ]
+         },
+         "endOnlyAffectAlpha" : false,
+         "gravity" : {
+            "endRange" : [
+               [ 0.0, 0.0 ],
+               [ 0.0, 0.0 ]
+            ],
+            "randomEnd" : false,
+            "randomStart" : true,
+            "sameStartEnd" : true,
+            "startRange" : [
+               [ -10.0, 0.0 ],
+               [ 10.0, 0.0 ]
+            ]
+         },
+         "name" : "emitter",
+         "rotation" : {
+            "random" : true,
+            "range" : [ 0.0, 360.0 ]
+         },
+         "rotationSpeed" : {
+            "endRange" : [ 0.0, 0.0 ],
+            "randomEnd" : false,
+            "randomStart" : false,
+            "sameStartEnd" : true,
+            "startRange" : [ 0.0, 180.0 ]
+         },
+         "size" : {
+            "endRange" : [ 0.0, 0.0 ],
+            "randomEnd" : true,
+            "randomStart" : true,
+            "sameStartEnd" : false,
+            "startRange" : [ 25.0, 25.0 ]
+         },
+         "spawnRadius" : {
+            "random" : true,
+            "range" : [ 0.0, 29.549999237060547 ]
+         },
+         "spawnRate" : 100.0,
+         "speed" : {
+            "endRange" : [ 200.0, 0.0 ],
+            "randomEnd" : false,
+            "randomStart" : true,
+            "sameStartEnd" : false,
+            "startRange" : [ 0.0, 100.0 ]
+         },
+         "spread" : 22.325000762939453,
+         "texture" : "textures/particle.png",
+         "type" : "continuous"
+      }
+   ],
+   "type" : "pfx",
+   "version" : 1
+}

@@ -15,6 +15,12 @@ namespace Engine
     class Font;
     using FontRef = std::shared_ptr<Font>;
 
+    class PFX;
+    using PFXRef = std::shared_ptr<PFX>;
+
+    class FrameAnim;
+    using FrameAnimRef = std::shared_ptr<FrameAnim>;
+
 
     namespace GUI
     {
@@ -41,6 +47,7 @@ namespace Engine
 
         // Properties. Return true if it has changed (Needs undo)
         bool stringProperty(const char* label, std::string* value, const char* tooltip = nullptr);
+        bool multilineStringProperty(const char* label, std::string* value, const char* tooltip = nullptr);
         bool enumProperty(const char* label, int* choice, const char* items_separated_by_zeros, const char* tooltip = nullptr);
         template<typename T> bool enumProperty(const char* label, T* choice, const char* items_separated_by_zeros, const char* tooltip = nullptr) { return enumProperty(label, (int*)choice, items_separated_by_zeros, tooltip); }
         bool floatProperty(const char* label, float* value, float min = -1000000.0f, float max = 1000000.0f, const char* tooltip = nullptr);
@@ -50,11 +57,14 @@ namespace Engine
         bool boolProperty(const char* label, bool* value, const char* tooltip = nullptr);
         bool colorProperty(const char* label, glm::vec4* color, const char* tooltip = nullptr);
         bool vec2Property(const char* label, glm::vec2* value, const char* tooltip = nullptr);
+        bool paddingProperty(const char* label, glm::ivec4* value, const char* tooltip = nullptr);
         bool originProperty(const char* label, glm::vec2* value, const char* tooltip = nullptr);
         void idProperty(const char* label, uint64_t id, const char* tooltip = nullptr); // Can't modify this
 
         // Resources
-        bool textureProperty(const char* label, TextureRef* value, const char* tooltip = nullptr);
+        bool textureProperty(const char* label, TextureRef* value, const char* tooltip = nullptr, bool disabled = false);
         bool fontProperty(const char* label, FontRef* value, const char* tooltip = nullptr);
+        bool PFXProperty(const char* label, PFXRef* value, const char* tooltip = nullptr);
+        bool frameAnimProperty(const char* label, FrameAnimRef* value, const char* tooltip = nullptr, bool disabled = false);
     }
 }

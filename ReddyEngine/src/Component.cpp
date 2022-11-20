@@ -5,9 +5,6 @@
 #include "Engine/Scene.h"
 #include "Engine/ReddyEngine.h"
 #include "Engine/SpriteBatch.h"
-#include "Engine/SpriteComponent.h"
-#include "Engine/TextComponent.h"
-#include "Engine/ScriptComponent.h"
 #include "Engine/ResourceManager.h"
 #include "Engine/Constants.h"
 
@@ -15,16 +12,6 @@
 namespace Engine
 {
 	std::unordered_map<std::string, TextureRef> Component::cachedEditorIcons = { };
-
-	ComponentRef Component::create(const std::string& className)
-	{
-		if (className == "Sprite") return std::make_shared<SpriteComponent>();
-		if (className == "Text") return std::make_shared<TextComponent>();
-		if (className == "Script") return std::make_shared<ScriptComponent>();
-
-		//CORE_ERROR("Unrecognized Component Type: {}", className); // This will be called often legitemaly by script, it's spammy
-		return nullptr;
-	}
 	
 	void Component::clearCachedEditorIcons()
 	{
@@ -54,7 +41,8 @@ namespace Engine
 		if (!m_isEnabled)
 		{
 			m_isEnabled = true;
-			onEnable();
+			if (m_pEntity->enabled)
+				onEnable();
 		}
 	}
 
@@ -63,7 +51,8 @@ namespace Engine
 		if (m_isEnabled)
 		{
 			m_isEnabled = false;
-			onDisable();
+			if (m_pEntity->enabled)
+				onDisable();
 		}
 	}
 

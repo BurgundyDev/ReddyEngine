@@ -9,6 +9,10 @@
 #include "Engine/EventSystem.h"
 #include "Engine/LuaBindings.h"
 #include "Engine/MusicManager.h"
+#include "Engine/ComponentFactory.h"
+#include "Engine/Entity.h"
+#include "Engine/Scene.h"
+#include "Engine/Font.h"
 
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -29,6 +33,7 @@ namespace Engine
 	static LuaBindingsRef g_pLuaBindings;
 	static IGameRef g_pGame;
 	static MusicManagerRef g_pMusicManager;
+	static FontRef g_pFPSFont;
 
     static int g_fixedUpdateFPS = 60;
     static bool g_done = false;
@@ -68,13 +73,22 @@ namespace Engine
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #endif
+#if defined(WIN32)
+        if (Config::dpiAware)
+            SetProcessDPIAware();
+#endif
 
         // Create window with graphics context
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-        SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+        SDL_WindowFlags window_flags = (SDL_WindowFlags)(
+            SDL_WINDOW_OPENGL | 
+            SDL_WINDOW_ALLOW_HIGHDPI | /* This flag doesn't do anything on Windows, SDL doesnt implement it */
+            SDL_WINDOW_RESIZABLE
+        );
         pWindow = SDL_CreateWindow("Reddy", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Config::resolution.x, Config::resolution.y, window_flags);
+        displayModeChanged();
         
         // enable file drop events
         SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
@@ -114,7 +128,11 @@ namespace Engine
         //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
         //IM_ASSERT(font != NULL);
 
+        if (Utils::fileExists("c:\\Windows\\Fonts\\segoeui.ttf"))
+            io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f, NULL);
+
         // Initialize Engine's systems
+        ComponentFactory::initialize();
         g_pEventSystem = std::make_shared<EventSystem>();
         g_pInput = std::make_shared<Input>();
         g_pAudio = std::make_shared<Audio>();
@@ -126,12 +144,17 @@ namespace Engine
         g_pLuaBindings->init();
         g_pScene->init();
 
+        g_pFPSFont = g_pResourceManager->getFont("fonts/defaultFont24.json");
+
         // Once everything is setup, the game can load stuff
         pGame->loadContent();
 
         // Main loop
         Uint64 lastTime = SDL_GetPerformanceCounter();
         float fixedUpdateProgress = 0.0f;
+        int currentFPS = 0;
+        int fps = 0;
+        float fpsDelay = 0.0f;
         while (!g_done)
         {
             g_pEventSystem->dispatchEvents();
@@ -168,6 +191,12 @@ namespace Engine
                                 case SDL_WINDOWEVENT_CLOSE:
                                     g_done = true;
                                     break;
+                                case SDL_WINDOWEVENT_RESIZED:
+                                {
+                                    if (Config::displayMode == Config::DisplayMode::Windowed)
+                                        SDL_GetWindowSize(pWindow, &Config::resolution.x, &Config::resolution.y);
+                                    break;
+                                }
                             }
                         }
                         break;
@@ -275,6 +304,22 @@ namespace Engine
             // Draw game
             g_pEventSystem->dispatchEvents();
             pGame->draw();
+
+            // FPS
+            ++currentFPS;
+            fpsDelay += deltaTime;
+            if (fpsDelay >= 1.0f)
+            {
+                fpsDelay -= 1.0f;
+                fps = currentFPS;
+                currentFPS = 0;
+            }
+            if (Config::showFPS)
+            {
+                g_pSpriteBatch->begin();
+                g_pFPSFont->draw("FPS: " + std::to_string(fps), {0, 25});
+                g_pSpriteBatch->end();
+            }
             
             // Draw ImGui on top
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -287,6 +332,7 @@ namespace Engine
         Config::save();
 
         // Cleanup
+        g_pFPSFont.reset();
         g_pLuaBindings.reset();
         g_pScene.reset();
         g_pMusicManager.reset();
@@ -371,5 +417,27 @@ namespace Engine
     void quit()
     {
         g_done = true;
+    }
+
+    void displayModeChanged()
+    {
+        switch (Config::displayMode)
+        {
+            case Config::DisplayMode::Windowed:
+            {
+                SDL_SetWindowFullscreen(pWindow, 0);
+                break;
+            }
+            case Config::DisplayMode::BorderlessFullscreen:
+            {
+                SDL_SetWindowFullscreen(pWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+                break;
+            }
+        }
+    }
+
+    void vsyncChanged()
+    {
+        SDL_GL_SetSwapInterval(Config::vsync ? 1 : 0);
     }
 }

@@ -6,9 +6,13 @@
 --   - Component object
 
 ---------------------------------------------------------------------
--- Log
+-- Utilities
 ---------------------------------------------------------------------
 function Log(text) end
+function GetScreenRect() end -- Returns 4 values: x,y,w,h
+function EmitParticles(pfx, position, angle, scale) end -- Returns the newly created entity containing the PFXComponent
+function GetConfig(configName) end -- displayMode (0 or 1), vsync (true or false), musicVolume ([0, 1]), sfxVolume ([0, 1])
+function SetConfig(configName, value) end -- displayMode (0 or 1), vsync (true or false), musicVolume ([0, 1]), sfxVolume ([0, 1])
 
 
 ---------------------------------------------------------------------
@@ -45,6 +49,8 @@ function SetCameraZoom(zoom) end
 ---------------------------------------------------------------------
 function IsKeyDown(key) end
 function IsButtonDown(button) end
+function IsButtonJustDown(button) end
+function GetMousePosition() end
 
 
 ---------------------------------------------------------------------
@@ -60,9 +66,9 @@ function ResumeMusic() end
 ---------------------------------------------------------------------
 -- Events
 ---------------------------------------------------------------------
--- function SendEvent(eventName, data) end
--- function RegisterEvent(eventName, c, callback) end
--- function DeregisterEvent(eventName, c) end
+function SendEvent(eventName, data) end
+function RegisterEvent(eventName, c, functionName) end
+function DeregisterEvent(eventName, c) end
 
 
 ---------------------------------------------------------------------
@@ -89,11 +95,12 @@ function GetParent(e) end
 function AddChild(parent, e) end
 
 -- Lifecycle
-function Enable(e) end
-function Disable(e) end
--- function EnableComponent(obj) end
--- function DisableComponent(obj) end
+function EnableEntity(e) end
+function DisableEntity(e) end
+function EnableComponent(e, componentName) end -- Lua name, or built-ins: Sprite, Text, etc.
+function DisableComponent(e, componentName) end
 function CreateEntity(parent) end
+function CreateEntity(parent, prefabName) end
 function Destroy(e) end -- Destroys the entity (Accepts: component, entity or entity name)
 function AddComponent(e, componentName) end -- Lua name, or built-ins: Sprite, Text, etc.
 function RemoveComponent(e, componentName) end
@@ -120,12 +127,22 @@ function SetTextOrigin(e, origin) end
 function GetTextScale(e) end
 function SetTextScale(e, scale) end
 
+function GetPFX(e) end
+function SetPFX(e, filename) end
+function PlayPFX(e) end
+function StopPFX(e) end
+
+function PlayFrameAnim(e, animAnme) end
+
 
 ---------------------------------------------------------------------
 -- Entity searching
 ---------------------------------------------------------------------
-function FindEntityByName(entityName, pos, searchRadius) end -- Pass 0 for Radius for whole world
--- function FindEntityByComponent(componentTypeName, pos, searchRadius) end -- Pass 0 for Radius for whole world
+-- Root argument is where to start searching. If root is nil, scene root will be used.
+function FindEntityByName(root, entityName, pos, searchRadius) end -- Pass 0 for Radius for whole world.
+function FindEntitiesByName(root, entityName, pos, searchRadius) end -- Returns array. Pass 0 for Radius for whole world.
+function FindEntityByComponent(root, componentTypeName, pos, searchRadius) end -- Pass 0 for Radius for whole world
+function FindEntitiesByComponent(root, componentTypeName, pos, searchRadius) end -- eturns array. Pass 0 for Radius for whole world.
 
 
 ---------------------------------------------------------------------

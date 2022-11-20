@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 #include <json/json.h>
 
 #include <memory>
@@ -43,8 +44,15 @@ namespace Engine
 
 		/*! \brief Search the root for an entity with the given name */
 		EntityRef getEntityByName(const std::string& name, bool recursive = false) const;
+		EntityRef findByComponent(const std::string& componentName, bool recursive = false) const;
+		void FindEntitiesByName(const std::string& name, std::vector<EntityRef>& entities, bool recursive = false) const;
+		void FindEntitiesByComponent(const std::string& componentName, std::vector<EntityRef>& entities, bool recursive = false) const;
+
 		/*! \brief Search the root for an entity with the given name, optionally searching  using EntitySearchParams */
 		EntityRef getEntityByName(const std::string& name, const EntitySearchParams& searchParams, bool recursive = false) const;
+		EntityRef findByComponent(const std::string& componentName, const EntitySearchParams& searchParams, bool recursive = false) const;
+		void FindEntitiesByName(const std::string& name, std::vector<EntityRef>& entities, const EntitySearchParams& searchParams, bool recursive = false) const;
+		void FindEntitiesByComponent(const std::string& componentName, std::vector<EntityRef>& entities, const EntitySearchParams& searchParams, bool recursive = false) const;
 		
 		const EntityRef& getRoot() const { return m_pRoot; }
 
@@ -57,6 +65,9 @@ namespace Engine
 
 		const glm::vec2& getMousePos() const { return m_mousePos; }
 		void setMousePos(const glm::vec2& mousePos) { m_mousePos = mousePos; } // In World coordinates
+
+		const glm::vec4& getScreenRect() const { return m_screenRect; }
+		void setScreenRect(const glm::vec4& screenRect) { m_screenRect = screenRect; } // In World coordinates
 
 		const EntityRef& getHoveredEntity() const { return m_pMouseHoverEntity; }
 
@@ -74,6 +85,7 @@ namespace Engine
 		bool m_isEditorScene = false;
 		bool m_isMouseDown = false;
 		glm::vec2 m_mousePos = glm::vec2(0.0f); // In World coordinates
+		glm::vec4 m_screenRect = glm::vec4(0.0f); // In World coordinates
 		EntityRef m_pRoot;
 		EntityRef m_pMouseHoverEntity;
 		EntityRef m_pMouseDownEntity;

@@ -44,6 +44,11 @@ namespace Engine
         destroyLuaObj();
     }
 
+    std::string ScriptComponent::getFriendlyName() const
+    {
+        return name;
+    }
+
     Json::Value ScriptComponent::serialize()
     {
         auto json = Component::serialize();

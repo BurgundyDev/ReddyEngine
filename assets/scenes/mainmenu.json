@@ -1,112 +1,10 @@
 {
    "camera" : {
-      "position" : [ 0.33723932504653931, 0.2148442417383194 ],
-      "zoom" : 2
+      "position" : [ 0.71631503105163574, -0.060477327555418015 ],
+      "zoom" : 1
    },
    "root" : {
       "children" : [
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts/defaultFont48.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.0,
-                  "text" : "Continue Game",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : "ContinueGame()"
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 44,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 0.0, -0.5 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts/defaultFont48.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.0,
-                  "text" : "New Game",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : "NewGame()"
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 45,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 0.0, 0.0 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts/defaultFont48.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.0,
-                  "text" : "Quit",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : "Quit()"
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 48,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 0.0, 0.5 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
          {
             "children" : [
                {
@@ -114,9 +12,11 @@
                   "clickThrough" : false,
                   "components" : [
                      {
+                        "additive" : 0.0,
                         "color" : [ 0.54411768913269043, 0.54411768913269043, 0.54411768913269043, 1.0 ],
                         "enabled" : true,
                         "font" : "fonts/defaultFont48.json",
+                        "justify" : 0.5,
                         "origin" : [ 0.5, 0.5 ],
                         "scale" : 1.0,
                         "text" : "Sandbox",
@@ -131,13 +31,17 @@
                         "type" : "Script"
                      }
                   ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
                   "id" : 53,
                   "lockScale" : true,
                   "mouseChildren" : true,
                   "name" : "",
                   "sortChildren" : false,
                   "transform" : {
-                     "position" : [ 0.0, 0.359375 ],
+                     "position" : [ 0.0, 0.35937511920928955 ],
                      "rotation" : 0.0,
                      "scale" : [ 1.0, 1.0 ]
                   },
@@ -148,9 +52,11 @@
                   "clickThrough" : false,
                   "components" : [
                      {
+                        "additive" : 0.0,
                         "color" : [ 0.54509806632995605, 0.54509806632995605, 0.54509806632995605, 1.0 ],
                         "enabled" : true,
                         "font" : "fonts/defaultFont48.json",
+                        "justify" : 0.5,
                         "origin" : [ 0.5, 0.5 ],
                         "scale" : 1.0,
                         "text" : "Editor",
@@ -165,6 +71,10 @@
                         "type" : "Script"
                      }
                   ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
                   "id" : 56,
                   "lockScale" : true,
                   "mouseChildren" : true,
@@ -181,22 +91,28 @@
             "clickThrough" : false,
             "components" : [
                {
+                  "additive" : 0.0,
                   "color" : [ 0.16378314793109894, 0.33599632978439331, 0.69607841968536377, 1.0 ],
                   "enabled" : true,
                   "font" : "fonts/defaultFont48.json",
+                  "justify" : 0.5,
                   "origin" : [ 0.5, 0.5 ],
                   "scale" : 1.0,
                   "text" : "Dev Corner",
                   "type" : "Text"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
+            "enabled" : true,
+            "expanded" : false,
             "id" : 50,
             "lockScale" : true,
             "mouseChildren" : true,
             "name" : "DevCorner",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 1.7578125, 0.40625 ],
+               "position" : [ 4.0, 1.5 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -215,13 +131,567 @@
                   "type" : "Script"
                }
             ],
+            "editorLocked" : false,
+            "editorVisible" : true,
+            "enabled" : true,
+            "expanded" : true,
             "id" : 60,
             "lockScale" : true,
             "mouseChildren" : true,
             "name" : "MainMenu",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 1.8020834922790527, -0.97916662693023682 ],
+               "position" : [ 3.5, -1.5 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [
+               {
+                  "children" : [
+                     {
+                        "children" : [],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 0.0,
+                              "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                              "enabled" : true,
+                              "font" : "fonts/defaultFont48.json",
+                              "justify" : 0.5,
+                              "origin" : [ 0.5, 0.5 ],
+                              "scale" : 1.0,
+                              "text" : "Continue Game",
+                              "type" : "Text"
+                           },
+                           {
+                              "enabled" : true,
+                              "name" : "Button",
+                              "properties" : {
+                                 "codeToEval" : "ContinueGame()"
+                              },
+                              "type" : "Script"
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 44,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "btnContinue",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 0.0, -0.75 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.0, 1.0 ]
+                        },
+                        "uiRoot" : false
+                     },
+                     {
+                        "children" : [],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 0.0,
+                              "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                              "enabled" : true,
+                              "font" : "fonts/defaultFont48.json",
+                              "justify" : 0.5,
+                              "origin" : [ 0.5, 0.5 ],
+                              "scale" : 1.0,
+                              "text" : "New Game",
+                              "type" : "Text"
+                           },
+                           {
+                              "enabled" : true,
+                              "name" : "Button",
+                              "properties" : {
+                                 "codeToEval" : "NewGame()"
+                              },
+                              "type" : "Script"
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 45,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 0.0, -0.24999997019767761 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.0, 1.0 ]
+                        },
+                        "uiRoot" : false
+                     },
+                     {
+                        "children" : [],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 0.0,
+                              "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                              "enabled" : true,
+                              "font" : "fonts/defaultFont48.json",
+                              "justify" : 0.5,
+                              "origin" : [ 0.5, 0.5 ],
+                              "scale" : 1.0,
+                              "text" : "Options",
+                              "type" : "Text"
+                           },
+                           {
+                              "enabled" : true,
+                              "name" : "Button",
+                              "properties" : {
+                                 "codeToEval" : "SendEvent(\"ShowOptionsMenu\")"
+                              },
+                              "type" : "Script"
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 158,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 0.0, 0.25000002980232239 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.0, 1.0 ]
+                        },
+                        "uiRoot" : false
+                     },
+                     {
+                        "children" : [],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 0.0,
+                              "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                              "enabled" : true,
+                              "font" : "fonts/defaultFont48.json",
+                              "justify" : 0.5,
+                              "origin" : [ 0.5, 0.5 ],
+                              "scale" : 1.0,
+                              "text" : "Quit",
+                              "type" : "Text"
+                           },
+                           {
+                              "enabled" : true,
+                              "name" : "Button",
+                              "properties" : {
+                                 "codeToEval" : "Quit()"
+                              },
+                              "type" : "Script"
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 48,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 0.0, 0.75 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.0, 1.0 ]
+                        },
+                        "uiRoot" : false
+                     }
+                  ],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "padding" : [ 88, 88, 88, 88 ],
+                        "repeatCenter" : false,
+                        "scale" : [ 4.0, 2.0799999237060547 ],
+                        "texture" : "textures\\defaultSlice9.png",
+                        "type" : "Slice9",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 185,
+                  "lockScale" : false,
+                  "mouseChildren" : true,
+                  "name" : "Frame",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.0, 0.0 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               }
+            ],
+            "clickThrough" : false,
+            "components" : [],
+            "editorLocked" : false,
+            "editorVisible" : true,
+            "enabled" : true,
+            "expanded" : true,
+            "id" : 160,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "MainMenuRoot",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 0.0, 0.0 ],
+               "rotation" : 0.0,
+               "scale" : [ 1.0, 1.0 ]
+            },
+            "uiRoot" : false
+         },
+         {
+            "children" : [
+               {
+                  "children" : [
+                     {
+                        "children" : [],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 0.0,
+                              "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                              "enabled" : true,
+                              "font" : "fonts/defaultFont48.json",
+                              "justify" : 0.5,
+                              "origin" : [ 0.5, 0.5 ],
+                              "scale" : 1.0,
+                              "text" : "Display Mode - Windowed",
+                              "type" : "Text"
+                           },
+                           {
+                              "enabled" : true,
+                              "name" : "Button",
+                              "properties" : {
+                                 "codeToEval" : "SendEvent(\"OnDisplayMode\")"
+                              },
+                              "type" : "Script"
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 162,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "btnDisplayMode",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 0.0, -1.2109377384185791 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.0, 1.0 ]
+                        },
+                        "uiRoot" : false
+                     },
+                     {
+                        "children" : [],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 0.0,
+                              "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                              "enabled" : true,
+                              "font" : "fonts/defaultFont48.json",
+                              "justify" : 0.5,
+                              "origin" : [ 0.5, 0.5 ],
+                              "scale" : 1.0,
+                              "text" : "VSync - On",
+                              "type" : "Text"
+                           },
+                           {
+                              "enabled" : true,
+                              "name" : "Button",
+                              "properties" : {
+                                 "codeToEval" : "SendEvent(\"OnVSync\")"
+                              },
+                              "type" : "Script"
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 165,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "btnVSync",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ -0.015625, -0.52604168653488159 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.0, 1.0 ]
+                        },
+                        "uiRoot" : false
+                     },
+                     {
+                        "children" : [
+                           {
+                              "children" : [
+                                 {
+                                    "children" : [],
+                                    "clickThrough" : false,
+                                    "components" : [
+                                       {
+                                          "additive" : 0.0,
+                                          "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                                          "enabled" : true,
+                                          "origin" : [ 0.5, 0.5 ],
+                                          "texture" : "textures\\particle.png",
+                                          "type" : "Sprite",
+                                          "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                                       },
+                                       {
+                                          "enabled" : true,
+                                          "name" : "Slider",
+                                          "properties" : null,
+                                          "type" : "Script"
+                                       }
+                                    ],
+                                    "editorLocked" : false,
+                                    "editorVisible" : true,
+                                    "enabled" : true,
+                                    "expanded" : true,
+                                    "id" : 178,
+                                    "lockScale" : true,
+                                    "mouseChildren" : true,
+                                    "name" : "musicSlider",
+                                    "sortChildren" : false,
+                                    "transform" : {
+                                       "position" : [ 1.00390625, 0.0 ],
+                                       "rotation" : 0.0,
+                                       "scale" : [ 1.0, 1.0 ]
+                                    },
+                                    "uiRoot" : false
+                                 }
+                              ],
+                              "clickThrough" : false,
+                              "components" : [
+                                 {
+                                    "additive" : 0.0,
+                                    "color" : [ 0.4478764533996582, 0.4478764533996582, 0.4478764533996582, 1.0 ],
+                                    "enabled" : true,
+                                    "origin" : [ 0.5, 0.5 ],
+                                    "texture" : "textures\\white.png",
+                                    "type" : "Sprite",
+                                    "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                                 }
+                              ],
+                              "editorLocked" : false,
+                              "editorVisible" : true,
+                              "enabled" : true,
+                              "expanded" : true,
+                              "id" : 177,
+                              "lockScale" : false,
+                              "mouseChildren" : true,
+                              "name" : "Volume",
+                              "sortChildren" : false,
+                              "transform" : {
+                                 "position" : [ 0.0, 0.2578125 ],
+                                 "rotation" : 0.0,
+                                 "scale" : [ 2.0, 0.070000000298023224 ]
+                              },
+                              "uiRoot" : false
+                           }
+                        ],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 0.0,
+                              "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                              "enabled" : true,
+                              "font" : "fonts/defaultFont48.json",
+                              "justify" : 0.5,
+                              "origin" : [ 0.5, 0.5 ],
+                              "scale" : 1.0,
+                              "text" : "Music Volume",
+                              "type" : "Text"
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 171,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 0.0, 0.21874992549419403 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.0, 1.0 ]
+                        },
+                        "uiRoot" : false
+                     },
+                     {
+                        "children" : [
+                           {
+                              "children" : [
+                                 {
+                                    "children" : [],
+                                    "clickThrough" : false,
+                                    "components" : [
+                                       {
+                                          "additive" : 0.0,
+                                          "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                                          "enabled" : true,
+                                          "origin" : [ 0.5, 0.5 ],
+                                          "texture" : "textures\\particle.png",
+                                          "type" : "Sprite",
+                                          "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                                       },
+                                       {
+                                          "enabled" : true,
+                                          "name" : "Slider",
+                                          "properties" : null,
+                                          "type" : "Script"
+                                       }
+                                    ],
+                                    "editorLocked" : false,
+                                    "editorVisible" : true,
+                                    "enabled" : true,
+                                    "expanded" : true,
+                                    "id" : 183,
+                                    "lockScale" : true,
+                                    "mouseChildren" : true,
+                                    "name" : "sfxSlider",
+                                    "sortChildren" : false,
+                                    "transform" : {
+                                       "position" : [ 1.00390625, 0.0 ],
+                                       "rotation" : 0.0,
+                                       "scale" : [ 1.0, 1.0 ]
+                                    },
+                                    "uiRoot" : false
+                                 }
+                              ],
+                              "clickThrough" : false,
+                              "components" : [
+                                 {
+                                    "additive" : 0.0,
+                                    "color" : [ 0.4478764533996582, 0.4478764533996582, 0.4478764533996582, 1.0 ],
+                                    "enabled" : true,
+                                    "origin" : [ 0.5, 0.5 ],
+                                    "texture" : "textures\\white.png",
+                                    "type" : "Sprite",
+                                    "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                                 }
+                              ],
+                              "editorLocked" : false,
+                              "editorVisible" : true,
+                              "enabled" : true,
+                              "expanded" : true,
+                              "id" : 181,
+                              "lockScale" : false,
+                              "mouseChildren" : true,
+                              "name" : "Volume",
+                              "sortChildren" : false,
+                              "transform" : {
+                                 "position" : [ 0.0, 0.2578125 ],
+                                 "rotation" : 0.0,
+                                 "scale" : [ 2.0, 0.070000000298023224 ]
+                              },
+                              "uiRoot" : false
+                           }
+                        ],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 0.0,
+                              "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                              "enabled" : true,
+                              "font" : "fonts/defaultFont48.json",
+                              "justify" : 0.5,
+                              "origin" : [ 0.5, 0.5 ],
+                              "scale" : 1.0,
+                              "text" : "Sound Volume",
+                              "type" : "Text"
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 179,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 0.0, 1.0677083730697632 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.0, 1.0 ]
+                        },
+                        "uiRoot" : false
+                     }
+                  ],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "padding" : [ 88, 88, 88, 88 ],
+                        "repeatCenter" : false,
+                        "scale" : [ 4.0, 2.8399999141693115 ],
+                        "texture" : "textures\\defaultSlice9.png",
+                        "type" : "Slice9",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 187,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "Frame",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.0, 0.0 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               }
+            ],
+            "clickThrough" : false,
+            "components" : [],
+            "editorLocked" : false,
+            "editorVisible" : false,
+            "enabled" : false,
+            "expanded" : true,
+            "id" : 161,
+            "lockScale" : true,
+            "mouseChildren" : true,
+            "name" : "OptionsMenuRoot",
+            "sortChildren" : false,
+            "transform" : {
+               "position" : [ 0.0, 0.0 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -230,6 +700,10 @@
       ],
       "clickThrough" : true,
       "components" : [],
+      "editorLocked" : false,
+      "editorVisible" : true,
+      "enabled" : true,
+      "expanded" : true,
       "id" : 0,
       "lockScale" : true,
       "mouseChildren" : true,

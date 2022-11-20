@@ -25,7 +25,6 @@ namespace Engine
     using PFXInstanceRef = std::shared_ptr<PFXInstance>;
 
     class IEvent;
-    class ScriptComponent;
 }
 
 
@@ -70,21 +69,11 @@ private:
     void onDuplicate();
     void onDelete();
     void onCreateEmptyEntity();
-    void onCreateSpriteEntity();
-    void onCreateTextEntity();
-    void onCreateSoundEntity();
-    void onCreateParticleEntity();
-    void onCreateScriptEntity();
+    void onCreateEntity(const std::string& typeName);
     void onDisableGrid();
     void onDisableViewportOutline();
-
-    template<typename T>
-    void onAddComponent()
-    {
-        if (m_selected.size() != 1) return;
-        m_selected.front()->addComponent<T>();
-        pushUndo("Add Component");
-    }
+    void onDeselect();
+    void onSelectAll();
 
     void open(const std::string& filename);
     bool openAs(); // Returns false if user cancelled
@@ -99,7 +88,7 @@ private:
     void changeSelection(const std::vector<Engine::EntityRef>& newSelection);
     void changeSelectionAction(const std::vector<Engine::EntityRef>& newSelection);
     void drawEntitySceneTree(const Engine::EntityRef& pEntity);
-    const char* getEntityFriendlyName(const Engine::EntityRef& pEntity);
+    std::string getEntityFriendlyName(const Engine::EntityRef& pEntity);
     void serializeSelectionState();
     void updateTransform();
     void createEntityAction(Engine::EntityRef pEntity);
@@ -132,6 +121,9 @@ private:
     glm::vec2 m_mouseScreenOnDown;
     glm::vec2 m_positionOnDown;
     glm::vec2 m_position = {0, 0};
+    glm::vec2 m_positionTarget = {0, 0};
+    bool m_boxSelect = false;
+    glm::vec2 m_boxSelectFrom;
     const float ZOOM_LEVELS[8] = {256.0f, 192.0f, 128.0f, 96.0f, 64.0f, 32.0f, 16.0f, 8.0f};
     int m_zoom = 2; // Maps to a zoom level
     float m_zoomf = ZOOM_LEVELS[2];
@@ -140,7 +132,7 @@ private:
     // Grid stuff
     bool m_isGridVisible = true;
     glm::vec2 m_gridStep = { 8.0f, 8.0f };
-    glm::vec4 m_gridColor = glm::vec4(0.35f);
+    glm::vec4 m_gridColor = glm::vec4(0.20f);
     bool m_isViewportOutlined = true;
 
     // Particle editor stuff

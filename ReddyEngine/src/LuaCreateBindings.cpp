@@ -16,8 +16,11 @@ extern "C" {
 #include "Engine/Sound.h"
 #include "Engine/ResourceManager.h"
 #include "Engine/SpriteComponent.h"
+#include "Engine/FrameAnimComponent.h"
+#include "Engine/PFXComponent.h"
 #include "Engine/TextComponent.h"
 #include "Engine/MusicManager.h"
+#include "Engine/Config.h"
 
 
 namespace Engine
@@ -45,7 +48,6 @@ namespace Engine
         LUA_REGISTER(Destroy);
         LUA_REGISTER(AddComponent);
         LUA_REGISTER(RemoveComponent);
-        LUA_REGISTER(SendEvent);
         LUA_REGISTER(GetPosition);
         LUA_REGISTER(SetPosition);
         LUA_REGISTER(GetWorldPosition);
@@ -58,8 +60,10 @@ namespace Engine
         LUA_REGISTER(Distance);
         LUA_REGISTER(Normalize);
         LUA_REGISTER(Dot);
-        LUA_REGISTER(IsKeyDown);
+        LUA_REGISTER(GetMousePosition);
+		LUA_REGISTER(IsKeyDown);
         LUA_REGISTER(IsButtonDown);
+		LUA_REGISTER(IsButtonJustDown);
         LUA_REGISTER(PlaySound);
         LUA_REGISTER(GetSpriteTexture);
         LUA_REGISTER(SetSpriteTexture);
@@ -77,9 +81,17 @@ namespace Engine
         LUA_REGISTER(SetTextOrigin);
         LUA_REGISTER(GetTextScale);
         LUA_REGISTER(SetTextScale);
+        LUA_REGISTER(GetPFX);
+        LUA_REGISTER(SetPFX);
+        LUA_REGISTER(PlayPFX);
+        LUA_REGISTER(StopPFX);
         LUA_REGISTER(GetName);
         LUA_REGISTER(SetName);
+        LUA_REGISTER(PlayFrameAnim);
         LUA_REGISTER(FindEntityByName);
+        LUA_REGISTER(FindEntityByComponent);
+        LUA_REGISTER(FindEntitiesByName);
+        LUA_REGISTER(FindEntitiesByComponent);
         LUA_REGISTER(ContinueGame);
         LUA_REGISTER(NewGame);
         LUA_REGISTER(Quit);
@@ -91,6 +103,17 @@ namespace Engine
         LUA_REGISTER(PauseMusic);
         LUA_REGISTER(ResumeMusic);
         LUA_REGISTER(Log);
+        LUA_REGISTER(GetScreenRect);
+        LUA_REGISTER(EmitParticles);
+        LUA_REGISTER(SendEvent);
+        LUA_REGISTER(RegisterEvent);
+        LUA_REGISTER(DeregisterEvent);
+        LUA_REGISTER(EnableEntity);
+        LUA_REGISTER(DisableEntity);
+        LUA_REGISTER(EnableComponent);
+        LUA_REGISTER(DisableComponent);
+        LUA_REGISTER(GetConfig);
+        LUA_REGISTER(SetConfig);
     }
 
     int LuaBindings::funcRegisterComponent(lua_State* L)
@@ -322,33 +345,6 @@ namespace Engine
         return 1;
     }
 
-    int LuaBindings::funcSendEvent(lua_State* L)
-    {
-        if (lua_gettop(L) < 1 || !lua_isstring(L, 1))
-        {
-            CORE_ERROR_POPUP("Lua: SendEvent expected (string, table{optional})");
-            return 0;
-        }
-
-        static uint64_t nextEventDataId = 1;
-
-        std::string eventName = lua_tostring(L, 1);
-        std::string dataName = "";
-
-        if (lua_gettop(L) >= 2)
-        {
-            dataName = "EDAT_" + std::to_string(nextEventDataId++);
-            lua_getglobal(L, "EVTS_t");
-            lua_pushvalue(L, 2);
-            lua_setfield(L, -2, dataName.c_str());
-            lua_pop(L, 1);
-        }
-
-        getEventSystem()->sendEvent(new LuaEvent(eventName, dataName));
-
-        return 0;
-    }
-
     int LuaBindings::funcGetPosition(lua_State* L)
     {
         auto pEntity = LUA_GET_ENTITY(1);
@@ -454,6 +450,13 @@ namespace Engine
         return 1;
     }
 
+	int LuaBindings::funcGetMousePosition(lua_State* L)
+	{
+		auto position = getScene()->getMousePos();
+		LUA_PUSH_VEC2(position);
+		return 1;
+	}
+
     int LuaBindings::funcIsKeyDown(lua_State* L)
     {
         auto key = LUA_GET_INT(1, 0);
@@ -469,6 +472,14 @@ namespace Engine
         lua_pushboolean(L, isDown ? 1 : 0);
         return 1;
     }
+
+	int LuaBindings::funcIsButtonJustDown(lua_State* L)
+	{
+		auto button = LUA_GET_INT(1, 0);
+		auto isDown = getInput()->isButtonJustDown((SDL_Scancode)button);
+		lua_pushboolean(L, isDown ? 1 : 0);
+		return 1;
+	}
 
     int LuaBindings::funcPlaySound(lua_State* L)
     {
@@ -621,6 +632,38 @@ namespace Engine
         if (pText) pText->scale = LUA_GET_NUMBER(2, 1.0f);
         return 0;
     }
+    
+    int LuaBindings::funcGetPFX(lua_State* L)
+    {
+        auto pPFXComponent = LUA_GET_COMPONENT(1, PFXComponent);
+        std::string ret = "";
+        if (pPFXComponent)
+            if (pPFXComponent->pPFX)
+                ret = pPFXComponent->pPFX->getFilename();
+        lua_pushstring(L, ret.c_str());
+        return 1;
+    }
+
+    int LuaBindings::funcSetPFX(lua_State* L)
+    {
+        auto pPFXComponent = LUA_GET_COMPONENT(1, PFXComponent);
+        if (pPFXComponent) pPFXComponent->pPFX = getResourceManager()->getPFX(LUA_GET_STRING(2, ""));
+        return 0;
+    }
+
+    int LuaBindings::funcPlayPFX(lua_State* L)
+    {
+        auto pPFXComponent = LUA_GET_COMPONENT(1, PFXComponent);
+        if (pPFXComponent) pPFXComponent->play();
+        return 0;
+    }
+
+    int LuaBindings::funcStopPFX(lua_State* L)
+    {
+        auto pPFXComponent = LUA_GET_COMPONENT(1, PFXComponent);
+        if (pPFXComponent) pPFXComponent->stop();
+        return 0;
+    }
 
     int LuaBindings::funcGetName(lua_State* L)
     {
@@ -640,18 +683,21 @@ namespace Engine
 
     int LuaBindings::funcFindEntityByName(lua_State* L)
     {
-        auto searchName = LUA_GET_STRING(1, "");
+        auto pSearchRoot = LUA_GET_ENTITY(1);
+        if (!pSearchRoot) pSearchRoot = getScene()->getRoot();
+
+        auto searchName = LUA_GET_STRING(2, "");
         if (searchName.empty())
         {
             lua_pushnil(L);
             return 1;
         }
-        glm::vec2 searchPos = LUA_GET_VEC2(2, glm::vec2(0));
-        auto searchRadius = LUA_GET_NUMBER(3, 0.0f);
+        glm::vec2 searchPos = LUA_GET_VEC2(3, glm::vec2(0));
+        auto searchRadius = LUA_GET_NUMBER(4, 0.0f);
 
-        if (searchRadius == 0.0f)
+        if (searchRadius < FLT_EPSILON)
         {
-            auto pEntity = getScene()->getEntityByName(searchName, true);
+            auto pEntity = pSearchRoot->getChildByName(searchName, true);
             LUA_PUSH_ENTITY(pEntity);
             return 1;
         }
@@ -660,16 +706,119 @@ namespace Engine
             EntitySearchParams searchParams;
             searchParams.pointInWorld = searchPos;
             searchParams.radius = searchRadius;
-            auto pEntity = getScene()->getEntityByName(searchName, searchParams, true);
+            auto pEntity = pSearchRoot->getChildByName(searchName, searchParams, true);
             LUA_PUSH_ENTITY(pEntity);
             return 1;
         }
     }
 
+    int LuaBindings::funcFindEntitiesByName(lua_State* L)
+    {
+        auto pSearchRoot = LUA_GET_ENTITY(1);
+        if (!pSearchRoot) pSearchRoot = getScene()->getRoot();
+
+        auto searchName = LUA_GET_STRING(2, "");
+        if (searchName.empty())
+        {
+            lua_pushnil(L);
+            return 1;
+        }
+        glm::vec2 searchPos = LUA_GET_VEC2(3, glm::vec2(0));
+        auto searchRadius = LUA_GET_NUMBER(4, 0.0f);
+
+        std::vector<EntityRef> entities;
+        if (searchRadius < FLT_EPSILON)
+        {
+            pSearchRoot->findByName(searchName, entities, true);
+        }
+        else
+        {
+            EntitySearchParams searchParams;
+            searchParams.pointInWorld = searchPos;
+            searchParams.radius = searchRadius;
+            pSearchRoot->findByName(searchName, entities, searchParams, true);
+        }
+
+        lua_newtable(L);
+
+        for (int i = 0, len = (int)entities.size(); i < len; ++i)
+        {
+            const auto& pEntity = entities[i];
+            LUA_PUSH_ENTITY(pEntity);
+            lua_seti(L, -2, i + 1);
+        }
+
+        return 1;
+    }
+
     int LuaBindings::funcFindEntityByComponent(lua_State* L)
     {
-        //TODO:
-        return 0;
+        auto pSearchRoot = LUA_GET_ENTITY(1);
+        if (!pSearchRoot) pSearchRoot = getScene()->getRoot();
+
+        auto searchName = LUA_GET_STRING(2, "");
+        if (searchName.empty())
+        {
+            lua_pushnil(L);
+            return 1;
+        }
+        glm::vec2 searchPos = LUA_GET_VEC2(3, glm::vec2(0));
+        auto searchRadius = LUA_GET_NUMBER(4, 0.0f);
+
+        if (searchRadius < FLT_EPSILON)
+        {
+            auto pEntity = pSearchRoot->findByComponent(searchName, true);
+            LUA_PUSH_ENTITY(pEntity);
+            return 1;
+        }
+        else
+        {
+            EntitySearchParams searchParams;
+            searchParams.pointInWorld = searchPos;
+            searchParams.radius = searchRadius;
+            auto pEntity = pSearchRoot->findByComponent(searchName, searchParams, true);
+            LUA_PUSH_ENTITY(pEntity);
+            return 1;
+        }
+    }
+
+    int LuaBindings::funcFindEntitiesByComponent(lua_State* L)
+    {
+        auto pSearchRoot = LUA_GET_ENTITY(1);
+        if (!pSearchRoot) pSearchRoot = getScene()->getRoot();
+
+        auto searchName = LUA_GET_STRING(2, "");
+        if (searchName.empty())
+        {
+            lua_pushnil(L);
+            return 1;
+        }
+        glm::vec2 searchPos = LUA_GET_VEC2(3, glm::vec2(0));
+        auto searchRadius = LUA_GET_NUMBER(4, 0.0f);
+
+        std::vector<EntityRef> entities;
+        if (searchRadius < FLT_EPSILON)
+        {
+            pSearchRoot->findByComponent(searchName, entities, true);
+        }
+        else
+        {
+            EntitySearchParams searchParams;
+            searchParams.pointInWorld = searchPos;
+            searchParams.radius = searchRadius;
+            pSearchRoot->findByComponent(searchName, entities, searchParams, true);
+        }
+
+        lua_newtable(L);
+
+        for (int i = 0, len = (int)entities.size(); i < len; ++i)
+        {
+            const auto& pEntity = entities[i];
+            LUA_PUSH_ENTITY(pEntity);
+            lua_seti(L, -2, i + 1);
+        }
+
+        return 1;
     }
 
     int LuaBindings::funcContinueGame(lua_State* L)
@@ -743,6 +892,8 @@ namespace Engine
     int LuaBindings::funcCreateEntity(lua_State* L)
     {
         auto pParent = LUA_GET_ENTITY(1);
+        auto prefab = LUA_GET_STRING(2, "");
+
         if (!pParent)
         {
             CORE_ERROR_POPUP("Lua: Expected first argument to be entity in CreateEntity(parent)");
@@ -751,6 +902,27 @@ namespace Engine
         }
 
         auto pEntity = getScene()->createEntity(pParent);
+
+        if (!prefab.empty())
+        {
+            auto it = m_prefabCache.find(prefab);
+            if (it == m_prefabCache.end())
+            {
+                Json::Value json;
+                if (Utils::loadJson(json, "assets/" + prefab))
+                {
+                    m_prefabCache[prefab] = json;
+                    it = m_prefabCache.find(prefab);
+                }
+            }
+
+            if (it != m_prefabCache.end())
+            {
+                const auto& json = it->second;
+                pEntity->deserialize(json["root"]);
+            }
+        }
+
         LUA_PUSH_ENTITY(pEntity);
         return 1;
     }
@@ -773,7 +945,7 @@ namespace Engine
             return 1;
         }
 
-        auto pComponent = Component::create(componentName);
+        auto pComponent = ComponentFactory::create(componentName);
         if (pComponent)
         {
             if (std::dynamic_pointer_cast<ScriptComponent>(pComponent))
@@ -864,6 +1036,331 @@ namespace Engine
     {
         auto text = LUA_GET_STRING(1, "");
         CORE_INFO(text);
+        return 0;
+    }
+
+    int LuaBindings::funcGetScreenRect(lua_State* L)
+    {
+        auto screenRect = getScene()->getScreenRect();
+        lua_pushnumber(L, (lua_Number)screenRect.x);
+        lua_pushnumber(L, (lua_Number)screenRect.y);
+        lua_pushnumber(L, (lua_Number)screenRect.z);
+        lua_pushnumber(L, (lua_Number)screenRect.w);
+        return 4;
+    }
+
+    int LuaBindings::funcRegisterEvent(lua_State* L)
+    {
+        if (lua_gettop(L) < 3 || !lua_isstring(L, 1) || !lua_isstring(L, 3))
+        {
+            CORE_ERROR_POPUP("Lua: RegisterEvent expected (string, c, string)");
+            return 0;
+        }
+
+        auto eventName = LUA_GET_STRING(1, "");
+        if (eventName.empty()) return 0;
+
+        auto rpScript = LUA_GET_SCRIPT_COMPONENT(2);
+        if (!rpScript) return 0;
+
+        auto callbackName = LUA_GET_STRING(3, "");
+        if (callbackName.empty()) return 0;
+
+        // Validate that our object have this callback
+        {
+            lua_getglobal(L, "CINS_t");
+            lua_getfield(L, -1, rpScript->luaName.c_str());
+            lua_getfield(L, -1, callbackName.c_str());
+            if (!lua_isfunction(L, -1)) 
+            {
+                CORE_ERROR_POPUP("Lua: RegisterEvent, callback function \"{}\" not found in component.", callbackName);
+                return 0;
+            }
+            lua_pop(L, 3);
+        }
+
+        // Register event
+        {
+            if (eventName == "KeyDown")
+                getEventSystem()->registerListener<KeyDownEvent>(rpScript, std::bind(&LuaBindings::onKeyDown, this, _1));
+            else if (eventName == "KeyUp")
+                getEventSystem()->registerListener<KeyUpEvent>(rpScript, std::bind(&LuaBindings::onKeyUp, this, _1));
+            else if (eventName == "MouseDown")
+                getEventSystem()->registerListener<MouseButtonDownEvent>(rpScript, std::bind(&LuaBindings::onMouseDown, this, _1));
+            else if (eventName == "MouseUp")
+                getEventSystem()->registerListener<MouseButtonUpEvent>(rpScript, std::bind(&LuaBindings::onMouseUp, this, _1));
+            else // Lua event
+                getEventSystem()->registerLuaListener(eventName, rpScript, std::bind(&LuaBindings::onLuaEvent, this, _1));
+        }
+
+
+        m_scriptEventListeners[eventName][(uintptr_t)rpScript] = { rpScript->shared_from_this(), callbackName };
+
+        return 0;
+    }
+
+    int LuaBindings::funcDeregisterEvent(lua_State* L)
+    {
+        if (lua_gettop(L) < 2 || !lua_isstring(L, 1))
+        {
+            CORE_ERROR_POPUP("Lua: RegisterEvent expected (string, c)");
+            return 0;
+        }
+
+        auto eventName = LUA_GET_STRING(1, "");
+        if (eventName.empty()) return 0;
+
+        auto rpScript = LUA_GET_SCRIPT_COMPONENT(2);
+        if (!rpScript) return 0;
+
+
+        {
+            if (eventName == "KeyDown")
+                getEventSystem()->deregisterListener<KeyDownEvent>(rpScript);
+            else if (eventName == "KeyUp")
+                getEventSystem()->deregisterListener<KeyUpEvent>(rpScript);
+            else if (eventName == "MouseDown")
+                getEventSystem()->deregisterListener<MouseButtonDownEvent>(rpScript);
+            else if (eventName == "MouseUp")
+                getEventSystem()->deregisterListener<MouseButtonUpEvent>(rpScript);
+            else // Lua event
+                getEventSystem()->deregisterLuaListener(eventName, rpScript);
+        }
+
+
+        auto itm = m_scriptEventListeners.find(eventName);
+        if (itm == m_scriptEventListeners.end()) return 0;
+
+        // Find our event listener
+        auto it = itm->second.find((uintptr_t)rpScript);
+        if (it == itm->second.end()) return 0;
+
+        // Erase
+        itm->second.erase(it);
+
+        return 0;
+    }
+
+    int LuaBindings::funcSendEvent(lua_State* L)
+    {
+        if (lua_gettop(L) < 1 || !lua_isstring(L, 1))
+        {
+            CORE_ERROR_POPUP("Lua: SendEvent expected (string, table{optional})");
+            return 0;
+        }
+
+        static uint64_t nextEventDataId = 1;
+
+        std::string eventName = lua_tostring(L, 1);
+        std::string dataName = "";
+
+        if (lua_gettop(L) >= 2)
+        {
+            dataName = "EDAT_" + std::to_string(nextEventDataId++);
+            lua_getglobal(L, "EVTS_t");
+            lua_pushvalue(L, 2);
+            lua_setfield(L, -2, dataName.c_str());
+            lua_pop(L, 1);
+        }
+
+        getEventSystem()->sendEvent(new LuaEvent(eventName, dataName));
+
+        return 0;
+    }
+
+    int LuaBindings::funcEmitParticles(lua_State* L)
+    {
+        std::string pfxName = LUA_GET_STRING(1, "particles/defaultPFX.json");
+        glm::vec2 position = LUA_GET_VEC2(2, glm::vec2(0, 0));
+        float rotation = LUA_GET_NUMBER(3, 0.0f);
+        glm::vec2 scale = glm::vec2(LUA_GET_NUMBER(4, 1.0f));
+
+        auto pEntity = getScene()->createEntity();
+        getScene()->getRoot()->addChild(pEntity);
+
+        pEntity->setWorldPosition(position);
+        pEntity->setRotation(rotation);
+        pEntity->setScale(scale);
+
+        auto pPFX = pEntity->addComponent<PFXComponent>();
+        pPFX->pPFX = getResourceManager()->getPFX(pfxName);
+        pPFX->play();
+        pPFX->destroyWhenDone = true;
+
+        LUA_PUSH_ENTITY(pEntity);
+        return 1;
+    }
+
+    int LuaBindings::funcEnableEntity(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (!pEntity) return 0;
+        pEntity->enable();
+        return 0;
+    }
+
+    int LuaBindings::funcDisableEntity(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (!pEntity) return 0;
+        pEntity->disable();
+        return 0;
+    }
+
+    int LuaBindings::funcEnableComponent(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (!pEntity) return 0;
+
+        auto componentName = LUA_GET_STRING(2, "");
+
+        for (const auto& pComponent : pEntity->getComponents())
+        {
+            if (componentName == pComponent->getType())
+            {
+                pComponent->enable();
+                break;
+            }
+            auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+            if (pScriptComponent)
+            {
+                if (pScriptComponent->name == componentName)
+                {
+                    pComponent->enable();
+                    return 0;
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    int LuaBindings::funcDisableComponent(lua_State* L)
+    {
+        auto pEntity = LUA_GET_ENTITY(1);
+        if (!pEntity) return 0;
+
+        auto componentName = LUA_GET_STRING(2, "");
+
+        for (const auto& pComponent : pEntity->getComponents())
+        {
+            if (componentName == pComponent->getType())
+            {
+                pComponent->disable();
+                break;
+            }
+            auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+            if (pScriptComponent)
+            {
+                if (pScriptComponent->name == componentName)
+                {
+                    pComponent->disable();
+                    return 0;
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    int LuaBindings::funcPlayFrameAnim(lua_State* L)
+    {
+        auto pFrameAnim = LUA_GET_COMPONENT(1, FrameAnimComponent);
+        if (!pFrameAnim) return 0;
+
+        auto animName = LUA_GET_STRING(2, "");
+        if (animName.empty()) return 0;
+
+        if (pFrameAnim->getCurrentAnimation() == animName) return 0; // Don't restart the anim if it's already playing
+
+        pFrameAnim->setCurrentAnimation(animName);
+        return 0;
+    }
+
+    int LuaBindings::funcGetConfig(lua_State* L)
+    {
+        auto configName = LUA_GET_STRING(1, "");
+
+        if (configName == "displayMode")
+        {
+            lua_pushinteger(L, (lua_Integer)Config::displayMode);
+            return 1;
+        }
+        else if (configName == "vsync")
+        {
+            lua_pushboolean(L, Config::vsync ? 1 : 0);
+            return 1;
+        }
+        else if (configName == "musicVolume")
+        {
+            lua_pushnumber(L, (lua_Number)Config::musicVolume);
+            return 1;
+        }
+        else if (configName == "sfxVolume")
+        {
+            lua_pushnumber(L, (lua_Number)Config::sfxVolume);
+            return 1;
+        }
+        lua_pushnil(L);
+        return 1;
+    }
+
+    int LuaBindings::funcSetConfig(lua_State* L)
+    {
+        auto configName = LUA_GET_STRING(1, "");
+
+        if (configName == "displayMode")
+        {
+            switch (LUA_GET_INT(2, -1))
+            {
+                case (int)Config::DisplayMode::Windowed:
+                {
+                    auto prev = Config::displayMode;
+                    Config::displayMode = Config::DisplayMode::Windowed;
+                    if (prev != Config::displayMode)
+                    {
+                        displayModeChanged();
+                        getScene()->getRoot()->setDirtyTransform(); // We need this because everything will move to adjust to new screen size
+                    }
+                    break;
+                }
+                case (int)Config::DisplayMode::BorderlessFullscreen:
+                {
+                    auto prev = Config::displayMode;
+                    Config::displayMode = Config::DisplayMode::BorderlessFullscreen;
+                    if (prev != Config::displayMode)
+                    {
+                        displayModeChanged();
+                        getScene()->getRoot()->setDirtyTransform(); // We need this because everything will move to adjust to new screen size
+                    }
+                    break;
+                }
+            }
+            return 0;
+        }
+        else if (configName == "vsync")
+        {
+            auto prev = Config::vsync;
+            Config::vsync = lua_toboolean(L, 2) ? true : false;
+            if (prev != Config::vsync)
+                vsyncChanged();
+            return 0;
+        }
+        else if (configName == "musicVolume")
+        {
+            Config::musicVolume = LUA_GET_NUMBER(2, 1.0f);
+            return 0;
+        }
+        else if (configName == "sfxVolume")
+        {
+            Config::sfxVolume = LUA_GET_NUMBER(2, 1.0f);
+            return 0;
+        }
+        else
+        {
+            CORE_FATAL("Lua SetConfig, Unknown config: \"{}\"", configName);
+        }
+
         return 0;
     }
 }

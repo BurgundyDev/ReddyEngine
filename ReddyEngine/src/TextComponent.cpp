@@ -23,8 +23,10 @@ namespace Engine
         json["font"] = pFont ? pFont->getFilename() : "";
         json["color"] = Utils::serializeJsonValue(color);
         json["origin"] = Utils::serializeJsonValue(origin);
+        json["justify"] = Utils::serializeJsonValue(justify);
         json["scale"] = Utils::serializeJsonValue(scale);
         json["text"] = Utils::serializeJsonValue(text);
+        json["additive"] = Utils::serializeJsonValue(additive);
 
         return json;
     }
@@ -41,21 +43,26 @@ namespace Engine
         const float DEFAULT_ORIGIN[2] = {0.5f, 0.5f};
         Utils::deserializeFloat2(&origin.x, json["origin"], DEFAULT_ORIGIN);
 
+        justify = Utils::deserializeFloat(json["justify"], 0.5f);
+
         const float DEFAULT_SCALE = 1.0f;
         scale = Utils::deserializeFloat(json["scale"], DEFAULT_SCALE);
 
         text = Utils::deserializeString(json["text"], "Text");
+        additive = Utils::deserializeFloat(json["additive"], 0.0f);
     }
 
     bool TextComponent::edit()
     {
         bool changed = false;
 
-        changed |= GUI::stringProperty("Text", &text);
+        changed |= GUI::multilineStringProperty("Text", &text);
         changed |= GUI::fontProperty("Font", &pFont);
         changed |= GUI::colorProperty("Color", &color);
         changed |= GUI::originProperty("Origin", &origin);
+        changed |= GUI::floatSliderProperty("justify", &justify, 0.0f, 1.0f);
         changed |= GUI::floatProperty("Scale", &scale);
+        changed |= GUI::floatSliderProperty("additive", &additive, 0.0f, 1.0f);
 
         return changed;
     }
@@ -77,6 +84,17 @@ namespace Engine
             localMouse.x <= sizef.x * invOrigin.x &&
             localMouse.y >= -sizef.y * origin.y &&
             localMouse.y <= sizef.y * invOrigin.y;
+    }
+
+    std::string TextComponent::getFriendlyName() const
+    {
+        auto ret = text.substr(0, 32);
+        for (auto& c : ret)
+            if (c == '\n')
+                c = ' ';
+        if (text.size() > 32)
+            ret += "...";
+        return ret;
     }
 
 	void TextComponent::drawOutline(const glm::vec4& color, float zoomScale)
@@ -105,6 +123,10 @@ namespace Engine
         sb->drawLine(points[1], points[2], 2.0f * zoomScale, color);
         sb->drawLine(points[2], points[3], 2.0f * zoomScale, color);
         sb->drawLine(points[3], points[0], 2.0f * zoomScale, color);
+
+        auto pos = m_pEntity->getWorldPosition();
+		sb->drawLine(glm::vec2(pos.x, pos.y - 0.05f), glm::vec2(pos.x, pos.y + 0.05f), 2.0f * zoomScale, color);
+		sb->drawLine(glm::vec2(pos.x - 0.05f, pos.y), glm::vec2(pos.x + 0.05f, pos.y), 2.0f * zoomScale, color);
     }
 
     void TextComponent::draw()
@@ -115,17 +137,19 @@ namespace Engine
             return;
         }
 
+        glm::vec4 col(
+            color.r * color.a,
+            color.g * color.a,
+            color.b * color.a,
+            color.a * (1.0f - additive)
+        );
+
         pFont->draw(text, 
                     m_pEntity->getWorldPosition(),
-                    color,
+                    col,
                     m_pEntity->getRotation(),
                     m_pEntity->getTransform().scale.x * scale * SPRITE_BASE_SCALE,
-                    origin);
-        //getSpriteBatch()->drawSprite(pTexture,
-        //                             m_pEntity->getWorldTransformWithScale(),
-        //                             color, 
-        //                             m_pEntity->getTransform().scale * SPRITE_BASE_SCALE,
-        //                             origin,
-        //                             uvs);
+                    origin,
+                    justify);
     }
 }

@@ -2,6 +2,7 @@
 #include "Engine/Component.h"
 #include "Engine/Scene.h"
 #include "Engine/ReddyEngine.h"
+#include "Engine/Entity.h"
 
 
 namespace Engine
@@ -34,24 +35,15 @@ namespace Engine
                 switch (command.type)
                 {
                     case CommandType::Create:
-                        m_components.push_back(command.pComponent);
                         command.pComponent->onCreate();
-                        if (command.pComponent->isEnabled())
+                        if (command.pComponent->isEnabled() && command.pComponent->getEntity()->enabled)
                             command.pComponent->onEnable();
                         break;
 
                     case CommandType::Destroy:
-                        if (command.pComponent->isEnabled())
+                        if (command.pComponent->isEnabled() && command.pComponent->getEntity()->enabled)
                             command.pComponent->onDisable();
                         command.pComponent->onDestroy();
-                        for (auto it = m_components.begin(); it != m_components.end(); ++it)
-                        {
-                            if (*it == command.pComponent)
-                            {
-                                it = m_components.erase(it);
-                                break;
-                            }
-                        }
                 }
             }
         }
@@ -69,8 +61,9 @@ namespace Engine
 
         processCommands();
 
-        for (const auto& pComponent : m_components)
-            pComponent->update(dt);
+        getScene()->getRoot()->collectUpdatables(m_components);
+        for (const auto& pComponent : m_components) pComponent->update(dt);
+        m_components.clear();
 
         processCommands();
     }
@@ -84,9 +77,10 @@ namespace Engine
         }
 
         processCommands();
-
-        for (const auto& pComponent : m_components)
-            pComponent->fixedUpdate(dt);
+        
+        getScene()->getRoot()->collectUpdatables(m_components);
+        for (const auto& pComponent : m_components) pComponent->fixedUpdate(dt);
+        m_components.clear();
 
         processCommands();
     }

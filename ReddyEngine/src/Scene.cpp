@@ -113,10 +113,40 @@ namespace Engine
 		return m_pRoot->getChildByName(name, recursive);
 	}
 
+	EntityRef Scene::findByComponent(const std::string& componentName, bool recursive) const
+	{
+		return m_pRoot->findByComponent(componentName, recursive);
+	}
+
+	void Scene::FindEntitiesByName(const std::string& name, std::vector<EntityRef>& entities, bool recursive) const
+	{
+		m_pRoot->findByName(name, entities, recursive);
+	}
+
+	void Scene::FindEntitiesByComponent(const std::string& componentName, std::vector<EntityRef>& entities, bool recursive) const
+	{
+		m_pRoot->findByComponent(componentName, entities, recursive);
+	}
+
 	EntityRef Scene::getEntityByName(const std::string& name, const EntitySearchParams& searchParams, bool recursive) const
 	{
 		return m_pRoot->getChildByName(name, searchParams, recursive);
     }
+
+	EntityRef Scene::findByComponent(const std::string& componentName, const EntitySearchParams& searchParams, bool recursive) const
+	{
+		return m_pRoot->findByComponent(componentName, searchParams, recursive);
+    }
+
+	void Scene::FindEntitiesByName(const std::string& name, std::vector<EntityRef>& entities, const EntitySearchParams& searchParams, bool recursive) const
+	{
+		m_pRoot->findByName(name, entities, searchParams, recursive);
+	}
+
+	void Scene::FindEntitiesByComponent(const std::string& componentName, std::vector<EntityRef>& entities, const EntitySearchParams& searchParams, bool recursive) const
+	{
+		m_pRoot->findByComponent(componentName, entities, searchParams, recursive);
+	}
     
 	EntityRef Scene::findEntity(uint64_t id)
 	{

@@ -75,7 +75,12 @@ void Game::changeState(Engine::StateChangeRequest stateChangeRequest, const std:
             Engine::quit();
             break;
         case Engine::StateChangeRequest::Resume:
+        {
+            auto inGameState = std::dynamic_pointer_cast<InGameState>(m_pGameStates.front());
+            if (inGameState)
+                inGameState->hideInGameMenu();
             break;
+        }
         case Engine::StateChangeRequest::Editor:
             changeState(std::make_shared<EditorState>());
             break;

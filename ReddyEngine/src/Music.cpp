@@ -30,9 +30,6 @@ namespace Engine
 
     Music::~Music()
     {
-        for (auto pBuffer : m_buffers) delete pBuffer;
-        m_buffers.clear();
-
         //------
         // Copy pasted from Stop() with tiny modification... It's a gamejam, don't say anything..
         // stop();

@@ -1,655 +1,1192 @@
 {
    "camera" : {
-      "position" : [ 0.67056989669799805, -0.38671880960464478 ],
+      "position" : [ 0.42390584945678711, -0.52999931573867798 ],
       "zoom" : 3
    },
    "root" : {
       "children" : [
          {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "origin" : [ 0.5, 0.5 ],
-                  "texture" : "textures/defaultTexture.png",
-                  "type" : "Sprite",
-                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-               },
-               {
-                  "enabled" : true,
-                  "name" : "sandboxRotator",
-                  "properties" : {
-                     "rotSpeed" : 90.0,
-                     "scaleSpeed" : 45.0
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 14,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "LeftFlame",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ -1.5, -1.0 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "origin" : [ 0.5, 0.5 ],
-                  "texture" : "textures/defaultTexture.png",
-                  "type" : "Sprite",
-                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-               },
-               {
-                  "enabled" : true,
-                  "name" : "sandboxRotator",
-                  "properties" : {
-                     "rotSpeed" : 45.0,
-                     "scaleSpeed" : 90.0
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 16,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "MiddleFlame",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 0.0, -1.0 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 0.41176462173461914, 1.0, 0.0, 1.0 ],
-                  "enabled" : true,
-                  "origin" : [ 0.5, 0.5 ],
-                  "texture" : "textures/defaultTexture.png",
-                  "type" : "Sprite",
-                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-               },
-               {
-                  "enabled" : true,
-                  "name" : "sandboxRotator",
-                  "properties" : {
-                     "rotSpeed" : -180.0,
-                     "scaleSpeed" : 135.0
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 19,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "RightFlame",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 1.5, -1.0 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "origin" : [ 0.5, 0.5 ],
-                  "texture" : "textures/defaultTexture.png",
-                  "type" : "Sprite",
-                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-               },
-               {
-                  "enabled" : true,
-                  "name" : "sandboxMover",
-                  "properties" : {
-                     "moveSpeed" : 100.0
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 22,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "MoverFlame",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 0.0, 1.0 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts/defaultFont48.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.7200000286102295,
-                  "text" : "Destroy",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : ""
-                  },
-                  "type" : "Script"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "sandboxDestroyButton",
-                  "properties" : {
-                     "target" : "LeftFlame"
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 24,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ -1.9921876192092896, -2.5390625 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
             "children" : [
                {
                   "children" : [],
                   "clickThrough" : false,
                   "components" : [
                      {
+                        "additive" : 0.0,
                         "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                         "enabled" : true,
                         "origin" : [ 0.5, 0.5 ],
-                        "texture" : "textures\\editorIcon_sound.png",
+                        "texture" : "textures/defaultTexture.png",
                         "type" : "Sprite",
                         "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "sandboxRotator",
+                        "properties" : {
+                           "rotSpeed" : 90.0,
+                           "scaleSpeed" : 45.0
+                        },
+                        "type" : "Script"
                      }
                   ],
-                  "id" : 62,
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 14,
                   "lockScale" : true,
                   "mouseChildren" : true,
-                  "name" : "",
+                  "name" : "LeftFlame",
                   "sortChildren" : false,
                   "transform" : {
-                     "position" : [ 1.3203125, -0.0234375 ],
+                     "position" : [ -1.5, -1.0 ],
                      "rotation" : 0.0,
-                     "scale" : [ 1.3300000429153442, 1.3300000429153442 ]
+                     "scale" : [ 1.0, 1.0 ]
                   },
                   "uiRoot" : false
-               }
-            ],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts/defaultFont48.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.7200000286102295,
-                  "text" : "Play Sound",
-                  "type" : "Text"
                },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : "PlaySound(\"sounds/test_quick_sound.wav\")"
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 25,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 3.2734375, 1.8124997615814209 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts/defaultFont48.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.7200000286102295,
-                  "text" : "Change Color",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : ""
-                  },
-                  "type" : "Script"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "sandboxColorButton",
-                  "properties" : {
-                     "color" : [ 1.0, 0.0, 0.0, 1.0 ],
-                     "target" : "MiddleFlame"
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 27,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 0.013020753860473633, -2.5364584922790527 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
-                  "enabled" : true,
-                  "origin" : [ 0.5, 0.5 ],
-                  "texture" : "textures\\arrow.png",
-                  "type" : "Sprite",
-                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-               }
-            ],
-            "id" : 29,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ -1.6145836114883423, -1.9895834922790527 ],
-               "rotation" : 90.0,
-               "scale" : [ 1.0900000333786011, 1.0900000333786011 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
-                  "enabled" : true,
-                  "origin" : [ 0.5, 0.5 ],
-                  "texture" : "textures\\arrow.png",
-                  "type" : "Sprite",
-                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-               }
-            ],
-            "id" : 30,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ -0.010416746139526367, -1.9895834922790527 ],
-               "rotation" : 90.0,
-               "scale" : [ 1.1399999856948853, 1.1399999856948853 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts/defaultFont48.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.7200000286102295,
-                  "text" : "Stop",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : ""
-                  },
-                  "type" : "Script"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "sandboxStopRotationButton",
-                  "properties" : {
-                     "target" : "RightFlame"
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 32,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 2.5201816558837891, -2.2473959922790527 ],
-               "rotation" : 39.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
-                  "enabled" : true,
-                  "origin" : [ 0.5, 0.5 ],
-                  "texture" : "textures\\arrow.png",
-                  "type" : "Sprite",
-                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-               }
-            ],
-            "id" : 35,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 2.1308581829071045, -1.7968754768371582 ],
-               "rotation" : 135.0,
-               "scale" : [ 1.1799999475479126, 1.1799999475479126 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts/defaultFont48.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.7200000286102295,
-                  "text" : "Stop Moving when close",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : ""
-                  },
-                  "type" : "Script"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "sandboxStopMover",
-                  "properties" : {
-                     "target" : "MoverFlame"
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 37,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ -3.0, 1.0 ],
-               "rotation" : -90.0,
-               "scale" : [ 0.70999997854232788, 0.70999997854232788 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
-                  "enabled" : true,
-                  "origin" : [ 0.5, 0.5 ],
-                  "texture" : "textures\\arrow.png",
-                  "type" : "Sprite",
-                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-               }
-            ],
-            "id" : 40,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ -2.5, 1.0 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.2599999904632568, 1.2599999904632568 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
-                  "enabled" : true,
-                  "origin" : [ 0.5, 0.5 ],
-                  "texture" : "textures\\white.png",
-                  "type" : "Sprite",
-                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-               }
-            ],
-            "id" : 42,
-            "lockScale" : false,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ -1.0, 1.0 ],
-               "rotation" : 0.0,
-               "scale" : [ 0.11999999731779099, 1.059999942779541 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [
                {
                   "children" : [],
                   "clickThrough" : false,
                   "components" : [
                      {
+                        "additive" : 0.0,
                         "color" : [ 1.0, 1.0, 1.0, 1.0 ],
                         "enabled" : true,
                         "origin" : [ 0.5, 0.5 ],
-                        "texture" : "textures\\editorIcon_sound.png",
+                        "texture" : "textures/defaultTexture.png",
                         "type" : "Sprite",
                         "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "sandboxRotator",
+                        "properties" : {
+                           "rotSpeed" : 45.0,
+                           "scaleSpeed" : 90.0
+                        },
+                        "type" : "Script"
                      }
                   ],
-                  "id" : 64,
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 16,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "MiddleFlame",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.0, -1.0 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 0.41176462173461914, 1.0, 0.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures/defaultTexture.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "sandboxRotator",
+                        "properties" : {
+                           "rotSpeed" : -180.0,
+                           "scaleSpeed" : 135.0
+                        },
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 19,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "RightFlame",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 1.5, -1.0 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures/defaultTexture.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "sandboxMover",
+                        "properties" : {
+                           "moveSpeed" : 100.0
+                        },
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 22,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "MoverFlame",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.0, 1.0 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont48.json",
+                        "justify" : 0.5,
+                        "origin" : [ 0.5, 0.5 ],
+                        "scale" : 1.7200000286102295,
+                        "text" : "Destroy",
+                        "type" : "Text"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "Button",
+                        "properties" : {
+                           "codeToEval" : ""
+                        },
+                        "type" : "Script"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "sandboxDestroyButton",
+                        "properties" : {
+                           "target" : "LeftFlame"
+                        },
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 24,
                   "lockScale" : true,
                   "mouseChildren" : true,
                   "name" : "",
                   "sortChildren" : false,
                   "transform" : {
-                     "position" : [ 1.3268208503723145, -0.040364503860473633 ],
+                     "position" : [ -1.9921876192092896, -2.5390625 ],
                      "rotation" : 0.0,
-                     "scale" : [ 1.3300000429153442, 1.3300000429153442 ]
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [
+                     {
+                        "children" : [],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 0.0,
+                              "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                              "enabled" : true,
+                              "origin" : [ 0.5, 0.5 ],
+                              "texture" : "textures\\editorIcon_sound.png",
+                              "type" : "Sprite",
+                              "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 62,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 1.3203125, -0.0234375 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.3300000429153442, 1.3300000429153442 ]
+                        },
+                        "uiRoot" : false
+                     }
+                  ],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont48.json",
+                        "justify" : 0.5,
+                        "origin" : [ 0.5, 0.5 ],
+                        "scale" : 1.7200000286102295,
+                        "text" : "Play Sound",
+                        "type" : "Text"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "Button",
+                        "properties" : {
+                           "codeToEval" : "PlaySound(\"sounds/test_quick_sound.wav\")"
+                        },
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 25,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 3.2734375, 1.8124997615814209 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont48.json",
+                        "justify" : 0.5,
+                        "origin" : [ 0.5, 0.5 ],
+                        "scale" : 1.7200000286102295,
+                        "text" : "Change Color",
+                        "type" : "Text"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "Button",
+                        "properties" : {
+                           "codeToEval" : ""
+                        },
+                        "type" : "Script"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "sandboxColorButton",
+                        "properties" : {
+                           "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                           "target" : "MiddleFlame"
+                        },
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 27,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.013020753860473633, -2.5364584922790527 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures\\arrow.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 29,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "arrow",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ -1.6145836114883423, -1.9895834922790527 ],
+                     "rotation" : 90.0,
+                     "scale" : [ 1.4900000095367432, 1.4900000095367432 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures\\arrow.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 30,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "arrow",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ -0.010416746139526367, -1.9895834922790527 ],
+                     "rotation" : 90.0,
+                     "scale" : [ 1.4800000190734863, 1.4800000190734863 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont48.json",
+                        "justify" : 0.5,
+                        "origin" : [ 0.5, 0.5 ],
+                        "scale" : 1.7200000286102295,
+                        "text" : "Stop",
+                        "type" : "Text"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "Button",
+                        "properties" : {
+                           "codeToEval" : ""
+                        },
+                        "type" : "Script"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "sandboxStopRotationButton",
+                        "properties" : {
+                           "target" : "RightFlame"
+                        },
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 32,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 2.5201816558837891, -2.2473959922790527 ],
+                     "rotation" : 39.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures\\arrow.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 35,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "arrow",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 2.1308581829071045, -1.7968754768371582 ],
+                     "rotation" : 135.0,
+                     "scale" : [ 1.5800000429153442, 1.5800000429153442 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont48.json",
+                        "justify" : 0.5,
+                        "origin" : [ 0.5, 0.5 ],
+                        "scale" : 1.7200000286102295,
+                        "text" : "Stop Moving\nbehind this line",
+                        "type" : "Text"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "Button",
+                        "properties" : {
+                           "codeToEval" : ""
+                        },
+                        "type" : "Script"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "sandboxStopMover",
+                        "properties" : {
+                           "target" : "MoverFlame"
+                        },
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 37,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ -3.0, 1.0 ],
+                     "rotation" : -90.0,
+                     "scale" : [ 0.70999997854232788, 0.70999997854232788 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures\\arrow.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 40,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "arrow",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ -2.40625, 1.0 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.4900000095367432, 1.4900000095367432 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures\\white.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 42,
+                  "lockScale" : false,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ -1.0, 1.0 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 0.0099999997764825821, 1.1000000238418579 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [
+                     {
+                        "children" : [],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 0.0,
+                              "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                              "enabled" : true,
+                              "origin" : [ 0.5, 0.5 ],
+                              "texture" : "textures\\editorIcon_sound.png",
+                              "type" : "Sprite",
+                              "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 64,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 1.3268208503723145, -0.040364503860473633 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.3300000429153442, 1.3300000429153442 ]
+                        },
+                        "uiRoot" : false
+                     }
+                  ],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont48.json",
+                        "justify" : 0.5,
+                        "origin" : [ 0.5, 0.5 ],
+                        "scale" : 1.7200000286102295,
+                        "text" : "Play Music",
+                        "type" : "Text"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "Button",
+                        "properties" : {
+                           "codeToEval" : "PlayMusic(\"musics/Everyday368.ogg\")"
+                        },
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 58,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 3.2604165077209473, 2.3750002384185791 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont48.json",
+                        "justify" : 0.5,
+                        "origin" : [ 0.5, 0.5 ],
+                        "scale" : 1.7200000286102295,
+                        "text" : "Remove Component",
+                        "type" : "Text"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "Button",
+                        "properties" : {
+                           "codeToEval" : "RemoveComponent(\"LeftFlame\", \"Sprite\")"
+                        },
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 66,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ -3.8112006187438965, -1.38671875 ],
+                     "rotation" : -71.0,
+                     "scale" : [ 0.69999998807907104, 0.69999998807907104 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 0.0, 0.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures\\arrow.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 69,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "arrow",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ -2.9466173648834229, -1.60546875 ],
+                     "rotation" : 24.0,
+                     "scale" : [ 2.0299999713897705, 2.0299999713897705 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont48.json",
+                        "justify" : 0.5,
+                        "origin" : [ 0.5, 0.5 ],
+                        "scale" : 1.7200000286102295,
+                        "text" : "Access LeftFlame",
+                        "type" : "Text"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "Button",
+                        "properties" : {
+                           "codeToEval" : ""
+                        },
+                        "type" : "Script"
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "sandboxBadReference",
+                        "properties" : {
+                           "targetName" : "LeftFlame"
+                        },
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 71,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.0, 2.5 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : true,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 0.89810186624526978, 0.61851209402084351, 0.97058820724487305, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures/particle.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     },
+                     {
+                        "enabled" : true,
+                        "name" : "MovingParticle",
+                        "properties" : {
+                           "mouseActivationDistance" : 0.40000000596046448,
+                           "speed" : 5.0,
+                           "targetDistance" : 0.10000000149011612
+                        },
+                        "type" : "Script"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 73,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "ParticlePlayer",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 4.7669243812561035, -2.5690104961395264 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "destroyWhenDone" : false,
+                        "enabled" : true,
+                        "pfx" : "particles\\fire.json",
+                        "triggerOnStart" : true,
+                        "type" : "PFX"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 75,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 4.0, -1.0 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont24.json",
+                        "justify" : 1.0,
+                        "origin" : [ 0.0, 1.0 ],
+                        "scale" : 2.0899999141693115,
+                        "text" : "Just some\nmultiline text yo.\nRight Justify",
+                        "type" : "Text"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 81,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ -4.9335966110229492, 2.7408850193023682 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [
+                     {
+                        "children" : [],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 1.0,
+                              "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                              "enabled" : true,
+                              "origin" : [ 0.5, 0.5 ],
+                              "texture" : "textures/defaultTexture.png",
+                              "type" : "Sprite",
+                              "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 86,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "Blend",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 0.147216796875, 0.15319395065307617 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 0.80000001192092896, 0.80000001192092896 ]
+                        },
+                        "uiRoot" : false
+                     },
+                     {
+                        "children" : [],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 1.0,
+                              "color" : [ 1.0, 0.68235296010971069, 1.0, 1.0 ],
+                              "enabled" : true,
+                              "font" : "fonts/defaultFont24.json",
+                              "justify" : 0.5,
+                              "origin" : [ 0.5, 0.5 ],
+                              "scale" : 1.0,
+                              "text" : "Hello World",
+                              "type" : "Text"
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 88,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 0.13775157928466797, 0.35250967741012573 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.0, 1.0 ]
+                        },
+                        "uiRoot" : false
+                     }
+                  ],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures/defaultTexture.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 83,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "BlendBG",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ -4.3085966110229492, 0.59635370969772339 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 0.80000001192092896, 0.80000001192092896 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [
+                     {
+                        "children" : [],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 0.0,
+                              "color" : [ 0.9768339991569519, 0.65625143051147461, 0.0, 1.0 ],
+                              "enabled" : true,
+                              "font" : "fonts/defaultFont48.json",
+                              "justify" : 0.5,
+                              "origin" : [ 0.5, 0.5 ],
+                              "scale" : 1.7200000286102295,
+                              "text" : "Find Buttons",
+                              "type" : "Text"
+                           },
+                           {
+                              "enabled" : true,
+                              "name" : "Button",
+                              "properties" : {
+                                 "codeToEval" : ""
+                              },
+                              "type" : "Script"
+                           },
+                           {
+                              "enabled" : true,
+                              "name" : "sandboxFindButtons",
+                              "properties" : null,
+                              "type" : "Script"
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 92,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 0.0088765621185302734, -0.48606356978416443 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.0, 1.0 ]
+                        },
+                        "uiRoot" : false
+                     },
+                     {
+                        "children" : [],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 0.0,
+                              "color" : [ 0.97647058963775635, 0.65490198135375977, 0.0, 1.0 ],
+                              "enabled" : true,
+                              "font" : "fonts/defaultFont48.json",
+                              "justify" : 0.5,
+                              "origin" : [ 0.5, 0.5 ],
+                              "scale" : 1.7200000286102295,
+                              "text" : "Find Arrows",
+                              "type" : "Text"
+                           },
+                           {
+                              "enabled" : true,
+                              "name" : "Button",
+                              "properties" : {
+                                 "codeToEval" : ""
+                              },
+                              "type" : "Script"
+                           },
+                           {
+                              "enabled" : true,
+                              "name" : "sandboxFindArrows",
+                              "properties" : null,
+                              "type" : "Script"
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 79,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 0.0088765621185302734, 0.021748930215835571 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.0, 1.0 ]
+                        },
+                        "uiRoot" : false
+                     },
+                     {
+                        "children" : [],
+                        "clickThrough" : false,
+                        "components" : [
+                           {
+                              "additive" : 0.0,
+                              "color" : [ 0.97647058963775635, 0.65490198135375977, 0.0, 1.0 ],
+                              "enabled" : true,
+                              "font" : "fonts/defaultFont48.json",
+                              "justify" : 0.5,
+                              "origin" : [ 0.5, 0.5 ],
+                              "scale" : 1.7200000286102295,
+                              "text" : "Create Prefab",
+                              "type" : "Text"
+                           },
+                           {
+                              "enabled" : true,
+                              "name" : "Button",
+                              "properties" : {
+                                 "codeToEval" : ""
+                              },
+                              "type" : "Script"
+                           },
+                           {
+                              "enabled" : true,
+                              "name" : "sandboxCreatePrefab",
+                              "properties" : null,
+                              "type" : "Script"
+                           }
+                        ],
+                        "editorLocked" : false,
+                        "editorVisible" : true,
+                        "enabled" : true,
+                        "expanded" : true,
+                        "id" : 90,
+                        "lockScale" : true,
+                        "mouseChildren" : true,
+                        "name" : "",
+                        "sortChildren" : false,
+                        "transform" : {
+                           "position" : [ 0.0088765621185302734, 0.50612390041351318 ],
+                           "rotation" : 0.0,
+                           "scale" : [ 1.0, 1.0 ]
+                        },
+                        "uiRoot" : false
+                     }
+                  ],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures\\white.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 95,
+                  "lockScale" : false,
+                  "mouseChildren" : true,
+                  "name" : "",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 3.5067484378814697, 0.54856359958648682 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 2.5699999332427979, 1.6599999666213989 ]
+                  },
+                  "uiRoot" : false
+               },
+               {
+                  "children" : [],
+                  "clickThrough" : false,
+                  "components" : [
+                     {
+                        "enabled" : true,
+                        "frameAnim" : "frame_anims/test.json",
+                        "type" : "FrameAnim"
+                     },
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "origin" : [ 0.5, 0.5 ],
+                        "texture" : "textures\\editorIcon_pfx.png",
+                        "type" : "Sprite",
+                        "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
+                     },
+                     {
+                        "additive" : 0.0,
+                        "color" : [ 1.0, 1.0, 1.0, 1.0 ],
+                        "enabled" : true,
+                        "font" : "fonts/defaultFont48.json",
+                        "justify" : 0.5,
+                        "origin" : [ 0.5, -1.5 ],
+                        "scale" : 0.75,
+                        "text" : "Frame Animation",
+                        "type" : "Text"
+                     }
+                  ],
+                  "editorLocked" : false,
+                  "editorVisible" : true,
+                  "enabled" : true,
+                  "expanded" : true,
+                  "id" : 105,
+                  "lockScale" : true,
+                  "mouseChildren" : true,
+                  "name" : "FrameAnimTest",
+                  "sortChildren" : false,
+                  "transform" : {
+                     "position" : [ 0.0, 0.0 ],
+                     "rotation" : 0.0,
+                     "scale" : [ 1.0, 1.0 ]
                   },
                   "uiRoot" : false
                }
             ],
             "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts/defaultFont48.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.7200000286102295,
-                  "text" : "Play Music",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : "PlayMusic(\"musics/Everyday368.ogg\")"
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 58,
+            "components" : [],
+            "editorLocked" : false,
+            "editorVisible" : true,
+            "enabled" : true,
+            "expanded" : true,
+            "id" : 156,
             "lockScale" : true,
             "mouseChildren" : true,
-            "name" : "",
+            "name" : "World",
             "sortChildren" : false,
             "transform" : {
-               "position" : [ 3.2604165077209473, 2.3750002384185791 ],
-               "rotation" : 0.0,
-               "scale" : [ 1.0, 1.0 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts/defaultFont48.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.7200000286102295,
-                  "text" : "Remove Component",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : "RemoveComponent(\"LeftFlame\", \"Sprite\")"
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 66,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ -3.8112006187438965, -1.38671875 ],
-               "rotation" : -71.0,
-               "scale" : [ 0.69999998807907104, 0.69999998807907104 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 0.0, 0.0, 1.0 ],
-                  "enabled" : true,
-                  "origin" : [ 0.5, 0.5 ],
-                  "texture" : "textures\\arrow.png",
-                  "type" : "Sprite",
-                  "uvs" : [ 0.0, 0.0, 1.0, 1.0 ]
-               }
-            ],
-            "id" : 69,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ -2.9466173648834229, -1.60546875 ],
-               "rotation" : 24.0,
-               "scale" : [ 1.5499999523162842, 1.5499999523162842 ]
-            },
-            "uiRoot" : false
-         },
-         {
-            "children" : [],
-            "clickThrough" : false,
-            "components" : [
-               {
-                  "color" : [ 1.0, 1.0, 1.0, 1.0 ],
-                  "enabled" : true,
-                  "font" : "fonts/defaultFont48.json",
-                  "origin" : [ 0.5, 0.5 ],
-                  "scale" : 1.7200000286102295,
-                  "text" : "Access LeftFlame",
-                  "type" : "Text"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "Button",
-                  "properties" : {
-                     "codeToEval" : ""
-                  },
-                  "type" : "Script"
-               },
-               {
-                  "enabled" : true,
-                  "name" : "sandboxBadReference",
-                  "properties" : {
-                     "targetName" : "LeftFlame"
-                  },
-                  "type" : "Script"
-               }
-            ],
-            "id" : 71,
-            "lockScale" : true,
-            "mouseChildren" : true,
-            "name" : "",
-            "sortChildren" : false,
-            "transform" : {
-               "position" : [ 0.0, 2.5 ],
+               "position" : [ 0.0, 0.0 ],
                "rotation" : 0.0,
                "scale" : [ 1.0, 1.0 ]
             },
@@ -658,6 +1195,10 @@
       ],
       "clickThrough" : true,
       "components" : [],
+      "editorLocked" : false,
+      "editorVisible" : true,
+      "enabled" : true,
+      "expanded" : true,
       "id" : 0,
       "lockScale" : true,
       "mouseChildren" : true,

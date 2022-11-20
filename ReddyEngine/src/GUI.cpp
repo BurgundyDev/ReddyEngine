@@ -206,7 +206,7 @@ namespace Engine
             if (g_windowOpen)
             {
                 // Leave space for status bar
-                ImGui::BeginChild("Client Area", ImGui::GetWindowSize() - ImVec2(12, 62));
+                ImGui::BeginChild("Client Area", ImGui::GetWindowSize() - ImVec2(12, 64));
                 g_statusBarDrawn = false;
                 g_statusBarBtnCount = 0;
                 g_sectionCount = 0;
@@ -234,8 +234,22 @@ namespace Engine
         {
             if (!g_statusBarDrawn) beginStatusBar();
 
-            ImGui::SetCursorPos({ImGui::GetWindowWidth() - 40 - 24 * (float)g_statusBarBtnCount++, ImGui::GetCursorPosY()});
-            auto ret = ImGui::Button(text.c_str(), {20, 18});
+            ImVec2 pos = {ImGui::GetWindowWidth() - 40 - 24 * (float)g_statusBarBtnCount++, ImGui::GetCursorPosY() - 2};
+            ImGui::SetCursorPos(pos);
+            pos += ImGui::GetWindowPos();
+
+            auto ret = ImGui::Button(" ", {20, 18});
+
+            if (text == "+")
+            {
+                ImGuiContext& g = *GImGui;
+                ImGuiWindow* window = g.CurrentWindow;
+                
+                ImU32 col = ImGui::GetColorU32(ImGuiCol_Text);
+                window->DrawList->AddLine(ImVec2(pos.x + 10, pos.y + 9 - 5), ImVec2(pos.x + 10, pos.y + 9 + 4), col, 1.0f);
+                window->DrawList->AddLine(ImVec2(pos.x + 10 - 4, pos.y + 9), ImVec2(pos.x + 10 + 5, pos.y + 9), col, 1.0f);
+            }
+
             showToolTip(tooltip);
 
             return ret;
@@ -284,9 +298,28 @@ namespace Engine
             bool ret = false;
             ImGui::PushID(++g_propertyCount);
 
-            char buf[260];
+            static char buf[16536];
             memcpy(buf, value->c_str(), value->size() + 1);
             ImGui::InputText(label, buf, 260);
+            if (ImGui::IsItemDeactivatedAfterEdit())
+            {
+                *value = buf;
+                ret = true;
+            }
+            showToolTip(tooltip);
+
+            ImGui::PopID();
+            return ret;
+        }
+
+        bool multilineStringProperty(const char* label, std::string* value, const char* tooltip)
+        {
+            bool ret = false;
+            ImGui::PushID(++g_propertyCount);
+
+            static char buf[16536];
+            memcpy(buf, value->c_str(), value->size() + 1);
+            ImGui::InputTextMultiline(label, buf, 16536, ImVec2(0, 0), ImGuiInputTextFlags_CtrlEnterForNewLine);
             if (ImGui::IsItemDeactivatedAfterEdit())
             {
                 *value = buf;
@@ -355,10 +388,14 @@ namespace Engine
             return ret;
         }
 
-        bool textureProperty(const char* label, TextureRef* value, const char* tooltip)
+        bool textureProperty(const char* label, TextureRef* value, const char* tooltip, bool disabled)
         {
             bool ret = false;
             ImGui::PushID(++g_propertyCount);
+
+            if (disabled) {
+                ImGui::BeginDisabled();
+            }
 
             char buf[260];
             if (*value)
@@ -405,6 +442,11 @@ namespace Engine
                     }
                 }
             }
+
+            if (disabled) {
+                ImGui::EndDisabled();
+            }
+
             showToolTip(tooltip);
 
             ImGui::PopID();
@@ -468,6 +510,120 @@ namespace Engine
             return ret;
         }
 
+        // Lot of duplicate code... should clean up, template? We're going to add more (Sound, PFX, etc)
+        bool PFXProperty(const char* label, PFXRef* value, const char* tooltip)
+        {
+            bool ret = false;
+            ImGui::PushID(++g_propertyCount);
+
+            char buf[260];
+            if (*value)
+                memcpy(buf, (*value)->getFilename().c_str(), (*value)->getFilename().size() + 1);
+            else
+                buf[0] = '\0';
+
+            ImGui::InputText(label, buf, 260);
+            if (ImGui::IsItemDeactivatedAfterEdit())
+            {
+                *value = getResourceManager()->getPFX(buf);
+                ret = true;
+            }
+            ImGui::SameLine();
+
+            if (!ret && ImGui::Button("...", { 25, 16 })) {
+                std::string filePatternMask;
+
+                for (size_t i = 0; i < std::size(Font::SUPPORTED_FORMATS); i++) {
+                    filePatternMask += "*." + std::string(Font::SUPPORTED_FORMATS[i]);
+
+                    if (i != std::size(Font::SUPPORTED_FORMATS) - 1) {
+                        filePatternMask += ";";
+                    }
+                }
+
+                // because we need to take the address of it
+                const char* maskCString = filePatternMask.c_str();
+
+                const char* selectedFile = tinyfd_openFileDialog("Open", "./assets/particles/", 1, &maskCString, "Json", 0);
+                if (!selectedFile) {
+                    ret = false;
+                } else {
+                    std::string resultPath;
+
+                    if (getResourceManager()->copyFileToAssets(selectedFile, "particles", resultPath)) {
+                        *value = getResourceManager()->getPFX(resultPath);
+
+                        ret = true;
+                    } else {
+                        fprintf(stderr, "Failed to copy asset from %s to assets!\n", selectedFile);
+
+                        ret = false;
+                    }
+                }
+            }
+            showToolTip(tooltip);
+
+            ImGui::PopID();
+            return ret;
+        }
+
+        // Lot of duplicate code... should clean up, template? We're going to add more (Sound, PFX, etc)
+        bool frameAnimProperty(const char* label, FrameAnimRef* value, const char* tooltip, bool disabled)
+        {
+            bool ret = false;
+            ImGui::PushID(++g_propertyCount);
+
+            if (disabled) {
+                ImGui::BeginDisabled();
+            }
+
+            char buf[260];
+            if (*value)
+                memcpy(buf, (*value)->getFilename().c_str(), (*value)->getFilename().size() + 1);
+            else
+                buf[0] = '\0';
+
+            ImGui::InputText(label, buf, 260);
+            if (ImGui::IsItemDeactivatedAfterEdit())
+            {
+                *value = getResourceManager()->getFrameAnim(buf);
+                ret = true;
+            }
+            ImGui::SameLine();
+
+            if (!ret && ImGui::Button("...", { 25, 16 })) {
+                static const std::string filePatternMask = "*.json";
+
+                // because we need to take the address of it
+                const char* maskCString = filePatternMask.c_str();
+
+                const char* selectedFile = tinyfd_openFileDialog("Open", "./assets/frame_anims/", 1, &maskCString, "Json", 0);
+                if (!selectedFile) {
+                    ret = false;
+                } else {
+                    std::string resultPath;
+
+                    if (getResourceManager()->copyFileToAssets(selectedFile, "frame_anims", resultPath)) {
+                        *value = getResourceManager()->getFrameAnim(resultPath);
+
+                        ret = true;
+                    } else {
+                        fprintf(stderr, "Failed to copy asset from %s to assets!\n", selectedFile);
+
+                        ret = false;
+                    }
+                }
+            }
+            showToolTip(tooltip);
+
+            if (disabled) {
+                ImGui::EndDisabled();
+            }
+
+            ImGui::PopID();
+            return ret;
+        }
+
         bool boolProperty(const char* label, bool* value, const char* tooltip)
         {
             ImGui::PushID(++g_propertyCount);
@@ -491,6 +647,16 @@ namespace Engine
         {
             ImGui::PushID(++g_propertyCount);
             ImGui::DragFloat2(label, &value->x, 0.01f);
+            auto ret = ImGui::IsItemDeactivatedAfterEdit();
+            showToolTip(tooltip);
+            ImGui::PopID();
+            return ret;
+        }
+
+        bool paddingProperty(const char* label, glm::ivec4* value, const char* tooltip)
+        {
+            ImGui::PushID(++g_propertyCount);
+            ImGui::DragInt4(label, &value->x, 0.01f, 0, 100000);
             auto ret = ImGui::IsItemDeactivatedAfterEdit();
             showToolTip(tooltip);
             ImGui::PopID();

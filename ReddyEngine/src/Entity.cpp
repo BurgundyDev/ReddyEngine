@@ -71,6 +71,28 @@ namespace Engine
 		}
 	}
 
+	void Entity::enable()
+	{
+		if (enabled) return;
+		enabled = true;
+		for (const auto& pComponent : m_components)
+		{
+			if (!pComponent->isEnabled())
+				pComponent->onEnable();
+		}
+	}
+
+	void Entity::disable()
+	{
+		if (!enabled) return;
+		enabled = false;
+		for (const auto& pComponent : m_components)
+		{
+			if (pComponent->isEnabled())
+				pComponent->onDisable();
+		}
+	}
+
 	bool Entity::addChild(EntityRef pChild, int insertAt)
 	{
 		auto worldPos = pChild->getWorldPosition();
@@ -172,6 +194,127 @@ namespace Engine
 		return nullptr;
 	}
 
+	EntityRef Entity::findByComponent(const std::string& componentName, bool recursive)
+	{
+		for (const auto& pComponent : m_components)
+		{
+			if (pComponent->getType() == componentName)
+				return shared_from_this();
+			auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+			if (pScriptComponent)
+			{
+				if (pScriptComponent->name == componentName)
+					return shared_from_this();
+			}
+		}
+
+		for (auto it = m_children.begin(); it != m_children.end(); ++it)
+		{
+			const EntityRef &ref = *it;
+
+			if (recursive)
+				if (auto found_child = ref->findByComponent(componentName, true))
+					return found_child;
+		}
+
+		return nullptr;
+	}
+
+	EntityRef Entity::findByComponent(const std::string& componentName, const EntitySearchParams& searchParams, bool recursive)
+	{
+		if (searchParams.radius < FLT_EPSILON || isInRadius(searchParams.pointInWorld, searchParams.radius))
+		{
+			for (const auto& pComponent : m_components)
+			{
+				if (pComponent->getType() == componentName)
+					return shared_from_this();
+				auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+				if (pScriptComponent)
+				{
+					if (pScriptComponent->name == componentName)
+						return shared_from_this();
+				}
+			}
+		}
+
+		for (auto it = m_children.begin(); it != m_children.end(); ++it)
+		{
+			const EntityRef &ref = *it;
+
+			if (recursive)
+				if (auto found_child = ref->findByComponent(componentName, searchParams, true))
+					return found_child;
+		}
+
+		return nullptr;
+	}
+	
+	void Entity::findByName(const std::string& in_name, std::vector<EntityRef>& entities, bool recursive)
+	{
+		if (name == in_name) entities.push_back(shared_from_this());
+
+		if (recursive)
+			for (const auto& pChild : m_children)
+				pChild->findByName(in_name, entities, true);
+	}
+
+	void Entity::findByName(const std::string& in_name, std::vector<EntityRef>& entities, const EntitySearchParams &searchParams, bool recursive)
+	{
+		if (name == in_name && (searchParams.radius < FLT_EPSILON || isInRadius(searchParams.pointInWorld, searchParams.radius)))
+			entities.push_back(shared_from_this());
+
+		if (recursive)
+			for (const auto& pChild : m_children)
+				pChild->findByName(in_name, entities, searchParams, true);
+	}
+	
+	void Entity::findByComponent(const std::string& componentName, std::vector<EntityRef>& entities, bool recursive)
+	{
+		for (const auto& pComponent : m_components)
+		{
+			if (pComponent->getType() == componentName)
+			{
+				entities.push_back(shared_from_this());
+				continue;
+			}
+			auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+			if (pScriptComponent)
+			{
+				if (pScriptComponent->name == componentName)
+					entities.push_back(shared_from_this());
+			}
+		}
+
+		if (recursive)
+			for (const auto& pChild : m_children)
+				pChild->findByComponent(componentName, entities, true);
+	}
+
+	void Entity::findByComponent(const std::string& componentName, std::vector<EntityRef>& entities, const EntitySearchParams &searchParams, bool recursive)
+	{
+		if (searchParams.radius < FLT_EPSILON || isInRadius(searchParams.pointInWorld, searchParams.radius))
+		{
+			for (const auto& pComponent : m_components)
+			{
+				if (pComponent->getType() == componentName)
+				{
+					entities.push_back(shared_from_this());
+					continue;
+				}
+				auto pScriptComponent = std::dynamic_pointer_cast<ScriptComponent>(pComponent);
+				if (pScriptComponent)
+				{
+					if (pScriptComponent->name == componentName)
+						entities.push_back(shared_from_this());
+				}
+			}
+		}
+
+		if (recursive)
+			for (const auto& pChild : m_children)
+				pChild->findByComponent(componentName, entities, searchParams, true);
+	}
+
 	bool Entity::hasChild(const EntityRef& pChild, bool recursive) const
 	{
 		for (const auto& pMyChild : m_children)
@@ -190,12 +333,16 @@ namespace Engine
 		Json::Value json;
 
 		json["id"] = id;
+		json["enabled"] = enabled;
 		json["name"] = name;
 		json["sortChildren"] = sortChildren;
 		json["mouseChildren"] = mouseChildren;
 		json["clickThrough"] = clickThrough;
 		json["uiRoot"] = uiRoot;
 		json["lockScale"] = lockScale;
+		json["expanded"] = expanded;
+		json["editorVisible"] = editorVisible;
+		json["editorLocked"] = editorLocked;
 		json["transform"]["position"] = Utils::serializeJsonValue(m_transform.position);
 		json["transform"]["rotation"] = Utils::serializeJsonValue(m_transform.rotation);
 		json["transform"]["scale"] = Utils::serializeJsonValue(m_transform.scale);
@@ -232,11 +379,15 @@ namespace Engine
 			id = Utils::deserializeUInt64(json["id"]);
 		getScene()->updateMaxId(id);
 		name = Utils::deserializeString(json["name"]);
+		enabled = Utils::deserializeBool(json["enabled"], true);
 		sortChildren = Utils::deserializeBool(json["sortChildren"], false);
 		mouseChildren = Utils::deserializeBool(json["mouseChildren"], true);
 		clickThrough = Utils::deserializeBool(json["clickThrough"], false);
 		uiRoot = Utils::deserializeBool(json["uiRoot"], false);
 		lockScale = Utils::deserializeBool(json["lockScale"], true);
+		expanded = Utils::deserializeBool(json["expanded"], true);
+		editorVisible = Utils::deserializeBool(json["editorVisible"], true);
+		editorLocked = Utils::deserializeBool(json["editorLocked"], false);
 
 		// Transform
 		m_transform.position = Utils::deserializeJsonValue<glm::vec2>(json["transform"]["position"]);
@@ -249,7 +400,7 @@ namespace Engine
 		for (const auto& componentJson : componentsJson)
 		{
 			std::string type = Utils::deserializeString(componentJson["type"]);
-			auto pComponent = Component::create(type);
+			auto pComponent = ComponentFactory::create(type);
 			if (!pComponent)
 			{
 				continue;
@@ -390,9 +541,14 @@ namespace Engine
 			: glm::distance(getWorldPosition(), pointInWorld) < radius;
 	}
 
-	// Pretty slow, now partitionning, we basically check every entity/components :derp:
+	// Pretty slow, not partitionning, we basically check every entity/components :derp:
 	EntityRef Entity::getMouseHover(const glm::vec2& mousePos, bool ignoreMouseFlags)
 	{
+		auto isEditor = getScene()->isEditorScene();
+		if (!editorVisible && isEditor) return false;
+		if (editorLocked && isEditor) return false;
+		if (!enabled && !isEditor) return false;
+
 		// We start with leaves first
 		if (ignoreMouseFlags || mouseChildren)
 		{
@@ -429,6 +585,37 @@ namespace Engine
 				return shared_from_this();
 
 		return nullptr;
+	}
+
+	void Entity::getEntitiesInRect(std::vector<Engine::EntityRef>& entities, const glm::vec4& rect)
+	{
+		if (!editorVisible || editorLocked) return;
+		
+		if (!m_components.empty())
+		{
+			auto pos = getWorldPosition();
+			if (pos.x >= rect.x &&
+				pos.x <= rect.x + rect.z &&
+				pos.y >= rect.y &&
+				pos.y <= rect.y + rect.w)
+			{
+				entities.push_back(shared_from_this());
+				//return; // Don't need to select children if we select parent? (nope)
+			}
+		}
+
+		for (const auto& pChild : m_children)
+			pChild->getEntitiesInRect(entities, rect);
+	}
+
+	void Entity::getVisibleEntities(std::vector<Engine::EntityRef>& entities)
+	{
+		if (!editorVisible || editorLocked) return;
+
+		entities.push_back(shared_from_this());
+
+		for (const auto& pChild : m_children)
+			pChild->getVisibleEntities(entities);
 	}
 
 	bool Entity::isMouseHover(const glm::vec2& mousePos) const
@@ -484,11 +671,29 @@ namespace Engine
 			pComponent->drawOutline(color, zoomScale);
 	}
 
+	void Entity::expand()
+	{
+		expanded = true;
+		if (m_pParent)
+			m_pParent->expand();
+	}
+
 	bool Entity::edit()
 	{
 		bool changed = false;
 		auto transformBefore = m_transform;
 
+		GUI::beginGroup("Editor Only");
+		ImGui::Columns(2);
+		changed |= GUI::boolProperty("Visible", &editorVisible);
+		ImGui::NextColumn();
+		changed |= GUI::boolProperty("Locked", &editorLocked);
+		ImGui::Columns();
+		GUI::endGroup();
+
+		ImGui::Separator();
+		
+		changed |= GUI::boolProperty("Enabled", &enabled);
 		GUI::idProperty("ID", id);
 		changed |= GUI::stringProperty("Name", &name);
 		changed |= GUI::boolProperty("Sort Children", &sortChildren, "Immediate children will be sorted Top to Bottom on the Y axis.");
@@ -592,10 +797,34 @@ namespace Engine
 		return changed;
 	}
 
+	void Entity::collectUpdatables(std::vector<ComponentRef>& updatables)
+	{
+		if (!enabled) return;
+
+		for (const auto& pComponent : m_components)
+		{
+			if (pComponent->isEnabled())
+				updatables.push_back(pComponent);
+		}
+
+		for (const auto& pChild : m_children)
+		{
+			if (pChild->enabled)
+				pChild->collectUpdatables(updatables);
+		}
+	}
+
 	void Entity::draw()
 	{
+		auto isEditor = getScene()->isEditorScene();
+		if (!editorVisible && isEditor) return;
+
 		for (auto rit = m_components.rbegin(); rit != m_components.rend(); ++rit)
-			(*rit)->draw();
+		{
+			const auto& pComponent = *rit;
+			if (pComponent->isEnabled() || isEditor)
+				pComponent->draw();
+		}
 
 		if (sortChildren)
 		{
@@ -607,12 +836,18 @@ namespace Engine
 			});
 
 			for (const auto& pChild : sorted)
-				pChild->draw();
+			{
+				if (pChild->enabled || isEditor)
+					pChild->draw();
+			}
 		}
 		else
 		{
 			for (const auto& pChild : m_children)
-				pChild->draw();
+			{
+				if (pChild->enabled || isEditor)
+					pChild->draw();
+			}
 		}
 	}
 }

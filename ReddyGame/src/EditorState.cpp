@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "MainMenuState.h"
 
+#include <Engine/Component.h>
 #include <Engine/Config.h>
 #include <Engine/Event.h>
 #include <Engine/Input.h>
@@ -15,11 +16,9 @@
 #include <Engine/Utils.h>
 #include <Engine/Entity.h>
 #include <Engine/Scene.h>
-#include <Engine/SpriteComponent.h>
-#include <Engine/TextComponent.h>
-#include <Engine/ScriptComponent.h>
 #include <Engine/MusicManager.h>
 #include <Engine/LuaBindings.h>
+#include <Engine/PFXComponent.h>
 
 #include <imgui.h>
 #include <tinyfiledialogs/tinyfiledialogs.h>
@@ -140,6 +139,8 @@ void EditorState::onKeyDown(Engine::IEvent* pEvent)
             if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_C) onCopy();
             if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_V) onPaste();
             if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_D) onDuplicate();
+            if (!ctrl && !shift && !alt && scancode == SDL_SCANCODE_ESCAPE) onDeselect();
+            if (ctrl && !shift && !alt && scancode == SDL_SCANCODE_A) onSelectAll();
             break;
         }
         case EditDocumentType::PFX:
@@ -231,6 +232,9 @@ void EditorState::update(float dt)
             if (ImGui::MenuItem("Paste", "Ctrl+V", nullptr, enabled)) onPaste();
             if (ImGui::MenuItem("Duplicate", "Ctrl+D", nullptr, enabled)) onDuplicate();
             if (ImGui::MenuItem("Delete", "Del", nullptr, enabled)) onDelete();
+            ImGui::Separator();
+            if (ImGui::MenuItem("Select All", "Ctrl+A", nullptr, enabled)) onSelectAll();
+            if (ImGui::MenuItem("Deselect", "Escape", nullptr, enabled)) onDeselect();
             ImGui::EndMenu();
         }
 
@@ -238,7 +242,7 @@ void EditorState::update(float dt)
         {
             if (ImGui::MenuItem("Reset Camera")) 
             {
-                m_position = {0,0};
+                m_positionTarget = m_position = {0,0};
                 m_zoom = 2;
             }
 
@@ -268,11 +272,11 @@ void EditorState::update(float dt)
                 if (ImGui::BeginMenu("Create Entity (Shift+A)"))
                 {
                     if (ImGui::MenuItem("Empty")) onCreateEmptyEntity();
-                    if (ImGui::MenuItem("Sprite")) onCreateSpriteEntity();
-                    if (ImGui::MenuItem("Text")) onCreateTextEntity();
-                    if (ImGui::MenuItem("Sound")) onCreateSoundEntity();
-                    if (ImGui::MenuItem("Particle")) onCreateParticleEntity();
-                    if (ImGui::MenuItem("Script")) onCreateScriptEntity();
+                    ImGui::Separator();
+                    const auto& componentNames = Engine::ComponentFactory::getComponentNames();
+                    for (const auto& componentName : componentNames)
+                        if (ImGui::MenuItem(componentName.c_str()))
+                            onCreateEntity(componentName);
                     ImGui::EndMenu();
                 }
                 ImGui::EndMenu();
@@ -300,6 +304,8 @@ void EditorState::update(float dt)
     switch (m_editDocumentType)
     {
         case EditDocumentType::Scene:
+            if (m_selected.size() == 1 && m_selected.front()->hasComponent<Engine::PFXComponent>())
+                m_selected.front()->getComponent<Engine::PFXComponent>()->update(dt);
             drawSceneUI();
             break;
         case EditDocumentType::PFX:
@@ -328,22 +334,32 @@ void EditorState::update(float dt)
                 auto diff = m_mouseOnDown - Engine::getInput()->getMousePos();
                 diff /= m_zoomf;
                 m_position = m_positionOnDown + diff;
+                m_positionTarget = m_position;
             }
             else if (Engine::getInput()->getMouseWheel() > 0)
             {
                 // Zoom In
+                auto diff_before = (m_mouseWorldPos - m_position) * m_zoomf;
                 m_zoom = std::max(0, m_zoom - 1);
+                auto diff_after = (m_mouseWorldPos - m_position) * ZOOM_LEVELS[m_zoom];
+                m_positionTarget = m_position + (diff_after - diff_before) / ZOOM_LEVELS[m_zoom];
             }
             else if (Engine::getInput()->getMouseWheel() < 0)
             {
                 // Zoom out
+                auto diff_before = (m_mouseWorldPos - m_position) * m_zoomf;
                 m_zoom = std::min(7, m_zoom + 1);
+                auto diff_after = (m_mouseWorldPos - m_position) * ZOOM_LEVELS[m_zoom];
+                m_positionTarget = m_position + (diff_after - diff_before) / ZOOM_LEVELS[m_zoom];
             }
         }
 
         // Update zoom
         auto zoomTarget = ZOOM_LEVELS[m_zoom];
         m_zoomf = Engine::Utils::lerp(m_zoomf, zoomTarget, std::min(1.0f, dt * 50.0f));
+
+        // Update position
+        m_position = Engine::Utils::lerp(m_position, m_positionTarget, std::min(1.0f, dt * 50.0f));
     }
     
     // Transforming with mouse
@@ -402,12 +418,15 @@ void EditorState::draw()
             const glm::vec4 SELECTED_COLOR = { 1, 0, 0, 1 };
             const glm::vec4 HOVER_COLOR = { 1, 1, 0, 1 };
 
-            for (const auto& pEntity : m_selected)
-                pEntity->drawOutline(SELECTED_COLOR, 1.0f / m_zoomf);
+            if (!m_boxSelect)
+            {
+                for (const auto& pEntity : m_selected)
+                    pEntity->drawOutline(SELECTED_COLOR, 1.0f / m_zoomf);
 
-            auto pHovered = Engine::getScene()->getHoveredEntity();
-            if (pHovered && !pHovered->isSelected)
-                pHovered->drawOutline(HOVER_COLOR, 1.0f / m_zoomf);
+                auto pHovered = Engine::getScene()->getHoveredEntity();
+                if (pHovered && !pHovered->isSelected)
+                    pHovered->drawOutline(HOVER_COLOR, 1.0f / m_zoomf);
+            }
 
             break;
         }
@@ -416,7 +435,7 @@ void EditorState::draw()
             break;
     }
 
-    const glm::vec4 MID_GRID_COLOR(0.7f);
+    const glm::vec4 MID_GRID_COLOR(0.5f);
 
     if (m_isGridVisible && m_zoomf >= m_gridHideZoomLevel)
     {
@@ -451,6 +470,24 @@ void EditorState::draw()
         //drawSafeFrame("720p", {1280, 720}, glm::vec4(1, 0, 0.6f, 1) * 0.4f);
     }
 
+    if (m_boxSelect)
+    {
+        auto boxSelectTo = m_mouseWorldPos;
+        glm::vec4 selectRect(
+            glm::min(boxSelectTo.x, m_boxSelectFrom.x),
+            glm::min(boxSelectTo.y, m_boxSelectFrom.y),
+            glm::abs(boxSelectTo.x - m_boxSelectFrom.x),
+            glm::abs(boxSelectTo.y - m_boxSelectFrom.y)
+        );
+
+        auto lineW = 1.0f / m_zoomf;
+        sb->drawLine({selectRect.x, selectRect.y}, {selectRect.x, selectRect.y + selectRect.w}, lineW, {1, 1, 0, 1});
+        sb->drawLine({selectRect.x, selectRect.y + selectRect.w}, {selectRect.x + selectRect.z, selectRect.y + selectRect.w}, lineW, {1, 1, 0, 1});
+        sb->drawLine({selectRect.x + selectRect.z, selectRect.y + selectRect.w}, {selectRect.x + selectRect.z, selectRect.y}, lineW, {1, 1, 0, 1});
+        sb->drawLine({selectRect.x + selectRect.z, selectRect.y}, {selectRect.x, selectRect.y}, lineW, {1, 1, 0, 1});
+    }
+
+
     sb->end();
 }
 
@@ -470,7 +507,10 @@ void EditorState::changeSelection(const std::vector<Engine::EntityRef>& in_newSe
     m_selected = in_newSelection;
 
     for (const auto& pEntity : m_selected)
+    {
         pEntity->isSelected = true;
+        pEntity->expand();
+    }
 
     serializeSelectionState();
 }
@@ -750,34 +790,12 @@ void EditorState::onCreateEmptyEntity()
     createEntityAction(pEntity);
 }
 
-void EditorState::onCreateSpriteEntity()
+void EditorState::onCreateEntity(const std::string& typeName)
 {
     auto pEntity = Engine::getScene()->createEntity();
-    pEntity->addComponent<Engine::SpriteComponent>();
-    createEntityAction(pEntity);
-}
-
-void EditorState::onCreateTextEntity()
-{
-    auto pEntity = Engine::getScene()->createEntity();
-    pEntity->addComponent<Engine::TextComponent>();
-    createEntityAction(pEntity);
-}
-
-void EditorState::onCreateSoundEntity()
-{
-    CORE_ERROR_POPUP("Unsupported Sound Entity yet!");
-}
-
-void EditorState::onCreateParticleEntity()
-{
-    CORE_ERROR_POPUP("Unsupported PFX Entity yet!");
-}
-
-void EditorState::onCreateScriptEntity()
-{
-    auto pEntity = Engine::getScene()->createEntity();
-    pEntity->addComponent<Engine::ScriptComponent>();
+    pEntity->addComponent(Engine::ComponentFactory::create(typeName));
+    if (typeName == "FrameAnim")
+        pEntity->addComponent(Engine::ComponentFactory::create("Sprite"));
     createEntityAction(pEntity);
 }
 
@@ -785,16 +803,12 @@ void EditorState::onDisableGrid()
 {
     switch (m_isGridVisible)
     {
-    case true:
-    {
-        m_isGridVisible = false;
-        break;
-    }
-    case false:
-    {
-        m_isGridVisible = true;
-        break;
-    }
+        case true:
+            m_isGridVisible = false;
+            break;
+        case false:
+            m_isGridVisible = true;
+            break;
     }
 }
 
@@ -802,19 +816,28 @@ void EditorState::onDisableViewportOutline()
 {
     switch (m_isViewportOutlined)
     {
-    case true:
-    {
-        m_isViewportOutlined = false;
-        break;
-    }
-    case false:
-    {
-        m_isViewportOutlined = true;
-        break;
-    }
+        case true:
+            m_isViewportOutlined = false;
+            break;
+        case false:
+            m_isViewportOutlined = true;
+            break;
     }
 }
 
+void EditorState::onDeselect()
+{
+    if (m_selected.empty()) return;
+    changeSelectionAction({});
+}
+
+void EditorState::onSelectAll()
+{
+    std::vector<Engine::EntityRef> entities;
+    Engine::getScene()->getRoot()->getVisibleEntities(entities);
+    if (m_selected.size() == entities.size()) return;
+    changeSelectionAction(entities);
+}
 
 
 //-----------------------------------------------------------------------
@@ -856,7 +879,7 @@ void EditorState::open(const std::string& filename)
         return;
     }
 
-    m_position = Engine::Utils::deserializeJsonValue<glm::vec2>(json["camera"]["position"]);
+    m_positionTarget = Engine::Utils::deserializeJsonValue<glm::vec2>(json["camera"]["position"]);
     m_zoom = Engine::Utils::deserializeJsonValue<int>(json["camera"]["zoom"]);
     m_filename = filename;
     m_pActionManager->clear();
@@ -948,7 +971,7 @@ void EditorState::clear()
     m_pActionManager->clear();
     m_pPfxInstance.reset();
     m_pPfx.reset();
-    m_position = {0, 0};
+    m_positionTarget = m_position = {0, 0};
     m_zoom = 2;
     m_zoomf = ZOOM_LEVELS[2];
     m_prevJson = Json::Value();

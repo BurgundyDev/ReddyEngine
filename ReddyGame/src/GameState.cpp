@@ -51,16 +51,23 @@ void GameState::fixedUpdate(float dt)
     Engine::getScene()->fixedUpdate(dt);
 }
 
+glm::vec2 GameState::screenToWorld(const glm::vec2& screen)
+{
+    auto ratio = Engine::getResolution().y / 1440.0f;
+    auto worldPos = screen;
+    worldPos -= Engine::getResolution() * 0.5f;
+    worldPos /= zoom * ratio;
+    return worldPos + camera;
+}
+
 void GameState::update(float dt)
 {
     Engine::getEventSystem()->dispatchEvents();
 
-    auto ratio = Engine::getResolution().y / 1440.0f;
-    auto mousePos = Engine::getInput()->getMousePos();
-    mousePos -= Engine::getResolution() * 0.5f;
-    mousePos /= zoom * ratio;
-    auto mouseWorldPosition = mousePos + camera;
-    Engine::getScene()->setMousePos(mouseWorldPosition);
+    Engine::getScene()->setMousePos(screenToWorld(Engine::getInput()->getMousePos()));
+    auto tl = screenToWorld({0, 0});
+    auto br = screenToWorld(Engine::getResolution());
+    Engine::getScene()->setScreenRect(glm::vec4(tl, br - tl));
 
     Engine::getScene()->update(dt);
 }

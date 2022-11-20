@@ -4,10 +4,12 @@
 
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
+#include <json/json.h>
 
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <memory>
 
 
@@ -19,9 +21,17 @@ extern "C" {
 namespace Engine
 {
     class ScriptComponent;
+    using ScriptComponentRef = std::shared_ptr<ScriptComponent>;
 
     class Entity;
     using EntityRef = std::shared_ptr<Entity>;
+
+    class IEvent;
+    class KeyDownEvent;
+    class KeyUpEvent;
+    class MouseButtonDownEvent;
+    class MouseButtonUpEvent;
+    class LuaEvent;
 
 
     enum class LuaPropertyType
@@ -108,9 +118,10 @@ namespace Engine
         int funcNormalize(lua_State* L);
         int funcDot(lua_State* L);
         
-        int funcSendEvent(lua_State* L);
+        int funcGetMousePosition(lua_State* L);
         int funcIsKeyDown(lua_State* L);
         int funcIsButtonDown(lua_State* L);
+        int funcIsButtonJustDown(lua_State* L);
         int funcPlaySound(lua_State* L);
 
         int funcGetSpriteTexture(lua_State* L);
@@ -129,11 +140,19 @@ namespace Engine
         int funcSetTextOrigin(lua_State* L);
         int funcGetTextScale(lua_State* L);
         int funcSetTextScale(lua_State* L);
+        int funcGetPFX(lua_State* L);
+        int funcSetPFX(lua_State* L);
+        int funcPlayPFX(lua_State* L);
+        int funcStopPFX(lua_State* L);
         int funcGetName(lua_State* L);
         int funcSetName(lua_State* L);
+        int funcPlayFrameAnim(lua_State* L);
 
         int funcFindEntityByName(lua_State* L);
         int funcFindEntityByComponent(lua_State* L);
+
+        int funcFindEntitiesByName(lua_State* L);
+        int funcFindEntitiesByComponent(lua_State* L);
 
         int funcContinueGame(lua_State* L);
         int funcNewGame(lua_State* L);
@@ -148,16 +167,46 @@ namespace Engine
         int funcResumeMusic(lua_State* L);
 
         int funcLog(lua_State* L);
+        int funcGetScreenRect(lua_State* L);
+        int funcEmitParticles(lua_State* L);
+
+        int funcRegisterEvent(lua_State* L);
+        int funcDeregisterEvent(lua_State* L);
+        int funcSendEvent(lua_State* L);
+
+        int funcEnableEntity(lua_State* L);
+        int funcDisableEntity(lua_State* L);
+        int funcEnableComponent(lua_State* L);
+        int funcDisableComponent(lua_State* L);
+
+        int funcGetConfig(lua_State* L);
+        int funcSetConfig(lua_State* L);
 
     private:
+        struct ScriptEventListeners
+        {
+            std::weak_ptr<ScriptComponent> pScript;
+            std::string name;
+        };
+
+        ScriptComponentRef getScriptComponentFromListener(void* listener, std::string name, std::string* callbackName);
+
         void createBindings();
+
+        void onKeyDown(IEvent* pEvent);
+        void onKeyUp(IEvent* pEvent);
+        void onMouseDown(IEvent* pEvent);
+        void onMouseUp(IEvent* pEvent);
+        void onLuaEvent(IEvent* pEvent);
 
         lua_State* L = nullptr;
 
+        std::unordered_map<std::string, Json::Value> m_prefabCache;
         std::map<std::string, LuaComponentDef*> m_componentDefs;
         LuaComponentDef* m_pCurrentComponentDef = nullptr;
         StateChangeRequest m_stateChangeRequest = StateChangeRequest::None;
         std::string m_worldFilenameToLoad;
+        std::map<std::string, std::map<uintptr_t, ScriptEventListeners>> m_scriptEventListeners;
     };
 }
 
@@ -165,7 +214,7 @@ namespace Engine
 // Helper macros
 #define LUA_PUSH_VEC2(v) {lua_getglobal(L, "Vec2"); lua_pushnumber(L, v.x); lua_pushnumber(L, v.y); lua_pcall(L, 2, 1, 0);}
 #define LUA_PUSH_COLOR(c) {lua_getglobal(L, "Color"); lua_pushnumber(L, c.r); lua_pushnumber(L, c.g); lua_pushnumber(L, c.b); lua_pushnumber(L, c.a); lua_pcall(L, 4, 1, 0);}
-#define LUA_PUSH_ENTITY(e) {lua_getglobal(L, "EINS_t"); if (e) lua_getfield(L, -1, e->luaName.c_str()); else lua_pushnil(L); }
+#define LUA_PUSH_ENTITY(e) {lua_getglobal(L, "EINS_t"); if (e) lua_getfield(L, -1, e->luaName.c_str()); else lua_pushnil(L); lua_remove(L, -2); }
 
 #define LUA_GET_INT(i, defaultValue) LUA_GET_INT_impl(L, i, defaultValue)
 #define LUA_GET_NUMBER(i, defaultValue) LUA_GET_NUMBER_impl(L, i, defaultValue)

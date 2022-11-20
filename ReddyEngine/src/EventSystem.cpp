@@ -79,12 +79,27 @@ namespace Engine
 			auto eventStructure = m_eventQueue.front();
 			m_eventQueue.pop();
 
-			m_listenerCache = m_eventHandlersMap[eventStructure.type]; // There's a risk here that an event adds/removes to the listeners while we're iterating it
-			for (auto kv : m_listenerCache)
+			if (eventStructure.type == typeid(LuaEvent))
 			{
-				kv.callback(eventStructure.event);
+				auto pLuaEvent = (LuaEvent*)eventStructure.event;
+				m_listenerCache = m_luaEventHandlersMap[pLuaEvent->name]; // There's a risk here that an event adds/removes to the listeners while we're iterating it
+				for (auto kv : m_listenerCache)
+				{
+					eventStructure.event->pListener = kv.pListener;
+					kv.callback(eventStructure.event);
+				}
+				m_listenerCache.clear();
 			}
-			m_listenerCache.clear();
+			else
+			{
+				m_listenerCache = m_eventHandlersMap[eventStructure.type]; // There's a risk here that an event adds/removes to the listeners while we're iterating it
+				for (auto kv : m_listenerCache)
+				{
+					eventStructure.event->pListener = kv.pListener;
+					kv.callback(eventStructure.event);
+				}
+				m_listenerCache.clear();
+			}
 
 			delete eventStructure.event;
 		}

@@ -73,6 +73,9 @@ namespace Engine
 		const std::vector<EntityRef>& getChildren() const { return m_children; }
 		int getChildIndex(const EntityRef& pChild) const; // -1 if not child
 
+		void enable();
+		void disable();
+
 		const std::vector<ComponentRef>& getComponents() const { return m_components; }
 		
 		template<typename T>
@@ -134,6 +137,14 @@ namespace Engine
 
 		EntityRef getChildByName(const std::string& name, bool recursive = false);
 		EntityRef getChildByName(const std::string& name, const EntitySearchParams &searchParams, bool recursive = false);
+		void findByName(const std::string& name, std::vector<EntityRef>& entities, bool recursive = false);
+		void findByName(const std::string& name, std::vector<EntityRef>& entities, const EntitySearchParams &searchParams, bool recursive = false);
+
+		// We use strings here instead of template type because this is meant to be called from Lua gameplay code anyway.
+		EntityRef findByComponent(const std::string& componentName, bool recursive = false);
+		EntityRef findByComponent(const std::string& componentName, const EntitySearchParams &searchParams, bool recursive = false);
+		void findByComponent(const std::string& componentName, std::vector<EntityRef>& entities, bool recursive = false);
+		void findByComponent(const std::string& componentName, std::vector<EntityRef>& entities, const EntitySearchParams &searchParams, bool recursive = false);
 
 		bool hasChild(const EntityRef& pChild, bool recursive = false) const;
 
@@ -193,6 +204,7 @@ namespace Engine
 		//	return lhs.id == rhs.id;
 		//}
 
+		void collectUpdatables(std::vector<ComponentRef>& updatables);
 		void draw();
 
 		const Transform& getTransform() const { return m_transform; }
@@ -206,6 +218,7 @@ namespace Engine
 		void setRotation(float degrees);
 		void setScale(const glm::vec2& scale);
 		void setWorldPosition(const glm::vec2& position);
+		void setDirtyTransform();
 
 		const glm::mat4& getWorldTransform();
 		const glm::mat4& getWorldTransformWithScale();
@@ -215,6 +228,9 @@ namespace Engine
 		bool isInRadius(const glm::vec2& pointInWorld, float radius, bool inclusive = true);
 
 		EntityRef getMouseHover(const glm::vec2& mousePos, bool ignoreMouseFlags = false);
+		void getEntitiesInRect(std::vector<Engine::EntityRef>& entities, const glm::vec4& rect);
+
+		void getVisibleEntities(std::vector<Engine::EntityRef>& entities);
 
 		void onMouseEnter();
 		void onMouseLeave();
@@ -224,17 +240,21 @@ namespace Engine
 
 		uint64_t runtimeId = 0; // This has nothing to do with entity Id. Its for Lua
 		std::string luaName;
+		bool enabled = true;
 
 	public:
 		// Editor stuff (We could #ifdef this in final version?)
 		bool edit();
 		bool isSelected = false;
+		bool expanded = true; // Scene Tree view, editor
 		void drawOutline(const glm::vec4& color, float zoomScale);
+		void expand();
+		bool editorVisible = true;
+		bool editorLocked = false;
 
 	private:
 		void componentAdded(const ComponentRef& pComponent);
 		void updateDirtyTransforms();
-		void setDirtyTransform();
 		bool isMouseHover(const glm::vec2& mousePos) const;
 
 		bool m_transformDirty = true;

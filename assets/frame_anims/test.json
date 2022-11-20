@@ -1,0 +1,17 @@
+{
+   "animations" : [
+      {
+         "frames" : [
+            {
+               "length" : 2.0,
+               "texture" : "textures\\editorIcon_sound.png"
+            },
+            {
+               "length" : 1.0,
+               "texture" : "textures\\editorIcon_pfx.png"
+            }
+         ],
+         "name" : "run"
+      }
+   ]
+}

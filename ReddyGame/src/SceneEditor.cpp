@@ -3,8 +3,8 @@
 
 #include <Engine/Entity.h>
 #include <Engine/Scene.h>
+#include <Engine/Component.h>
 #include <Engine/ReddyEngine.h>
-#include <Engine/SpriteComponent.h>
 #include <Engine/GUI.h>
 #include <Engine/Input.h>
 #include <Engine/ResourceManager.h>
@@ -12,6 +12,7 @@
 #include <Engine/SpriteComponent.h>
 #include <Engine/TextComponent.h>
 #include <Engine/ScriptComponent.h>
+#include <Engine/PFXComponent.h>
 
 #include <filesystem>
 
@@ -20,26 +21,51 @@
 #include <imgui.h>
 
 static Engine::EntityRef g_pDragTarget = nullptr;
+static Engine::EntityRef g_pDragAfter = nullptr;
+static Engine::EntityRef g_pDragBefore = nullptr;
 
 
-const char* EditorState::getEntityFriendlyName(const Engine::EntityRef& pEntity)
+// This is very expensive and done for every entity in the scene tree window
+std::string EditorState::getEntityFriendlyName(const Engine::EntityRef& pEntity)
 {
-    if (!pEntity->name.empty()) return pEntity->name.c_str();
-    if (pEntity->hasComponent<Engine::SpriteComponent>()) return "Sprite";
-    if (pEntity->hasComponent<Engine::TextComponent>()) return pEntity->getComponent<Engine::TextComponent>()->text.c_str();
-    if (pEntity->hasComponent<Engine::ScriptComponent>()) return pEntity->getComponent<Engine::ScriptComponent>()->name.c_str();
-    return "Entity";
+    std::string ret;
+    if (pEntity->editorLocked) ret = "(LOCKED) ";
+    if (!pEntity->editorVisible) ret += "(HIDDEN) ";
+    if (!pEntity->name.empty()) ret += pEntity->name.c_str();
+    else
+    {
+        const auto& components = pEntity->getComponents();
+        if (components.empty()) ret += "Entity";
+        else
+        {
+            bool found = false;
+            for (const auto& pComponent : components)
+            {
+                auto n = pComponent->getFriendlyName();
+                if (!n.empty())
+                {
+                    found = true;
+                    ret += n;
+                    break;
+                }
+            }
+            if (!found) ret += components.front()->getType();
+        }
+    }
+    return ret;
 }
 
 void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
 {
     const auto& children = pEntity->getChildren();
 
-    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
     if (children.empty()) flags |= ImGuiTreeNodeFlags_Leaf;
     if (pEntity->isSelected) flags |= ImGuiTreeNodeFlags_Selected;
+    //if (pEntity->expanded) flags |= ImGuiTreeNodeFlags_DefaultOpen; // No need, we do ImGui::SetNextItemOpen
 
-    auto nodeOpen = ImGui::TreeNodeEx((const void*)(uintptr_t)pEntity->id, flags, getEntityFriendlyName(pEntity));
+    ImGui::SetNextItemOpen(pEntity->expanded);
+    bool openned = pEntity->expanded = ImGui::TreeNodeEx((const void*)(uintptr_t)pEntity->id, flags, getEntityFriendlyName(pEntity).c_str());
 
     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
     {
@@ -73,6 +99,7 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
         {
             g_pDragTarget = pEntity;
         }
+        ImGui::EndDragDropTarget();
     }
 
     if (ImGui::BeginDragDropSource())
@@ -82,12 +109,49 @@ void EditorState::drawEntitySceneTree(const Engine::EntityRef& pEntity)
         ImGui::EndDragDropSource();
     }
 
-    if (nodeOpen)
+    if (openned)
     {
+        bool first = true;
         for (const auto& pChild : children)
+        {
+            if (first)
+            {
+                first = false;
+
+                // Draw n drop items before this child
+                bool dummy = false;
+                auto c = ImGui::GetCursorPosY();
+                ImGui::SetCursorPosY(c - 1);
+                ImGui::Selectable("---", &dummy, ImGuiSelectableFlags_Disabled, ImVec2(0, 2));
+                if (ImGui::BeginDragDropTarget())
+                {
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_SCENETREE"))
+                    {
+                        g_pDragBefore = pChild;
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+                ImGui::SetCursorPosY(c);
+            }
             drawEntitySceneTree(pChild);
+        }
         ImGui::TreePop();
     }
+
+    // Draw n drop items after this
+    bool dummy = false;
+    auto c = ImGui::GetCursorPosY();
+    ImGui::SetCursorPosY(c - 1);
+    ImGui::Selectable("---", &dummy, ImGuiSelectableFlags_Disabled, ImVec2(0, 2));
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_SCENETREE"))
+        {
+            g_pDragAfter = pEntity;
+        }
+        ImGui::EndDragDropTarget();
+    }
+    ImGui::SetCursorPosY(c);
 }
 
 void EditorState::onMouseDown(Engine::IEvent* pEvent)
@@ -109,7 +173,9 @@ void EditorState::onMouseDown(Engine::IEvent* pEvent)
         const auto& pHoveredEntity = Engine::getScene()->getHoveredEntity();
 
         if (!pHoveredEntity && !ctrl && !shift && !m_selected.empty())
+        {
             changeSelectionAction({}); // Deselect
+        }
 
         if (pHoveredEntity)
         {
@@ -130,6 +196,11 @@ void EditorState::onMouseDown(Engine::IEvent* pEvent)
 
             m_isMouseDownInWorld = true;
             m_mouseOnDown = m_mouseWorldPos;
+        }
+        else
+        {
+            m_boxSelect = true;
+            m_boxSelectFrom = m_mouseWorldPos;
         }
     }
 }
@@ -152,6 +223,26 @@ void EditorState::onMouseUp(Engine::IEvent* pEvent)
     auto ctrl = false;//Engine::getInput()->isKeyDown(SDL_SCANCODE_LCTRL);
     auto shift = Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT);
     auto alt = Engine::getInput()->isKeyDown(SDL_SCANCODE_LALT);
+
+    if (m_boxSelect)
+    {
+        m_boxSelect = false;
+        auto boxSelectTo = m_mouseWorldPos;
+
+        glm::vec4 selectRect(
+            glm::min(boxSelectTo.x, m_boxSelectFrom.x),
+            glm::min(boxSelectTo.y, m_boxSelectFrom.y),
+            glm::abs(boxSelectTo.x - m_boxSelectFrom.x),
+            glm::abs(boxSelectTo.y - m_boxSelectFrom.y)
+        );
+
+        std::vector<Engine::EntityRef> entities;
+        Engine::getScene()->getRoot()->getEntitiesInRect(entities, selectRect);
+        if (!entities.empty())
+            changeSelectionAction(entities);
+        m_transformType = TransformType::None;
+        return;
+    }
 
     const auto& pHoveredEntity = Engine::getScene()->getHoveredEntity();
     
@@ -269,6 +360,11 @@ void EditorState::updateTransform()
         case TransformType::Translate:
         {
             auto diff = m_mouseWorldPos - m_mouseOnDown;
+            if (Engine::getInput()->isKeyDown(SDL_SCANCODE_LSHIFT))
+            {
+                if (std::fabsf(diff.x) > std::fabsf(diff.y)) diff.y = 0;
+                else diff.x = 0;
+            }
             for (int i = 0, len = (int)m_selected.size(); i < len; ++i)
             {
                 const auto& pEntity = m_selected[i];
@@ -293,6 +389,8 @@ void EditorState::drawSceneUI() // This is also kind of update
     if (Engine::GUI::beginEditorWindow("Scene"))
     {
         g_pDragTarget = nullptr;
+        g_pDragAfter = nullptr;
+        g_pDragBefore = nullptr;
         drawEntitySceneTree(Engine::getScene()->getRoot());
 
         if (g_pDragTarget)
@@ -308,8 +406,6 @@ void EditorState::drawSceneUI() // This is also kind of update
                 }
             }
 
-            ImGui::EndDragDropTarget();
-
             if (valid)
             {
                 for (const auto& pDragEntity : m_selected)
@@ -317,6 +413,62 @@ void EditorState::drawSceneUI() // This is also kind of update
                     g_pDragTarget->addChild(pDragEntity);
                 }
                 pushUndo("Scene Tree Change");
+            }
+        }
+        else if (g_pDragAfter)
+        {
+            bool valid = true;
+            auto pParent = g_pDragAfter->getParent();
+            if (pParent)
+            {
+                for (const auto& pDragEntity : m_selected)
+                {
+                    // Make sure we're not dragging a parent into one of it's child
+                    if (pDragEntity == pParent || pDragEntity->hasChild(pParent, true))
+                    {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (valid)
+                {
+                    // Find index
+                    int index = -1;
+                    for (const auto& pDragEntity : m_selected)
+                    {
+                        pParent->addChild(pDragEntity, pParent->getChildIndex(g_pDragAfter) + 1);
+                    }
+                    pushUndo("Scene Tree Change");
+                }
+            }
+        }
+        else if (g_pDragBefore)
+        {
+            bool valid = true;
+            auto pParent = g_pDragBefore->getParent();
+            if (pParent)
+            {
+                for (const auto& pDragEntity : m_selected)
+                {
+                    // Make sure we're not dragging a parent into one of it's child
+                    if (pDragEntity == pParent || pDragEntity->hasChild(pParent, true))
+                    {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (valid)
+                {
+                    // Find index
+                    int index = -1;
+                    for (const auto& pDragEntity : m_selected)
+                    {
+                        pParent->addChild(pDragEntity, pParent->getChildIndex(g_pDragBefore));
+                    }
+                    pushUndo("Scene Tree Change");
+                }
             }
         }
 
@@ -354,11 +506,11 @@ void EditorState::drawSceneUI() // This is also kind of update
     if (ImGui::BeginPopupContextWindow("CreateEntityContext"))
     {
         if (ImGui::Selectable("Empty")) onCreateEmptyEntity();
-        if (ImGui::Selectable("Sprite")) onCreateSpriteEntity();
-        if (ImGui::Selectable("Text")) onCreateTextEntity();
-        if (ImGui::Selectable("Sound")) onCreateSoundEntity();
-        if (ImGui::Selectable("Particle")) onCreateParticleEntity();
-        if (ImGui::Selectable("Script")) onCreateScriptEntity();
+        ImGui::Separator();
+        const auto& componentNames = Engine::ComponentFactory::getComponentNames();
+        for (const auto& componentName : componentNames)
+            if (ImGui::MenuItem(componentName.c_str()))
+                onCreateEntity(componentName);
         ImGui::EndPopup();
     }
 
@@ -369,9 +521,16 @@ void EditorState::drawSceneUI() // This is also kind of update
     }
     if (ImGui::BeginPopupContextWindow("CreateComponentContext"))
     {
-        if (ImGui::Selectable("Sprite")) onAddComponent<Engine::SpriteComponent>();
-        if (ImGui::Selectable("Text")) onAddComponent<Engine::TextComponent>();
-        if (ImGui::Selectable("Script")) onAddComponent<Engine::ScriptComponent>();
+        const auto& componentNames = Engine::ComponentFactory::getComponentNames();
+        for (const auto& componentName : componentNames)
+        {
+            if (ImGui::Selectable(componentName.c_str()))
+            {
+                if (m_selected.size() != 1) return;
+                m_selected.front()->addComponent(Engine::ComponentFactory::create(componentName));
+                pushUndo("Add Component");
+            }
+        }
         ImGui::EndPopup();
     }
 }

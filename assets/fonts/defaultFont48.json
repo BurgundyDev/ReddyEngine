@@ -1,4 +1,6 @@
 {
     "file": "fonts/defaultFont.otf",
-    "height": 48
+    "height": 48,
+    "shadowOpacity": 0.5,
+    "shadowDistance": 2
 }
