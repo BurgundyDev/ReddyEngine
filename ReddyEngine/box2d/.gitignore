@@ -1,0 +1,16 @@
+build/
+imgui.ini
+settings.ini
+.vscode/
+CMakeSettings.json
+out/
+.vs/
+
+# Binaries and intermediates
+**/bin/
+**/bin-int/
+
+# VS files
+*.vcxproj
+*.user
+*.filters
